@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Snippet>
+  <Shortcut>consumer</Shortcut>
+  <Declaration>
+    <ID>
+      <Name>name</Name>
+      <Value></Value>
+    </ID>   
+  </Declaration>
+  <Code>
+    <![CDATA[<consumer create="$name$">
+		<input pin="" />
+	</consumer>]]>
+  </Code>
+</Snippet>

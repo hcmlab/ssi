@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Snippet>
+  <Shortcut>transformer</Shortcut>
+  <Declaration>
+    <ID>
+      <Name>name</Name>
+      <Value></Value>
+    </ID>
+  </Declaration>
+	<Code><![CDATA[<transformer create="$name$">
+		<input pin="" frame="" />
+		<output pin="" />
+	</transformer>]]></Code>
+</Snippet>

@@ -1,0 +1,69 @@
+------------------------------------------------------------
+    Development Enviroment
+------------------------------------------------------------
+
+    SSI has been developed under Visual Studio 2010 and
+	supports 32-bit and 64-bit Window systems.
+	
+------------------------------------------------------------
+    Python
+------------------------------------------------------------
+	
+	Install the 64 bit version of Python3.5x to C:\%ProgramFiles%\Python35
+	(default installation directory if you check 'install for all users')
+	
+	https://www.python.org/downloads/
+	
+------------------------------------------------------------
+    Installation
+------------------------------------------------------------
+
+    Run setup.exe to set up enviroment variables for SSI
+	
+------------------------------------------------------------
+    Getting Started
+------------------------------------------------------------
+
+    Run pipelines in pipes\ 
+	
+	ssi_core.sln core libraries and dlls	
+	ssi_plugins.sln plugin libraries and dlls
+	ssiui.sln graphical interfaces	
+	   
+------------------------------------------------------------
+    Documentation
+------------------------------------------------------------	
+
+	pipes\ contains example pipelines	
+	
+	docs\api\ contains reference html files for available components	   
+    docs\tutorial\ contains a comprehensive tutorial (tutorial.pdf) and sample code (tutorial.sln)	  
+	docs\ui\ contains documentation for the graphical training interface	
+	docs\xml\ contains documentation on how to build xml pipelines
+
+------------------------------------------------------------
+    Troubleshooting
+------------------------------------------------------------	
+	
+	*  There seems to be an issue with Avira Antivir and VC++ debugging. If you ever encounter the error 
+	   message: "NtClose was called on a handle that was protected from close via NtSetInformationObject"
+	   please refer to the following articel:
+	
+	http://www.codeproject.com/Messages/3694402/VCplusplus-debugging-with-latest-Avira-Antivir.aspx
+	
+	*  Sometimes it seems that the x64 configuration causes problems on x86 machines. If you ever get the
+	   message that "MSVCR90D.dll was not found" when running a ssi application out of visual studio delete 
+	   the x64 configuration and try again.
+	   
+	* When running Windows 8 & Visual Studio 2013, some test projects of plugins that use external libraries might crash by default (Debugger stops in ThreadFun). To fix this problem go to test: right click: project->properties->linker->all options and set random base address to No (/DYNAMICBASE:NO).
+	
+	
+------------------------------------------------------------
+    Known Issues
+------------------------------------------------------------	
+	
+	* XMLedit does not (yet) compile on Visual Studio 2015
+	
+------------------------------------------------------------
+    Bug report to support@openssi.net
+------------------------------------------------------------

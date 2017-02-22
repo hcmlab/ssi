@@ -1,0 +1,1664 @@
+	*** Version 0.1.0 ***
+- 09.09.09 NEW : tools/[ev,torch], added emovoice and torch library : Johannes Wagner
+- 09.09.09 NEW : core/sensor/wii/WiiOptions, class to wrap options of wiimote : Johannes Wagner
+- 09.09.09 BUG : core/dialog/PinAndMediaSelectionDialog.cpp, pins of selected camera were not correctly passed to dialog : Johannes Wagner
+- 09.09.09 CHG : core/sensor/wii/WiiGateway, in case of an invalid handle only a warning instead of an error is given : Johannes Wagner
+- 23.09.09 BUG : core/frame/Chain, sample number of temporary streams not correctly during transform() : Johannes Wagner
+- 23.09.09 CHG : core/model/Recognizer, Recognizer takes now several RecConsumer : Johannes Wagner
+- 24.09.09 CHG : core/model/DLLModelMain, within dll stdout is now redirected to log file 'dllmodel.log' : Johannes Wagner
+- 24.09.09 NEW : SSI_Global.cpp, place to define global variables that are declared as extern in header files : Johannes Wagner
+- 29.09.09 CHG : SSI_Trigger, now two separate interfaces SSI_Trigger and SSI_TriggerListener to clearly distinguish a trigger from a listener : Johannes Wagner
+- 30.09.09 NEW : core/tools/sockspy, tool to spy osc message sent with SSI : Johannes Wagner
+- 01.10.09 CHG : dlls/wiimote, upgrate to  WiiYourself! v1.14 BETA, which is supposed to support MotionPlus, but not reliable yet : Johannes Wagner
+- 01.10.09 CHG : core/model/Classifier, the protected methods init_class_names () and free_class_names () are now declared as public : Johannes Wagner
+- 02.10.09 CHG : core/frame/Transformer, removed parameter sync_interval from constructor as it was actually never used : Johannes Wagner
+- 05.10.09 CHG : core/ioput/file/FileReader, added constructor that takes a ssi_stream as data source : Johannes Wagner
+- 05.10.09 CHG : core/ioput/socket/Socket, simplified interface : Johannes Wagner
+- 06.10.09 CHG : core/ioput/socket/SocketOsc, before an osc message is sent, we make sure that the internal buffer is large enough to fit it : Johannes Wagner
+- 07.10.09 CHG : core/ioput/wav/WavReader, provider->init() immidiatelly called in constructor instead of enter() method : Johannes Wagner
+- 07.10.09 CHG : core/ioput/avi/AviReader, provider->init() immidiatelly called in constructor instead of enter() method : Johannes Wagner
+- 07.10.09 NEW : core/graphic/VideoPlotter, a consumer for video plotting : Johannes Wagner
+- 08.10.09 CHG : core/graphic/PaintSignal, new method setBackColor() to change background color : Johannes Wagner
+- 08.10.09 NEW : tools/eye, added eye tracker library : Johannes Wagner
+- 08.10.09 BUG : tools/eye/EyeSensor, memory leak : Johannes Wagner
+- 08.10.09 NEW : tools/shore, added shore library : Johannes Wagner
+- 08.10.09 CHG : core/sensor/cam/CamTools, added method FlipImage() : Johannes Wagner
+- 08.10.09 NEW : tools/bio, added bio library, which includes support for nexus and ahm sensor : Johannes Wagner
+- 15.10.09 NEW : tools/shore/ShorePainter, added painter to visualize faces : Johannes Wagner
+- 27.10.09 NEW : core/graphic/PaintVideo, removed dimension parameter : Johannes Wagner
+- 28.10.09 CHG : core/model/Recognizer, DefaultFileRecognizer now expects a FILE pointer : Johannes Wagner
+- 28.10.09 NEW : core/model/Dollar$1, Dollar$1 algorithm for gesture recognition based on 2D data : Johannes Wagner
+- 28.10.09 NEW : core/signal/Selector, Filter that selects certain dimension of the input signal and blocks the remaining : Johannes Wagner
+- 29.10.09 NEW : tools/artk+, integration of ARToolkit+ for marker tracking : Johannes Wagner
+- 29.10.09 NEW : tools/sapi, integration of Microsoft SAPI 5.1 for speech recognition (preliminary) : Johannes Wagner
+- 02.11.09 REM : core/model/Recorder, removed deprecated class Recorder : Johannes Wagner
+- 02.11.09 CHG : core/ioput/socket, renamed Socket to SocketUdp, which now derives from interface Socket : Johannes Wagner
+- 02.11.09 NEW : core/ioput/socket/SocketTcp, tcp socket implementation, which derives from interface Socket : Johannes Wagner
+- 03.11.09 CHG : core/SSI_Transformer, sample_number_delta replaced by info struct containing delta/frame size and timestamp : Johannes Wagner
+- 04.11.09 CHG : core/model/Annotation, entries are now ordered according to their start time : Johannes Wagner
+- 04.11.09 REM : core/model/Trainer : Johannes Wagner
+- 04.11.09 CHG : core/model/Classifier, renamed to Trainer : Johannes Wagner
+- 04.11.09 CHG : core/model/Model, simplified parameters of forward() function : Johannes Wagner
+- 13.11.09 NEW : tools/artk+, new class ARTKPlusSelector : Johannes Wagner
+- 13.11.09 CHG : core/ioput/model/Recognizer, new default socket consumer class : Johannes Wagner
+- 13.11.09 CHG : core/signal/Cast, now two multiplication factors (before and after cast) : Johannes Wagner
+- 26.11.09 NEW : sensor/cam/CamScreenSensor, screen capture sensor : Johannes Wagner
+- 27.11.09 NEW : docs/tutorial, a tutorial on how to use SSI : Johannes Wagner
+- 27.11.09 BUG : core/ioput/avi/AviReader, sample bytes of output stream were not correctly calculated : Johannes Wagner
+
+*** Version 0.2.0 ***
+- 01.12.09 NEW : core/ioput/option/[tinystr,tinyxml], included TinyXML, a simple, small, C++ XML parser : Johannes Wagner
+- 01.12.09 CHG : core/ioput/option/OptionList, read/write options from/to xml file : Johannes
+- 05.12.09 BUG : core/sensor/cam/CamScreenSensor, framerate is now correctly set in avi file : Johannes
+- 07.12.09 NEW : tools/eye/EyePainter, visualizes eye gaze : Johannes
+- 07.12.09 CHG : core/sensor/mouse/MouseSensor, options to scale/flip cursor : Johannes
+- 07.12.09 CHG : core/SSI_Debug, log messages are now printed on ssiout instead of stdout : Johannes
+- 09.12.09 NEW : tools/mui, user interface to train data-driven models (ModelUI) : Johannes
+- 09.12.09 NEW : tools/mui-dll, library for building dlls used by ModelUI : Johannes
+- 20.12.09 NEW : tools/eye/Fixation, algorithm to detect fixations : Johannes
+- 22.12.09 NEW : core/frame/ITransformable, implemted by Provider and Transformer : Benjamin
+- 22.12.09 NEW : core/sensor/wii/IWiiMote.h, new dll interface for wiimote : Benjamin
+- 19.01.10 CHG : tools/ev, added normalization to naive bayes : Thurid
+- 19.01.10 CHG : core/model/Recognizer:DefaultSocketOscConsumer, added option to send probabilities for alle classes : Johannes
+- 21.01.10 BUG : core/dialog/CamSelectionDialog, comboBoxFriendlyName_SelectedIndexChanged checks for valid index : Johannes
+- 28.01.10 NEW : core/SSI_Cons, enum ssi_type_t : Johannes
+- 28.01.10 CHG : core/SSI_Tools, new fields type (ssi_type_t) and time (ssi_time_t) : Johannes
+- 28.01.10 CHG : core/frame/*, support for sample type (ssi_type_t) : Johannes
+- 28.01.10 NEW : core/ioput/file/File, enum File::VERSION : Johannes
+- 28.01.10 CHG : core/ioput/file/FileTools, new stream file version V1 including sample type : Johannes
+- 28.01.10 NEW : core/ioput/file/FileTools, ReadStreamFile/WriteStreamFile to read/write stream files in ssi stream format : Johannes
+- 28.01.10 NEW : core/ioput/wav/WavTools, functions to write/read wav files : Johannes
+- 28.01.10 CHG : core/ioput/wav/WavReader, moved static functions to WavTools : Johannes
+- 29.01.10 CHG : core/ioput/avi/AviReader, moved static functions to AviTools : Johannes
+- 29.01.10 CHG : tools/sockspy, moved to core/build/tools/sockspy : Johannes
+- 29.01.10 CHG : core/build/test/*, clean up : Johannes
+- 01.02.10 NEW : tools/tools.sln, combines the tools projects in one solution : Johannes
+- 01.02.10 NEW : core/build/tools/convert, converter for ssi file format : Johannes
+- 01.02.10 CHG : ui/viewui, support for ssi file format V1 : Johannes
+- 01.02.10 CHG : ui/viewui, support for wav files : Johannes
+- 01.02.10 CHG : build/tools/convert, file converter (V0->VX,VX<->wav): Johannes
+- 02.02.10 CHG : ui/viewui, playback for wav files and volume control : Johannes
+- 09.02.10 NEW : ui/tools, signal resampling function for ui : Johannes
+- 09.02.10 CHG : core/model/DLL*, removed since replaced by tools/mui-dll : Johannes
+- 09.02.10 CHG : tools/ev/*, update to tools/mui-dll : Johannes
+- 09.02.10 CHG : tools/ev/*, included sample type to ev wrapper : Johannes
+- 10.02.10 BUG : tools/ev/EmoVoiceClass, calling release() on loaded model no longer throws debug assertion: Johannes
+- 10.02.10 BUG : tools/ev/ev_svm, moved svm_model from ev_svm.cpp to ev_svm.h : Johannes
+- 10.02.10 NEW : core/SSI_Object.h, base class of SSI_Provider, SSI_Transformer, SSI_Consumer and SSI_Trigger : Johannes
+- 10.02.10 CHG : *, changed copyright to 2010 : Johannes
+- 15.02.10 BUG : ui/tools/UITools, step size is now correctly calculated : Johannes
+- 15.02.10 CHG : ui/vieui/dll/SignalTrack, improved audio plot : Johannes
+- 15.02.10 BUG : ui/vieui/dll/SignalTrack, audio plot is correctly placed in canvas : Johannes
+- 15.02.10 BUG : ui/vieui/dll/*, deferred update of gridsplitter and scrollview to improve performance : Johannes
+- 15.02.10 BUG : ui/vieui/dll/ViewHandler, when user zooms view now correctly centers around cursor position : Johannes
+- 17.02.10 NEW : core/sensor/bluetooth/*, tools to find and connect bluetooth devices : Benjamin
+- 17.02.10 NEW : core/thread/ExEvent*, advanced event class : Benjamin
+- 21.02.10 BUG : core/signal/Normalize, corrected the loop : Johannes
+- 24.02.10 NEW : core/sensor/cam/CamOptions.h, wrapper for camera options : Johannes
+- 24.02.10 NEW : core/sensor/cam/CamTools.h, new function StringToGUID() : Johannes
+- 01.03.10 CHG : ui/viewui/dll/ViewHandler, support for wmv files : Johannes
+- 01.03.10 CHG : core/ioput/options/tinyxml*, moved to ioput/xml/ : Johannes
+- 01.03.10 NEW : core/SSI_Model.h, SSI_Fusion.h, SSI_Options.h, SSI_Samples, new abstact interfaces for model and fusion algorithms : Johannes
+- 01.03.10 CHG : core/model/Trainer, several changes to adjust to new interfaces : Johannes
+- 01.03.10 NEW : core/model/FusionSimple, a simple decision fusion algorithm based on MAX/SUM/PRODUCT rules : Johannes
+- 01.03.10 NEW : core/model/Factory, factory to create SSI_Model and SSI_Fusion objects : Johannes
+- 01.03.10 CHG : core/SSI_Cons.h, renamed [ssi_stream,ssi_sample] to [ssi_stream_t,ssi_sample_t] : Johannes
+- 01.03.10 NEW : core/SSI_Cons.h, new type ssi_option_t : Johannes
+- 04.03.10 NEW : tools/ev/wrapper, EmoVoiceClass replaced by EmoVoiceBayes and EmoVoiceSVM : Johannes
+- 04.03.10 NEW : tools/torch/Torch*, update to new SSI_Model interface : Johannes
+- 06.03.10 CHG : core/ioput/file/FileTools, removed unsafe functions RemoveFileType() and ChangeFileType() : Johannes
+- 06.03.10 NEW : core/ioput/file/FilePath, filepath parser : Johannes
+- 06.03.10 NEW : core/SSI_Consh, introduction of standard file type names SSI_FILE_TYPE_* : Johannes
+- 06.03.10 CHG : tool/ev, update to new naming convention : Johannes
+
+*** Version 0.3.0 ***
+- 10.03.10 NEW : docs/samples/browser, browser sample application : Johannes
+- 11.03.10 CHG : core/model/Factory, moved to base/Factory and included function to import objects from a dll : Johannes
+- 15.03.10 NEW : core/build/test/base, example how to use Factory and load object from dll : Johannes
+- 22.03.10 NEW : ui/fusion/pafui/*, PA fusion gui : Johannes
+- 22.03.10 NEW : tools/ocv/*, opencv wrapper : Johannes
+- 23.03.10 CHG : core/ioput/file/File, added an open() and close() method : Johannes
+- 23.03.10 CHG : core/ioput/file/[FileWriter,FileReader], factory support : Johannes
+- 25.03.10 CHG : core/ioput/wav/[WavWriter,WavReader], factory support : Johannes
+- 25.03.10 CHG : core/ioput/avi/[AviWriter,AviReader], factory support : Johannes
+- 25.03.10 REM : core/graphic/[PaintData,Plotter], replaced by SignalPlotter and VideoPlotter : Johannes
+- 25.03.10 CHG : core/graphic/[SignaPlotter,VideoPlotter], renamed to [SignalPainter,VideoPainter] : Johannes
+- 25.03.10 CHG : core/ioput/avi/[SignalPainter,VideoPainter], factory support : Johannes
+- 25.03.10 CHG : core/ioput/socket/[SocketWriter,SocketReader], factory support : Johannes
+- 25.03.10 REM : core/ioput/socket/[SocketOscWriter,SocketOscReader], replaced by [SocketWriter,SocketReader] : Johannes
+- 25.03.10 CHG : core/base/Factory, loading multiple objects from same dll : Johannes
+- 25.03.10 CHG : tools/torch/*, replaced static lib with dll : Johannes
+- 06.04.10 CHG : tools/artk+/*, replaced static lib with dll : Johannes
+- 06.04.10 NEW : tool/mat/*, matlab file wrapper : Johannes
+- 06.04.10 NEW : tool/fusion/*, ssifusion.dll added : Florian
+- 07.04.10 NEW : tool/fusion/*, boosting added : Florian
+- 07.04.10 CHG : core/SSI_* moved to core/base and renamed to I* : Johannes
+- 07.04.10 CHG : tool/mat, removed : Johannes
+- 07.04.10 CHG : core/frame/TheFramework, auto threading on by default : Johannes
+- 09.04.10 CHG : tools/ev/EmoVoiceSVM, update LIBSVM to current release (Version 2.91, April 2010) : Johannes
+- 09.04.10 CHG : tools/torch/TorchSVM, added svm : Johannes
+- 11.04.10 CHG : core/model/Trainer, stream can be set on which single model will be trained : Johannes
+- 12.04.10 CHG : tool/fusion/*, updated : Florian
+- 09.04.10 CHG : tools/torch/TorchSVM, added svm : Johannes
+- 11.04.10 CHG : core/model/Trainer, stream can be set on which single model will be trained : Johannes
+- 12.04.10 CHG : core/base/[IFusion,IModel], added isTrained() method : Johannes
+- 12.04.10 CHG : core/model/Evaluation, added accuracy to confusion matrix : Johannes
+- 13.04.10 CHG : core/dlls/wiimote, wrapped wiimote sensor in dll : Johannes
+- 13.04.10 NEW : tool/fusion/*, added enhanced CS version : Florian
+- 13.04.10 CHG : core/dlls/wiimote, created dll interfaces for all IObjects : Johannes
+- 14.04.10 CHG : tools/mat, defined system variables $MATLAB_INCLUDE and $MATLAB_LIBS : Johannes
+- 12.04.10 CHG : core/model/evaluation, new method get_conf_mat() : Florian
+- 12.04.10 CHG : core/base/ISampels, new abstract method setHotClass() : Johannes
+
+*** Version 0.4.0 ***
+- 30.04.10 BUG : core/model/Annotation, entry_compare now returns false if entries are equal : Johannes
+- 30.04.10 BUG : core/signal/Functionals, _file pointer now initialized with 0 : Johannes
+- 30.04.10 BUG : core/model/Recognizer, addHandler now properly increments _n_handler : Johannes
+- 30.04.10 BUG : core/base/ISamples, operator[] replaced by get() : Johannes
+- 02.05.10 CHG : base/ISamples, removed setHotClass() : Johannes
+- 02.05.10 CHG : model/SampleList, removed setHotClass() : Johannes
+- 02.05.10 NEW : model/[ISHotClass,ISSelectDim,ISTransform], added wrapper classes for ISamples : Johannes
+- 03.05.10 CHG : model/ISSelectDim, setSelection expects now a const array with indices : Johannes
+- 03.05.10 CHG : model/ISSelectDim, indices are sorted before offsets are calculated : Johannes
+- 03.05.10 CHG : model/[ISSelectDim, ISTransform], found memory leaks : Johannes
+- 05.05.10 NEW : model/[ISSelectSample] added : Florian
+- 03.05.10 CHG : model/[ISSelectDim, ISTransform], found memory leaks : Johannes
+- 05.05.10 NEW : model/[libsvm-2.91,SVM], included libsvm-2.91 to ssimodel[d].dll : Johannes
+- 05.05.10 NEW : tools/mat/MatlabSamples, wrapper class to use samples from matlab : Johannes
+- 06.05.10 NEW : model/[ISSelectClass] added : Florian
+- 05.05.10 NEW : tools/mat/MatlabSamples, wrapper class to use samples from matlab : Johannes
+- 05.05.10 NEW : model/NaiveBayes, included Naive Bayes Classifier to ssimodel[d].dll : Johannes
+- 06.05.10 BUG : model/ISSelectClass, getStreamDim () correctly returns stream size : Johannes
+- 06.05.10 BUG : model/[ISHotClass,ISSelectDim,ISSelectClass], get() returns 0 if index out of range : Johannes
+- 07.05.10 BUG : model/Evaluation, added counter for unclassified samples : Johannes
+- 07.05.10 BUG : base/IFusion, getModelNumber() : Florian
+- 07.05.10 BUG : model/ISSelectSample, release() not called in destructor: Johannes
+- 07.05.10 CHG : base/IOptions, getSize () : Johannes
+- 07.05.10 CHG : base/sensor/CamSensor, GetCurrentSampleInStream and CamDeviceName now virtual : Johannes
+- 14.05.10 CHG : base/ioput/FileTools, added method GetDirsFromDir() : Johannes
+- 14.05.10 CHG : base/ioput/FileTools, added method GetDirsFromDir() : Johannes
+- 17.05.10 NEW : model/[ISSelectUser] added : Florian
+- 14.05.10 CHG : base/sensor/UAProxyForceGrabber, GrabFrame() returns E_PENDING if timestamp of current frame has not changed compared to previous frame : Johannes
+- 14.05.10 CHG : base/sensor/CamReader, added wait() method to stop execution of calling thread until the complete video file has been processed : Johannes
+- 17.05.10 NEW : base/model/ModelTools, added LoadSampleList (SampleList &samples, const ssi_char_t *file_name, Annotation &annotation, ssi_char_t *user_name) : Johannes
+- 17.05.10 BUG : base/model/Annotation, removed memory leak : Johannes
+- 17.05.10 NEW : base/model/ISMergeStrms, merge streams of several sample lists : Johannes
+- 18.05.10 NEW : base/model/Evaluation, added method for leave one user out : Florian
+- 18.05.10 NEW : base/base/ISelection, interface for feature selection : Johannes
+- 18.05.10 NEW : base/model/Rank, rank feature selection : Johannes
+- 18.05.10 NEW : base/model/Relief, relief feature selection : Johannes
+- 19.05.10 NEW : model/[ISAlignStrms] added : Florian
+- 18.05.10 NEW : base/model/Relief, relief feature selection : Johannes
+- 18.05.10 NEW : base/signal/FFTfeat, fft feature : Johannes
+- 18.05.10 BUG : base/model/Dollar$1, is now trained on correct stream : Johannes
+- 18.05.10 CHG : base/model/Dollar$1, added confidence value : Johannes
+- 18.05.10 BUG : base/model/Relief, number of selected features now correctly calculated : Johannes
+- 20.05.10 NEW : base/model/Selection, feature selection helper class : Johannes
+- 20.05.10 CHG : tools/ocv/*, dll interface : Johannes
+- 21.05.10 CHG : model/SVM, enhanced memory management : Johannes
+- 21.05.10 CHG : model/Trainer, removed warning if forward() fails : Johannes
+- 21.05.10 NEW : model/ISMissingData, ignores samples with missing data : Johannes
+- 21.05.10 CHG : base/ISamples, added hasMissingData() : Johannes
+- 21.05.10 CHG : model/SimpleFusion, handles missing data : Johannes
+- 24.05.10 CHG : SSI_LeakWatcher, smaller changes : Johannes
+- 24.05.10 CHG : base/Factory, new method ClearObjects() to delete all created objects, but keep registered classes : Johannes
+- 26.05.10 CHG : model/Trainer, added getName() and getInfo() : Johannes
+- 26.05.10 CHG : tools/ev/EmoVoiceFeat, added support for version 2.0 : Johannes
+- 26.05.10 CHG : model/ISAlignStrms, added support for missing data : Johannes
+- 29.05.10 CHG : ioput/file/FileTools, added flag to ignore hidden folders to ReadDirsFromDir() method : Johannes
+- 29.05.10 BUG : signal/MatrixOps, Print() : Johannes
+- 29.05.10 CHG : SSI_Tools, added ssi_template2type : Johannes
+- 30.05.10 BUG : frame/TheFramework, call reset() on buffers before framework is started : Johannes
+- 30.05.10 BUG : model/Dollar$1, removed memory leak : Johannes
+- 30.05.10 BUG : signal/ZeroTrigger, options now saved to file : Johannes
+- 31.05.10 NEW : tools/fusion, CascadingSpecialists for Missing Data : Florian
+- 31.05.10 BUG : model/ISSelectClass, class names : Florian
+- 01.06.10 NEW : model/FloatingSearch, floating feature search (SFS, SBS, PLUS-L-MINUS-R, SFFS) : Johannes
+- 01.06.10 NEW : model/Selection, smaller changes : Johannes
+- 01.06.10 ADD : SSI_DEBUG, ssi_tic(),ssi_toc() and ssi_toc_print() to measure execution time : Johannes
+- 01.06.10 BUG : model/Trainer, in Load() function : Johannes
+- 01.06.10 BUG : ioput/WavReader, read data of a single channel only : Johannes
+- 02.06.10 BUG : sensor/camera/CamWriter, name compression filter was not correctly set : Johannes
+- 02.06.10 BUG : sensor/camera/CamScreen, included resize option : Johannes
+- 02.06.10 ADD : model/ISSplitStream, wrapper to split a stream in several ones : Johannes
+- 07.06.10 BUG : model/Selection, scores are now correctly sorted : Johannes
+- 07.06.10 CHG : model/Selection, new construtor that takes a pre-selection : Johannes
+- 07.06.10 BUG : model/ISAlignStreams, num in output stream now correctly set : Johannes
+- 08.06.10 CHG : model/ISSelectDim, flag to sort dimensions : Johannes
+- 08.06.10 CHG : model/IS*, samples now passed as pointers to avoid call of copy constructor : Johannes
+- 09.06.10 BUG : signal/Selector, list with offsets is now correctly calculated : Johannes
+- 09.06.10 CHG : signal/[Derivate,Integral,Selector], Options::add() replaced by Options::set() method : Johannes
+- 14.06.10 ADD : tools/asio, support for audio asio : Benjamin
+- 21.06.10 ADD : tools/asio, channel selection : Johannes
+- 21.06.10 ADD : tools/asio, device selection via dialog : Johannes
+- 21.06.10 ADD : sensor/audio/AudioSensor, device selection via dialog : Johannes
+- 21.06.10 ADD : base/[IModel,IFusion], model/Trainer, added support for meta information : Johannes
+- 03.07.10 ADD : tools/shore/ShoreShake, added head shake/nod detector : Johannes
+- 23.06.10 BUG : model/Annotation, elements now correctly sorted : Johannes
+- 23.06.10 BUG : model/ISSelectUser, supports inverted user list : Johannes
+- 07.07.10 BUG : graphic/SignalPainter, setMove(), top and left were swapped : Johannes
+- 07.07.10 NEW : sensor/wiimote/WiiSensor, added support for infrared tracking : Johannes
+- 16.08.10 NEW : sensor/wiimote/WiiBBoard, added support for balance board : Johannes
+- 16.08.10 NEW : model/FScore, added feature selection based on f-score selection : Johannes
+- 17.08.10 NEW : tools/eye, eye tracker and fixation finder : Johannes
+- 16.06.10 ADD : model/ISMergeSample, merge samples from different lists to a single one : Johannes
+- 21.10.10 BUG : frame/Sensor, does not provide data if framework is still in idle mode : Johannes
+- 21.10.10 CHG : ui/viewui, video playback using MediaKit as workaround for bug in MediaElement on Windows 7 : Johannes
+- 25.10.10 CHG : signal/SNRatio, now compatible with float input : Johannes
+- 25.10.10 BUG : audio/AudioSensor, unsigned char now correctly supported : Johannes
+- 28.10.10 CHG : graphic/SignalPainter, new paint type for plotting audio signals : Johannes
+- 28.10.10 NEW : signal/[Operator0,Operator1], new filter to apply simple operators : Johannes
+- 28.10.10 CHG : signal/ZeroTrigger, support for multiple dimensions : Johannes
+- 28.10.10 NEW : signal/ThresholdTrigger, threshold trigger : Johannes
+- 08.11.10 BUG : model/Model, fixed a bug in TransformSampleList() : Johannes
+- 08.11.10 BUG : model/SampleList, fixed a bug in clear() : Johannes
+- 11.11.10 BUG : model/FloatingSearch, inclusion(): score of ignored features is set to -FLT_MAX instead of 0 : Johannes
+- 16.11.10 BUG : sensor/audio/AudioSensor, Start(): device selection dialog is now displayed during connect() : Johannes
+- 18.11.10 BUG : file/FileTools, [Read,Write]SampleHeader() works now for ASCII files : Johannes
+- 25.11.10 NEW : sensor/kinect, basic support for Microsoft Kinect : Felix
+- 26.11.10 CHG : sensor/kinect, added depth image providing, made image providing more stable : Felix
+- 30.11.10 NEW : sensor/kinect, added providers for the nearest point in the depth image, graphic/VideoPainter, added option for mirroring the video : Felix
+- 30.11.10 CHG : base/Factory, ssiout can be passed to RegisterDLL function to allow global logging : Johannes
+- 30.11.10 NEW : tools/mlp, added c# wrapper for machine learning pipeline : Johannes
+- 03.12.10 CHG : sensor/kinect, updated Kinect to new version ported by Zephod --> much more stable and more functions (not used yet). : Felix
+- 06.12.10 NEW : ui/[recordui,selectui,trainui,viewui,modelui], new gui tool for recording and model training : Johannes
+- 06.12.10 NEW : tools/ev/dlls/mlpev, emovoice pipeline : Johannes
+- 06.12.10 NEW : docs/ui/modelui, documentation for SSI/ModelUI : Johannes
+- 07.12.10 NEW : tools/wiigle/, wiigle clone : Johannes
+- 15.12.10 NEW : tools/nuance/, nuance wrapper : Johannes
+- 16.12.10 NEW : 64 bit support for all libraries except opencv and kinect : Johannes
+
+*** Version 0.5.0 ***
+- 23.12.10 NEW : tools/alglib/Linreg, linear regression model : Johannes
+- 03.01.11 CHG : sensor/audio/AudioOut, 64-bit support : Johannes
+- 03.01.11 CHG : core/tools/socketspy, non-osc support : Johannes
+- 10.01.11 CHG : model/NaiveBayes, option to turn of use of prior probabilites in algorithm : Johannes
+- 10.01.11 NEW : model/ISReClass, allows one to change the class ids of a sample list : Johannes
+- 10.01.11 NEW : ioput/WavProvider, allows best-effort extraction of audio streams : Johannes
+- 13.01.11 CHG : model/Evaluation, classification result for each is stored : Johannes
+- 19.01.11 NEW : model/Evaluation2Latex, export evaluation results to latex table : Johannes
+- 19.01.11 NEW : tools/fusion/FeatureFusion, feature fusion : Johannes
+- 19.01.11 NEW : model/Annotation, new method addLabelName() : Johannes
+- 19.01.11 CHG : ui/pafui, replace Ventuz.OSC.dll with Bespoke OSC Library : Johannes
+- 19.01.11 CHG : model/ISHotClass, several classes can be combined to one hot class : Johannes
+- 19.01.11 CHG : model/FloatingSearch, option to switch evaluation strategy between classwise and accuracy : Johannes
+- 28.01.11 CHG : model/sensor/kinect, exchanged old OpenKinect driver with new OpenNI : Felix
+- 07.02.11 NEW : build/test/serialize, project to test serialization between 32 and 64 bit systems : Johannes
+- 07.02.11 BUG : ioput/file/FileBinary, removed use of size_t in readLine() and writeLine() : Johannes
+- 08.02.11 BUG : ioput/option/OptionList, solved problem when reading empty character : Johannes
+- 23.02.11 NEW : model/FloatingCFS, correlation based feature selection : Johannes
+- 23.02.11 CHG : model/[Trainer,Evaluation], training/evaluation with feature selection : Johannes
+- 23.02.11 CHG : model/Trainer, in trainer file relative paths to models are used : Johannes
+- 23.02.11 NEW : tools/mlp/MLPCollect, helper class to collect samples : Johannes
+- 23.02.11 NEW : tools/mlp/MLP, info file is stored including model, signal, annotation and paths to samples + possibility to reload samples from info file: Johannes
+- 23.02.11 CHG : tools/mlp/MLP, training/evaluation with feature selection : Johannes
+- 24.02.11 CHG : tools/mlp/MLP, added support for video : Johannes
+- 24.02.11 CHG : sensor/kinect, added skeleton provider : Johannes
+- 28.02.11 CHG : ui/modelui, new tab panel for renaming annotation labels : Johannes
+- 02.03.11 ADD : tools/kigle : gesture learning pipeline for the kinect : Johannes
+- 02.03.11 ADD : model/FindNN : helper class to find k-nearest-neighbors : Johannes
+- 02.03.11 ADD : model/KNearestNeighbors : implementation of k-nearest-neighbors classifier : Johannes
+- 02.03.11 ADD : model/ISOverSample : wrapper for ISamples to oversample minority classes : Johannes
+- 07.03.11 ADD : model/ISUnderSample : wrapper for ISamples to undersample majority classes : Johannes
+- 07.03.11 ADD : r250 : random number generator, replaces rand() : Johannes
+- 11.03.11 ADD : model/ISNorm : wrapper for ISamples to normalize samples : Johannes
+- 15.03.11 ADD : model/KMeans : kmeans and kmeans++ : Johannes
+- 21.03.11 ADD : model/ISDuplStrms : wrapper for ISamples to duplicate streams : Johannes
+- 22.03.11 BUG : model/Rank : *model = 0 in release() entfernt : Florian
+- 23.03.11 BUG : model/NaiveBayes : sum = 0 abgefangen : Florian
+- 25.03.11 BUG : model/KNearestNeighbors : empty matrix is no longer released : Johannes
+- 25.03.11 NEW : shore/FaceRecFeature : face recognition example : Johannes
+- 29.03.11 CHG : base/IObject : setMetaData(), getMetaData() to automatically forward meta data through pipeline : Johannes
+- 29.03.11 CHG : frame/TheFramework : AddConsumer(),AddProvider(),AddSensor(),AddTransformer : Johannes
+- 29.03.11 NEW : frame/TheFrameworkXMLParser : a xml pipeline parser : Johannes
+- 29.03.11 NEW : tools/xmlpipe : standalone pipeline starter : Johannes
+- 29.03.11 CHG : * : naming convention for create names ssi_<type>_<ClassName>  : Johannes
+
+*** Version 0.6.0 ***
+- 01.04.11 CHG : ioput/api/ApiGenerator : generates api from registered classes : Johannes
+- 01.04.11 CHG : tools/apigen : generates api from dll : Johannes
+- 05.04.11 ADD : tools/ev : added emovoice xml pipeline : Johannes 
+- 11.04.11 ADD : base/IComponent : added interface for pipeline components to share meta data : Johannes 
+- 11.04.11 ADD : base/IChannel : added interface for channel description : Johannes 
+- 12.04.11 CHG : tools/apigen : creates api index : Johannes 
+- 12.04.11 ADD : tools/alivehm : alive heart monitor device : Johannes 
+- 12.04.11 ADD : tools/nexus : nexus-10 device : Johannes 
+- 12.04.11 CHG : base/Factory : create function is passed to dlls : Johannes
+- 14.04.11 CHG : signal/Chain : moved from frame to signal + xml definition : Johannes
+- 27.04.11 CHG : base/IFusion : method added : Florian
+- 27.04.11 CHG : model/SimpleFusion : method added : Florian
+- 27.04.11 CHG : model/RandomFusion : method added : Florian
+- 02.05.11 NEW : signal/MvgAvgVar : filter class added : Johannes
+- 05.05.11 CHG : frame/Transformer : frame/delta size now given as string, either as samples (e.g. "100") or in seconds (e.g. "0.5s") : Johannes
+- 09.05.11 NEW : core/tools/xmledit : a graphical editor to write xml pipelines : Benjamin
+- 09.05.11 CHG : base/IFusion : method added : Florian
+- 28.06.11 NEW : core/tools/xmltrain : command line tool to execute machine learning pipelines : Johannes
+- 28.06.11 CHG : ui/modelui : compatibility with xml pipelines : Johannes
+- 28.06.11 BUG : signal/Functionals : correct inialization of delta : Johannes
+- 28.06.11 CHG : sensor/kinect/OpenNIKinect : calibration can now be loaded from file or memory : Johannes
+- 05.07.11 NEW : tools/iom : IOM finger sensor (wild divine) : Johannes
+- 05.07.11 NEW : signal/[MvgAvgVar,MvgNorm,MvgConDiv,MvgMinMax] : moving/sliding filters : Johannes
+- 07.07.11 BUG : tools/xmledit : removed various bugs related to file saving/closing : Johannes
+- 08.07.11 CHG : frame/TheFrameworkXMLParser : implemented xinput for transformer : Johannes
+- 08.07.11 BUG : shore/ShoreSelector : sample dimension is now correctly inialized configuration via option file is used : Johannes
+- 08.07.11 BUG : artkplus/ARTKPlusSelector : added configuration via option file : Johannes
+- 08.07.11 NEW : pipes/*.pipeline : sample pipelines : Johannes
+
+*** Version 0.7.0 ***
+- 26.07.11 CHG : camera/CamWriter : mirror option : Johannes
+- 29.08.11 NEW : sensor/Kinect : using separate tracker and new openni version
+- 16.09.11 NEW : tools/procomp : wrapper for procomp bio sensor : Johannes
+- 16.09.11 CHG : ioput/FileProvider : changed to work with any Consumer : Johannes
+- 16.09.11 BUG : base/IComponent : default implementation of getMetaData sets size of meta data =0 : Johannes
+- 16.09.11 BUG : signal/Chain : meta data is correctly passed to internal transformers : Johannes
+- 26.09.11 CHG : ioput/WavReader : added scale option to deliver audio stream as float in range [-1..1] : Johannes
+- 29.09.11 NEW : sensor/emotiv : wrapper for emotiv sensor : Johannes
+- 05.10.11 NEW : ioput/file/[FileStreamIn,FileStreamOut] : new file stream wrapper, stores info and data in separate files  : Johannes
+- 05.10.11 CHG : SSI_Cons.h : changed stream file extension from .data to .stream : Johannes
+- 05.10.11 CHG : ioput/file/[File,FileReader,FileWriter,FileTools] : adjusted to support new stream format : Johannes
+- 06.10.11 CHG : base/ISamples : replaced getStreamDim() by getStream() : Johannes
+- 06.10.11 CHG : base/ISamples : removed method next(index) : Johannes
+- 06.10.11 BUG : model/KNearestNeighbors : removed memory leak : Johannes
+- 07.10.11 BUG : base/IProvider : bool return parameter in provide method to signal when data is actually written : Johannes
+- 07.10.11 BUG : [FileReader,WavReader,CamReader] : start providing data only if data is acutally processed : Johannes
+- 07.10.11 NEW : ioput/file/[FileSamplesIn,FileSamplesOut] : new file sample wrapper, stores info and data in separate files  : Johannes
+- 07.10.11 BUG : SSI_Tools : stream array in ssi_sample_create() set to 0 if num=0 : Johannes
+- 25.10.11 NEW : event : new event handling using a common EventBoard to which events can be sent and received by registered listener : Johannes
+- 25.10.11 CHG : frame : exported to dll : Johannes
+- 25.10.11 CHG : TheFramework : receive instance via Factory::GetFramework, Shutdown renamed to Clear : Johannes
+- 25.10.11 CHG : ThePainter : receive instance via Factory::GetPainter, Shutdown renamed to Clear : Johannes
+- 25.10.11 CHG : TheFramework : AddProvider() now takes ISensor and automatically calls setProvider() : Johannes
+- 02.11.11 BUG : emotiv : _ready_to_collect now correctly initialized : Johannes
+- 03.11.11 BUG : sensor/camera/CameraWriter : mirror for channels != 3 : Johannes
+- 11.11.11 CHG : kinect : added scale option and skeleton is displayed in scene image : Johannes
+- 11.11.11 ADD : ioput/window/monitor : new monitor class to output text in window : Johannes
+- 11.11.11 ADD : event/EventMonitor : ouput to monitor window : Johannes
+- 18.11.11 CHG : wiimote : support for WiiRemote Plus : Christoph Stampfer
+- 11.11.11 ADD : event/EventMonitor : ouput to monitor window : Johannes
+- 28.11.11 ADD : ioput/file/FileEvent[In,Out] : class to in/output events : Johannes
+- 28.11.11 ADD : event/EventWriter : eventlistener to output events : Johannes
+- 28.11.11 ADD : signal/FixationTrigger : class to trigger fixations : Johannes
+- 28.11.11 ADD : yarp/YarpEvents : class to output events with yarp : Johannes
+- 30.11.11 ADD : tools/protractor3d : 3d gesture recognizer : Johannes
+- 01.12.11 CHG : graphic/SignalPainter : path drawing : Johannes
+- 01.12.11 CHG : IEventBoardListener : added enter and flush method : Johannes
+- 06.12.11 NEW : tools/eventfusion : n-dim event fusion following the pad-fusion approach : Florian
+- 06.12.11 CHG : sensor/kinect/OpenNIKinect : posture recognition : Johannes
+- 07.12.11 CHG : graphic/PaintHandler : locked access to PaintObject's : Johannes
+- 07.12.11 CHG : ioput/window/Monitor,graphic/Canvas : when window is craeted console is set as parent window : Johannes
+- 08.12.11 CHG : frame/XMLParser : support for event sender/listener : Johannes
+- 09.12.11 CHG : ioput/arff : support for reading arff files : Johannes
+- 14.12.11 ADD : toos/opensmile/OSWrapper : opensmile wrapper to run opensmile scripts : Johannes
+- 19.12.11 BUG : frame/XMLParser : event board is now correctly parsed : Johannes
+- 01.01.12 BUG : mlpxml/MlpXmlTrain : trainer is correctly stored if transformer is used : Johannes
+- 16.01.12 ADD : signal/MvgPeakGate : peak gate with adaptive threshold : Johannes
+- 18.01.12 ADD : tools/asio/AudioAsio : removed bug : Johannes
+- 07.02.12 BUG : model/Trainer : in case of single missing data is automatically applied to stream (train & forward) : Johannes
+
+*** Version 0.8.0 ***
+- 07.02.12 CHG : frame/TheFramework : added sync signal : Johannes
+- 10.02.12 CHG : event/SocketEventWriter : option to stream events in xml format : Johannes
+- 10.02.12 CHG : ioput/xml/FileEventOut : saves events in a single file in xml format : Johannes
+- 13.02.12 CHG : ioput/wav/WavTools : ReadWavFile() flag to convert to floats : Johannes
+- 14.02.12 CHG : kinect/OpenNIKinect : hangin/out option for posture detection : Johannes
+- 17.02.12 CHG : kinect/OpenNIKinect : integration of latest version of the FUBI framework : Johnny
+- 17.02.12 CHG : kinect/OpenNIKinect : support to load recognizer from xml : Johannes
+- 22.02.12 CHG : kinect/OpenNIKinect : changed skeleton data format and added support for rotations : Johnny
+- 22.02.12 CHG : kinect/OpenNIKinect : update to OpenNI 1.5.2.23 : Johnny
+- 22.02.12 ADD : kinect/OpenNIKinect/JointTransfTrigger : filter which outputs 1 when a joint parameter enters a value range : Johnny
+- 23.02.12 CHG : signal/ZeroTrigger : no warning if event is cropped if continued : Johannes
+- 23.02.12 CHG : sensor/OpenNIKinect : xml support for user defined posture combinations : Johannes
+- 29.02.12 CHG : tools/asio/AudioAsio : high cpu workload solved : Johannes
+- 29.02.12 CHG : ioput/WavWriter : support for float input : Johannes
+- 29.02.12 CHG : model/KMeans : new option 'norm' to apply normalization : Johannes
+- 02.03.12 CHG : model/ISAlignStreams : now works for sample lists with more than one frame per sample : Johannes
+- 07.03.12 CHG : SSI_Tools.h : ssi_string2array() now works correctly for delim other than a blank : Johannes
+- 13.03.12 CHG : kinect/OpenNIKinect : names for user defined posture combination were missing : Johannes
+- 13.03.12 CHG : ioput/WavWriter : removed bug for short input : Johannes
+- 22.03.12 ADD : kinect/OpenNIKinect : Fubi 0.2.2 and new recognizers: leg postures in core/include/sensor/kinect/LegPostureRecognizers.xml; JointOrientationRecognizers and lean back/forward/left/right in SampleRecognizers.xml, hand close to arm recognizers : Felix
+- 24.04.12 CHG : replaced old trigger mechanism by event board
+                 added: EventConsumer, ZeroEventSender, ThresEventSender, FixationEventSender, EventAddress
+				 removed: ZeroTrigger, ThresholdTrigger, FixationTrigger, ITrigger, Trigger
+				 changed: TheFramework, TheEventBoard
+				 renamed: IEventSender->setListener => IEventSender->setEventListener
+- 24.04.12 CHG : kinect/OpenNiKinect : postures are sent as empty events with the posture name as event name : Johannes
+- 25.04.12 CHG : kinect/JointTransfTrigger.h : bug removed : Johannes
+- 02.05.12 CHG : event/EventAddress : set methods now add names to address : Johannes
+- 03.05.12 CHG : base/Factory : always loads debug versions of dlls in debug mode : Johannes
+- 07.05.12 ADD : signal/SignalTools : Consume() : Johannes
+- 07.05.12 CHG : ioput/file/FileTriggerWriter: renamed to FileAnnotationWriter, now implements IEventListener interface : Johannes
+- 15.05.12 CHG : model/cspr: moved cspr from tools to model : Johnny
+- 15.05.12 CHG : frame/Consumer : optional trigger input : Johannes
+- 15.05.12 CHG : frame/XMLPipeline : use <consumer><input ...trigger=<pin>/></consumer> to apply trigger in pipeline : Johannes
+- 18.05.12 CHG : ioput/option: added functions to read/write options from/to binary file : Johnny
+- 18.05.12 CHG : model/cspr: saving options to model file : Johnny
+- 18.05.12 BUG : SSI_Tools: added missing type in type2size : Johnny
+- 18.05.12 CHG : sensor/audio/AudioSensor : supports float : Johannes
+- 18.05.12 CHG : model/Classifier : if streams are merged it will be checked for correct sample type/size and number, sample rate may differ, though : Johannes
+- 22.05.12 CHG : model/cspr: [CSPR 0.4.1] converted internal configuration parameters to ssi options format : Johnny
+- 22.05.12 ADD : model: added cspr example model : Johnny
+- 22.05.12 ADD : pipes: added cspr example pipeline with example model and trainer : Johnny
+- 23.05.12 CHG : sensor/OpenNIKinect: if no fubi recognizer is defined, gesture/posture recognition is disabled : Johnny
+- 24.05.12 ADD : sensor/OpenNIKinect: a relative joint for linear movements is now optional, so movements can be measured absolute (usefull for whole body movements); added new xml attribute for joint relations/linear movements/joint orientations: visibility. Default is visible. If set to hidden the recognizer won't be accessible from the outside and can only be used in posturecombinations : Felix
+- 24.05.12 CHG : tools/alglib/AlgLibPCA: principal components analysis : Johannes
+- 24.05.12 CHG : SSI_Tools: added ssi_stream_print() function : Johannes
+- 01.06.12 CHG : ModelTools: added CreateDynamicTestSamples() to generate test samples of dynamic length : Johannes
+- 01.06.12 CHG : tools/torch/TorchHMM: added single option to train single hmm with each state referring to one class, use getStateSequence() to retrieve the state sequence for the last forwarded stream : Johannes
+- 06.06.12 CHG : kinect/Fubi, OpenNIKinect : added option to select skeleton profile : Johannes
+- 06.06.12 ADD : tools/serial : sensor wrapper for devices with serial connection : Johannes
+- 11.06.12 CHG : models/cspr : [CSPR 0.4.2] added cspr feature support to $1; templates are now stored in cspr format : Johnny
+
+*** Version 0.8.1 ***
+- 12.06.12 ADD : base/IMessage : added Interface for handling global logging of messages, warnings and errors : Florian
+- 12.06.12 CHG : SSI_Debug.h : new variable ssimsg of type ssi::IMessage - overwrite to redirect logging : Florian
+- 22.06.12 CHG : tools/nexus/NexusMKII : sensor wrapper for nexus-10 mkII : Johannes
+- 28.06.12 CHG : tools/activemq : activemq wrapper : Florian
+- 28.06.12 CHG : tools/opensmile : laugther detector : Johannes
+- 28.06.12 CHG : tools/dspfilters : dsp filters : Johannes
+
+*** Version 0.1.0 ***
+- 09.09.09 NEW : tools/[ev,torch], added emovoice and torch library : Johannes Wagner
+- 09.09.09 NEW : core/sensor/wii/WiiOptions, class to wrap options of wiimote : Johannes Wagner
+- 09.09.09 BUG : core/dialog/PinAndMediaSelectionDialog.cpp, pins of selected camera were not correctly passed to dialog : Johannes Wagner
+- 09.09.09 CHG : core/sensor/wii/WiiGateway, in case of an invalid handle only a warning instead of an error is given : Johannes Wagner
+- 23.09.09 BUG : core/frame/Chain, sample number of temporary streams not correctly during transform() : Johannes Wagner
+- 23.09.09 CHG : core/model/Recognizer, Recognizer takes now several RecConsumer : Johannes Wagner
+- 24.09.09 CHG : core/model/DLLModelMain, within dll stdout is now redirected to log file 'dllmodel.log' : Johannes Wagner
+- 24.09.09 NEW : SSI_Global.cpp, place to define global variables that are declared as extern in header files : Johannes Wagner
+- 29.09.09 CHG : SSI_Trigger, now two separate interfaces SSI_Trigger and SSI_TriggerListener to clearly distinguish a trigger from a listener : Johannes Wagner
+- 30.09.09 NEW : core/tools/sockspy, tool to spy osc message sent with SSI : Johannes Wagner
+- 01.10.09 CHG : dlls/wiimote, upgrate to  WiiYourself! v1.14 BETA, which is supposed to support MotionPlus, but not reliable yet : Johannes Wagner
+- 01.10.09 CHG : core/model/Classifier, the protected methods init_class_names () and free_class_names () are now declared as public : Johannes Wagner
+- 02.10.09 CHG : core/frame/Transformer, removed parameter sync_interval from constructor as it was actually never used : Johannes Wagner
+- 05.10.09 CHG : core/ioput/file/FileReader, added constructor that takes a ssi_stream as data source : Johannes Wagner
+- 05.10.09 CHG : core/ioput/socket/Socket, simplified interface : Johannes Wagner
+- 06.10.09 CHG : core/ioput/socket/SocketOsc, before an osc message is sent, we make sure that the internal buffer is large enough to fit it : Johannes Wagner
+- 07.10.09 CHG : core/ioput/wav/WavReader, provider->init() immidiatelly called in constructor instead of enter() method : Johannes Wagner
+- 07.10.09 CHG : core/ioput/avi/AviReader, provider->init() immidiatelly called in constructor instead of enter() method : Johannes Wagner
+- 07.10.09 NEW : core/graphic/VideoPlotter, a consumer for video plotting : Johannes Wagner
+- 08.10.09 CHG : core/graphic/PaintSignal, new method setBackColor() to change background color : Johannes Wagner
+- 08.10.09 NEW : tools/eye, added eye tracker library : Johannes Wagner
+- 08.10.09 BUG : tools/eye/EyeSensor, memory leak : Johannes Wagner
+- 08.10.09 NEW : tools/shore, added shore library : Johannes Wagner
+- 08.10.09 CHG : core/sensor/cam/CamTools, added method FlipImage() : Johannes Wagner
+- 08.10.09 NEW : tools/bio, added bio library, which includes support for nexus and ahm sensor : Johannes Wagner
+- 15.10.09 NEW : tools/shore/ShorePainter, added painter to visualize faces : Johannes Wagner
+- 27.10.09 NEW : core/graphic/PaintVideo, removed dimension parameter : Johannes Wagner
+- 28.10.09 CHG : core/model/Recognizer, DefaultFileRecognizer now expects a FILE pointer : Johannes Wagner
+- 28.10.09 NEW : core/model/Dollar$1, Dollar$1 algorithm for gesture recognition based on 2D data : Johannes Wagner
+- 28.10.09 NEW : core/signal/Selector, Filter that selects certain dimension of the input signal and blocks the remaining : Johannes Wagner
+- 29.10.09 NEW : tools/artk+, integration of ARToolkit+ for marker tracking : Johannes Wagner
+- 29.10.09 NEW : tools/sapi, integration of Microsoft SAPI 5.1 for speech recognition (preliminary) : Johannes Wagner
+- 02.11.09 REM : core/model/Recorder, removed deprecated class Recorder : Johannes Wagner
+- 02.11.09 CHG : core/ioput/socket, renamed Socket to SocketUdp, which now derives from interface Socket : Johannes Wagner
+- 02.11.09 NEW : core/ioput/socket/SocketTcp, tcp socket implementation, which derives from interface Socket : Johannes Wagner
+- 03.11.09 CHG : core/SSI_Transformer, sample_number_delta replaced by info struct containing delta/frame size and timestamp : Johannes Wagner
+- 04.11.09 CHG : core/model/Annotation, entries are now ordered according to their start time : Johannes Wagner
+- 04.11.09 REM : core/model/Trainer : Johannes Wagner
+- 04.11.09 CHG : core/model/Classifier, renamed to Trainer : Johannes Wagner
+- 04.11.09 CHG : core/model/Model, simplified parameters of forward() function : Johannes Wagner
+- 13.11.09 NEW : tools/artk+, new class ARTKPlusSelector : Johannes Wagner
+- 13.11.09 CHG : core/ioput/model/Recognizer, new default socket consumer class : Johannes Wagner
+- 13.11.09 CHG : core/signal/Cast, now two multiplication factors (before and after cast) : Johannes Wagner
+- 26.11.09 NEW : sensor/cam/CamScreenSensor, screen capture sensor : Johannes Wagner
+- 27.11.09 NEW : docs/tutorial, a tutorial on how to use SSI : Johannes Wagner
+- 27.11.09 BUG : core/ioput/avi/AviReader, sample bytes of output stream were not correctly calculated : Johannes Wagner
+
+*** Version 0.2.0 ***
+- 01.12.09 NEW : core/ioput/option/[tinystr,tinyxml], included TinyXML, a simple, small, C++ XML parser : Johannes Wagner
+- 01.12.09 CHG : core/ioput/option/OptionList, read/write options from/to xml file : Johannes
+- 05.12.09 BUG : core/sensor/cam/CamScreenSensor, framerate is now correctly set in avi file : Johannes
+- 07.12.09 NEW : tools/eye/EyePainter, visualizes eye gaze : Johannes
+- 07.12.09 CHG : core/sensor/mouse/MouseSensor, options to scale/flip cursor : Johannes
+- 07.12.09 CHG : core/SSI_Debug, log messages are now printed on ssiout instead of stdout : Johannes
+- 09.12.09 NEW : tools/mui, user interface to train data-driven models (ModelUI) : Johannes
+- 09.12.09 NEW : tools/mui-dll, library for building dlls used by ModelUI : Johannes
+- 20.12.09 NEW : tools/eye/Fixation, algorithm to detect fixations : Johannes
+- 22.12.09 NEW : core/frame/ITransformable, implemted by Provider and Transformer : Benjamin
+- 22.12.09 NEW : core/sensor/wii/IWiiMote.h, new dll interface for wiimote : Benjamin
+- 19.01.10 CHG : tools/ev, added normalization to naive bayes : Thurid
+- 19.01.10 CHG : core/model/Recognizer:DefaultSocketOscConsumer, added option to send probabilities for alle classes : Johannes
+- 21.01.10 BUG : core/dialog/CamSelectionDialog, comboBoxFriendlyName_SelectedIndexChanged checks for valid index : Johannes
+- 28.01.10 NEW : core/SSI_Cons, enum ssi_type_t : Johannes
+- 28.01.10 CHG : core/SSI_Tools, new fields type (ssi_type_t) and time (ssi_time_t) : Johannes
+- 28.01.10 CHG : core/frame/*, support for sample type (ssi_type_t) : Johannes
+- 28.01.10 NEW : core/ioput/file/File, enum File::VERSION : Johannes
+- 28.01.10 CHG : core/ioput/file/FileTools, new stream file version V1 including sample type : Johannes
+- 28.01.10 NEW : core/ioput/file/FileTools, ReadStreamFile/WriteStreamFile to read/write stream files in ssi stream format : Johannes
+- 28.01.10 NEW : core/ioput/wav/WavTools, functions to write/read wav files : Johannes
+- 28.01.10 CHG : core/ioput/wav/WavReader, moved static functions to WavTools : Johannes
+- 29.01.10 CHG : core/ioput/avi/AviReader, moved static functions to AviTools : Johannes
+- 29.01.10 CHG : tools/sockspy, moved to core/build/tools/sockspy : Johannes
+- 29.01.10 CHG : core/build/test/*, clean up : Johannes
+- 01.02.10 NEW : tools/tools.sln, combines the tools projects in one solution : Johannes
+- 01.02.10 NEW : core/build/tools/convert, converter for ssi file format : Johannes
+- 01.02.10 CHG : ui/viewui, support for ssi file format V1 : Johannes
+- 01.02.10 CHG : ui/viewui, support for wav files : Johannes
+- 01.02.10 CHG : build/tools/convert, file converter (V0->VX,VX<->wav): Johannes
+- 02.02.10 CHG : ui/viewui, playback for wav files and volume control : Johannes
+- 09.02.10 NEW : ui/tools, signal resampling function for ui : Johannes
+- 09.02.10 CHG : core/model/DLL*, removed since replaced by tools/mui-dll : Johannes
+- 09.02.10 CHG : tools/ev/*, update to tools/mui-dll : Johannes
+- 09.02.10 CHG : tools/ev/*, included sample type to ev wrapper : Johannes
+- 10.02.10 BUG : tools/ev/EmoVoiceClass, calling release() on loaded model no longer throws debug assertion: Johannes
+- 10.02.10 BUG : tools/ev/ev_svm, moved svm_model from ev_svm.cpp to ev_svm.h : Johannes
+- 10.02.10 NEW : core/SSI_Object.h, base class of SSI_Provider, SSI_Transformer, SSI_Consumer and SSI_Trigger : Johannes
+- 10.02.10 CHG : *, changed copyright to 2010 : Johannes
+- 15.02.10 BUG : ui/tools/UITools, step size is now correctly calculated : Johannes
+- 15.02.10 CHG : ui/vieui/dll/SignalTrack, improved audio plot : Johannes
+- 15.02.10 BUG : ui/vieui/dll/SignalTrack, audio plot is correctly placed in canvas : Johannes
+- 15.02.10 BUG : ui/vieui/dll/*, deferred update of gridsplitter and scrollview to improve performance : Johannes
+- 15.02.10 BUG : ui/vieui/dll/ViewHandler, when user zooms view now correctly centers around cursor position : Johannes
+- 17.02.10 NEW : core/sensor/bluetooth/*, tools to find and connect bluetooth devices : Benjamin
+- 17.02.10 NEW : core/thread/ExEvent*, advanced event class : Benjamin
+- 21.02.10 BUG : core/signal/Normalize, corrected the loop : Johannes
+- 24.02.10 NEW : core/sensor/cam/CamOptions.h, wrapper for camera options : Johannes
+- 24.02.10 NEW : core/sensor/cam/CamTools.h, new function StringToGUID() : Johannes
+- 01.03.10 CHG : ui/viewui/dll/ViewHandler, support for wmv files : Johannes
+- 01.03.10 CHG : core/ioput/options/tinyxml*, moved to ioput/xml/ : Johannes
+- 01.03.10 NEW : core/SSI_Model.h, SSI_Fusion.h, SSI_Options.h, SSI_Samples, new abstact interfaces for model and fusion algorithms : Johannes
+- 01.03.10 CHG : core/model/Trainer, several changes to adjust to new interfaces : Johannes
+- 01.03.10 NEW : core/model/FusionSimple, a simple decision fusion algorithm based on MAX/SUM/PRODUCT rules : Johannes
+- 01.03.10 NEW : core/model/Factory, factory to create SSI_Model and SSI_Fusion objects : Johannes
+- 01.03.10 CHG : core/SSI_Cons.h, renamed [ssi_stream,ssi_sample] to [ssi_stream_t,ssi_sample_t] : Johannes
+- 01.03.10 NEW : core/SSI_Cons.h, new type ssi_option_t : Johannes
+- 04.03.10 NEW : tools/ev/wrapper, EmoVoiceClass replaced by EmoVoiceBayes and EmoVoiceSVM : Johannes
+- 04.03.10 NEW : tools/torch/Torch*, update to new SSI_Model interface : Johannes
+- 06.03.10 CHG : core/ioput/file/FileTools, removed unsafe functions RemoveFileType() and ChangeFileType() : Johannes
+- 06.03.10 NEW : core/ioput/file/FilePath, filepath parser : Johannes
+- 06.03.10 NEW : core/SSI_Consh, introduction of standard file type names SSI_FILE_TYPE_* : Johannes
+- 06.03.10 CHG : tool/ev, update to new naming convention : Johannes
+
+*** Version 0.3.0 ***
+- 10.03.10 NEW : docs/samples/browser, browser sample application : Johannes
+- 11.03.10 CHG : core/model/Factory, moved to base/Factory and included function to import objects from a dll : Johannes
+- 15.03.10 NEW : core/build/test/base, example how to use Factory and load object from dll : Johannes
+- 22.03.10 NEW : ui/fusion/pafui/*, PA fusion gui : Johannes
+- 22.03.10 NEW : tools/ocv/*, opencv wrapper : Johannes
+- 23.03.10 CHG : core/ioput/file/File, added an open() and close() method : Johannes
+- 23.03.10 CHG : core/ioput/file/[FileWriter,FileReader], factory support : Johannes
+- 25.03.10 CHG : core/ioput/wav/[WavWriter,WavReader], factory support : Johannes
+- 25.03.10 CHG : core/ioput/avi/[AviWriter,AviReader], factory support : Johannes
+- 25.03.10 REM : core/graphic/[PaintData,Plotter], replaced by SignalPlotter and VideoPlotter : Johannes
+- 25.03.10 CHG : core/graphic/[SignaPlotter,VideoPlotter], renamed to [SignalPainter,VideoPainter] : Johannes
+- 25.03.10 CHG : core/ioput/avi/[SignalPainter,VideoPainter], factory support : Johannes
+- 25.03.10 CHG : core/ioput/socket/[SocketWriter,SocketReader], factory support : Johannes
+- 25.03.10 REM : core/ioput/socket/[SocketOscWriter,SocketOscReader], replaced by [SocketWriter,SocketReader] : Johannes
+- 25.03.10 CHG : core/base/Factory, loading multiple objects from same dll : Johannes
+- 25.03.10 CHG : tools/torch/*, replaced static lib with dll : Johannes
+- 06.04.10 CHG : tools/artk+/*, replaced static lib with dll : Johannes
+- 06.04.10 NEW : tool/mat/*, matlab file wrapper : Johannes
+- 06.04.10 NEW : tool/fusion/*, ssifusion.dll added : Florian
+- 07.04.10 NEW : tool/fusion/*, boosting added : Florian
+- 07.04.10 CHG : core/SSI_* moved to core/base and renamed to I* : Johannes
+- 07.04.10 CHG : tool/mat, removed : Johannes
+- 07.04.10 CHG : core/frame/TheFramework, auto threading on by default : Johannes
+- 09.04.10 CHG : tools/ev/EmoVoiceSVM, update LIBSVM to current release (Version 2.91, April 2010) : Johannes
+- 09.04.10 CHG : tools/torch/TorchSVM, added svm : Johannes
+- 11.04.10 CHG : core/model/Trainer, stream can be set on which single model will be trained : Johannes
+- 12.04.10 CHG : tool/fusion/*, updated : Florian
+- 09.04.10 CHG : tools/torch/TorchSVM, added svm : Johannes
+- 11.04.10 CHG : core/model/Trainer, stream can be set on which single model will be trained : Johannes
+- 12.04.10 CHG : core/base/[IFusion,IModel], added isTrained() method : Johannes
+- 12.04.10 CHG : core/model/Evaluation, added accuracy to confusion matrix : Johannes
+- 13.04.10 CHG : core/dlls/wiimote, wrapped wiimote sensor in dll : Johannes
+- 13.04.10 NEW : tool/fusion/*, added enhanced CS version : Florian
+- 13.04.10 CHG : core/dlls/wiimote, created dll interfaces for all IObjects : Johannes
+- 14.04.10 CHG : tools/mat, defined system variables $MATLAB_INCLUDE and $MATLAB_LIBS : Johannes
+- 12.04.10 CHG : core/model/evaluation, new method get_conf_mat() : Florian
+- 12.04.10 CHG : core/base/ISampels, new abstract method setHotClass() : Johannes
+
+*** Version 0.4.0 ***
+- 30.04.10 BUG : core/model/Annotation, entry_compare now returns false if entries are equal : Johannes
+- 30.04.10 BUG : core/signal/Functionals, _file pointer now initialized with 0 : Johannes
+- 30.04.10 BUG : core/model/Recognizer, addHandler now properly increments _n_handler : Johannes
+- 30.04.10 BUG : core/base/ISamples, operator[] replaced by get() : Johannes
+- 02.05.10 CHG : base/ISamples, removed setHotClass() : Johannes
+- 02.05.10 CHG : model/SampleList, removed setHotClass() : Johannes
+- 02.05.10 NEW : model/[ISHotClass,ISSelectDim,ISTransform], added wrapper classes for ISamples : Johannes
+- 03.05.10 CHG : model/ISSelectDim, setSelection expects now a const array with indices : Johannes
+- 03.05.10 CHG : model/ISSelectDim, indices are sorted before offsets are calculated : Johannes
+- 03.05.10 CHG : model/[ISSelectDim, ISTransform], found memory leaks : Johannes
+- 05.05.10 NEW : model/[ISSelectSample] added : Florian
+- 03.05.10 CHG : model/[ISSelectDim, ISTransform], found memory leaks : Johannes
+- 05.05.10 NEW : model/[libsvm-2.91,SVM], included libsvm-2.91 to ssimodel[d].dll : Johannes
+- 05.05.10 NEW : tools/mat/MatlabSamples, wrapper class to use samples from matlab : Johannes
+- 06.05.10 NEW : model/[ISSelectClass] added : Florian
+- 05.05.10 NEW : tools/mat/MatlabSamples, wrapper class to use samples from matlab : Johannes
+- 05.05.10 NEW : model/NaiveBayes, included Naive Bayes Classifier to ssimodel[d].dll : Johannes
+- 06.05.10 BUG : model/ISSelectClass, getStreamDim () correctly returns stream size : Johannes
+- 06.05.10 BUG : model/[ISHotClass,ISSelectDim,ISSelectClass], get() returns 0 if index out of range : Johannes
+- 07.05.10 BUG : model/Evaluation, added counter for unclassified samples : Johannes
+- 07.05.10 BUG : base/IFusion, getModelNumber() : Florian
+- 07.05.10 BUG : model/ISSelectSample, release() not called in destructor: Johannes
+- 07.05.10 CHG : base/IOptions, getSize () : Johannes
+- 07.05.10 CHG : base/sensor/CamSensor, GetCurrentSampleInStream and CamDeviceName now virtual : Johannes
+- 14.05.10 CHG : base/ioput/FileTools, added method GetDirsFromDir() : Johannes
+- 14.05.10 CHG : base/ioput/FileTools, added method GetDirsFromDir() : Johannes
+- 17.05.10 NEW : model/[ISSelectUser] added : Florian
+- 14.05.10 CHG : base/sensor/UAProxyForceGrabber, GrabFrame() returns E_PENDING if timestamp of current frame has not changed compared to previous frame : Johannes
+- 14.05.10 CHG : base/sensor/CamReader, added wait() method to stop execution of calling thread until the complete video file has been processed : Johannes
+- 17.05.10 NEW : base/model/ModelTools, added LoadSampleList (SampleList &samples, const ssi_char_t *file_name, Annotation &annotation, ssi_char_t *user_name) : Johannes
+- 17.05.10 BUG : base/model/Annotation, removed memory leak : Johannes
+- 17.05.10 NEW : base/model/ISMergeStrms, merge streams of several sample lists : Johannes
+- 18.05.10 NEW : base/model/Evaluation, added method for leave one user out : Florian
+- 18.05.10 NEW : base/base/ISelection, interface for feature selection : Johannes
+- 18.05.10 NEW : base/model/Rank, rank feature selection : Johannes
+- 18.05.10 NEW : base/model/Relief, relief feature selection : Johannes
+- 19.05.10 NEW : model/[ISAlignStrms] added : Florian
+- 18.05.10 NEW : base/model/Relief, relief feature selection : Johannes
+- 18.05.10 NEW : base/signal/FFTfeat, fft feature : Johannes
+- 18.05.10 BUG : base/model/Dollar$1, is now trained on correct stream : Johannes
+- 18.05.10 CHG : base/model/Dollar$1, added confidence value : Johannes
+- 18.05.10 BUG : base/model/Relief, number of selected features now correctly calculated : Johannes
+- 20.05.10 NEW : base/model/Selection, feature selection helper class : Johannes
+- 20.05.10 CHG : tools/ocv/*, dll interface : Johannes
+- 21.05.10 CHG : model/SVM, enhanced memory management : Johannes
+- 21.05.10 CHG : model/Trainer, removed warning if forward() fails : Johannes
+- 21.05.10 NEW : model/ISMissingData, ignores samples with missing data : Johannes
+- 21.05.10 CHG : base/ISamples, added hasMissingData() : Johannes
+- 21.05.10 CHG : model/SimpleFusion, handles missing data : Johannes
+- 24.05.10 CHG : SSI_LeakWatcher, smaller changes : Johannes
+- 24.05.10 CHG : base/Factory, new method ClearObjects() to delete all created objects, but keep registered classes : Johannes
+- 26.05.10 CHG : model/Trainer, added getName() and getInfo() : Johannes
+- 26.05.10 CHG : tools/ev/EmoVoiceFeat, added support for version 2.0 : Johannes
+- 26.05.10 CHG : model/ISAlignStrms, added support for missing data : Johannes
+- 29.05.10 CHG : ioput/file/FileTools, added flag to ignore hidden folders to ReadDirsFromDir() method : Johannes
+- 29.05.10 BUG : signal/MatrixOps, Print() : Johannes
+- 29.05.10 CHG : SSI_Tools, added ssi_template2type : Johannes
+- 30.05.10 BUG : frame/TheFramework, call reset() on buffers before framework is started : Johannes
+- 30.05.10 BUG : model/Dollar$1, removed memory leak : Johannes
+- 30.05.10 BUG : signal/ZeroTrigger, options now saved to file : Johannes
+- 31.05.10 NEW : tools/fusion, CascadingSpecialists for Missing Data : Florian
+- 31.05.10 BUG : model/ISSelectClass, class names : Florian
+- 01.06.10 NEW : model/FloatingSearch, floating feature search (SFS, SBS, PLUS-L-MINUS-R, SFFS) : Johannes
+- 01.06.10 NEW : model/Selection, smaller changes : Johannes
+- 01.06.10 ADD : SSI_DEBUG, ssi_tic(),ssi_toc() and ssi_toc_print() to measure execution time : Johannes
+- 01.06.10 BUG : model/Trainer, in Load() function : Johannes
+- 01.06.10 BUG : ioput/WavReader, read data of a single channel only : Johannes
+- 02.06.10 BUG : sensor/camera/CamWriter, name compression filter was not correctly set : Johannes
+- 02.06.10 BUG : sensor/camera/CamScreen, included resize option : Johannes
+- 02.06.10 ADD : model/ISSplitStream, wrapper to split a stream in several ones : Johannes
+- 07.06.10 BUG : model/Selection, scores are now correctly sorted : Johannes
+- 07.06.10 CHG : model/Selection, new construtor that takes a pre-selection : Johannes
+- 07.06.10 BUG : model/ISAlignStreams, num in output stream now correctly set : Johannes
+- 08.06.10 CHG : model/ISSelectDim, flag to sort dimensions : Johannes
+- 08.06.10 CHG : model/IS*, samples now passed as pointers to avoid call of copy constructor : Johannes
+- 09.06.10 BUG : signal/Selector, list with offsets is now correctly calculated : Johannes
+- 09.06.10 CHG : signal/[Derivate,Integral,Selector], Options::add() replaced by Options::set() method : Johannes
+- 14.06.10 ADD : tools/asio, support for audio asio : Benjamin
+- 21.06.10 ADD : tools/asio, channel selection : Johannes
+- 21.06.10 ADD : tools/asio, device selection via dialog : Johannes
+- 21.06.10 ADD : sensor/audio/AudioSensor, device selection via dialog : Johannes
+- 21.06.10 ADD : base/[IModel,IFusion], model/Trainer, added support for meta information : Johannes
+- 03.07.10 ADD : tools/shore/ShoreShake, added head shake/nod detector : Johannes
+- 23.06.10 BUG : model/Annotation, elements now correctly sorted : Johannes
+- 23.06.10 BUG : model/ISSelectUser, supports inverted user list : Johannes
+- 07.07.10 BUG : graphic/SignalPainter, setMove(), top and left were swapped : Johannes
+- 07.07.10 NEW : sensor/wiimote/WiiSensor, added support for infrared tracking : Johannes
+- 16.08.10 NEW : sensor/wiimote/WiiBBoard, added support for balance board : Johannes
+- 16.08.10 NEW : model/FScore, added feature selection based on f-score selection : Johannes
+- 17.08.10 NEW : tools/eye, eye tracker and fixation finder : Johannes
+- 16.06.10 ADD : model/ISMergeSample, merge samples from different lists to a single one : Johannes
+- 21.10.10 BUG : frame/Sensor, does not provide data if framework is still in idle mode : Johannes
+- 21.10.10 CHG : ui/viewui, video playback using MediaKit as workaround for bug in MediaElement on Windows 7 : Johannes
+- 25.10.10 CHG : signal/SNRatio, now compatible with float input : Johannes
+- 25.10.10 BUG : audio/AudioSensor, unsigned char now correctly supported : Johannes
+- 28.10.10 CHG : graphic/SignalPainter, new paint type for plotting audio signals : Johannes
+- 28.10.10 NEW : signal/[Operator0,Operator1], new filter to apply simple operators : Johannes
+- 28.10.10 CHG : signal/ZeroTrigger, support for multiple dimensions : Johannes
+- 28.10.10 NEW : signal/ThresholdTrigger, threshold trigger : Johannes
+- 08.11.10 BUG : model/Model, fixed a bug in TransformSampleList() : Johannes
+- 08.11.10 BUG : model/SampleList, fixed a bug in clear() : Johannes
+- 11.11.10 BUG : model/FloatingSearch, inclusion(): score of ignored features is set to -FLT_MAX instead of 0 : Johannes
+- 16.11.10 BUG : sensor/audio/AudioSensor, Start(): device selection dialog is now displayed during connect() : Johannes
+- 18.11.10 BUG : file/FileTools, [Read,Write]SampleHeader() works now for ASCII files : Johannes
+- 25.11.10 NEW : sensor/kinect, basic support for Microsoft Kinect : Felix
+- 26.11.10 CHG : sensor/kinect, added depth image providing, made image providing more stable : Felix
+- 30.11.10 NEW : sensor/kinect, added providers for the nearest point in the depth image, graphic/VideoPainter, added option for mirroring the video : Felix
+- 30.11.10 CHG : base/Factory, ssiout can be passed to RegisterDLL function to allow global logging : Johannes
+- 30.11.10 NEW : tools/mlp, added c# wrapper for machine learning pipeline : Johannes
+- 03.12.10 CHG : sensor/kinect, updated Kinect to new version ported by Zephod --> much more stable and more functions (not used yet). : Felix
+- 06.12.10 NEW : ui/[recordui,selectui,trainui,viewui,modelui], new gui tool for recording and model training : Johannes
+- 06.12.10 NEW : tools/ev/dlls/mlpev, emovoice pipeline : Johannes
+- 06.12.10 NEW : docs/ui/modelui, documentation for SSI/ModelUI : Johannes
+- 07.12.10 NEW : tools/wiigle/, wiigle clone : Johannes
+- 15.12.10 NEW : tools/nuance/, nuance wrapper : Johannes
+- 16.12.10 NEW : 64 bit support for all libraries except opencv and kinect : Johannes
+
+*** Version 0.5.0 ***
+- 23.12.10 NEW : tools/alglib/Linreg, linear regression model : Johannes
+- 03.01.11 CHG : sensor/audio/AudioOut, 64-bit support : Johannes
+- 03.01.11 CHG : core/tools/socketspy, non-osc support : Johannes
+- 10.01.11 CHG : model/NaiveBayes, option to turn of use of prior probabilites in algorithm : Johannes
+- 10.01.11 NEW : model/ISReClass, allows one to change the class ids of a sample list : Johannes
+- 10.01.11 NEW : ioput/WavProvider, allows best-effort extraction of audio streams : Johannes
+- 13.01.11 CHG : model/Evaluation, classification result for each is stored : Johannes
+- 19.01.11 NEW : model/Evaluation2Latex, export evaluation results to latex table : Johannes
+- 19.01.11 NEW : tools/fusion/FeatureFusion, feature fusion : Johannes
+- 19.01.11 NEW : model/Annotation, new method addLabelName() : Johannes
+- 19.01.11 CHG : ui/pafui, replace Ventuz.OSC.dll with Bespoke OSC Library : Johannes
+- 19.01.11 CHG : model/ISHotClass, several classes can be combined to one hot class : Johannes
+- 19.01.11 CHG : model/FloatingSearch, option to switch evaluation strategy between classwise and accuracy : Johannes
+- 28.01.11 CHG : model/sensor/kinect, exchanged old OpenKinect driver with new OpenNI : Felix
+- 07.02.11 NEW : build/test/serialize, project to test serialization between 32 and 64 bit systems : Johannes
+- 07.02.11 BUG : ioput/file/FileBinary, removed use of size_t in readLine() and writeLine() : Johannes
+- 08.02.11 BUG : ioput/option/OptionList, solved problem when reading empty character : Johannes
+- 23.02.11 NEW : model/FloatingCFS, correlation based feature selection : Johannes
+- 23.02.11 CHG : model/[Trainer,Evaluation], training/evaluation with feature selection : Johannes
+- 23.02.11 CHG : model/Trainer, in trainer file relative paths to models are used : Johannes
+- 23.02.11 NEW : tools/mlp/MLPCollect, helper class to collect samples : Johannes
+- 23.02.11 NEW : tools/mlp/MLP, info file is stored including model, signal, annotation and paths to samples + possibility to reload samples from info file: Johannes
+- 23.02.11 CHG : tools/mlp/MLP, training/evaluation with feature selection : Johannes
+- 24.02.11 CHG : tools/mlp/MLP, added support for video : Johannes
+- 24.02.11 CHG : sensor/kinect, added skeleton provider : Johannes
+- 28.02.11 CHG : ui/modelui, new tab panel for renaming annotation labels : Johannes
+- 02.03.11 ADD : tools/kigle : gesture learning pipeline for the kinect : Johannes
+- 02.03.11 ADD : model/FindNN : helper class to find k-nearest-neighbors : Johannes
+- 02.03.11 ADD : model/KNearestNeighbors : implementation of k-nearest-neighbors classifier : Johannes
+- 02.03.11 ADD : model/ISOverSample : wrapper for ISamples to oversample minority classes : Johannes
+- 07.03.11 ADD : model/ISUnderSample : wrapper for ISamples to undersample majority classes : Johannes
+- 07.03.11 ADD : r250 : random number generator, replaces rand() : Johannes
+- 11.03.11 ADD : model/ISNorm : wrapper for ISamples to normalize samples : Johannes
+- 15.03.11 ADD : model/KMeans : kmeans and kmeans++ : Johannes
+- 21.03.11 ADD : model/ISDuplStrms : wrapper for ISamples to duplicate streams : Johannes
+- 22.03.11 BUG : model/Rank : *model = 0 in release() entfernt : Florian
+- 23.03.11 BUG : model/NaiveBayes : sum = 0 abgefangen : Florian
+- 25.03.11 BUG : model/KNearestNeighbors : empty matrix is no longer released : Johannes
+- 25.03.11 NEW : shore/FaceRecFeature : face recognition example : Johannes
+- 29.03.11 CHG : base/IObject : setMetaData(), getMetaData() to automatically forward meta data through pipeline : Johannes
+- 29.03.11 CHG : frame/TheFramework : AddConsumer(),AddProvider(),AddSensor(),AddTransformer : Johannes
+- 29.03.11 NEW : frame/TheFrameworkXMLParser : a xml pipeline parser : Johannes
+- 29.03.11 NEW : tools/xmlpipe : standalone pipeline starter : Johannes
+- 29.03.11 CHG : * : naming convention for create names ssi_<type>_<ClassName>  : Johannes
+
+*** Version 0.6.0 ***
+- 01.04.11 CHG : ioput/api/ApiGenerator : generates api from registered classes : Johannes
+- 01.04.11 CHG : tools/apigen : generates api from dll : Johannes
+- 05.04.11 ADD : tools/ev : added emovoice xml pipeline : Johannes 
+- 11.04.11 ADD : base/IComponent : added interface for pipeline components to share meta data : Johannes 
+- 11.04.11 ADD : base/IChannel : added interface for channel description : Johannes 
+- 12.04.11 CHG : tools/apigen : creates api index : Johannes 
+- 12.04.11 ADD : tools/alivehm : alive heart monitor device : Johannes 
+- 12.04.11 ADD : tools/nexus : nexus-10 device : Johannes 
+- 12.04.11 CHG : base/Factory : create function is passed to dlls : Johannes
+- 14.04.11 CHG : signal/Chain : moved from frame to signal + xml definition : Johannes
+- 27.04.11 CHG : base/IFusion : method added : Florian
+- 27.04.11 CHG : model/SimpleFusion : method added : Florian
+- 27.04.11 CHG : model/RandomFusion : method added : Florian
+- 02.05.11 NEW : signal/MvgAvgVar : filter class added : Johannes
+- 05.05.11 CHG : frame/Transformer : frame/delta size now given as string, either as samples (e.g. "100") or in seconds (e.g. "0.5s") : Johannes
+- 09.05.11 NEW : core/tools/xmledit : a graphical editor to write xml pipelines : Benjamin
+- 09.05.11 CHG : base/IFusion : method added : Florian
+- 28.06.11 NEW : core/tools/xmltrain : command line tool to execute machine learning pipelines : Johannes
+- 28.06.11 CHG : ui/modelui : compatibility with xml pipelines : Johannes
+- 28.06.11 BUG : signal/Functionals : correct inialization of delta : Johannes
+- 28.06.11 CHG : sensor/kinect/OpenNIKinect : calibration can now be loaded from file or memory : Johannes
+- 05.07.11 NEW : tools/iom : IOM finger sensor (wild divine) : Johannes
+- 05.07.11 NEW : signal/[MvgAvgVar,MvgNorm,MvgConDiv,MvgMinMax] : moving/sliding filters : Johannes
+- 07.07.11 BUG : tools/xmledit : removed various bugs related to file saving/closing : Johannes
+- 08.07.11 CHG : frame/TheFrameworkXMLParser : implemented xinput for transformer : Johannes
+- 08.07.11 BUG : shore/ShoreSelector : sample dimension is now correctly inialized configuration via option file is used : Johannes
+- 08.07.11 BUG : artkplus/ARTKPlusSelector : added configuration via option file : Johannes
+- 08.07.11 NEW : pipes/*.pipeline : sample pipelines : Johannes
+
+*** Version 0.7.0 ***
+- 26.07.11 CHG : camera/CamWriter : mirror option : Johannes
+- 29.08.11 NEW : sensor/Kinect : using separate tracker and new openni version
+- 16.09.11 NEW : tools/procomp : wrapper for procomp bio sensor : Johannes
+- 16.09.11 CHG : ioput/FileProvider : changed to work with any Consumer : Johannes
+- 16.09.11 BUG : base/IComponent : default implementation of getMetaData sets size of meta data =0 : Johannes
+- 16.09.11 BUG : signal/Chain : meta data is correctly passed to internal transformers : Johannes
+- 26.09.11 CHG : ioput/WavReader : added scale option to deliver audio stream as float in range [-1..1] : Johannes
+- 29.09.11 NEW : sensor/emotiv : wrapper for emotiv sensor : Johannes
+- 05.10.11 NEW : ioput/file/[FileStreamIn,FileStreamOut] : new file stream wrapper, stores info and data in separate files  : Johannes
+- 05.10.11 CHG : SSI_Cons.h : changed stream file extension from .data to .stream : Johannes
+- 05.10.11 CHG : ioput/file/[File,FileReader,FileWriter,FileTools] : adjusted to support new stream format : Johannes
+- 06.10.11 CHG : base/ISamples : replaced getStreamDim() by getStream() : Johannes
+- 06.10.11 CHG : base/ISamples : removed method next(index) : Johannes
+- 06.10.11 BUG : model/KNearestNeighbors : removed memory leak : Johannes
+- 07.10.11 BUG : base/IProvider : bool return parameter in provide method to signal when data is actually written : Johannes
+- 07.10.11 BUG : [FileReader,WavReader,CamReader] : start providing data only if data is acutally processed : Johannes
+- 07.10.11 NEW : ioput/file/[FileSamplesIn,FileSamplesOut] : new file sample wrapper, stores info and data in separate files  : Johannes
+- 07.10.11 BUG : SSI_Tools : stream array in ssi_sample_create() set to 0 if num=0 : Johannes
+- 25.10.11 NEW : event : new event handling using a common EventBoard to which events can be sent and received by registered listener : Johannes
+- 25.10.11 CHG : frame : exported to dll : Johannes
+- 25.10.11 CHG : TheFramework : receive instance via Factory::GetFramework, Shutdown renamed to Clear : Johannes
+- 25.10.11 CHG : ThePainter : receive instance via Factory::GetPainter, Shutdown renamed to Clear : Johannes
+- 25.10.11 CHG : TheFramework : AddProvider() now takes ISensor and automatically calls setProvider() : Johannes
+- 02.11.11 BUG : emotiv : _ready_to_collect now correctly initialized : Johannes
+- 03.11.11 BUG : sensor/camera/CameraWriter : mirror for channels != 3 : Johannes
+- 11.11.11 CHG : kinect : added scale option and skeleton is displayed in scene image : Johannes
+- 11.11.11 ADD : ioput/window/monitor : new monitor class to output text in window : Johannes
+- 11.11.11 ADD : event/EventMonitor : ouput to monitor window : Johannes
+- 18.11.11 CHG : wiimote : support for WiiRemote Plus : Christoph Stampfer
+- 11.11.11 ADD : event/EventMonitor : ouput to monitor window : Johannes
+- 28.11.11 ADD : ioput/file/FileEvent[In,Out] : class to in/output events : Johannes
+- 28.11.11 ADD : event/EventWriter : eventlistener to output events : Johannes
+- 28.11.11 ADD : signal/FixationTrigger : class to trigger fixations : Johannes
+- 28.11.11 ADD : yarp/YarpEvents : class to output events with yarp : Johannes
+- 30.11.11 ADD : tools/protractor3d : 3d gesture recognizer : Johannes
+- 01.12.11 CHG : graphic/SignalPainter : path drawing : Johannes
+- 01.12.11 CHG : IEventBoardListener : added enter and flush method : Johannes
+- 06.12.11 NEW : tools/eventfusion : n-dim event fusion following the pad-fusion approach : Florian
+- 06.12.11 CHG : sensor/kinect/OpenNIKinect : posture recognition : Johannes
+- 07.12.11 CHG : graphic/PaintHandler : locked access to PaintObject's : Johannes
+- 07.12.11 CHG : ioput/window/Monitor,graphic/Canvas : when window is craeted console is set as parent window : Johannes
+- 08.12.11 CHG : frame/XMLParser : support for event sender/listener : Johannes
+- 09.12.11 CHG : ioput/arff : support for reading arff files : Johannes
+- 14.12.11 ADD : toos/opensmile/OSWrapper : opensmile wrapper to run opensmile scripts : Johannes
+- 19.12.11 BUG : frame/XMLParser : event board is now correctly parsed : Johannes
+- 01.01.12 BUG : mlpxml/MlpXmlTrain : trainer is correctly stored if transformer is used : Johannes
+- 16.01.12 ADD : signal/MvgPeakGate : peak gate with adaptive threshold : Johannes
+- 18.01.12 ADD : tools/asio/AudioAsio : removed bug : Johannes
+- 07.02.12 BUG : model/Trainer : in case of single missing data is automatically applied to stream (train & forward) : Johannes
+
+*** Version 0.8.0 ***
+- 07.02.12 CHG : frame/TheFramework : added sync signal : Johannes
+- 10.02.12 CHG : event/SocketEventWriter : option to stream events in xml format : Johannes
+- 10.02.12 CHG : ioput/xml/FileEventOut : saves events in a single file in xml format : Johannes
+- 13.02.12 CHG : ioput/wav/WavTools : ReadWavFile() flag to convert to floats : Johannes
+- 14.02.12 CHG : kinect/OpenNIKinect : hangin/out option for posture detection : Johannes
+- 17.02.12 CHG : kinect/OpenNIKinect : integration of latest version of the FUBI framework : Johnny
+- 17.02.12 CHG : kinect/OpenNIKinect : support to load recognizer from xml : Johannes
+- 22.02.12 CHG : kinect/OpenNIKinect : changed skeleton data format and added support for rotations : Johnny
+- 22.02.12 CHG : kinect/OpenNIKinect : update to OpenNI 1.5.2.23 : Johnny
+- 22.02.12 ADD : kinect/OpenNIKinect/JointTransfTrigger : filter which outputs 1 when a joint parameter enters a value range : Johnny
+- 23.02.12 CHG : signal/ZeroTrigger : no warning if event is cropped if continued : Johannes
+- 23.02.12 CHG : sensor/OpenNIKinect : xml support for user defined posture combinations : Johannes
+- 29.02.12 CHG : tools/asio/AudioAsio : high cpu workload solved : Johannes
+- 29.02.12 CHG : ioput/WavWriter : support for float input : Johannes
+- 29.02.12 CHG : model/KMeans : new option 'norm' to apply normalization : Johannes
+- 02.03.12 CHG : model/ISAlignStreams : now works for sample lists with more than one frame per sample : Johannes
+- 07.03.12 CHG : SSI_Tools.h : ssi_string2array() now works correctly for delim other than a blank : Johannes
+- 13.03.12 CHG : kinect/OpenNIKinect : names for user defined posture combination were missing : Johannes
+- 13.03.12 CHG : ioput/WavWriter : removed bug for short input : Johannes
+- 22.03.12 ADD : kinect/OpenNIKinect : Fubi 0.2.2 and new recognizers: leg postures in core/include/sensor/kinect/LegPostureRecognizers.xml; JointOrientationRecognizers and lean back/forward/left/right in SampleRecognizers.xml, hand close to arm recognizers : Felix
+- 24.04.12 CHG : replaced old trigger mechanism by event board
+                 added: EventConsumer, ZeroEventSender, ThresEventSender, FixationEventSender, EventAddress
+				 removed: ZeroTrigger, ThresholdTrigger, FixationTrigger, ITrigger, Trigger
+				 changed: TheFramework, TheEventBoard
+				 renamed: IEventSender->setListener => IEventSender->setEventListener
+- 24.04.12 CHG : kinect/OpenNiKinect : postures are sent as empty events with the posture name as event name : Johannes
+- 25.04.12 CHG : kinect/JointTransfTrigger.h : bug removed : Johannes
+- 02.05.12 CHG : event/EventAddress : set methods now add names to address : Johannes
+- 03.05.12 CHG : base/Factory : always loads debug versions of dlls in debug mode : Johannes
+- 07.05.12 ADD : signal/SignalTools : Consume() : Johannes
+- 07.05.12 CHG : ioput/file/FileTriggerWriter: renamed to FileAnnotationWriter, now implements IEventListener interface : Johannes
+- 15.05.12 CHG : model/cspr: moved cspr from tools to model : Johnny
+- 15.05.12 CHG : frame/Consumer : optional trigger input : Johannes
+- 15.05.12 CHG : frame/XMLPipeline : use <consumer><input ...trigger=<pin>/></consumer> to apply trigger in pipeline : Johannes
+- 18.05.12 CHG : ioput/option: added functions to read/write options from/to binary file : Johnny
+- 18.05.12 CHG : model/cspr: saving options to model file : Johnny
+- 18.05.12 BUG : SSI_Tools: added missing type in type2size : Johnny
+- 18.05.12 CHG : sensor/audio/AudioSensor : supports float : Johannes
+- 18.05.12 CHG : model/Classifier : if streams are merged it will be checked for correct sample type/size and number, sample rate may differ, though : Johannes
+- 22.05.12 CHG : model/cspr: [CSPR 0.4.1] converted internal configuration parameters to ssi options format : Johnny
+- 22.05.12 ADD : model: added cspr example model : Johnny
+- 22.05.12 ADD : pipes: added cspr example pipeline with example model and trainer : Johnny
+- 23.05.12 CHG : sensor/OpenNIKinect: if no fubi recognizer is defined, gesture/posture recognition is disabled : Johnny
+- 24.05.12 ADD : sensor/OpenNIKinect: a relative joint for linear movements is now optional, so movements can be measured absolute (usefull for whole body movements); added new xml attribute for joint relations/linear movements/joint orientations: visibility. Default is visible. If set to hidden the recognizer won't be accessible from the outside and can only be used in posturecombinations : Felix
+- 24.05.12 CHG : tools/alglib/AlgLibPCA: principal components analysis : Johannes
+- 24.05.12 CHG : SSI_Tools: added ssi_stream_print() function : Johannes
+- 01.06.12 CHG : ModelTools: added CreateDynamicTestSamples() to generate test samples of dynamic length : Johannes
+- 01.06.12 CHG : tools/torch/TorchHMM: added single option to train single hmm with each state referring to one class, use getStateSequence() to retrieve the state sequence for the last forwarded stream : Johannes
+- 06.06.12 CHG : kinect/Fubi, OpenNIKinect : added option to select skeleton profile : Johannes
+- 06.06.12 ADD : tools/serial : sensor wrapper for devices with serial connection : Johannes
+- 11.06.12 CHG : models/cspr : [CSPR 0.4.2] added cspr feature support to $1; templates are now stored in cspr format : Johnny
+
+*** Version 0.8.1 *** 
+******************************************************************
+Note: from here on dlls will be prebuilt with visual studio 2010!
+*******************************************************************
+- 12.06.12 ADD : base/IMessage : added Interface for handling global logging of messages, warnings and errors : Florian
+- 12.06.12 CHG : SSI_Debug.h : new variable ssimsg of type ssi::IMessage - overwrite to redirect logging : Florian
+- 22.06.12 CHG : tools/nexus/NexusMKII : sensor wrapper for nexus-10 mkII : Johannes
+- 03.07.12 CHG : tools/activemq : activemq (http://activemq.apache.org/) library : Florian, Tobias, Johannes
+- 03.07.12 CHG : models/cspr : [CSPR 0.4.3] new recognizer CGR; reverted $1 to pre-042; normalized feature computations : Johnny
+- 09.07.12 CHG : sensor/microsoftkinect : wrapper for microsoft kinect sdk : Johannes, Tobias
+- 09.07.12 CHG : base/Factory : could not load dll-files if path was absolute or relative : Johannes
+- 09.07.12 CHG : event/TheEventBoard : default update rate changed from 1000ms to 100ms : Johannes
+- 10.07.12 CHG : core/libs/strmbase : added build project for strmbas[e/d].lib to core solution : Johannes
+- 10.07.12 CHG : tools/apigen : new optional parameter -reg to register additional dll's : Johannes
+- 11.07.12 CHG : sensor/miscrosoftkinect : clean up : Johannes
+- 17.07.12 CHG : thread/ThreadPool : distributes a task on several threads : Johannes
+- 18.07.12 ADD : base/IContinuousModel : added interface for continuous model with support for timestamped output : Johnny
+- 18.07.12 CHG : model/cspr : [CSPR 0.4.3] fixed multi-threading bugs : Johnny
+- 18.07.12 CHG : model/evaluation : added continuous LOUO evaluation : Johnny
+- 18.07.12 CHG : tools/xmltrain : added support for continuous LOUO evaluation : Johnny
+- 30.07.12 CHG : model/FloatingSearch : added -split option : Johannes
+- 01.08.12 CHG : base/IContinuousModel : added duration parameter to getOutput : Johnny
+- 03.08.12 CHG : sensor/kinect : updated to FUBI version pre 0.3.0 - several api refactoring, more options for rendering, local positions, funcion for injecting joint positions, e.g. from the Kinect SDK
+- 17.08.12 CHG : model/Evaluation : fixed some memory leaks : Johnny
+- 03.09.12 CHG : sensor/microsoftkinect : added joint orientations : Tobias
+- 04.09.12 CHG : tools/shore : removed dependency to Shore140.lib from header file : Johannes
+- 04.09.12 CHG : frame/TheFramework : new optione -slisten to start in sync mode as client : Johannes
+- 14.09.12 ADD : tools/fubi : added fubi gesture recognition as own tool, also working with microsoftkinect data (MS Kinect SDK) : Felix
+- 14.09.12 BUG : sensor/kinect,microsoftkinect : fixed skeleton rotations, crashes when openni finds no sensor, microsoft sdk confidences : Felix
+- 17.09.12 CHG : sensor/kinect : now also providing local (relative/hierachical) orienations; tools/fubi : using local orientations from microsoftkinect directly, added local orientations import in fubi : Felix
+- 19.09.12 ADD : sensor/wiimote/WiiRemoteButtonEventSender : sends string with names of pressed button separated by comma : Johannes
+- 19.09.12 BUG : opensmile/OSMfcc : solved : Johannes
+- 02.10.12 BUG : event/FixationEventSender : added sender and event name option : Johannes
+- 02.10.12 CHG : model/Evaluation : moved continuous evaluation methods to EvaluationCont : Johnny
+- 02.10.12 CHG : tools/xmltrain : isolated computations for continuous condition; model options are also printed in eval file : Johnny
+- 02.10.12 BUG : model/cspr : solved bug in blob culling algorithm : Johnny
+- 04.10.12 CHG : ui/train : added continuous evaluation option : Johnny
+- 11.10.12 CHG : ui/record : now supports relative urls in stimuli.xml : Johnny
+- 11.10.12 CHG : tools/sapi : key word spotting based on SAPI 11.0 : Johannes
+- 12.10.12 BUG : base/ioput : fixed destructor releasing uninitialized memory : Johnny
+- 12.10.12 CHG : bin : removed ssinexus dlls as they depend on the NeXus.dll which is not in bin : Johnny
+- 15.10.12 ADD/CHG : tools/fubi : updated to pre 0.4.0 version, added maxInterruptionTime and ignoreOnTrackingError in Combination XMLs, changed several names, gesture recognition result reports for tracking error instead of returning a simple bool : Felix
+- 19.10.12 ADD : sensor/microsoftkinect/MicrosoftKinectPainter : class to visualize kinect tracking : Johannes
+- 19.10.12 CHG : sensor/microsoftkinect/MicrosoftKinect : 3d face points channel added : Johannes
+- 19.10.12 CHG : [graphic/VideoPainter,camera/CameraWriter,camera/CameraReader] : coherent treatment of 'flip' and 'mirror' option : Johannes
+- 23.10.12 CHG : frame/Consumer, frame/Transformer : meta data from all inputs is forwarded : Johnny
+
+*** Version 0.9.0 *** 
+- 30.10.12 CHG : removed old visual studio 2009 projects : Johannes
+- 30.10.12 CHG : moved wiimote to tools : Johannes
+- 30.10.12 CHG : moved opennikinect to tools : Johannes
+- 30.10.12 CHG : moved microsoft to tools : Johannes
+- 31.10.12 BUG : SignalTools : removed bug in Consume() and Transform() : Johannes
+- 31.10.12 ADD : added Xsens MVN Studio Streaming Protocol wrapper : Johnny
+- 31.10.12 BUG : SignalTools : removed bug in Consume() and Transform() : Johannes
+- 31.10.12 CHG : moved ocv_20 to core : Johannes
+- 31.10.12 CHG : added 64bit support for opennni : Johannes
+- 02.11.12 BUG : signal/Integral : removed bug (option 'reset' wasn't initialized properly) : Johannes
+- 06.11.12 BUG : tools/xsens : fixed big-endian problems in the network streamer wrapper : Johnny
+- 12.11.12 CHG : model/cspr : moved cspr from model to tools : Johnny
+- 12.11.12 CHG : core, tools/xmltrain : added new object type, cont evaluations only work with continuous models : Johnny
+- 12.11.12 CHG : model/cspr : moved cspr from model to tools : Johnny
+- 13.11.12 ADD : plugins/arduinorespiration :  Added Respiration Sensor as new tool (untested) : Tobias
+- 13.11.12 CHG : base/ITheFramework, frame/TheFramework : new functions GetStartTimeLocal(), GetStartTimeSystem() : Johannes
+- 13.11.12 CHG : ioput/file/FileWriter : stores local and system time : Johannes
+- 13.11.12 CHG : file/ioput/FilePath : isRelative() returns true if path is relative, otherwise false : Johannes
+- 13.11.12 CHG : xmlpipe : supports relative path to pipeline when called from bat file : Johannes
+- 13.11.12 CHG : xmledit : removed 'unused' category : Johannes
+- 13.11.12 CHG : event/EventMonitor : state is displayed : Johannes
+- 13.11.12 CHG : event/ZeroEventSender : option eager() to trigger start event : Johannes
+- 13.11.12 CHG : * : license changed to GNU General Public : Johannes
+- 13.11.12 CHG : * : copyright changed to Lab for Human Centered Multimedia : Johannes
+- 14.11.12 CHG : ui/train : added some error handling : Johnny
+- 14.11.12 CHG : frame/TheFramework : option 'countdown' to halt framework for an accourding number of seconds before it is started : Johannes
+- 14.11.12 CHG : plugins/nova : added shoulderUp detection, added demo pipe: Tobias
+- 14.11.12 BUG : SSI_Tools : ssi_mkdir -> CreateDirectory () to CreateDirectoryA () : Johannes
+- 14.11.12 CHG : base/Factory : ExportDlls () to copy registered dlls to some directory : Johannes
+- 14.11.12 CHG : tools/xmlpipe : option -export to copy all dlls to the directory of the pipeline : Johannes
+- 14.11.12 NEW : core/test/xml : example that demonstrates how to run pipelines from xml : Johannes
+- 15.11.12 ADD : bin/SSI_EXPORT_PIPE : takes as paramter a pipeline and copies 'xmlpipe.exe' and all dll files to the same folder : Johannes
+- 15.11.12 CHG : ssi_event_t : added field glue_id, a unique id shared by sub-events : Johannes
+- 15.11.12 CHG : base/IEventListener : added method getGlueId () : Johannes
+- 15.11.12 CHG : event/TheEventBoard : added method getGlueId () : Johannes
+- 15.11.12 CHG : ioput/file/FileEventWriter : stores event state and glue id with each event : Johannes
+- 15.11.12 BUG : ioput/file/FileEventWriter : stores events in correct temporal order : Johannes
+- 15.11.12 CHG : frame/TheFramework : system time is now send as sync message : Johannes
+- 20.11.12 ADD : plugins/skeleton : ssi skeleton with converter and selector : Johnny
+- 20.11.12 BUG : plugins/xsens : fixed quaternion bug : Johnny
+- 22.11.12 CHG : frame/TheFramework : an info file is created including start, stop and sync time information : Johannes
+- 22.11.12 CHG : plugins/skeleton/SkeletonPainter : converts ssi skeleton to an image : Johannes
+- 23.11.12 CHG : plugins/facetracker : now building : Johannes
+- 27.11.12 CHG : plugins/fubi + plugins/opennikinect : upgraded to fubi pre0.5.0 - OpenNI now completely separated from the rest : Felix
+- 27.11.12 CHG : SSI_SkeletonCons.h : removed namespace, added SSI_ prefix and moved to core : Johannes
+- 27.11.12 CHG : SSI_Cons.h : includes SSI_SkeletonCons : Johannes
+- 27.11.12 CHG : plugins/microsoftkinect/MicrosoftKinect,MicrosoftKinectPainter : added support for two users, skeleton/face type and number of users now provided via meta data : Johannes
+- 27.11.12 CHG : plugins/opennikinect/OpenNIKinect : skeleton type and number of users now provided by meta data : Johannes
+- 27.11.12 CHG : plugins/xsens/XsensMVNSP : skeleton type and number of users now provided by meta data : Johannes
+- 27.11.12 CHG : plugins/skeleton/SkeletonConverter,SkeletonPainter,SkeletonSelector : gets skeleton/face type and number of users from meta data, proper handling of several skeletons : Johannes
+- 28.11.12 CHG : plugins/yarp : recovered test project : Johannes
+- 29.11.12 BUG : event/EventMonitor : solved buffer overflow if too many events where in cue : Johannes
+- 03.12.12 CHG : plugins/nova : Energy calculation and bodyposture detection now uses SSI Skeleton : Tobias
+- 05.12.12 CHG : plugins/nova : Added Options for bodyposture detection and treshholds : Tobias
+- 07.12.12 CHG : plugins/skeleton : Added MSKINECTSDK Facetracking Points to SSISkeleton : Tobias
+- 10.12.12 CHG : pipes : moved plugin pipelines to according plugin folder : Johannes
+- 10.12.12 CHG : core : cleaned up test projects : Johannes
+- 11.12.12 CHG : build/libs/ocv_2.0 : switched to opencv 2.3.4, has to be installed by user and expects system variables OCV234_LIBS and OCV234_INCLUDE : Johannes
+- 11.12.12 CHG : ui/setup : added support to set up variables for opencv 2.3.4 : Johannes
+- 11.12.12 CHG : libs/vs -> libs/vc10 : Johannes
+- 12.12.12 CHG : moved plugins/alglib to model in core : Johannes
+- 13.12.12 CHG : libs -> libs/Win32, bin -> bin/Win32 : Johannes
+- 14.12.12 ADD:  Added NovA GUI to ui\NovA : Tobias
+- 17.12.12 CHG : setup.exe : added option to associate .pipeline : Johannes
+- 20.12.12 ADD : tools/*.rc : added missing files : Johannes
+- 20.12.12 BUG : core/camera/CameraOptions : renamed flip option to flipImage, otherwise overwritten e.g. by CameraReader : Johannes
+- 21.12.12 BUG : tools/resource.h : added missing files : Johannes
+- 07.01.13 CHG : viewui : support for *.events files : Johannes
+- 07.01.13 CHG : viewui : added play button : Johannes
+- 07.01.13 BUG : ioput/file/FileReader : timer is now started after framwork is started : Johannes
+- 07.01.13 CHG : signal/FFTfeat : moved from core library to signal dll : Johannes
+- 08.01.13 CHG : plugins/ev : renamed to emovoice : Johannes
+- 09.01.13 CHG : tools/*.rc : adjust path to icon : Johannes
+- 10.01.13 CHG : core/model/[ISOverSample,ISUnderSample,Noise] : removed ssi_random_seed (), must be called in main function : Johannes
+- 15.01.13 BUG : ui/modelui : signals are now displayed in advance mode : Johannes
+- 15.01.13 CHG : ui/modelui : included quick help : Johannes
+- 16.01.13 CHG : model/Trainer : relative path to transformer option : Johannes
+- 17.01.13 ADD : plugins/biosig/QRSHeartRate : converts qrs signal in heart rate : Johannes
+- 29.01.13 CHG : sensor/audio : added device selection pop-up to audio player; improved error handling : Johnny
+- 30.01.13 CHG : sensor/camera : improved error handling : Johnny
+- 31.01.13 BUG : ioput/AviWriter : bitCount is now computed according to num channels : Johnny
+- 04.02.13 CHG : frame/XMLParser : sensor->provider new options size (buffer size), check (watchdog), sync (synchronization interval) in seconds : Johannes
+- 04.02.13 CHG : frame/XMLParser : transformer->output new options size (buffer size) in seconds : Johannes
+- 04.02.13 BUG : plugins/asio/AudioAsio : selected input device is now correctly set : Johannes
+- 04.02.13 NEW : plugins/asio/AudioAsioPlayer : audio player : Johannes
+- 04.02.13 CHG : ioput/[FileReader,WavReader] : new option 'blockInSamples' : Johannes
+- 04.02.13 CHG : sensor/audio/Audio : new option 'sizeInSamples' : Johannes
+- 04.02.13 BUG : sensor/camera/CameraReader : no frame drop before framework is started : Johannes
+- 05.02.13 CHG : sensor/Audio/AudioPlayer : improved block management, added more options : Johnny
+- 06.02.13 CHG : graphic/VideoPainter : improved scaling performance : Johnny
+- 05.02.13 CHG : plugins/fubi+opennikinect+skeleton : switched to Fubi version 0.6.0 and OpenNI 2.x : Felix
+- 06.02.13 BUG : model/Dollar$1 : indices now stored in model file : Johannes
+- 13.02.13 ADD : plugins/inputmapper : added : Florian
+- 12.02.13 ADD : frame/TimeServer : new option "tserver" that starts a time server to request framework time via tcp : Johannes
+- 19.02.13 CHG : plugins/MicrosoftKinect : code refactoring : Johnny
+- 19.02.13 BUG : plugins/MicrosoftKinect : fixed memory leak : Johnny
+- 26.02.13 BUG : ioput/file/File : fixed bug in open() function : Johannes
+- 06.03.13 CHG : core/SSI_SkeletonCons.h : added support for quaternions : Johnny
+- 06.03.13 CHG : plugins/gspeechrec : google speech recognizer : Johannes
+- 11.03.13 CHG : frame/TimeServer : switched to udp : Johannes
+- 21.03.13 NEW : plugins/libsox : support for libsox : Andreas
+- 21.03.13 ADD : plugins/dspfilters : Chebyshev I + II : Johannes
+- 25.03.13 CHG : ioput/file/[WavReader,FileReader,AviReader] : added offset option : Johannes
+- 25.03.13 CHG : ioput/file/AviReader : added flip/mirror option : Johannes
+- 25.03.13 CHG : thread/Timer : higher precision if block size is not divisible by 1000 : Johannes
+- 26.03.13 ADD : plugins/libsox : qt test program for sox chain latency : Andreas
+- 26.03.13 CHG : ioput/socket/[SocketWriter,SocketEventWriter] : option reltime for sending relative time stamps : Johannes
+- 26.03.13 CHG : ioput/socket/OscSocket : now sending time/dur in milliseconds instead of seconds : Johannes
+- 26.03.13 CHG : ioput/socket/OscSocket : added field dur to message : Johannes
+- 26.03.13 CHG : model/Classifier : probability threshold (pthres) option : Johannes
+- 27.03.13 ADD : plugins/libsox : bin of qt test program : Andreas
+- 03.04.13 ADD : plugins/ocv : added OCVCrop : Johannes
+- 03.04.13 CHG : plugins/shore/ShoreTracker : added option -scale : Johannes
+- 03.04.13 CHG : base/ITheFramework : added method SetLogLevel() : Johannes
+- 03.04.13 CHG : frame/TheFramework : PushData() now always wakes up all waiting threads : Johannes
+- 03.04.13 CHG : plugins/gspeechrec : now supports parallel requests : Johannes
+
+*** Version 0.9.1 *** 
+
+- 08.04.13 ADD : signal/MvgMedian : moving median : Johannes
+- 09.04.13 ADD : base/String : empty constructor, =operator : Johannes
+- 09.04.13 ADD : signal/ConvPower : calculates power of convolution : Johannes
+- 10.04.13 CHG : tools/xmlpipe : close button of console now disabled by default : Johannes
+- 10.04.13 ADD : ioput/elan/* : support for elan annotation files : Johannes
+- 12.04.13 CHG : signal/Multiply : new options to join dimension : Johannes
+- 12.04.13 CHG : graphic/SignalPlotter : new options to turn of autoscale : Johannes
+- 14.04.13 CHG : plugins/microsoftkinect/MicrosoftKinectSmileDetector : smile detector : Johannes
+- 16.04.13 CHG : signal/Expression : applies mathematical expressions to a stream : Johannes
+- 17.04.13 CHG : frame/Provider : watch and sync intervals can be set to 0 to omit synchronization / watch dog: Johannes
+- 30.04.13 CHG : fubi/Fubi : instead of adding _start to incomplete events state is now set to SSI_ETYPE_CONTINUED (=1) : Johannes
+- 30.04.13 CHG : ioput/socket/SocketOSC : state flag sent for events : Johannes
+- 30.04.13 CHG : yarp/YarpEvent : state flag sent : Johannes
+- 08.05.13 CHG : mouse/Mouse : samples are now correctly provided : Johannes
+- 08.05.13 CHG : frame/Transformer : getSampleNumberOut() now correctly called with samples in frame instead of samples in window : Johannes
+- 04.06.13 CHG : event/TheEventBoard : solved issue with mutex : Johannes
+- 05.06.13 CHG : biosig/[GSRArousalEstimation,QRSDetection] : solved issue with info struct : Johannes
+- 05.06.13 ADD : plugins/ehealth : sensor wrapper for ehealth board for arduino : Johannes
+- 05.06.13 CHG : signal/Spectrogram : option file to load spectrogram from file : Johannes
+- 05.06.13 ADD : signal/Limits : limits value range of a signal : Johannes
+- 10.06.13 ADD : plugins/opensmilewrapper : wrapper for opensmile library that allows runnig opensmile scripts through ssi : Johannes
+- 10.06.13 ADD : bin/[x264.exe,SSI_AVI2X264.bat] : command line tool and batch file to encode video files with h264 codec : Johannes
+- 13.06.13 ADD : ioput/socket/SocketEventReader : reads external socket events and puts them on the board : Johannes
+- 14.06.13 ADD : ioput/socket/SocketWriter : new option format : Johannes
+- 19.06.13 BUG : plugins/opensmile : fixed bugs caused by getSampleNumberOut() now returning correct frame size : Johnny
+- 20.06.13 ADD : ioput/jpg/* : jpg compression : Johannes
+- 20.06.13 ADD : ioput/socket/SocketImage : class for streaming images : Johannes
+- 20.06.13 CHG : ioput/socket/SocketWriter : support for streaming images : Johannes
+- 21.06.13 CHG : ioput/file/[FileMem,FileMemAscii] : allows reading and writing to memory as it was a file : Johannes
+- 24.06.13 CHG : ioput/socket/SocketImage : removed pack bug : Johannes
+- 24.06.13 BUG : sensor/Mouse : removed zero providing bug at start up : Johannes
+- 24.06.13 CHG : ioput/socket/SocketReader : support for streaming images : Johannes
+- 24.06.13 CHG : socksyp : new master switches --binary, --ascii, --image replacing --simple : Johannes
+- 25.06.13 CHG : microsoftkinect/MicrosoftKinect : flipImage = false : Johannes
+- 25.06.13 CHG : shore/ShoreCrop : flipImage correctly set : Johannes
+- 25.06.13 CHG : moved plugins/ocv to core and renamed to image, added CVFlip : Johannes
+- 27.06.13 BUG : plugins/opensmile : fixed bug causing getSampleNumberOut() to return negative values : Johnny
+- 27.06.13 BUG : ioput/SocketSender : supports sending depth images : Johannes
+- 28.06.13 CHG : plugins/opensmile : added warning which alerts when FFT frame size is unsufficient : Johnny
+- 01.07.13 CHG : microsoftkinect/MicrosoftKinect : new options to switch between different resolutions : Tobias
+- 02.07.13 ADD : plugins/opensmile : OSPitchDirection : Johnny
+- 02.07.13 CHG : ioput/elan/ElanDocument : tolerates empty tiers : Johannes
+- 03.07.13 CHG : signal/SignalTools : log10(x) = 0 if x <= 0 : Johannes
+- 08.07.13 CHG : microsoftkinect/MicrosoftKinectPainter : added support for old format : Johannes
+
+*** Version 0.9.2 *** 
+
+- 11.07.13 BUG : ioput/file/OptionList : float and double now stored in scientific format (%e) format to increase precision > 6 : Johannes
+- 11.07.13 CHG : plugins/opensmile/OSMfccChain,OSIntensity,LaughterPreProcessor : changed from transformer to feature : Johannes
+- 15.07.13 CHG : plugins/skeleton : added warning for when skeleton type is not set : Johnny
+- 15.07.13 CHG : plugins/opensmile/OSPitchChain : removed frame and delta option : Johannes
+- 16.07.13 CHG : plugins : plugins.sln update : Johnny
+- 15.07.13 CHG : plugins/opensmile/OSPitchChain : removed frame and delta option : Johannes
+- 18.07.13 CHG : signal/MFCC : changed option n_ceps to n_first and n_last : Johannes
+- 18.07.13 CHG : signal/SNR : added threshold option : Johannes
+- 18.07.13 CHG : model/ClassifierT : added trainer option : Johannes
+- 22.07.13 CHG : plugins/fubi,plugins/opensmile/pitchdirection : type empty events, event name reflects recognized pattern : Johnny
+- 23.07.13 CHG : plugins/objectdetection : type empty events, event name reflects recognized pattern : Johnny
+- 25.07.13 ADD : plugins/shore/GazeRegionPainter : copied gaze region painintg from objectdetection : Johnny
+- 25.07.13 ADD : plugins/smi/GazeType : copied computation for gaze type from objectdetection, added statistical output : Johnny
+- 30.07.13 ADD : plugins/nova : features to compute overall activation and energy from acceleration data : Johnny
+- 30.07.13 CHG : plugins/xsens : added provider for dynamic acceleration (w/o gravity), option to compute absolute acceleration, data from multiple sensors are stored in extra dimensions : Johnny
+- 30.07.13 CHG : plugins/xsens : data from multiple sensors is stored as extra dimensions : Johnny
+- 02.08.13 CHG : plugins/xsens : dlls are automatically copied before building : Johnny
+- 02.08.13 BUG : plugins/smi : fixed bug in options : Johnny
+- 09.08.13 CHG : plugins/cspr : added HMM recognizer, recognizers are now independent objects : Johnny
+- 09.08.13 BUG : plugins/asio/AudioAsioPlayer : fixed bug in reading options : Johnny
+- 20.08.13 BUG : plugins/iom : fixed bug in getOptions : Johnny
+- 20.08.13 BUG : camera/camerascreen : can now set region from xml pipe : Johnny
+- 21.08.13 ADD : event/ThresClassEventSender : simple threshold based classifier : Johnny
+- 22.08.13 ADD : plugins/nova/OAAcc,EnergyAcc : removed event management, one can use the new ThresClass for this : Johnny
+- 22.08.13 ADD : plugins/smi/GazeType : added option to control flip-status of data : Johnny
+- 27.08.13 ADD : plugins/fubi+opennikinect : updated to Fubi 0.8.0 : Felix
+- 30.08.13 CHG : base/IObject : now derives from IEventListener : Johannes
+- 30.08.13 CHG : base/Factory : added AddString() and GetString() methods : Johannes
+- 30.08.13 CHG : base/IEventListener : changed/added update(), listen_enter(), listen_flush() methods : Johannes
+- 30.08.13 CHG : base/ITheEventBoard : removed string methods and IEventBoardListener interface : Johannes
+
+*** Version 0.9.3 *** 
+- 19.09.13 CHG : ui/viewui : polished interface, added zoom/move functions : Johannes
+- 19.09.13 CHG : plugins/praat : plugin for praat : Johannes, Andreas
+- 20.09.13 CHG : ioput/wav/WavTools : WriteWavFile now correctly handles float32 streams : Johannes
+- 23.09.13 CHG : plugins/Torch : added HMM copy constructor, moved TorchTools to header : Johnny
+- 04.10.13 CHG : core/tools/convert : added --V2Repair : Johannes
+- 04.10.13 CHG : ioput/window/Slider : added slider control : Johannes
+- 08.10.13 ADD : event/EventSlider : added event slider component : Johannes
+- 08.10.13 CHG : signal/Limits : min/max can be dynamically adjusted via slider event at run-time : Johannes
+- 08.10.13 CHG : event/ThresEventSender : threshold can be dynamically adjusted via slider event at run-time : Johannes
+- 10.10.13 CHG : ioput/file/FileWriter,FileReader : image meta data is correctly handled : Johannes
+- 10.10.13 CHG : plugins/praat/PraatUniversal : now correctly parses numbers in scientific notation : Johannes
+- 11.10.13 CHG : core/SSI_Cons.h : new website in copyright : Johannes
+- 15.10.13 CHG : plugin/eventfusion/FusionPainter : removed bug when option paint=false and added option wcaption to set window caption : Johannes
+- 15.10.13 CHG : plugin/shore : added option normRatings to normalize ratings to [0..1] : Johannes
+- 16.10.13 ADD : ui/FubiGUI : added precompiled version of Fubi GUI 0.8.x (Win32 only) : Felix
+- 18.10.13 CHG : tools/xmlpipe : pipe shutdown on console close : Johnny
+- 29.10.13 CHG : SSI_Tools : added advanced casting functionality : Johnny
+- 29.10.13 CHG : signal/Expression : added result casting functionality : Johnny
+- 29.10.13 ADD : signal/Cast : allows cast between streams : Johannes
+- 29.10.13 ADD : plugins/intraface : face tracking based on IntraFace (http://www.humansensing.cs.cmu.edu/intraface/), yet 64 bit only : Johannes
+- 30.10.13 BUG : tools/xmlpipe : options are now saved on closing with X-button : Johnny
+- 31.10.13 ADD : plugins/fubi+opennikinect : updated to FUBI 0.8.1 with length based LinearMovements, JointAngularMovements and more infos about the combination rec progress (the latter still need further integration) : Felix
+- 31.10.13 BUG : event/EventMonitor : support for very long strings : Johannes
+- 31.10.13 BUG : ui/viewui : no longer crashes when anno segment are resized : Johannes
+- 12.11.13 BUG : ioput/elan/ElanDocument : no longer crashes when an empty tier is accessed : Johannes
+- 20.11.13 CHG : plugins/sapi/SAPISpeechRecognizer : support for float streams : Johannes
+- 12.11.13 BUG : ioput/elan/ElanDocument : no longer crashes when an empty tier is accessed : Johannes
+- 20.11.13 CHG : SSI_Global, ioput/SocketEventWriter : added event state and glue to outgoing socket events : Johnny
+- 20.11.13 CHG : tools/mlp/MlpXml : added option continuous to force frame-wise training : Johannes
+- 22.11.13 BUG : plugins/vad : fixed vad events to show correct time : Johnny
+- 04.12.13 BUG : signal/Expression : fixed incorrect bytes value when casting : Johnny
+- 09.12.13 BUG : plugins/intraface : upgrade to version 1.1 and support for win32 : Johannes
+- 11.12.13 BUG : event/ThresClassEventSender : fixed bad option type : Johnny
+- 13.01.14 CHG : plugins/serial/ISerialSensor : option for auto reconnect if sensor connection is lost : Johannes
+- 13.01.14 ADD : plugins/eventfusion/simulation_test : basic functions for simulating event fusion : Johannes
+- 24.01.14 CHG : graphic/SignalPainter : added option for setting axis values' precision : Johnny
+- 29.01.14 CHG : event/ThreEventSender : added separate threshold for triggering out of an event : Johnny
+- 04.02.14 ADD : plugins/yarp/YarpReader : reads a yarp stream : Johannes
+- 06.02.14 ADD : plugins/yarp/YarpPeekStream : allows an application to peek signals through yarp : Johannes
+- 25.02.14 ADD : model/ISTrigger : apply trigger signal (e.g. VAD) to a sample list, samples below threshold will be treated as missing data : Johannes
+- 27.02.14 ADD : signal/Merge : merges streams : Johannes
+- 27.02.14 CHG : signal/Multiply : added slider support to Multiply : Johannes
+- 27.02.14 CHG : frame/TheFramework : added loglevel option : Johannes
+- 11.03.14 BUG : model/ISTrigger : solved next() bug : Johannes
+- 12.03.14 CHG : file/[FileTools,FileStreamIn,FileStreamOut,FileSamplesIn,FileSamplesOut,FileEventsOut] : static SetLogLevel() functions : Johannes
+- 13.03.14 CHG : model/SampleList : added sort() functions : Johannes
+- 14.03.14 CHG : plugins/fusion/StackedGeneralization : StackedGeneralization replaced StackedGeneralizationDiscrete : Johannes
+- 18.03.14 ADD : plugins/microsoftkinect/MicrosoftKinectFAD : face activity detector : Johannes
+- 18.03.14 ADD : signal/AudioIntensity : calculates audio intensity and/or loudness : Johannes
+- 18.03.14 ADD : signal/AudioConvert : converts audio signal from float to short and vice versa : Johannes
+- 18.03.14 ADD : signal/AudioActvity : calculates audio activity based on loudness, activity or signal to noise ratio : Johannes
+- 19.03.14 CHG : model/Evaluation : added function SetHandlingOfUnclassifiedSamples () : Johannes
+- 25.03.14 BUG : event/ThresEventSender : fixed unitialized thresout bug : Johnny
+- 25.03.14 CHG : event/ThresEventSender : the timing info of the "completed" event now spans the whole event chain : Johnny
+- 03.04.14 ADD : plugins/weka : weka wrapper (http://www.cs.waikato.ac.nz/ml/weka/) : Johannes
+- 03.04.14 ADD : plugins/ffmpeg : ffmpeg wrapper (http://ffmpeg.org/) : Johannes
+- 16.04.14 ADD : plugins/fubi+opennikinect : updated to FUBI 0.9.2 with new correction hints, support for float images, several fixes and performance improvement, now using OpenMP for parallelized image processing : Felix
+- 16.04.14 CHG : ui/FubiGUI : removed precompiled version as it would violate software licenses, added different installers instead : Felix
+- 22.04.14 ADD : plugins/ffmpeg/FFMPEGWriter : currently supports video encoding based on h264, no audio yet : Johannes
+- 22.04.14 ADD : plugins/ffmpeg/[FFMPEGReader,FFMPEGWriter] : now supports rtp streaming and mp4: Johannes
+- 25.04.14 BUG : audio/AudioOut : now correctly switches to new buffer if chunk exceeds current buffer capacity : Johannes
+- 25.04.14 ADD : bin/ : ffmpeg.exe + dlls to replace x264.exe : Johannes
+- 29.04.14 CHG : base/IEvents : IEventSender::sender_flush() renamed to send_flush() : Johannes
+- 29.04.14 BUG : event/TheEventBoard : send_enter() and send_flush() are now called for each registered sender : Johannes
+- 05.05.14 BUG : event/IESelect : getSize() now returns the correct number of events : Johannes
+- 06.05.14 CHG : plugins/ffmpeg/FFMPEGWriter : now supports 4 channel rgb : Johannes
+- 07.05.14 CHG : plugins/ffmpeg : allows synchronized streaming of audio-visual data : Johannes
+- 07.05.14 ADD : SSI_Tools.h : ssi_write_bmp() to output bitmap files for debug purpose : Johannes
+- 08.05.14 CHG : sockspy : --fork master switch to distribute socket stream to several urls : Johannes
+- 08.05.14 BUG : ssi_split_string_count : now correct count in case of empty tokens : Johannes
+- 08.05.14 ADD : ssi_strrepl : string replace function : Johannes
+- 08.05.14 ADD : ssi_strlen : string length function : Johannes
+- 08.05.14 ADD : ssi_strtrim : string trim function : Johannes
+- 08.05.14 CHG : frame/XMLPipeline : support for config files : Johannes
+- 08.05.14 CHG : tools/xmlpipe : new parameter -config and -save : Johannes
+- 09.05.14 CHG : tools/xmlpipe : allows several global config files (separated by ;) : Johannes
+- 13.05.14 CHG : plugins/[serial,gspeechrec,ehealth] : removed unused sapi reference : Johannes
+- 13.05.14 CHG : ioput/socket/Socket : sendFile(), recvFile() to send/recv file through a socket connection : Johannes
+- 13.05.14 ADD : thread/RunAsThread : thread wrapper function to run a function in a thread : Johannes
+- 14.05.14 ADD : plugins/skeleton : added flag to enable/disable xsens skeleton : Johnny
+- 13.05.14 ADD : thread/RunAsThread : thread wrapper function to run a function in a thread : Johannes
+- 14.05.14 CHG : frame/EventConsumer : outputs a warning if requested data chunk is no longer available or too short : Johannes
+- 14.05.14 CHG : frame/TheFramework : Wait() function -> waits for key to stop pipeline if no sync or server, otherwise waits for message from server : Johannes
+- 14.05.14 CHG : frame/Provider : only outputs a single warning if zeros are provided, outputs a message when watch check succeeds again : Johannes
+- 14.05.14 ADD : ioput/file/FileMessage : use ssimsg = FileMessage (path) to copy console output to path : Johannes
+- 14.05.14 CHG : frame/ITheFramework : AddExeJob() function to execute jobs when/after pipeline is starts/stops : Johannes
+- 14.05.14 CHG : frame/XMLPipeline : added argment 'skip' to include element (if true pipeline will not be included) : Johannes
+- 14.05.14 CHG : frame/XMLPipeline : added element 'execute' to add jobs to the framework (see AddExeJob()) : Johannes
+- 15.05.14 CHG : frame/XMLPipeline : added element 'gate' with option 'open' set to true/false to include/exclude parts of a pipeline : Johannes
+- 15.05.14 CHG : frame/XMLPipeline : element 'gate' also supports option 'close' set to true/false to exclude/include parts of a pipeline : Johannes
+- 15.05.14 CHG : event/EventMonitor : option 'update' to set update rate independent of board update rate : Johannes
+- 16.05.14 CHG : plugin/ehealth : added support for temperature and pulse/oxygen sensor : Johannes
+- 20.05.14 CHG : camera/CameraScreen : region is now specified as [left,top,width,height] : Johannes
+- 20.05.14 CHG : base/IMesssage : added print() : Johannes
+- 20.05.14 CHG : ITools : ssi_print() now forwarded to IMessage : Johannes
+- 21.05.14 ADD : plugins/theeyetribe : added new plugin for TheEyeTribe Eye tracker : Tobias
+- 22.05.14 CHG : plugins/leap : updated Leap Motion SDK to Version 2.0 beta. Added Screen Projection to Hand Struct. : Tobias
+- 27.05.14 CHG : event/ThresEventSender : [REVERT] the timing info of the COMPLETED event goes back to the last CONTINUED event to avoid inconsistencies when cropping : Johnny
+- 27.05.14 BUG : core/FileAnnotationWriter : fixed mishandling of CONTINUED events : Johnny
+- 27.05.14 CHG : event/TheEventBoard : accepts events sent in send_enter() and listen_enter() : Johannes
+- 28.05.14 BUG : plugins/asio : device names now contain API name, added option for preferred api : Johnny
+- 29.05.14 ADD : ioput/socket/SocketMessage : stream console output to socket : Johannes
+- 29.05.14 CHG : sensor/audio/Audio : option volume to set recording gain : Johannes
+- 30.05.14 CHG : plugins/asio : if no decives are found for preferred api, don't restrict api choice anymore : Johnny
+- 02.06.14 CHG : ioput/socket/SocketEventReader : thread is now automatically started and stopped : Johannes
+- 03.06.14 CHG : ioput/wav/WavReader : loop option - set to true by default to keep in line with FileReader : Johannes
+- 04.06.14 CHG : SSI_Tools.h : added 'show_console' paramter to ssi_execute() : Johannes
+- 04.06.14 ADD : plugins/openssmilewrapper2 : wrapper to run script with opensmile 2 : Johannes
+- 05.06.14 ADD : plugins/praat : PraatVoiceReportT, PraatUniversalT (transformer versions) : Johannes
+- 11.06.14 CHG : plugins/leap : cleaned up : Johannes
+- 11.06.14 CHG : plugins/* : auto copy dll to ssi bin : Johannes
+- 11.06.14 CHG : setup : since §(SSI_INCLUDE) became too long, only <openssi>/core/include and <openssi>/plugins are added, i.e. to include plugin you may extend the path from ssi<pluginname>.h to <pluginname>/include/ssi<pluginname>.h  : Johannes
+- 11.06.14 CHG : SSI_Cons.h : added Andreas Seiderer to SSI_COPYRIGHT to appreciate his work in the ssi project
+
+*** Version 0.9.5 *** 
+- 12.06.14 ADD : plugins/mocapreader : new plugin, reads mocap data from files and streams it in ssi : Johnny
+- 16.06.14 CHG : ui/viewui : removed dependencies to c++ (ssiuitools.dll becomes absolete), added dimension selector for faster drawing and ui controls to zoom/move signal : Johannes
+- 16.06.14 CHG : ui/viewui : support for csv files and drag&drop of folders : Johannes
+- 18.06.14 CHG : event/TheEventBoard : added state filter (ALL=all, COMPLETED=completed only, CONTINUED=continued only, ZERODUR=zero duration only) : Johannes
+- 18.06.14 CHG : frame/XMLParser : "state" flag for "listen" elements ("ALL"=all, "COMPLETED"=completed only, "CONTINUED"=continued only, "ZERODUR"=zero duration only) : Johannes
+- 24.06.14 CHG : plugins/fubi : added glue id, made start ev time = end ev time : Johnny
+- 25.06.14 ADD : plugins/fubi+opennikinect : updated to FUBI 0.10.0 with new optional third joint for JointRelations which can be related to the line formed by the two other joints and several other fixes and improvements: Felix
+- 18.06.14 CHG : frame/XMLParser : "state" flag for "listen" elements ("ALL"=all, "COMPLETED"=completed only, "CONTINUED"=continued only, "ZERODUR"=zero duration only) : Johannes
+- 25.06.14 CHG : audio/AudioSensor, camera/cameraSensor : shows dialog if specified device is not found : Johannes
+- 03.07.14 CHG : frame/XmlParser : compares gate open/close values lower case : Johannes
+- 03.07.14 ADD : ui/xmlpipeui : interface to start and manage pipelines and config files : Johannes
+- 04.07.14 CHG : frame/XmlParser : pipelines can be included from subfolder, subfolder becomes temporary working directory : Johannes
+- 10.07.14 BUG : ioput/elan/ElanTier : removed bug in split function : Johannes
+- 17.07.14 ADD : plugins/intraface : added option for showing face point ids : Johnny
+- 19.08.14 CHG : core/tools/xmledit : revised and added dll selection dialog : Johannes
+- 19.08.14 CHG : core/base/Factory : added functions GetDLLNames() and GetObjectNames() : Johannes
+- 20.08.14 CHG : core/audio : moved to plugins and now includes SNRatio/AudioActivity/AudioIntensity/AudioConvert from signal and WavWriter/WavWriter/WavProvider from ioput : Johannes
+- 20.08.14 CHG : core/camera : moved to plugins including strmlib : Johannes
+- 20.08.14 CHG : core/image : moved to plugins : Johannes
+- 20.08.14 CHG : signal/[Chain,Cast,Clone,Selector,Merge] : moved to frame : Johannes
+- 20.08.14 CHG : core/model : moved to plugin, machine learning stuff (Trainer, Evaluation, etc.) has been moved to new library ssiml.lib : Johannes
+- 20.08.14 CHG : core/ioput/[arff,elan] : moved to ssiml.lib : Johannes
+- 21.08.14 CHG : core/signal : moved to plugins : Johannes
+- 21.08.14 CHG : core/signal/SignalTools : AddNoise() moved to FilterTools : Johannes
+- 21.08.14 CHG : core/ioput/[AviReader,AviWriter] : moved to plugin avi : Johannes
+- 21.08.14 CHG : core/event/FunctionalsEventSender : moved to plugin signal : Johannes
+- 22.08.14 CHG : core/ioput : moved to plugin signal : Johannes
+- 22.08.14 CHG : core/mouse : moved to plugin signal : Johannes
+- 22.08.14 CHG : license of core from GPL to LPGL : Johannes
+- 25.08.14 CHG : made biosig plugin public : Johannes
+- 25.08.14 CHG : made fusion plugin public : Johannes
+- 25.08.14 CHG : made emovoice plugin public : Johannes
+- 25.08.14 CHG : made vectorfusion plugin public : Johannes
+- 25.08.14 CHG : made artkplus plugin public : Johannes
+- 25.08.14 CHG : made dspfilter plugin public : Johannes
+- 27.08.14 CHG : made emovoice plugin public : Johannes
+- 27.08.14 CHG : made libsoxfilter plugin public : Johannes
+- 27.08.14 CHG : made opensmile plugin public : Johannes
+- 27.08.14 CHG : made praat plugin public : Johannes
+- 27.08.14 CHG : made fubi plugin public : Johannes
+- 27.08.14 CHG : made skeleton plugin public : Johannes
+- 27.08.14 CHG : made torch plugin public : Johannes
+- 27.08.14 CHG : made weka plugin public : Johannes
+- 27.08.14 CHG : made ehealth plugin public : Johannes
+- 27.08.14 CHG : made iom plugin public : Johannes
+- 27.08.14 CHG : made microsoftkinect plugin public : Johannes
+- 27.08.14 CHG : made wiimote plugin public : Johannes
+- 27.08.14 CHG : made ffmpeg plugin public : Johannes
+- 27.08.14 CHG : in all project files vc10 -> vc$(PlatformToolset) : Johannes
+- 05.09.14 CHG : ioput moved back to core, that just makes sense : Johannes
+- 08.09.14 CHG : plugins\theeyetribe: removed system calls : Johannes
+- 08.09.14 CHG : made theeyetribe and eyesig (former eye) plugin public : Johannes
+- 16.09.14 CHG : plugins/intraface : added option to stream out face region : Johnny
+- 24.09.14 CHG : cleaned up EyeFixation and EyeArea in eyesig plugin : Johannes
+- 26.09.14 CHG : ioput/socket/SocketTCP : accept/connect calls now threaded : Johannes
+- 29.09.14 CHG : camera/[CameraReader,Camera] : removed unused flipImage option : Johannes
+- 29.09.14 CHG : camera/[CameraScreen] : added flip option : Johannes
+- 29.09.14 CHG : ffmpeg/ : now correct 64 bit dlls will be copied : Johannes
+- 01.10.14 CHG : graphic/ThePainter : new functions ArrangeRelative, MoveConsoleRelative : Johannes
+- 01.10.14 CHG : event/Monitor : new option relative : Johannes
+- 08.10.14 BUG : ioput/file/FileStreamOut : chunks of different sizes are now correctly written : Johannes
+- 08.10.14 BUG : ioput/file/[FileSamplesIn,FileSamplesOut] : version 3 now uses stream files to store sample data : Johannes
+- 13.10.14 CHG : ioput/socket : changed socket modes to CLIENT and SERVER, both being able to send and receive : Johnny
+- 14.10.14 ADD : plugins/empatica : empatica sensor with android bridge-app : Johnny
+- 14.10.14 CHG : ioput/socket : added non-blocking mode for tcp : Johnny
+- 14.10.14 CHG : plugins/model/Trainer : added on the fly extraction of low-term features : Johannes
+- 15.10.14 ADD : plugins/fubi+opennikinect : updated to FUBI 0.11.0 with *.xsd XMl scheme instead of *.dtd and a lot of other new features that SSI does not really care about... : Felix
+- 15.10.14 CHG : SSI_Tools.h : added ssi_strcmp() to compare strings per option case sensitive or not : Johannes
+- 15.10.14 CHG : plugins/model/Trainer : setSamples() function to add path(s) to samplelist : Johannes
+- 15.10.14 CHG : plugins/model/Trainer : new version v5 allows trainer being stored even if it was not yet trained : Johannes
+- 15.10.14 CHG : plugins/model/Trainer : added eval() functions to ease evaluation of a trainer : Johannes
+- 21.10.14 BUG : plugins/microsoftkinect : fixed bugs with image scaling and face painting : Johnny
+- 21.10.14 CHG : libs/shared : spot for shared libraries, for the moment ssiml, opencv, alglib and ssimat have been moved there : Johannes
+- 21.10.14 CHG : libs/shared : added to SSI_INCLUDE system variable : Johannes
+- 22.10.14 CHG : plugins/nexus : added support for USB connection with NexusMKII : Johnny
+- 28.10.14 CHG : event/EventQueue : remaining events in queue are freed : Johannes
+- 30.10.14 CHG : ioput/window/Monitor : edit control now implemented as child window : Johannes
+- 30.10.14 CHG : event/EventMonitor : option name to change title and redraw only if new events arrive: Johannes
+- 30.10.14 ADD : event/XMLEventSender : fills a user defined xml template with stream and event data : Johannes
+- 10.11.14 BUG : ioput/SocketUDP : fixed broadcast for clients : Johnny
+- 10.11.14 CHG : plugins/ffmpeg : added support for writing BW video streams : Johnny
+- 11.11.14 CHG : ui/setup : libs/shared added to SSI_INCLUDE : Johannes
+- 11.11.14 CHG : ssiml.lib : added Machine : Johannes
+- 12.11.14 CHG : xmltrain.exe : renamed to mlpxml.exe : Johannes
+- 12.11.14 ADD : xmltrain.exe : now used to train model templates, which can be defined in the trainer format since v5 : Johannes
+- 17.11.14 ADD : mkproject.exe : creates empty project from template : Johannes
+- 17.11.14 ADD : plugins/browser : browser plugin to display websites : Johannes
+- 17.11.14 ADD : plugins/browser : now uses CWebPAGE to properly display local files : Johannes
+- 20.11.14 ADD : IConsumer::info : added pointer to event (if triggered by event Consumer can now access the meta information of the event) : Johannes
+- 20.11.14 ADD : ioput/FileSampleWriter : consumer that writes samples to a sample list : Johannes
+- 27.11.14 ADD : plugins/xsens : added support for XDA API (SDK 4.2.1). Legacy API implementation in XsensMTx : Johnny
+- 27.11.14 CHG : core/factory : added exception for xsens dll in destructor (bug in SDK 4.2.1) : Johnny
+- 27.11.14 CHG : core/factory : removed exception for kinect dll in destructor (SDK bug has been fixed in 1.6) : Johnny
+- 05.12.14 ADD : thread/ClockThread : starts thread and calls clock() at certain interval : Johannes
+- 08.12.14 CHG : ffmpeg/FFMPEGReader : added flip option : Johnny
+- 05.12.14 ADD : thread/ClockThread : starts thread and calls clock() at certain interval : Johannes
+- 08.12.14 BUG : dialog/CamSelectionDialog : removed icon (apparently never worked by now crashes) : Johannes
+- 08.12.14 CHG : ssi_parse_indices() : now supports ranges, e.g. 4-6 : Johannes
+- 09.12.14 CHG : frame/XMLPipeline : if not overwritten explicitly, the variable $(date) will be replaced by a global time stamp : Johannes
+- 10.12.14 CHG : frame/XMLPipeline : size attribute in <xinput> can be omitted : Johannes
+- 10.12.14 ADD : plugins/shimmer : shimmer3 sensor http://www.shimmersensing.com/ : Johannes
+- 16.12.14 CHG : plugins/nova : bodyporperties now is a feature (was consumer before) : Tobias
+- 16.12.14 CHG : ui/viewui : function to export samples : Johannes
+- 16.12.14 ADD : libs/shared/serial : serial port library : Johannes
+- 17.12.14 CHG : ui/viewui : improved usability, e.g. Str+S saves annotation, on close popup if changes should be saved, etc : Johannes
+- 17.12.14 ADD : ui/fubiGUI&plugins/fubi+opennikinect : updated to FUBI 0.12.0 with new DTW recognizers and a lot of other new features that SSI does not really care about... : Felix
+- 17.12.14 CHG : ui/viewui : improved usability, e.g. Str+S saves annotation, on close popup if changes should be saved, etc : Johannes
+- 18.12.14 BUG : frame/XMLPipeline : xinput was not correctly parsed : Johannes
+- 12.01.15 CHG : mouse/Mouse : button output as int : Johannes
+- 12.01.15 CHG : plugins/mouse : moved back to core : Johannes
+- 12.01.15 ADD : file/FakeSignal : can be used to generate sine wave, a random signal or an random image : Johannes
+- 13.01.15 ADD : event/TupleEventSender,StringEventSender : convert stream into as either tuple or string event : Johannes
+- 13.01.15 ADD : SSI_Tools : ssi_exists_dir to check if directory exists and return value for ssi_mkdir : Johannes
+- 15.01.15 CHG : event/XMLEventSender : works if added to pipeline as an object : Johannes
+- 15.01.15 CHG : event/XMLEventSender : if update==0, only fires if at least one new event : Johannes
+- 15.01.15 CHG : event/XMLEventSender : added field option to select time and duration : Johannes
+- 19.01.15 CHG : socketspy : default buffer size changed to Socket::MAX_MTU_SIZE : Johannes
+- 19.01.15 CHG : SSI_Tools : added ssi_sec2ms() to convert seconds to milliseconds : Johannes
+- 19.01.15 CHG : event/XMLEventSender : time and dur of event now properly set : Johannes
+- 19.01.15 CHG : ioput/SocketEventWriter : changed default option xml=false : Johannes
+- 20.01.15 CHG : event/XMLEventSender : now works as consumer if no event is registered : Johannes
+- 20.01.15 CHG : file/FileTools : added ReadLinesFromFile() to read all lines of a text file : Johannes
+- 21.01.15 CHG : plugins/shore/ShoreTracker : option k defines the number of frames a detection is kept if no new detection becomes available, 0 means forever : Johannes
+- 22.01.15 CHG : core : moved all remaining core dlls to plugins : Johannes
+- 22.01.15 ADD : SSI_Cons.h/ssi_rect_t,ssi_handle_t : ssi types to replace RECT and window handles : Johannes
+- 22.01.15 ADD : base/IWindow,IColormap,IPaintObject : cleaned up graphic library : Johannes
+
+*** Version 0.9.6 *** 
+- 23.01.15 ADD : file/example/[Example,Exsemble] : a helper class to manage and run examples : Johannes
+- 26.01.15 BUG : file/example/Example : argument pointer correctly copied in copy constructor : Johannes
+- 26.01.15 CHG : signal/SignalTools : Transform() extended to use extra streams : Johannes
+- 27.01.15 CHG : plugins/eyesig/GazeType : removed due to dependency to shore plugin : Johannes
+- 27.01.15 CHG : plugins/graphic/PaintData : moved to core library : Johannes
+- 28.01.15 CHG : plugins/model/anno2samp : supports continuous annotation : Johannes
+- 28.01.15 CHG : ui/viewui : supports export of continuous sample lists : Johannes
+- 28.01.15 BUG : core/test : separated project and include/source files in tests : Johannes
+- 28.01.15 BUG : cMake files added : Johannes, Simon
+- 28.01.15 BUG : plugins/browser/ImageViewer : image viewer to create slideshows : Johannes
+- 02.02.15 CHG : thread/Thread : cleaned up : Johannes
+- 02.02.15 CHG : plugins/graphic/PaintSignal : free back brush : Johannes
+- 02.02.15 BUG : graphic/Canvas : canvas is updated after position has changed : Johannes
+- 02.02.15 ADD : plugins/event/ClockEventSender : sends an event in regular clock intervals : Johannes
+- 02.02.15 CHG : plugins/browser/Stimuli : insert empty pages : Johannes
+- 03.02.15 CHG : plugins/mouse/Mouse : option to send event when button is pressed : Johannes
+- 03.02.15 CHG : plugins/theeyetribe/TheEyeTribe : locked callback function : Johannes
+- 04.02.15 CHG : plugins/audio/AudioMixer : transformer to mix several audio streams into one : Johannes
+- 04.02.15 CHG : plugins/theeyetribe/TheEyeTribe : added raw gaze, left/right eye position, pupil size/center  : Johannes
+- 06.02.15 ADD : base/IPainter,graphic/Painter : wrapper for drawing on a graphic device : Johannes
+- 10.02.15 CHG : ui/setup : allows selection of compiler : Johannes
+- 10.02.15 CHG : plugins/activemq/ActiveMQEvent : support for string events : Johannes
+- 10.02.15 CHG : plugins/event/XMLEventSender : new field "state" : Johannes
+- 13.02.15 BUG : event/IESelect : reset() called in get() function : Johannes
+- 13.02.15 BUG : xmledit : starts in x64 now (avalonedit correctly linked) : Johannes
+- 16.02.15 BUG : graphic/window : ON_PAINT in message loop now correctly handled : Johannes
+- 16.02.15 BUG : plugins/graphic/SignalPainter : swapped left and top in description of move/arrage option : Johannes
+- 17.02.15 ADD : plugins/intraface : track face closest to point, force re-detection : Johnny
+- 17.02.15 CHG : graphic/window : removed debug output : Johannes
+- 17.02.15 CHG : base/Factory : when importing dynamic libraries, file ending can be omitted : Johannes
+- 18.02.15 CHG : plugins/frame/FrameMonitor : monitor now pointer : Johannes
+- 20.02.15 ADD : ioput/file/FileCSV : helper class to read csv files : Johannes
+- 23.02.15 BUG : plugins/opensmile/OSPitchDirection : fixed bad xml parsing : Johnny
+- 25.02.15 CHG : SSI_Cons.h : added SSI_FILE_SEPARATOR : Johannes
+- 25.02.15 CHG : base/Factory : GetFactory() to get singleton : Johannes
+- 25.02.15 CHG : event/XMLEventSender : new fields "event", "sender", "relativetime" : Johannes
+- 25.02.15 ADD : SSI_Tools.h : ssi_exists(const char *filename, const char *extension) : Johannes
+- 27.02.15 BUG : plugins/dialog/DialogLibGateway.cpp : fixed bad strncpy return : Florian
+- 27.02.15 ADD : plugins/model/HierachicalModel : hierarchical model : Johannes
+- 02.03.15 ADD : plugins/model/SVM : balanced option : Johannes
+- 03.03.15 BUG : plugins/model/HierachicalModel : tree models are now released : Johannes
+- 04.03.15 CHG : struct/Queue,BinTree : load() and save() : Johannes
+- 04.03.15 CHG : plugins/model/HierachicalModel : load() and save() : Johannes
+- 23.03.15 CHG : graphic/Painter : added text() to draw text : Johannes
+- 27.03.15 CHG : graphic/* : cleaned up Canvas, Monitor and Slider : Johannes
+- 01.04.15 CHG : graphic/* : cleaned up SignalPainter : Johannes
+- 02.04.15 BUG : graphic/* : removed jitter in SignalPainter : Johannes
+- 15.04.15 CHG : libs/shared/opencv : binaries for vc120 : Johannes
+- 16.04.15 CHG : core : changed intermediate directories to solve conflict between vc100 and vc120 : Johannes
+- 16.04.15 CHG : core/*.exe : replaced "afxres.h" with "WinResrc.h" and #define IDC_STATIC  -1 : Johannes
+- 20.04.15 BUG : graphic/ThePainter : arranging windows relatively now works properly : Johannes
+- 22.04.15 ADD : libs/shared/curl : curllib + openssh static libraries : Johannes
+- 22.04.15 ADD : plugins/vocapia : vocapia speech recognizer (https based) : Johannes
+- 22.04.15 CHG : ioput/file/FileTools : ReadFileBytes() reads whole file into memory : Johannes
+- 24.04.15 CHG : frame/XMLPipeline : when including a pipeline the working directory is no longer changed : Johannes
+- 08.05.15 CHG : frame/Chain : chain can now be specified via option file : Johannes
+- 12.05.15 CHG : plugins/xsens : updated to XDA 4.3.0 : Johnny
+- 13.05.15 BUG : frame/Chain : removed some bug : Johannes
+- 13.05.15 CHG : merge with Florian relates to biosig,signal,eyesig,event & viewui : Johannes
+- 18.05.15 BUG : plugins/eyesig/HeatMapPainter : stops thread and frees memory : Johannes
+- 20.05.15 CHG : core.sln,plugins.sln : moved libs/shared/ssiml from plugins to core : Johannes
+- 20.05.15 CHG : plugins/xsens : added log, improved connection process : Johnny
+- 22.05.15 BUG : plugins/frame/TheFramework : GetData() stream.tot_real now correctly calculated : Johannes
+- 22.05.15 ADD : plugins/libsvm : LibSVM plugin that uses original libsvm model without modification : Johannes
+- 28.05.15 ADD : plugins/sensortex : removed from public plugins : Johannes
+- 28.05.15 ADD : ui/setup : ssi bin path now added at top of $PATH : Johannes
+- 08.06.15 ADD : model/Trainer : feature selection supports range, e.g. 4-10,15-20 : Johannes
+- 10.06.15 CHG : plugins/shimmer : restored shimmmer plugin : Johannes
+- 10.06.15 BUG : core : fixed bug when pushing zeroes : Johnny
+- 10.06.15 CHG : libs/shared/kissfft,ExpressionParser : moved from plugins/signal : Johannes
+- 10.06.15 BUG : signal/SignalTools::Transform : tot field in stream_in correctly set if delta is used : Johannes
+- 15.06.15 BUG : libs/shared/kissfft : moved Matrix and MatrixOps to core : Johannes
+- 17.06.15 CHG : model/Trainer : added activity for continuous classification : Johannes
+- 22.06.15 CHG : browser/ImageViewer : can visualize tuples, e.g. decisions of a classifier : Johannes
+- 23.06.15 BUG : modelui : confusion matrix correctly parsed : Johannes
+- 23.06.15 CHG : plugins/model/Evaluation : CSV_EX outputs class probabilities : Johannes
+- 24.06.15 ADD : plugins/graphic/EventPainter : component to visualize events : Johannes
+- 24.06.15 ADD : plugins/model/DecisionSmoother : component to create a continuous stream of smoothed decision events : Johannes
+- 25.06.15 CHG : plugins/event/ZeroEventSender : incdur option to send incremental events, maxdur now only used to make sure events do not exceed a certain duration : Johannes
+- 25.06.15 CHG : plugins/emovoice : removed EmoVoiceBayes and EmoVoiceSVM : Johannes
+- 01.07.15 CHG : plugins/FFMPEGReader : added support for offline (best effort) processing : Johnny
+- 01.07.15 ADD : model/ModelTools : transform sample list with extra streams : Johnny
+- 06.07.15 CHG : plugins/myo : orientation provider outputs now float : Johnny
+- 06.07.15 CHG : plugins/nova : removed opensmile dependncy in EnergyAcc, fixed bug in OAAcc : Johnny
+- 06.07.15 ADD : plugins/graphic/PointsPainter : paint points either as dots or as connected lines [x1,y1,x2,y2,...xn,yn] : Johannes
+- 06.07.15 ADD : plugins/graphic/VideoPainter : accepts additional position stream and visualizes using PointsPainter : Johannes
+- 06.07.15 CHG : plugins/event/TupleEventSender : tuple names can be set in options : Johannes
+- 06.07.15 BUG : plugins/event/FloatsEventSender : fixed "valchange" option  : Johnny
+- 07.07.15 BUG : ffmpeg/FFMPEGReader : fixed "bestEffort" option to wait for new frame before providing : Johnny
+- 23.07.15 ADD : libs/shared/openSMILE-2.1.0 : openSMILE 2.1.0 library : Johannes
+- 23.07.15 CHG : plugins/opensmilewrapper : updated to openSMILE 2.1.0 and added support for x64 : Johannes
+- 23.07.15 CHG : plugins/opensmilewrapper2 : updated to openSMILE 2.1.0 and added support for x64 : Johannes
+- 24.07.15 CHG : plugins/model/Classifier : added recognition from float events : Johannes
+- 29.07.15 CHG : plugins/ocvann : opencv neural networks : Johannes
+- 04.08.15 CHG : plugins/ioput/SocketEventListener : if received string has no null-byte it will add one : Johannes
+- 05.08.15 CHG : plugins/myo : new vibration consumer, MyoGestures also handles sync gestures : Johnny, MohammedDiab
+- 06.08.15 ADD : ui/fubiGUI&plugins/fubi+opennikinect : updated to FUBI 1.0.0 ALPHA with new TemplateRecognizers and improved 64-bit compatibility : Felix
+- 18.08.15 BUG : ui/modelui : first stimuli slide does not need to be an instruction page : Johannes
+- 19.08.15 BUG : plugins/model/mlpxml : total number of bytes correctly set when data is read from buffer : Johannes
+- 19.08.15 BUG : libs/ssiml/Trainer : normalization now works properly in combination with feature extraction : Johannes
+- 03.09.15 ADD : plugins/vst3 : wrapper for vst3 audio plugins : Johannes
+- 15.09.15 BUG : plugins/eyesig : fixed and cleaned up EyeBlink : Johnny
+- 15.09.15 CHG : plugins/eyesig : added maxdur for EyeBlink : Johnny
+- 22.10.15 ADD : ioput/file/FileEventIn : helper class to read events from a file : Johannes
+- 22.10.15 CHG : event/ISSelect : moved from ioput plugin to core library : Johannes
+- 30.10.15 CHG : graphic/PaintTuple : negative values are not displayed if set to positive bar : Johannes
+- 30.10.15 CHG : graphic/VideoPainter : now supports more than 1 additional stream with facial points : Johannes
+- 30.10.15 ADD : plugins/keyboard : provides key events as SSI events : Johnny
+- 30.10.15 CHG : plugins/keyboard : options to turn of incomplete events and detect whole words only : Johannes
+- 09.11.15 CHG : plugins/browswer : add SoundPlayer to playback wav files via events : Johannes
+- 12.11.15 ADD : frame/Inverter : inverts dimensions : Johannes
+- 13.11.15 BUG : audio/AudioConverter : renamed ssi_feature_AudioConverter -> ssi_filter_AudioConverter : Johannes
+- 30.10.15 CHG : plugins/keyboard : options to send only after pressing enter and replaced 'space' with ' ' : Johannes
+- 17.11.15 CHG : ioput/socket/ : edited osc protocol to send sender and event name : Johannes
+- 17.11.15 CHG : event/TheEventBoard : listener will be registered even if the requested address is unknown : Johannes
+- 19.11.15 CHG : frame/TheFramework : in addition to frame and delta, also buffer size is now passed as a string and can now be given in milliseconds, too (e.g. 5.0s -> seconds, 5000ms -> milliseconds, 500 -> samples) : Johannes
+- 19.11.15 CHG : frame/XMLParser : 'listen' in consumer-><input> should be renamed to 'address' and now supports 'state' ('nonzerodur' has been added as a new state to receive only events with a duration > 0) : Johannes
+- 24.11.15 ADD : base/INotify : notify objects about changes at run-time : Johannes
+- 24.11.15 CHG : base/IOptions : added lock flag : Johannes
+- 24.11.15 ADD : graphic : new classes ComboBox, CheckBox, TextBox : Johannes
+- 24.11.15 ADD : plugins/control : console to turn objects on/off and change options at run-time : Johannes
+- 24.11.15 CHG : * : remove ssi_<type>_ from object names : Johannes
+- 24.11.15 CHG : * : Copyright (C) 2007-14 University of Augsburg -> Copyright (C) University of Augsburg : Johannes
+
+*** Version 0.9.7 *** 
+- 26.11.15 ADD : plugins/control/ControlCheckBox : checkbox control : Johannes
+- 27.11.15 ADD : ui/xmleditor : CorrectLineEndingsCommand.cs : Johannes
+- 27.11.15 CHG : plugins/audio,opensmile : now build : Johannes
+- 02.12.15 ADD : graphic/Button : Button UI element : Johannes
+- 02.12.15 ADD : plugins/control/ControlButton : button to reset other pipeline objects : Johannes
+- 02.12.15 CHG : plugins/model/DecisionSmoother : option to calculate average of successive decisions : Johannes
+- 03.12.15 ADD : graphic/Grid : Grid UI element : Johannes
+- 02.12.15 ADD : plugins/control/ControlGrid : grid to control options of objects : Johannes
+- 10.12.15 ADD : plugins/model/HierarchicalModel : Load bug resolved : Johannes
+- 15.12.15 CHG : base/IWindow : added new virtual methods getHandle() and create() to IWindowClient : Johannes
+- 15.12.15 ADD : graphic/Tab : Tab UI element : Johannes
+- 16.12.15 ADD : plugins/control/GridControl : graphical interface to control options of objects : Johannes
+- 20.12.15 CHG : plugins/model/DecisionSmoother : average decisions over a window : Johannes
+- 12.01.16 CHG : libs/shared/opencv : update to version 300 : Florian
+- 12.01.16 BUG : ui/xmleditor : supporting options with multiple fields : Johannes
+- 12.01.16 CHG : plugins/fubi : use of ssi's shared opencv version : Johannes
+- 13.01.16 CHG : plugins/browser/Browser : show html strings : Johannes
+- 13.01.16 CHG : plugins/model/Classifier : select certain classes : Johannes
+- 13.01.16 CHG : plugins/graphic/PaintEvent : chop bars if limits are exceeded : Johannes
+- 13.01.16 ADD : plugins/fubi/FubiLock : make fubi thread safe : Johannes
+- 13.01.16 BUG : plugins/fubi/FubiGestures : set correct event time in case of combinations : Johannes
+- 13.01.16 BUG : plugins/fubi/FubiGestures : corrected conversion of SSI skeleton orientations (=KinectSDK) to FUBI skeleton orientations(=OpenNI) : Felix
+- 18.01.16 CHG : plugins/skeleton/SkeletonPainter : option to set frame rate : Johannes
+- 27.01.16 CHG : base/Factory : removed memory leaks : Johannes
+- 27.01.16 CHG : base/Factory : GetObjectIds() takes parameter 'filter' to get a selection (e.g. "object*,another1,another2") : Johannes
+- 27.01.16 CHG : SSI_TOOLS : ssi_val2str and ssi_stream_print take parameter 'precision' : Johannes
+- 27.01.16 CHG : event/XMLEventSender : new field 'precision' and possibility to select multiplies (e.g. select*4=0,2 selects 0,2,4,6,8,10,...) : Johannes
+- 27.01.16 CHG : SSI_TOOLS : ssi_stream_select takes parameter 'multiplies' (see previous) : Johannes
+- 27.01.16 CHG : frame/Selector : new option 'multiplies' (see previous) : Johannes
+- 27.01.16 CHG : graphic/IWindow : by default no menu items (can be added using STYLE struct, which is now additive) : Johannes
+- 27.01.16 CHG : event/* : option 'sname' and 'ename' should be replaced by 'address' : Johannes
+- 27.01.16 CHG : ioput/option/OptionList : macros 'SSI_OPTIONLIST_ADD_ADDRESS' and 'SSI_OPTIONLIST_SET_ADDRESS' (see previous) : Johannes
+- 27.01.16 CHG : SSI_TOOLS : added ssi_getcwd/ssi_setcwd to get/set current working directory : Johannes
+- 27.01.16 CHG : SSI_TOOLS : added ssi_printLastError() to print last windows error : Johannes
+- 27.01.16 CHG : control/* : new options 'title' and 'label' to set window caption and label of a button and a checkbox : Johannes
+- 28.01.16 CHG : plugins/activmq/* : non-blocking if connetion could not be established : Johannes
+- 05.02.16 CHG : graphic/ThePainter : removed and replaced by Decorator : Johannes
+- 05.02.16 ADD : frame/Decorator : new class to arrange windows on the screen : Johannes
+- 05.02.16 CHG : graphic/Window : possibility to add system tray icon : Johannes
+- 08.02.16 CHG : removed precompiled libs/dlls for Win32 setting
+
+*** Version 0.9.8 *** 
+- 18.02.16 ADD : SSI_Define.h : a place for global defines : Johannes
+- 18.02.16 ADD : libs/shared/SDL : SDL library : Johannes
+- 18.02.16 CHG : graphic/SDL_* : complete revision of SDL based drawing : Johannes
+- 19.02.16 CHG : libs/shared/opencv : upgrade to opencv 3.0.1 and switch to world library : Johannes
+- 29.02.16 CHG : SSI_Tools : strictly using types of fixed size defined in stdint.h (e.g. int32_t instead of int) : Johannes
+- 01.03.16 CHG : base/Factory : dlls may define an UnRegister() function, which is called before the dll is released : Johannes
+- 01.03.16 ADD : plugins/python/ssipy : python module that wraps ssi_stream_t : Johannes
+- 02.03.16 CHG : SSI_Define.h : enums are now c compatible : Johannes
+- 02.03.16 CHG : SSI_Define.h : SSI_LDOUBLE type set to double : Johannes
+- 03.03.16 CHG : image/Crop.h : if width and height are zero they will be initialized with region : Johannes
+- 03.03.16 CHG : image/Resize.h : added scaled option : Johannes
+- 04.03.16 CHG : plugins/python/PythonHelper.h : support for options and local variables (passed to functions as dictionaries 'opts' and 'vars') : Johannes
+- 07.03.16 CHG : SSI_Define.h : SSI_ETYPE_NTUPLE->SSI_ETYPE_MAP, SSI_ETYPE_FLOATS->SSI_ETYPE_TUPLE : Johannes
+- 07.03.16 CHG : SSI_Cons.h : ssi_event_tuple_t->ssi_event_map_t, ssi_even_tuple_t->ssi_real_t : Johannes
+- 09.03.16 CHG : SSI_Tools.h : added ssi_fullpath() and ssi_fullpathverylong() to convert relative to absolute path on windows : Johannes
+- 09.03.16 CHG : SSI_Tools.h : added ssi_mkdir_r() create directory tree recursively : Johannes
+- 09.03.16 CHG : SSI_Tools.h : ssi_mkdir(), ssi_exists(), ssi_exists_dir() support long filenames on windows : Johannes
+- 09.03.16 CHG : ioput/file/File.h : if necessary creates directory tree and supports long filenames on windows : Johannes
+- 09.03.16 CHG : plugins/event/EventMonitor.h : compact event visualization : Johannes
+- 09.03.16 CHG : plugins/python/* : added event support : Johannes
+- 10.03.16 CHG : plugins/python/PythonSensor : a sensor wrapper for python : Johannes
+- 11.03.16 CHG : plugins/python/PythonHelper : add directories to sys path : Johannes
+- 14.03.16 CHG : add msspeech to plugins solution : Johannes
+- 14.03.16 CHG : upgrade to Python 3.5x : Johannes
+- 14.03.16 CHG : add python to core : Johannes
+- 14.03.16 CHG : add python to setup : Johannes
+- 15.03.16 CHG : ioput/file/File* : read/write methods return number of read/written bytes : Johannes
+- 15.03.16 CHG : ui/xmlpipeui : ini file to set path to xmlpipe.exe : Johannes
+- 18.03.16 CHG : base/ITheFramework : added DoRestart() method : Johannes
+- 18.03.16 CHG : plugins/frame/TheFramework : option 'sdialog' to show a dialog that gives different options how to start synced pipelines : Johannes
+- 18.03.16 BUG : plugins/audio/AudioPlayer : buffer mutex is properly re-created after close() was called : Johannes
+- 18.03.16 BUG : plugins/ffmpeg/FFMPEGReader : client is properly re-created after flush() was called : Johannes
+- 18.03.16 BUG : plugins/event/TheEventBoard : event list/queue is cleared when board is stopped : Johannes
+- 21.03.16 BUG : ui/xmlpipeui : unsaved changes are properly stored when changing configs : Johannes
+- 21.03.16 CHG : ui/xmlpipeui : selected row of config list is changed when item is selected and double click shows edit dialog : Johannes
+- 22.03.16 CHG : SSI_Define.h : new datatype ssi_lsize_t (=uint64_t)
+- 22.03.16 CHG : Buffer,TimeBuffer,TheFramework,Consumer,Transformer : changed position counter from ssi_size_t to ssi_lsize_t : Johannes
+- 22.03.16 CHG : plugins/ioput/SocketReader : by default host is set to 'any' : Johannes
+- 22.03.16 CHG : plugins/audio/WavReader : by default scale is set to 'true' : Johannes
+- 23.03.16 CHG : plugins/ffmpeg : upgrade to 3.0 : Johannes 
+- 01.04.16 BUG : plugins/praat : bugfix in script, updated parser to be able to handle praat errors : Johnny
+- 04.04.16 BUG : ui/setup : platform is correctly selected : Johannes
+- 04.04.16 ADD : docs/* : started to add new documentation : Johannes
+- 06.04.16 CHG : ui/xmlpipeui : remembers previous pipe/config selection : Johannes
+- 11.04.16 CHG : ui/viewui : changed color of selected annotation segment : Johannes
+- 11.04.16 CHG : plugins/frame/XMLPipeline : <provider/> tag replaced by <output/> and 'check' renamed to 'watch' : Johannes
+- 11.04.16 CHG : plugins/frame/XMLPipeline : watch and sync now given as strings (s->seconds, ms->milliseconds, otherwise samples) : Johannes
+
+*** Version 0.9.9 *** 
+- 13.04.16 BUG : ioput/file/FileAscii : read() properly returns the number of read numbers : Johannes
+- 13.04.16 CHG : base/Factory : trailing 'ssi' will possibly be added to library name when plug-in is loaded : Johannes
+- 13.04.16 ADD : plugins/python/[PythonImageFilter,PythonImageFeature,PythonImageConsumer] : python wrapper now supports images : Johannes
+- 15.04.16 CHG : plugins/ioput/SocketEventWriter : added option for wrapping strings in CDATA : Johnny
+- 13.04.16 ADD : python/ssi_cvfacedetect,ssi_cvsmiledetect : face and smile detection with opencv : Johannes
+- 18.04.16 REM : plugins/signal/[Operator0,Operator1] : use Expression or python plugin : Johannes
+- 18.04.16 ADD : plugins/signal/Sum : sums sample values along dimensions : Johannes
+- 18.04.16 CHG : ioput/file/FileStreamOut : add setFormat(), delim + flags now stored in info tag : Johannes
+- 19.04.16 CHG : frame/XMLParser : attribute 'name' replaced by 'path' in <include> element : Johannes
+- 19.04.16 CHG : frame/XMLParser : element 'execute' replaced by 'job' : Johannes
+- 21.04.16 CHG : event/TupleEventSender : renamed to MapEventSender : Johannes
+- 21.04.16 CHG : event/FloatsEventSender : renamed to TupleEventSender : Johannes
+- 21.04.16 CHG : frame/XmlParser : 'span' in <listen> and <input> element can be given in seconds (e.g. 10.0s) : Johannes
+- 26.04.16 CHG : ui/setup : file associations now get overwritten and can be deleted : Johannes
+- 26.04.16 ADD : control/ControlTextBox : edit specific options via textbox at run-time : Johannes
+- 26.04.16 ADD : .pipelines : remove utf-16 from xml header : Johannes
+- 27.04.16 BUG : frame/TimeBuffer : buffer size correctly stored if given in samples : Johannes
+- 28.04.16 CHG : libs/shared : renamed to libs/build : Johannes
+- 28.04.16 CHG : stop support for Visual Studio 2010 : Johannes
+- 28.04.16 CHG : plugins/opensmilewrapper2 : renamed to opensmilewrapperexe : Johannes
+- 29.04.16 BUG : plugins/microsoftkinect2 : skeleton can be accessed independent of face : Johannes
+- 02.05.16 BUG : plugins/python : map event is correctly initialized : Johannes
+- 02.05.16 CHG : plugins/python : changed unit from milliseconds to seconds in info struct : Johannes
+- 03.05.16 CHG : plugins/ioput/SignalReader : default block size is 1.0 : Johannes
+- 04.05.16 CHG : frame/TheFramework : option to stop pipeline after 'runtime' seconds : Johannes
+- 04.05.16 CHG : microsoftkinect2/MicrosoftKinect2 : added audio channel : Johannes
+- 09.05.16 BUG : frame/Chain : now can be used in xml pipelines : Johannes
+- 10.05.16 CHG : python/ssipy.c : update() -> single float values are converted to TUPLE events : Johannes
+- 10.05.16 CHG : signal/SignalTools : transform() -> added new argument 'copy_input' to receive copy of input stream : Johannes
+- 20.05.16 CHG : frame/TheFramework : added shost option : Johannes
+- 31.05.16 ADD : plugins/audio/AudioMono : mono mixdown : Johannes
+- 02.06.16 CHG : plugins/keyboard : fixed bugsin VKey mapping, added DE map : Johnny
+- 01.06.16 ADD : python/speech/asr : speech recognition in python : Johannes- 02.06.16 CHG : plugins/keyboard : fixed bugsin VKey mapping, added DE map : Johnny
+- 22.06.16 CHG : ssi/model/Annotation : now able to adjust annos : Johnny
+- 22.06.16 CHG : ssi/model/ModelTools : added option which enables merging non perfectly equal sample lists : Johnny
+- 28.06.16 CHG : event/XmlEventSender : added functionals 'first' and 'last' to access oldest and latest samples : Johannes
+- 30.06.16 ADD : plugins/currennt : wrapper for the 'currennt' neural network library (foward pass only) : Johannes
+- 04.07.16 BUG : libs/ssiml/Trainer : Trainer now creates models with auto-free flag set to false : Johannes
+- 05.07.16 CHG : plugins/currennt : now we can train networks : Johannes
+- 06.07.16 BUG : libs/ssiml/Trainer : train returns false if model training failed : Johannes
+- 06.07.16 BUG : SSI_Debug : ssi_print_off() adds offset to align debug messages with log name prefix : Johannes
+- 06.07.16 CHG : plugins/currennt : 'splitting' option controls splitting of training data set into train/devel/test : Johannes
+- 07.07.16 CHG : SSI_Cons : add a 'score' field to ssi_sample_t for regression tasks : Johannes
+- 07.07.16 CHG : plugins/iom : update 'lightstone' library : Johannes
+- 13.07.16 CHG : ioput/FileWriter : writes skeleton/face meta to stream files : Johannes
+- 13.07.16 ADD : plugins/openface : an open source facial behavior analysis toolkit : Johannes
+- 14.07.16 CHG : graphic/Painter : displayed text may contain line breaks ('|') : Johannes
+- 14.07.16 CHG : ssiml/Evaluation : sample-wise regression results for correctly displayed : Johannes
+- 15.07.16 BUG : plugins/opensmilewrapper : ssi writer plugin adds 'pcm' prefix instead of 'ssi' : Johannes
+- 15.07.16 CHG : plugins/opensmilewrapper : new option to continuously extract features : Johannes
+- 27.07.16 BUG : graphic/Window : using long pointer in create function to prevents crash on 64-bit systems (thanks to Jonathan Rosca): Johannes

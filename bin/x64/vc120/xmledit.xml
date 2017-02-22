@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ClassDef>
+  <load>
+    <property type="System.String" name="Name" attribute="name"/>
+  </load>
+
+  <input>
+    <property type="System.String" name="Pin" attribute="pin"/>
+    <property type="System.String" name="Frame (s for seconds)" attribute="frame"/>
+    <property type="System.String" name="Delta (s for seconds)" attribute="delta"/>
+  </input>
+
+  <cinput extends="input">
+    <property type="System.String" name="Event (e1,..,eN@s1,..,sN)" attribute="listen"/>
+  </cinput>
+
+  <listen>
+    <property type="System.String" name="Event (e1,..,eN@s1,..,sN)" attribute="address"/>
+    <property type="System.String" name="Time (in milliseconds)" attribute="span"/>
+  </listen>
+
+  <event>
+    <property type="System.String" name="name" dependency="input" dependencyAttribute="event"/>
+  </event>
+
+  <output>
+    <property type="System.String" name="Pin" attribute="pin" dependency="input" dependencyAttribute="pin"/>
+  </output>
+
+  <register selectable="true">
+    <property category="DLL" type="Sequenz:load" name="Load" attribute="load"/>
+  </register>
+
+  <provider>
+    <property type="System.String" name="channel" dataSource="channels"/>
+    <property type="System.String" name="pin" dependency="input" dependencyAttribute="pin"/>
+  </provider>
+
+  <baseitem insertInNode="register" insertInAttribute="name" insertType="load" insertValue="Library" selectable="true">
+    <property category="Component" categoryDesc="create description"  type="System.String" name="Create" attribute="create" hasMetadata="true"/>
+    <property category="Component" type="System.String" name="Option" attribute="option"/>
+    <property category="Component" type="System.String" name="Library" readonly="true"/>
+  </baseitem>
+
+  <sensor extends="baseitem">
+    <property category="Provider" type="Sequenz:provider" name="Provider" attribute="provider"/>
+    <property category="Connections" type="listen" name="Listen" attribute="listen"/>
+  </sensor>
+
+  <transformer extends="baseitem">
+    <property category="Connections" type="input" name="Input" attribute="input"/>
+    <property category="Connections" type="output" name="Output" attribute="output"/>
+	  <property category="Connections" type="listen" name="Listen" attribute="listen"/>	
+  </transformer>
+
+  <consumer extends="baseitem">
+    <property category="Connections" type="cinput" name="Input" attribute="input"/>
+	  <property category="Connections" type="listen" name="Listen" attribute="listen"/>	
+  </consumer>
+
+  <object extends="baseitem">
+	  <property category="Connections" type="listen" name="Listen" attribute="listen"/>  
+  </object>
+
+</ClassDef>

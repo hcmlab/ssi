@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Snippet>
+  <Shortcut>object</Shortcut>
+  <Declaration>
+    <ID>
+      <Name>name</Name>
+      <Value></Value>
+    </ID>
+  </Declaration>
+  <Code>
+    <![CDATA[<object create="$name$">
+		<listen address="" />		
+	</object>]]>
+  </Code>
+</Snippet>

@@ -1,0 +1,55 @@
+------------------------------------------------------------
+	Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net	 	
+	
+Version 0.9.9
+
+------------------------------------------------------------
+	License
+------------------------------------------------------------
+	
+	SSI is an open source project maintained by the
+	Lab for Human Centered Multimedia at the University 
+	of Augsburg, Germany.
+	
+	Core libraries are released under LGPL (see LICENSE in core folder).
+	
+	By default plugins are released under GPL, but invidual licences 
+	may apply (see LICENSE file in plugin folder).
+	
+	For 3rd party dependencies see the README file and additional
+	license files.
+	
+------------------------------------------------------------
+	Publication
+------------------------------------------------------------	
+	
+	Johannes Wagner, Florian Lingenfelser, Tobias Baur, Ionut Damian, Felix Kistler, and Elisabeth André. 2013. The social signal interpretation (SSI) framework: multimodal signal processing and recognition in real-time. In Proceedings of the 21st ACM international conference on Multimedia (MM ’13). ACM, New York, NY, USA, 831-834. DOI=10.1145/2502081.2502223 http://doi.acm.org/10.1145/2502081.2502223
+
+	@inproceedings{Wagner13,
+	 author = {Wagner, Johannes and Lingenfelser, Florian and Baur, Tobias and Damian, Ionut and Kistler, Felix and Andr{\'e}, Elisabeth},
+	 title = {The social signal interpretation (SSI) framework: multimodal signal processing and recognition in real-time},
+	 booktitle = {Proceedings of the 21st ACM international conference on Multimedia},
+	 series = {MM '13},
+	 year = {2013},
+	 isbn = {978-1-4503-2404-5},
+	 location = {Barcelona, Spain},
+	 pages = {831--834},
+	 numpages = {4},
+	 url = {http://doi.acm.org/10.1145/2502081.2502223},
+	 doi = {10.1145/2502081.2502223},
+	 acmid = {2502223},
+	 publisher = {ACM},
+	 address = {New York, NY, USA},
+	 keywords = {multimodal fusion, open source framework, real-time pattern recognition, social signal processing},
+	}
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+
