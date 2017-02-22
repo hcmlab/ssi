@@ -1,0 +1,842 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\thread">
+      <UniqueIdentifier>{ae90adb9-1fa1-4c98-ad82-b4d3509e33ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphic">
+      <UniqueIdentifier>{3ffbfb43-7076-4b11-9859-a0b98b100c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\signal">
+      <UniqueIdentifier>{589483b8-a26e-4bed-ab28-3cc6009dfa5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput">
+      <UniqueIdentifier>{8454c113-084a-4303-9291-e8e2f63a7a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\file">
+      <UniqueIdentifier>{4ac6b15f-0d8f-4d53-a52c-4faf87febccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\option">
+      <UniqueIdentifier>{a50d9473-c59d-48de-b953-4d3f4c28de78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\socket">
+      <UniqueIdentifier>{e14f90f4-168d-412c-8b35-d3a4364ffb9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\socket\ip">
+      <UniqueIdentifier>{2efa0175-eabd-48fe-94a5-b48c3d7b6647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\socket\osc">
+      <UniqueIdentifier>{35cc8193-2735-44ff-8d5f-5bc1510d088c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\wav">
+      <UniqueIdentifier>{0a79aab7-10e7-4f72-a86e-54ea8ff8cf92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\xml">
+      <UniqueIdentifier>{9b0d17ae-8920-4d7f-89b8-0fcac9768708}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\pipe">
+      <UniqueIdentifier>{db0e294b-60e2-42c3-8915-5dca53b3c525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\model">
+      <UniqueIdentifier>{046867d8-ccd6-4d4a-ae34-f64324d4d1cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base">
+      <UniqueIdentifier>{0d17853b-6df8-4df6-8e8e-de140b7ba017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\event">
+      <UniqueIdentifier>{75ca1488-95d7-48de-83ac-fb6cd47a3aff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\thread">
+      <UniqueIdentifier>{ce999766-0cc8-428f-a28c-c27e3e765087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput">
+      <UniqueIdentifier>{afa33efc-acc4-478a-a384-e2798e07ed9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\file">
+      <UniqueIdentifier>{e8719389-8ef9-4522-b011-f85a5e31abab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\option">
+      <UniqueIdentifier>{e8860ce9-cfdd-4177-bcf3-732293d26d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\socket">
+      <UniqueIdentifier>{2de3c1c5-7d2c-4e03-9ca9-955f307c5dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\socket\ip">
+      <UniqueIdentifier>{29ab5097-faf0-467b-8b65-391eb1988e24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\socket\osc">
+      <UniqueIdentifier>{a73e9360-5437-4489-b174-7c47b4e21214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\wav">
+      <UniqueIdentifier>{0a6b6a4d-faaf-4ab8-ba64-9a525d17c0bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\xml">
+      <UniqueIdentifier>{ebb912f6-3d6f-4660-8436-5dc8079431f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\pipe">
+      <UniqueIdentifier>{a154033c-ca28-46b6-99ca-8d4300146a39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphic">
+      <UniqueIdentifier>{6a96b5e2-f051-4247-b3f6-a2eba059398e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\signal">
+      <UniqueIdentifier>{ca135fa0-d1eb-44e9-9cf7-c6d577ef9210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base">
+      <UniqueIdentifier>{7c529923-d2ee-4d0b-9637-c0be053a7efd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\event">
+      <UniqueIdentifier>{696d4270-fa82-4f11-b7b4-5bfc64200386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\model">
+      <UniqueIdentifier>{9e7db96b-242b-42d6-a08a-613526d15233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\jpg">
+      <UniqueIdentifier>{bb150e53-ef1b-464e-abe3-356f06d4b562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\jpg">
+      <UniqueIdentifier>{9c8770ec-1955-4017-9d5c-a7fbfafa509d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\buffer">
+      <UniqueIdentifier>{67ae4b9d-ed60-453c-9b4f-fbca3b1f596d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\buffer">
+      <UniqueIdentifier>{11b782c6-42c5-4728-91fb-c2566213aa78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\example">
+      <UniqueIdentifier>{b99e12d7-c46e-4522-b262-37479b0adef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\example">
+      <UniqueIdentifier>{e8aec4cb-2795-48b5-b43d-bdac931994c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\struct">
+      <UniqueIdentifier>{93ca4775-73db-4536-8cf2-2612e10a242a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\struct">
+      <UniqueIdentifier>{be854eec-28ed-43ce-b32b-c50ff394d542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ioput\lz4">
+      <UniqueIdentifier>{75b18a9e-fad6-4829-a845-e131da45677e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ioput\lz4">
+      <UniqueIdentifier>{0272b9ae-8eb5-480a-8508-00240792ed4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\r250.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\SSI_Global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Condition.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Event.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Lock.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Mutex.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Thread.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\Timer.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\DialogLibGateway.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\signal\SignalTools.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\File.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationWriter.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileAscii.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileBinary.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileEventsOut.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FilePath.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileProvider.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileSamplesIn.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileSamplesOut.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileStreamIn.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileStreamOut.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileTools.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\StringList.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\option\CmdArgOption.cpp">
+      <Filter>Source Files\ioput\option</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\option\CmdArgParser.cpp">
+      <Filter>Source Files\ioput\option</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\option\OptionList.cpp">
+      <Filter>Source Files\ioput\option</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\Socket.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\SocketOsc.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\SocketOscEventWriter.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\SocketTcp.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\SocketUdp.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\ip\IpEndpointName.cpp">
+      <Filter>Source Files\ioput\socket\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\ip\win32\NetworkingUtils.cpp">
+      <Filter>Source Files\ioput\socket\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\ip\TcpSocket.cpp">
+      <Filter>Source Files\ioput\socket\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\ip\win32\UdpSocket.cpp">
+      <Filter>Source Files\ioput\socket\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscOutboundPacketStream.cpp">
+      <Filter>Source Files\ioput\socket\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscPrintReceivedElements.cpp">
+      <Filter>Source Files\ioput\socket\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscReceivedElements.cpp">
+      <Filter>Source Files\ioput\socket\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscTypes.cpp">
+      <Filter>Source Files\ioput\socket\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\wav\WavTools.cpp">
+      <Filter>Source Files\ioput\wav</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\xml\tinystr.cpp">
+      <Filter>Source Files\ioput\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\xml\tinyxml.cpp">
+      <Filter>Source Files\ioput\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\xml\tinyxmlerror.cpp">
+      <Filter>Source Files\ioput\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\xml\tinyxmlparser.cpp">
+      <Filter>Source Files\ioput\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\pipe\NamedPipe.cpp">
+      <Filter>Source Files\ioput\pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\model\SampleList.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\base\Factory.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\base\String.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\event\EventAddress.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\ThreadPool.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\socket\SocketImage.cpp">
+      <Filter>Source Files\ioput\socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileMem.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileMemAscii.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\jpg\jpgd.cpp">
+      <Filter>Source Files\ioput\jpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\jpg\jpge.cpp">
+      <Filter>Source Files\ioput\jpg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\RunAsThread.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\model\ModelTools.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\model\Annotation.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\ClockThread.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\event\EventList.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Slider.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Window.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Monitor.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Canvas.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\buffer\TimeBuffer.cpp">
+      <Filter>Source Files\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\buffer\Buffer.cpp">
+      <Filter>Source Files\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\example\Example.cpp">
+      <Filter>Source Files\ioput\example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\example\Exsemble.cpp">
+      <Filter>Source Files\ioput\example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\PaintData.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Painter.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileCSV.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\struct\BinTree.cpp">
+      <Filter>Source Files\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\struct\Queue.cpp">
+      <Filter>Source Files\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Colormap.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\GraphicTools.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\lz4\lz4.c">
+      <Filter>Source Files\ioput\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\lz4\lz4hc.c">
+      <Filter>Source Files\ioput\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileBinaryLZ4.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\lz4\lz4frame.c">
+      <Filter>Source Files\ioput\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\lz4\xxhash.c">
+      <Filter>Source Files\ioput\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\event\IESelect.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileEventsIn.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\TextBox.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\CheckBox.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\ComboBox.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\BabyGrid.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Button.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Console.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Grid.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\SystemTray.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphic\Tab.cpp">
+      <Filter>Source Files\graphic</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\r250.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ssi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_Cons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_Debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_LeakWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Condition.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Event.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Lock.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Mutex.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Thread.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\ThreadLibCons.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\Timer.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\File.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationWriter.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileAscii.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileBinary.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileEventsOut.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FilePath.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileProvider.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileSamplesIn.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileSamplesOut.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileStreamIn.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileStreamOut.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileTools.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\StringList.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\option\CmdArgOption.h">
+      <Filter>Header Files\ioput\option</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\option\CmdArgParser.h">
+      <Filter>Header Files\ioput\option</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\option\OptionList.h">
+      <Filter>Header Files\ioput\option</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\Socket.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketOsc.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketOscEventWriter.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketOscListener.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketTcp.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketUdp.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\IpEndpointName.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\NetworkingUtils.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\PacketListener.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\TcpSocket.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\TimerListener.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\ip\UdpSocket.h">
+      <Filter>Header Files\ioput\socket\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\MessageMappingOscPacketListener.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscException.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscHostEndianness.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscOutboundPacketStream.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscPacketListener.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscPrintReceivedElements.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscReceivedElements.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscTypes.h">
+      <Filter>Header Files\ioput\socket\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\wav\WavHeader.h">
+      <Filter>Header Files\ioput\wav</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\wav\WavTools.h">
+      <Filter>Header Files\ioput\wav</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\xml\tinystr.h">
+      <Filter>Header Files\ioput\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\xml\tinyxml.h">
+      <Filter>Header Files\ioput\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\pipe\NamedPipe.h">
+      <Filter>Header Files\ioput\pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\pipe\NamedPipeListener.h">
+      <Filter>Header Files\ioput\pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\DialogLibGateway.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\signal\mathext.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\signal\SignalCons.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\signal\SignalTools.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\Array1D.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\Factory.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IChannel.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IComponent.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IConsumer.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IEvents.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IFeature.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IFilter.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IFusion.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IMessage.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IModel.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IObject.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IOptions.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IProvider.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IRunnable.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ISamples.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ISelection.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ISensor.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ITheEventBoard.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ITheFramework.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IThePainter.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ITransformable.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ITransformer.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IXMLPipeline.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\String.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\event\EventAddress.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\model\SampleList.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\ThreadPool.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IContinuousModel.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_SkeletonCons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketImage.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileMem.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileMemAscii.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\jpg\jpge.h">
+      <Filter>Header Files\ioput\jpg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\jpg\jpgd.h">
+      <Filter>Header Files\ioput\jpg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\RunAsThread.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileMessage.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\socket\SocketMessage.h">
+      <Filter>Header Files\ioput\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\model\ModelTools.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\model\Annotation.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\ClockThread.h">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\event\EventList.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IColormap.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Slider.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Window.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Monitor.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IWindow.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Canvas.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\buffer\Buffer.h">
+      <Filter>Header Files\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\buffer\TimeBuffer.h">
+      <Filter>Header Files\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\example\Example.h">
+      <Filter>Header Files\ioput\example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\example\Exsemble.h">
+      <Filter>Header Files\ioput\example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\PaintData.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Painter.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IPainter.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileCSV.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\struct\BinTree.h">
+      <Filter>Header Files\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\struct\Queue.h">
+      <Filter>Header Files\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Colormap.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\ICanvas.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\IMonitor.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\GraphicTools.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\lz4\lz4.h">
+      <Filter>Header Files\ioput\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\lz4\lz4hc.h">
+      <Filter>Header Files\ioput\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileBinaryLZ4.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\lz4\lz4frame.h">
+      <Filter>Header Files\ioput\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\lz4\xxhash.h">
+      <Filter>Header Files\ioput\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\lz4\lz4frame_static.h">
+      <Filter>Header Files\ioput\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\signal\Matrix.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\signal\MatrixOps.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\event\IESelect.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileEventsIn.h">
+      <Filter>Header Files\ioput\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\TextBox.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\CheckBox.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\ComboBox.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\BabyGrid.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Button.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Grid.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\SystemTray.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Tab.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_Define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\base\INotify.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ssi.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ui.ico" />
+  </ItemGroup>
+</Project>

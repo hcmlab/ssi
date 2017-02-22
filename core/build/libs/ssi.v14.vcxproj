@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F3BCD1A4-5985-47B7-9BB7-1701E582DEEC}</ProjectGuid>
+    <RootNamespace>ssi</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>ssi</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;..\..\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\buffer\Buffer.cpp" />
+    <ClCompile Include="..\..\source\buffer\TimeBuffer.cpp" />
+    <ClCompile Include="..\..\source\event\EventList.cpp" />
+    <ClCompile Include="..\..\source\event\IESelect.cpp" />
+    <ClCompile Include="..\..\source\graphic\BabyGrid.cpp" />
+    <ClCompile Include="..\..\source\graphic\Button.cpp" />
+    <ClCompile Include="..\..\source\graphic\Canvas.cpp" />
+    <ClCompile Include="..\..\source\graphic\CheckBox.cpp" />
+    <ClCompile Include="..\..\source\graphic\Colormap.cpp" />
+    <ClCompile Include="..\..\source\graphic\ComboBox.cpp" />
+    <ClCompile Include="..\..\source\graphic\Console.cpp" />
+    <ClCompile Include="..\..\source\graphic\GraphicTools.cpp" />
+    <ClCompile Include="..\..\source\graphic\Grid.cpp" />
+    <ClCompile Include="..\..\source\graphic\Monitor.cpp" />
+    <ClCompile Include="..\..\source\graphic\PaintData.cpp" />
+    <ClCompile Include="..\..\source\graphic\Painter.cpp" />
+    <ClCompile Include="..\..\source\graphic\Slider.cpp" />
+    <ClCompile Include="..\..\source\graphic\SystemTray.cpp" />
+    <ClCompile Include="..\..\source\graphic\Tab.cpp" />
+    <ClCompile Include="..\..\source\graphic\TextBox.cpp" />
+    <ClCompile Include="..\..\source\graphic\Window.cpp" />
+    <ClCompile Include="..\..\source\ioput\example\Example.cpp" />
+    <ClCompile Include="..\..\source\ioput\example\Exsemble.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileBinaryLZ4.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileCSV.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileEventsIn.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileMemAscii.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileMem.cpp" />
+    <ClCompile Include="..\..\source\ioput\jpg\jpgd.cpp" />
+    <ClCompile Include="..\..\source\ioput\jpg\jpge.cpp" />
+    <ClCompile Include="..\..\source\ioput\lz4\lz4.c" />
+    <ClCompile Include="..\..\source\ioput\lz4\lz4frame.c" />
+    <ClCompile Include="..\..\source\ioput\lz4\lz4hc.c" />
+    <ClCompile Include="..\..\source\ioput\lz4\xxhash.c" />
+    <ClCompile Include="..\..\source\ioput\socket\SocketImage.cpp" />
+    <ClCompile Include="..\..\source\model\Annotation.cpp" />
+    <ClCompile Include="..\..\source\model\ModelTools.cpp" />
+    <ClCompile Include="..\..\source\r250.c" />
+    <ClCompile Include="..\..\source\SSI_Global.cpp" />
+    <ClCompile Include="..\..\source\struct\BinTree.cpp" />
+    <ClCompile Include="..\..\source\struct\Queue.cpp" />
+    <ClCompile Include="..\..\source\thread\ClockThread.cpp" />
+    <ClCompile Include="..\..\source\thread\Condition.cpp" />
+    <ClCompile Include="..\..\source\thread\Event.cpp" />
+    <ClCompile Include="..\..\source\thread\Lock.cpp" />
+    <ClCompile Include="..\..\source\thread\Mutex.cpp" />
+    <ClCompile Include="..\..\source\thread\RunAsThread.cpp" />
+    <ClCompile Include="..\..\source\thread\Thread.cpp" />
+    <ClCompile Include="..\..\source\thread\ThreadPool.cpp" />
+    <ClCompile Include="..\..\source\thread\Timer.cpp" />
+    <ClCompile Include="..\..\source\graphic\DialogLibGateway.cpp" />
+    <ClCompile Include="..\..\source\signal\SignalTools.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\File.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationWriter.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileAscii.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileBinary.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileEventsOut.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FilePath.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileProvider.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileSamplesIn.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileSamplesOut.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileStreamIn.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileStreamOut.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileTools.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\StringList.cpp" />
+    <ClCompile Include="..\..\source\ioput\option\CmdArgOption.cpp" />
+    <ClCompile Include="..\..\source\ioput\option\CmdArgParser.cpp" />
+    <ClCompile Include="..\..\source\ioput\option\OptionList.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\Socket.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\SocketOsc.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\SocketOscEventWriter.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\SocketTcp.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\SocketUdp.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\ip\TcpSocket.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\..\source\ioput\socket\osc\OscTypes.cpp" />
+    <ClCompile Include="..\..\source\ioput\wav\WavTools.cpp" />
+    <ClCompile Include="..\..\source\ioput\xml\tinystr.cpp" />
+    <ClCompile Include="..\..\source\ioput\xml\tinyxml.cpp" />
+    <ClCompile Include="..\..\source\ioput\xml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\source\ioput\xml\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\source\ioput\pipe\NamedPipe.cpp" />
+    <ClCompile Include="..\..\source\model\SampleList.cpp" />
+    <ClCompile Include="..\..\source\base\Factory.cpp" />
+    <ClCompile Include="..\..\source\base\String.cpp" />
+    <ClCompile Include="..\..\source\event\EventAddress.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\base\ICanvas.h" />
+    <ClInclude Include="..\..\include\base\IColormap.h" />
+    <ClInclude Include="..\..\include\base\IContinuousModel.h" />
+    <ClInclude Include="..\..\include\base\IMonitor.h" />
+    <ClInclude Include="..\..\include\base\INotify.h" />
+    <ClInclude Include="..\..\include\base\IPainter.h" />
+    <ClInclude Include="..\..\include\base\IWindow.h" />
+    <ClInclude Include="..\..\include\buffer\Buffer.h" />
+    <ClInclude Include="..\..\include\buffer\TimeBuffer.h" />
+    <ClInclude Include="..\..\include\event\EventList.h" />
+    <ClInclude Include="..\..\include\event\IESelect.h" />
+    <ClInclude Include="..\..\include\graphic\BabyGrid.h" />
+    <ClInclude Include="..\..\include\graphic\Button.h" />
+    <ClInclude Include="..\..\include\graphic\Canvas.h" />
+    <ClInclude Include="..\..\include\graphic\CheckBox.h" />
+    <ClInclude Include="..\..\include\graphic\Colormap.h" />
+    <ClInclude Include="..\..\include\graphic\ComboBox.h" />
+    <ClInclude Include="..\..\include\graphic\GraphicTools.h" />
+    <ClInclude Include="..\..\include\graphic\Grid.h" />
+    <ClInclude Include="..\..\include\graphic\Monitor.h" />
+    <ClInclude Include="..\..\include\graphic\PaintData.h" />
+    <ClInclude Include="..\..\include\graphic\Painter.h" />
+    <ClInclude Include="..\..\include\graphic\Slider.h" />
+    <ClInclude Include="..\..\include\graphic\SystemTray.h" />
+    <ClInclude Include="..\..\include\graphic\Tab.h" />
+    <ClInclude Include="..\..\include\graphic\TextBox.h" />
+    <ClInclude Include="..\..\include\graphic\Window.h" />
+    <ClInclude Include="..\..\include\ioput\example\Example.h" />
+    <ClInclude Include="..\..\include\ioput\example\Exsemble.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileBinaryLZ4.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileCSV.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileEventsIn.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileMemAscii.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileMem.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileMessage.h" />
+    <ClInclude Include="..\..\include\ioput\jpg\jpgd.h" />
+    <ClInclude Include="..\..\include\ioput\jpg\jpge.h" />
+    <ClInclude Include="..\..\include\ioput\lz4\lz4.h" />
+    <ClInclude Include="..\..\include\ioput\lz4\lz4frame.h" />
+    <ClInclude Include="..\..\include\ioput\lz4\lz4frame_static.h" />
+    <ClInclude Include="..\..\include\ioput\lz4\lz4hc.h" />
+    <ClInclude Include="..\..\include\ioput\lz4\xxhash.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketImage.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketMessage.h" />
+    <ClInclude Include="..\..\include\model\Annotation.h" />
+    <ClInclude Include="..\..\include\model\ModelTools.h" />
+    <ClInclude Include="..\..\include\r250.h" />
+    <ClInclude Include="..\..\include\signal\Matrix.h" />
+    <ClInclude Include="..\..\include\signal\MatrixOps.h" />
+    <ClInclude Include="..\..\include\ssi.h" />
+    <ClInclude Include="..\..\include\SSI_Cons.h" />
+    <ClInclude Include="..\..\include\SSI_Debug.h" />
+    <ClInclude Include="..\..\include\SSI_Define.h" />
+    <ClInclude Include="..\..\include\SSI_LeakWatcher.h" />
+    <ClInclude Include="..\..\include\SSI_SkeletonCons.h" />
+    <ClInclude Include="..\..\include\SSI_Tools.h" />
+    <ClInclude Include="..\..\include\struct\BinTree.h" />
+    <ClInclude Include="..\..\include\struct\Queue.h" />
+    <ClInclude Include="..\..\include\thread\ClockThread.h" />
+    <ClInclude Include="..\..\include\thread\Condition.h" />
+    <ClInclude Include="..\..\include\thread\Event.h" />
+    <ClInclude Include="..\..\include\thread\Lock.h" />
+    <ClInclude Include="..\..\include\thread\Mutex.h" />
+    <ClInclude Include="..\..\include\thread\RunAsThread.h" />
+    <ClInclude Include="..\..\include\thread\Thread.h" />
+    <ClInclude Include="..\..\include\thread\ThreadLibCons.h" />
+    <ClInclude Include="..\..\include\thread\ThreadPool.h" />
+    <ClInclude Include="..\..\include\thread\Timer.h" />
+    <ClInclude Include="..\..\include\ioput\file\File.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationWriter.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileAscii.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileBinary.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileEventsOut.h" />
+    <ClInclude Include="..\..\include\ioput\file\FilePath.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileProvider.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileSamplesIn.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileSamplesOut.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileStreamIn.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileStreamOut.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileTools.h" />
+    <ClInclude Include="..\..\include\ioput\file\StringList.h" />
+    <ClInclude Include="..\..\include\ioput\option\CmdArgOption.h" />
+    <ClInclude Include="..\..\include\ioput\option\CmdArgParser.h" />
+    <ClInclude Include="..\..\include\ioput\option\OptionList.h" />
+    <ClInclude Include="..\..\include\ioput\socket\Socket.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketOsc.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketOscEventWriter.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketOscListener.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketTcp.h" />
+    <ClInclude Include="..\..\include\ioput\socket\SocketUdp.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\IpEndpointName.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\PacketListener.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\TcpSocket.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\TimerListener.h" />
+    <ClInclude Include="..\..\include\ioput\socket\ip\UdpSocket.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscException.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscPacketListener.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\..\include\ioput\socket\osc\OscTypes.h" />
+    <ClInclude Include="..\..\include\ioput\wav\WavHeader.h" />
+    <ClInclude Include="..\..\include\ioput\wav\WavTools.h" />
+    <ClInclude Include="..\..\include\ioput\xml\tinystr.h" />
+    <ClInclude Include="..\..\include\ioput\xml\tinyxml.h" />
+    <ClInclude Include="..\..\include\ioput\pipe\NamedPipe.h" />
+    <ClInclude Include="..\..\include\ioput\pipe\NamedPipeListener.h" />
+    <ClInclude Include="..\..\include\graphic\DialogLibGateway.h" />
+    <ClInclude Include="..\..\include\signal\mathext.h" />
+    <ClInclude Include="..\..\include\signal\SignalCons.h" />
+    <ClInclude Include="..\..\include\signal\SignalTools.h" />
+    <ClInclude Include="..\..\include\base\Array1D.h" />
+    <ClInclude Include="..\..\include\base\Factory.h" />
+    <ClInclude Include="..\..\include\base\IChannel.h" />
+    <ClInclude Include="..\..\include\base\IComponent.h" />
+    <ClInclude Include="..\..\include\base\IConsumer.h" />
+    <ClInclude Include="..\..\include\base\IEvents.h" />
+    <ClInclude Include="..\..\include\base\IFeature.h" />
+    <ClInclude Include="..\..\include\base\IFilter.h" />
+    <ClInclude Include="..\..\include\base\IFusion.h" />
+    <ClInclude Include="..\..\include\base\IMessage.h" />
+    <ClInclude Include="..\..\include\base\IModel.h" />
+    <ClInclude Include="..\..\include\base\IObject.h" />
+    <ClInclude Include="..\..\include\base\IOptions.h" />
+    <ClInclude Include="..\..\include\base\IProvider.h" />
+    <ClInclude Include="..\..\include\base\IRunnable.h" />
+    <ClInclude Include="..\..\include\base\ISamples.h" />
+    <ClInclude Include="..\..\include\base\ISelection.h" />
+    <ClInclude Include="..\..\include\base\ISensor.h" />
+    <ClInclude Include="..\..\include\base\ITheEventBoard.h" />
+    <ClInclude Include="..\..\include\base\ITheFramework.h" />
+    <ClInclude Include="..\..\include\base\IThePainter.h" />
+    <ClInclude Include="..\..\include\base\ITransformable.h" />
+    <ClInclude Include="..\..\include\base\ITransformer.h" />
+    <ClInclude Include="..\..\include\base\IXMLPipeline.h" />
+    <ClInclude Include="..\..\include\base\String.h" />
+    <ClInclude Include="..\..\include\event\EventAddress.h" />
+    <ClInclude Include="..\..\include\model\SampleList.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ssi.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ui.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
