@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- activity -->
+	<transformer create="AudioActivity" method="0" threshold="0.05">
+		<input pin="audio" frame="0.03s" delta="0.015s"/>
+		<output pin="vad"/>
+	</transformer>
+	
+	<!-- activity detection -->
+	<consumer create="ZeroEventSender" mindur="0.3" maxdur="5.0" eager="true" hangin="3" hangout="10" address="vad@audio">
+		<input pin="vad" frame="0.1s"/>
+	</consumer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.2s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" type="0" title="activity">
+		<input pin="vad" frame="0.02s" />
+	</consumer>
+	
+	<object create="EventMonitor:monitor">
+		<listen address="vad@audio" span="10000"/>
+	</object>
+	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

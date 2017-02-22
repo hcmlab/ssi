@@ -1,0 +1,9 @@
+<chain>
+	<filter>
+		<item create="Derivative" names="0th,1st" />
+	</filter>
+	<feature>
+		<item create="Functionals" names="mean" />
+		<item create="Functionals" names="std,min,max" />
+	</feature>
+</chain>

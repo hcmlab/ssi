@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssicontrol"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor" />
+	</sensor>
+	
+	<!-- detect button events -->
+	<consumer create="ZeroEventSender:ezero" address="pressed@button">
+		<input pin="button" frame="0.1s" />		
+	</consumer>	
+	
+	<!-- checkbox -->
+	<runnable create="ControlCheckBox" pos="810,310,200,75" id="decorator" name="show" label="SHOW WINDOWS"/>
+	<runnable create="ControlCheckBox" pos="810,385,200,75" id="ezero" name="eager" label="ENABLE EAGER DETECTION"/>		
+	
+	<!-- visualization 	 -->
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="CURSOR (TRIGGER)">
+		<input pin="cursor" address="pressed@button" />		
+	</consumer>	
+	<object create="EventMonitor:monitor">
+		<listen address="" span="20000"/>
+	</object>	
+	
+	<!-- decoration -->
+	<object create="Decorator:decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,300">monitor*</area>
+	</object>
+
+</pipeline>

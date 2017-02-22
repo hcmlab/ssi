@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- derivative 
+	
+	By taking the 1st derivative we calculate the speed
+	of the cursor movement.
+	
+	-->
+	<transformer create="Derivative" names="1st">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="speed"/>
+	</transformer>
+	
+	<!-- energy 
+	
+	Now we calculate the energy of the movement for each dimension 
+	as well	as the overall energy.
+	
+	-->
+	<transformer create="Energy">
+		<input pin="speed" frame="0.2s" delta="0.1s"/>
+		<output pin="energies"/>
+	</transformer>
+	<transformer create="Energy" global="true">
+		<input pin="speed" frame="0.2s" delta="0.1s"/>
+		<output pin="energy"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="energy per dimension" size="10.0">
+		<input pin="energy" frame="0.2s" />		
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="overall energy" size="10.0">
+		<input pin="energies" frame="0.2s" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

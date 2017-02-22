@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- detect button events 
+	
+	To trigger an event press the left mouse button. Since
+	eager option is set an event will immediately appear on the 
+	event board. When you release the mouse button after pressing
+	at least 0.5s another event will be sent marked	as complete.
+	If you press the mouse button for more than 2.0s before releasing
+	it you will	notice additional incomplete events. Note that
+	events belonging to the same action share a unique event id.
+	
+	-->
+	<consumer create="ZeroEventSender" mindur="0.5" maxdur="2.0" incdur="0.5" address="pressed@button" eager="true">
+		<input pin="button" frame="0.1s" />		
+	</consumer>		
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="button" size="10.0">
+		<input pin="button" frame="0.2s" />		
+	</consumer>	
+	<object create="EventMonitor:monitor">
+		<listen address="pressed@button" span="20000" state="nonzerodur"/>
+	</object>
+	
+	<!-- storage 
+	
+	Stores detected events in a xml file 'cursor.events'.
+	
+	-->
+	<object create="FileEventWriter" path="button">
+		<listen address="pressed@button"/>
+	</object>
+	
+	<consumer create="FileWriter" path="cursor" type="1">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- sender 
+	
+	Sends detected events to a socket port
+	
+	-->
+	<object create="SocketEventWriter" port="9999" type="0" xml="true">
+		<listen address="pressed@button"/>
+	</object>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

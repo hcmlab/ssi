@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<!--
+	
+	NOTE: run camera_raw.pipeline first to generate a video file
+	
+	-->
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssicamera" />
+		<load name="ssiioput" />
+	</register>
+	<!-- camera sensor -->
+	<sensor create="FileReader" path="camera" blockInSamples="1" offsetInSamples="0" cutoffInSamples="0">
+		<output channel="file" pin="camera" size="2.0s"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="camera">
+		<input pin="camera" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,640,480">plot</area>		
+	</object>
+	
+</pipeline>

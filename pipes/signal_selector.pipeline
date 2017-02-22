@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- selector -->
+	<transformer create="Selector" indices="0-1">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="xy"/>
+	</transformer>
+	<transformer create="Selector" indices="1">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="y"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="xy" size="10.0">
+		<input pin="xy" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="y" size="10.0">
+		<input pin="y" frame="0.2s" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

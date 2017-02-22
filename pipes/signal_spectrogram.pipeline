@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssisignal"/>
+		<load name="ssiaudio"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- spectrogram 
+	
+	A spectrogram is created by calculating the energy in certain frequency bins.
+	The bins are equally distributed between minfreq and maxfreq (given in Hz).
+	
+	-->
+	<transformer create="Spectrogram" minfreq="100" maxfreq="5100" nbanks="50">
+		<input pin="audio" frame="0.01s" delta="0.015s"/>
+		<output pin="spect"/>
+	</transformer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="spectrogram" size="10" type="1">
+		<input pin="spect" frame="0.02s">
+			<transformer create="Inverter"/>
+		</input>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

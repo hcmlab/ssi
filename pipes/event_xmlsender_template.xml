@@ -1,0 +1,22 @@
+<mouse>    
+	<cursor pos="$(0)"/>
+	<button state="$(1{span=-1})"/>
+	<mouse click="$(pressed@button{field=state;span=-1})">
+		<xpos>$(0{select=0})</xpos>
+		<ypos>$(0{select=1})</ypos>			
+	</mouse>
+	<features>$(features@cursor{select=0,3,4;span=3000})</features>
+	<features time="$(features@cursor{field=time)" system-time="$features@cursor{field=time_system})" duration="$(features@cursor{field=duration})">
+		<mean>
+		$( 
+			features@cursor
+			{
+			select=0; 
+			span=3000
+			}
+		)
+		</mean>
+	</features>	
+	<feature names="$(features@cursor{select=5,7;field=name})">$(features@cursor{select=5,7;span=3000})</feature>
+</mouse>
+

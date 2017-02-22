@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<!--
+	
+	Combines the content of 'audio.pipeline', 'camera.pipeline' and 'mouse.pipeline'
+	
+	-->
+
+	<include name="camera_write"/>
+	<include name="audio_write"/>	
+	<include name="mouse_write"/>
+	
+	<!-- event detection -->
+	<consumer create="ZeroEventSender" mindur="0.5" maxdur="2.0" sname="button" ename="pressed" eager="true">
+		<input pin="button" frame="0.1s"/>		
+	</consumer>		
+	
+	<!-- visualization -->
+	<object create="EventMonitor:plot">
+		<listen address="pressed@button" span="20000" />
+	</object>
+	
+	<!-- storage 
+	
+	Stores detected events in a xml file 'cursor.events'.
+	
+	-->
+	<object create="FileEventWriter" path="button">
+		<listen address="pressed@button"/>
+	</object>
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+	</object>
+	
+</pipeline>

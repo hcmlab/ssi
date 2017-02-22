@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssisignal"/>
+		<load name="ssiaudio"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- signal-to-noise ratio -->
+	<transformer create="SNRatio" thresh="10.0">
+		<input pin="audio" frame="0.01s" delta="0.015s"/>
+		<output pin="snr"/>
+	</transformer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" type="0" title="signal to noise ratio">
+		<input pin="snr" frame="0.02s" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

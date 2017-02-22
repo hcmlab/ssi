@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="50.0" mask="1">		
+		<output channel="cursor" pin="cursor"/>
+		<output channel="button" pin="button" />
+	</sensor>
+	
+	<!-- trigger -->
+	<consumer create="ZeroEventSender" mindur="0.5" maxdur="2.0" address="pressed@button" eager="true">
+		<input pin="button" frame="0.1s" />		
+	</consumer>		
+	
+	<!-- socket sender 
+	
+	Streams a signal to a socket in different formats (binary, ascii, osc)
+	
+	-->
+	<consumer create="SocketWriter" type="1" port="7777" host="localhost" format="0">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	<consumer create="SocketWriter" type="1" port="8888" host="localhost" format="1" delim=";">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	<consumer create="SocketWriter" type="1" port="9999" host="localhost" format="2">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- socket event sender 
+	
+	Sends detected events to a socket port
+	
+	-->
+	<object create="SocketEventWriter" port="6666" type="1" xml="true">
+		<listen address="pressed@button"/>
+	</object>		
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="20000" />
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*,monitor</area>		
+	</object>
+
+</pipeline>

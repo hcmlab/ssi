@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!--
+	
+	NOTE: run mouse.pipeline first to generate a file
+	
+	-->	
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>		
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- file reader -->
+	<sensor create="FileReader" path="cursor" blockInSamples="5" offsetInSamples="0" cutoffInSamples="0">
+		<output channel="file" pin="cursor" sync="0" watch="0"/>		
+	</sensor>
+	
+	<!-- file writer -->
+	<consumer create="FileWriter" path="cursor-check" type="1">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

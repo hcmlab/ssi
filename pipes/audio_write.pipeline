@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- storage 
+	
+	Stores the audio stream to a wav file in RIFF format.
+	
+	-->
+	<consumer create="WavWriter" path="audio.wav">
+		<input pin="audio" frame="512"/>		
+	</consumer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s"/>
+	</consumer>
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+	</object>	
+	
+</pipeline>

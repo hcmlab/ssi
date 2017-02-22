@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssiimage"/>
+		<load name="ssicamera"/>
+		<load name="ssigraphic"/>		
+		<load name="ssimouse"/>
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera">
+		<output channel="video" pin="video"/>
+	</sensor>
+	
+	<!-- mouse sensor -->	
+	<sensor create="Mouse">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>	
+	
+	<!-- flip -->
+	<transformer create="CVFlip" flip="true" mirror="true">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="flip"/>
+	</transformer>	
+	
+	<!-- gray -->
+	<transformer create="CVColor">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="gray"/>
+	</transformer>
+	
+	<!-- resize -->
+	<transformer create="CVResize" width="40" height="30">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="resize"/>
+	</transformer>
+	
+	<!-- camera flow -->
+	<transformer create="CVChange">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="flow"/>
+	</transformer>
+	
+	<!-- camera crop -->
+	<transformer create="CVCrop">
+		<input pin="video;cursor" frame="1" delta="0"/>		
+		<output pin="crop"/>
+	</transformer>	
+	
+	<!-- store image -->
+	<consumer create="CVSave" path="image" format="0" number="false">
+		<input pin="video" frame="1"/>
+	</consumer>
+	
+	<!-- plot -->	
+	<consumer create="VideoPainter:plot" title="original">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+		<consumer create="VideoPainter:plot" title="flip">
+		<input pin="flip" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" title="gray">
+		<input pin="gray" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" title="resize" scale="False">
+		<input pin="resize" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" title="flow">
+		<input pin="flow" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" title="crop">
+		<input pin="crop" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

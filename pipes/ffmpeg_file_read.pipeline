@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+		<load name="ssiaudio" />
+	</register>
+
+	<!-- read -->
+	<sensor create="FFMPEGReader" url="ffmpeg.mp4">		
+		<output channel="video" pin="video" size="2.0s"/>
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>	
+	
+	<!-- visualize -->	
+	<consumer create="VideoPainter:plot" title="video" flip="true">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- playback -->
+	<consumer create="AudioPlayer" option="aplayer">
+		<input pin="audio" frame="0.01s"/>
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,640,480">plot*</area>		
+	</object>
+
+</pipeline>

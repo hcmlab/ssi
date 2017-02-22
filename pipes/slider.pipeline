@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+	
+	<!-- set framework options -->
+	<framework console="true" cpos="400,0,1000,570" countdown="0"/>
+	
+	<!-- set painter options -->
+	<painter arrange="true" apos="1,3,0,0,400,400"/>	
+	
+	<!-- mouse sensor 
+	
+	By adding a selector filter we keep y-axis only 
+	
+	-->
+	<sensor create="ssi_sensor_Mouse">
+		<provider channel="cursor" pin="cursor">
+			<transformer create="ssi_filter_Selector" indices="1"/>
+		</provider>
+	</sensor>
+	
+	<!-- slider
+	
+	We add two sliders, one to control the min and one to control the max value.
+	
+	-->
+	<object create="ssi_object_EventSlider" sname="slider" ename="min" vname="min" defval="0.0" minval="0.0" maxval="0.5" pos="5,405,390,75"/>
+	<object create="ssi_object_EventSlider" sname="slider" ename="max" vname="max" defval="1.0" minval="0.5" maxval="1.0" pos="5,490,390,75"/>
+	<object create="ssi_object_EventSlider" sname="slider" ename="thres" vname="thres" defval="0.5" minval="0.0" maxval="1.0" pos="5,565,390,75"/>
+	
+	<!-- limiter
+	
+	We add a limiter and set a min and max value.
+	Values outside the range will be cut.
+	
+	-->
+	<transformer create="ssi_filter_Limits" min="0.0" max="1.0" minid="min" maxid="max">
+		<input pin="cursor" frame="5"/>
+		<output pin="cursor_limited"/>
+		<listen address="@slider"/>
+	</transformer>
+	
+	<!-- threshold
+	
+	We add a limiter and set a min and max value.
+	Values outside the range will be cut.
+	
+	-->
+	<consumer create="ssi_consumer_ThresEventSender" thres="0.5" thresid="thres" sname="cursor" ename="peak" maxdur="5.0">
+		<input pin="cursor" frame="5"/>
+		<listen address="@slider"/>
+	</consumer>
+	
+	<!-- visualization 
+	
+	upper graph visualizes original cursor values
+	lower graph the limited signal
+	
+	-->
+	<consumer create="ssi_consumer_SignalPainter" name="raw" size="10.0" autoscale="false" fix="0,1">
+		<input pin="cursor" frame="5" />
+	</consumer>
+	<consumer create="ssi_consumer_SignalPainter" name="limit" size="10.0" autoscale="false" fix="0,1">
+		<input pin="cursor_limited" frame="5" />
+	</consumer>
+	<consumer create="ssi_consumer_SignalPainter" name="thres" autoscale="true" fix="0,1">
+		<input pin="cursor" listen="peak@cursor" />
+	</consumer>
+	
+</pipeline>

@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- detect button events -->
+	<consumer create="ZeroEventSender" mindur="0.5" incdur="2.0" maxdur="2.0" address="pressed@button" eager="true">
+		<input pin="button" frame="0.1s" />		
+	</consumer>		
+	
+	<!-- feature extraction -->
+	<consumer create="FunctionalsEventSender" address="features@cursor">
+		<input pin="cursor" address="pressed@button" />
+		<output pin="cursor_functs" />
+	</consumer>
+	
+	<!-- xml sender 
+	
+	Takes a template that will be filled with input from the pipeline.
+	
+	e.g. $(stream=0;select=0) will be replaced by the value of the 1st sample of the 1st stream
+	     $(event=features@cursor; select=3,4; timeout=3000 ) will be replaced by the value of 
+		 the 3rd and 4th tuple of the event features@cursor; if no new event is detected within
+		 3000 ms it will be blanked.
+	
+	-->
+	<consumer create="XMLEventSender:sender" path="event_xmlsender_template" address="xml@mouse" monitor="true">
+		<input pin="cursor;button" frame="1"/>		
+		<listen address=""/>
+	</consumer>
+	
+	<!-- visualization -->
+	<object create="EventMonitor:monitor">
+		<listen address="pressed@button" span="20000" />
+	</object>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">sender</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

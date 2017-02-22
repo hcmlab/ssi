@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssicamera" />
+		<load name="ssiioput" />
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" width="640" height="480" fps="25.0" channel="3" depth="8">
+		<output channel="video" pin="camera" size="2.0s"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="camera" flip="false">
+		<input pin="camera" frame="1" delta="0"/>
+	</consumer>
+	
+	<!--stream -->
+	<consumer create="SocketWriter" port="9999" format="3" compression="1" packet_delay="3">
+		<input pin="camera" frame="1" />
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,320,240">plot*</area>
+	</object>
+
+</pipeline>

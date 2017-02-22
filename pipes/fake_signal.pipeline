@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssisignal"/>
+		<load name="ssiioput"/>
+		<load name="ssigraphic"/>
+	</register>
+
+	<!-- generator sensor -->
+	<sensor create="FakeSignal" option="random">
+		<output channel="fake" pin="fake"/>
+	</sensor>
+	
+	<!-- fft -->
+	<transformer create="FFTfeat" nfft="32">
+		<input pin="fake" frame="16" delta="16"/>
+		<output pin="fft"/>
+	</transformer>
+	
+	<consumer create="FileWriter" path="fft">
+		<input pin="fft" frame="1"/>
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="fft" size="10.0" type="1">
+		<input pin="fft" frame="0.2s" />		
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

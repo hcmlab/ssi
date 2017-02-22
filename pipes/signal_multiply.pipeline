@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssicontrol"/>
+	</register>
+
+	<!-- mouse sensor 
+	
+	By adding a selector filter we keep y-axis only 
+	
+	-->
+	<sensor create="Mouse">
+		<output channel="cursor" pin="cursor">
+			<transformer create="Selector" indices="0,1"/>
+		</output>
+	</sensor>
+	
+	<!-- multiplier
+	
+	We add a multiplier.
+	
+	-->
+	<transformer create="Multiply:multiply" factor="1.0" join="3">
+		<input pin="cursor" frame="5"/>
+		<output pin="cursor_multiply"/>
+	</transformer>
+	
+	<!-- slider
+	
+	Slider to control multiplication value.
+	
+	-->
+	<runnable create="ControlSlider" title="MULTIPLY" id="multiply" vname="factor" defval="1.0" minval="0.0" maxval="2.0" orientation="1" pos="800, 0, 75, 200"/>
+
+	
+	<!-- visualization 
+	
+	upper graph visualizes original cursor values
+	lower graph the limited signal
+	
+	-->
+	<consumer create="SignalPainter:plot" title="raw" size="10.0">
+		<input pin="cursor" frame="5" />
+	</consumer>
+	<consumer create="SignalPainter:plot" title="multiply" size="10.0">
+		<input pin="cursor_multiply" frame="5" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+	</object>
+
+</pipeline>

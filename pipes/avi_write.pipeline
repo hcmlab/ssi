@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<pipeline>
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssicamera" />
+		<load name="ssiaudio" />
+		<load name="ssiavi" />
+	</register>
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="false" blockInSamples="512" sr="44100">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="camera">
+		<input pin="video" frame="1"/>
+	</consumer>	
+	
+	<!--storage -->
+	<consumer create="AviWriter" option="aviwriter" path="video.avi">
+		<input pin="video" frame="1"/>
+		<xinput size="1">
+			<input pin="audio"/>
+		</xinput>
+	</consumer>	
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+	</object>	
+	
+</pipeline>

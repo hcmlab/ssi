@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssisignal"/>
+		<load name="ssiaudio"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- Mel frequency ceptral coeffcients-->
+	<transformer create="MFCC" n_first="0" n_last="13" n_ffts="1024">
+		<input pin="audio" frame="512" delta="512"/>
+		<output pin="mfcc"/>
+	</transformer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="mfcc" size="10" type="1">
+		<input pin="mfcc" frame="0.02s" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

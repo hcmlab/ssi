@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- moving convergence/divergence 
+	
+	Calculates convergence and divergence between a short and long window.
+	Two methods	are available: a moving or sliding window.
+	
+	To test the filter move the mouse slowly, the filter output will be around
+	zero. Then make a quick movement and you will observe a peak, before
+	the filtered signal converges to zero.
+	
+	-->
+	<transformer create="MvgConDiv" method="1" wins="1.0" winl="1.5">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="mvgcondiv"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="moving convergence and divergence" size="10.0">
+		<input pin="mvgcondiv" frame="0.2s" />		
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

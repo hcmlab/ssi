@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- lowpass 
+	
+	Applies a low- and a highpass filter with a cutoff frequency of 1 Hz.
+	The effect can be best seen if you move the mouse cursor back and forth
+	at different speeds.
+	
+	-->
+	<transformer create="Butfilt" type="0" order="5" norm="false" low="1.0" zero="true">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="low"/>
+	</transformer>
+	<transformer create="Butfilt" type="1" order="5" norm="false" high="1.0" zero="true">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="high"/>
+	</transformer>	
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="lowpassed" size="10.0">
+		<input pin="low" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="highpassed" size="10.0">
+		<input pin="high" frame="0.2s" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

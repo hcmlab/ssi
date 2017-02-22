@@ -1,0 +1,4 @@
+to run a pipeline:
+1. make sure that <ssiroot>/bin is part of the $PATH variable (e.g. by running <ssiroot>/setup.exe)
+2. drag&drop the file on _RUN.bat or associate *.pipeline with <ssiroot>/bin/xmlpipe.exe
+

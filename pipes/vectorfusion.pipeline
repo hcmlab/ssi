@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssivectorfusion"/>
+	</register>
+
+	<eventboard update="50" />
+	
+	<sensor create="Mouse" mask="1" flip="true" scale="true">
+		<output channel="cursor" pin="cursor" />
+	</sensor>
+	
+	<transformer create="Selector" indices="0" >
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="cursor_x" frame="0.1s"/>
+	</transformer>
+	
+	<transformer create="Selector" indices="1" >
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="cursor_y" frame="0.1s"/>
+	</transformer>
+	
+	<consumer create="MapEventSender" address="x@cursor" mean="true">
+		<input pin="cursor_x" frame="1.0s"/>
+	</consumer>
+	
+	<consumer create="MapEventSender" address="y@cursor" mean="true">
+		<input pin="cursor_y" frame="1.0s"/>
+	</consumer>
+	
+	<object create="TupleConverter" address="tuple@cursor">
+		<listen address="x,y@cursor"/>
+	</object>
+	
+	<object create="TupleMap" mapping="1.0" address="map@cursor">
+		<listen address="tuple@cursor"/>
+	</object>
+
+	<object create="VectorFusion:fusion" 
+									address = "fusion@cursor"
+									dimension = "1" 
+									print = "false"
+									paint = "true"
+									decay_type = "0"
+									gradient = "0.5"
+									fusionspeed = "0.1"
+									eventspeed = "0.2"
+									threshold = "0.05f"
+									accelerate = "false"
+									decay_weights = "false"
+									update_ms = "500">
+		<listen address="map@cursor"/>	
+	</object>
+
+	<object create="EventMonitor:monitor">
+		<listen address="fusion@cursor"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">fusion</area>
+		<area pos="800,0,400,600">monitor</area>
+	</object>
+
+</pipeline>

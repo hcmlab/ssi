@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- moving average/variance 
+	
+	Calculates average and variance over a window of variable size.
+	Two methods	are available: a moving or sliding window.
+	Set format to 1 or 2 in order to calculate average or variance only.
+	
+	-->
+	<transformer create="MvgAvgVar" method="1" win="1.0" format="3">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="mvgavgvar"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="moving average and variance" size="10.0">
+		<input pin="mvgavgvar" frame="0.2s" />		
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

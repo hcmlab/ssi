@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssisignal"/>
+		<load name="ssimouse"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- cursor sensor -->
+	<sensor create="Mouse" option="cursor" scale="true" sr="200">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+
+	<!-- lowpass 
+	
+	The input signal is downsampled from 200 Hz to 10 Hz.
+	To avoid artefacts the signal is first run through a 
+	lowpass filter with a cutoff of 5 Hz (=nyquist frequency).
+	
+	-->
+	<transformer create="Butfilt" type="0" order="5" norm="false" low="5" zero="true">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="low"/>
+	</transformer>
+   	
+	<!-- downsample 
+	
+	Now we keep only every 20th sample.
+	
+	-->
+	<transformer create="DownSample" factor="20">
+		<input pin="low" frame="0.1s"/>
+		<output pin="down"/>
+	</transformer>
+		
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="cursor" size="10">
+		<input pin="cursor" frame="0.2s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="downsampled" size="10">
+		<input pin="down" frame="0.2s" />
+	</consumer>	
+
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

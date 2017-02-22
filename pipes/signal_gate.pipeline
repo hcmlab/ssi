@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssicontrol"/>
+	</register>
+
+	<!-- mouse sensor 
+	
+	By adding a selector filter we keep y-axis only 
+	
+	-->
+	<sensor create="Mouse">
+		<output channel="cursor" pin="cursor">
+			<transformer create="Selector" indices="1"/>
+		</output>
+	</sensor>
+	
+	<!-- limiter
+	
+	We add a gate and set a thres value.
+	Values outside the range will be cut.
+	
+	-->
+	<transformer create="Gate:gate">
+		<input pin="cursor" frame="5"/>
+		<output pin="cursor_limited"/>
+	</transformer>	
+	
+	<!-- slider
+	
+	We add two sliders, one to control the min and one to control the max value.
+	
+	-->
+	<runnable create="ControlSlider:control" title="THRESHOLD" id="gate" name="thres" defval="0.5" minval="0.0" maxval="1.0"/>
+	<runnable create="ControlSlider:control" title="REPLACE" id="gate" name="replace" defval="0.5" minval="0.0" maxval="1.0"/>
+	<runnable create="ControlCheckBox:control" title="UPPER" id="gate" name="upper"/>
+		
+	
+	<!-- visualization 
+	
+	upper graph visualizes original cursor values
+	lower graph the limited signal
+	
+	-->
+	<consumer create="SignalPainter:plot" title="raw" size="10.0" autoscale="false" fix="0,1">
+		<input pin="cursor" frame="5" />
+	</consumer>
+	<consumer create="SignalPainter:plot" title="limit" size="10.0" autoscale="false" fix="0,1">
+		<input pin="cursor_limited" frame="5" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,300" nh="1">control*</area>
+	</object>
+
+</pipeline>

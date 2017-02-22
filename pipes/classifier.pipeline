@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssimodel"/>
+	</register>
+	<!-- sensor -->
+	<sensor create="Mouse" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- consumer -->
+	<consumer create="SignalPainter:plot" size="10.0">
+		<input pin="cursor" frame="1" />		
+	</consumer>
+	
+	<!-- event -->
+	<consumer create="ThresEventSender" mindur="0.2" address="pressed@mouse">
+		<input pin="button" frame="0.25s" />		
+	</consumer>		
+	
+	<!-- classifier 
+	
+	Loads model from a file named 'numbers.trainer', which contains templates for numbers 0-9.
+	You can now write numbers by pressing the left mouse button. As soon as you release the
+	button the performed gesture will be mapped to the best matching number.
+	
+	-->
+	<consumer create="Classifier" trainer="classifier" address="gesture@mouse">
+		<input pin="cursor" address="pressed@mouse"/>
+	</consumer>
+	
+	<!-- listener -->
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="20000" />
+	</object>
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>		
+	</object>	
+	
+</pipeline>

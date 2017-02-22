@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssicamera" />
+		<load name="ssiimage" /> <!-- for resize -->
+	</register>
+	<!-- camera sensor -->
+	<sensor create="CameraScreen" option="camscreen" mouse="true" resize="true" resize_width="640" resize_height="480" region="0,200,320,240" full="true">
+		<output channel="video" pin="camera" size="2.0s"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="camera">
+		<input pin="camera" frame="1" delta="0"/>
+	</consumer>
+	
+	<!--storage -->
+	<consumer create="CameraWriter" option="camscreenwriter" path="camera_screen.avi">
+		<input pin="camera" frame="1" delta="0"/>
+	</consumer>	
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,640,480">plot</area>		
+	</object>
+	
+</pipeline>

@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor 
+	
+	By setting mask to 1 we instruct the sensor to listen to the
+	left mouse buttons. As long as the left mouse buttons is
+	pressed the cursor stream will be set to 1, 0 otherwise.
+	
+	-->
+	<sensor create="Mouse" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor" />
+	</sensor>
+	
+	<!-- visualization 	 -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="button" size="10.0">
+		<input pin="button" frame="0.2s" />		
+	</consumer>	
+
+	<!-- storage 
+	
+	Two files will be created: "cursor.stream", a xml file containing meta
+	information such as sample rate, sample dimension, etc. and "cursor.stream~"
+	containing the sample data (here in ascii format since type is set to 1).
+	
+	-->
+	<consumer create="FileWriter" path="cursor" type="1" stream="false" delim=";">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- 
+	
+	If we want to save the cursor data in binary format, we set the "type" to 0.
+	This creates the files "cursor_b.stream" and "cursor_b.stream~".
+	
+	-->
+	<consumer create="FileWriter" path="cursor_b" type="0">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- 
+	
+	To additionally save the button stream in ascii format, we set the input 
+	"pin" of the FileWriter to "button" (channel name of the provider).
+	
+	-->
+	<consumer create="FileWriter" path="button" type="1">
+		<input pin="button" frame="0.2s" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

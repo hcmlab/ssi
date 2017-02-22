@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="100.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- expression -->
+	<transformer create="Expression" single="false" expression="2 * (d-0.5)" join="0">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="exp"/>
+	</transformer>
+	<transformer create="Expression" single="false" expression="2 * (d-0.5)" join="1">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="exp_sum"/>
+	</transformer>
+	<transformer create="Expression" single="true" expression="d0 * d1">
+		<input pin="cursor" frame="0.1s"/>
+		<output pin="exp_single"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="expression" size="10.0">
+		<input pin="exp" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="summed expression" size="10.0">
+		<input pin="exp_sum" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="single expression" size="10.0">
+		<input pin="exp_single" frame="0.2s" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

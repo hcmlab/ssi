@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Mouse">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- functionals -->
+	<transformer create="Functionals" names="mean,std,min,max">
+		<input pin="cursor" frame="1.0s"/>
+		<output pin="functionals"/>
+	</transformer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="FUNCTIONALS" size="10.0">
+		<input pin="functionals" frame="1" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
