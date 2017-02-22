@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--SSI MLP Project File-->
+<project>
+  <name>wiimote</name>
+  <stimuli>stimuli.xml</stimuli>
+  <signal>acceleration</signal>
+  <type>STREAM</type>
+  <anno>button</anno>
+</project>

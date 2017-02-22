@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-9"?>
+<!--SSI MLP Stimuli File-->
+<stimuli>
+  <list size="11">
+      <slide label="">
+		<source id="Text" size="6" text="Bitte lesen Sie die folgenden Sätze laut vor und versetzen Sie sich dabei in die jeweilige passende Emotion. Anschließend wird automatisch zum nächsten Satz weitergeschaltet. Zum Startem bitte 'Next' drücken.." />
+        <trigger id="Button"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" size="7" color="FF0000" text="Mit mir will niemand was zu tun haben!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" size="7" color="FF0000" text="Was für ein frustrierender Tag!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" size="7" color="FF0000" text="Heute ging alles schief!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" size="7" color="FF0000" text="Ich habe einfach kein Glück im Leben!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" size="7" color="FF0000" text="Was ich auch anpacke, es geht alles daneben!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" size="7" color="008000" text="Das kann keiner besser als ich!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" size="7" color="008000" text="Heute könnte ich Bäume ausreißen!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" size="7" color="008000" text="Meine Eltern sind ziemlich stolz auf mich!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" size="7" color="008000" text="Alle haben mir zu meinem Erfolg gratuliert!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" size="7" color="008000" text="Das war ein toller Tag!" />
+        <trigger id="Event" number="1"/>
+      </slide>
+  </list>
+</stimuli>

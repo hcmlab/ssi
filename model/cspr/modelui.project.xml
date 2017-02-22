@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--SSI MLP Project File-->
+<project>
+  <name>cspr</name>
+  <stimuli>stimuli.xml</stimuli>
+  <signal>hand</signal>
+  <type>STREAM</type>
+  <anno>kinect</anno>
+</project>

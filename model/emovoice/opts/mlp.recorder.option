@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="path" type="CHAR" num="1024" value=".\data\user\2013-10-16_18-18-49\audio.wav" help="file path  (empty for stdout)" />
+</options>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<training ssi-v="1">
+  <def>dollar</def>
+  <signal>cursor</signal>
+  <type>0</type>
+  <anno>button</anno>
+  <paths>
+    <item>E:\openssi\bin\Win32\vc10\..\..\..\model\mouse\data\user\2011-12-23_14-14-14</item>
+  </paths>
+</training>

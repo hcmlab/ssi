@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<register>
+		<load name="ssimlpxml"/>
+		<load name="ssiwiimote"/>
+		<load name="ssisignal"/>
+		<load name="ssimodel"/>
+		<load name="ssiioput"/>
+		<load name="ssigraphic"/>
+		<load name="ssiprotractor"/>
+	</register>
+	
+	<sensor create="WiiRemote">
+		<output channel="acceleration" pin="acceleration"/>
+		<output channel="button" pin="button"/>
+	</sensor>
+	
+	<consumer create="SignalPainter:plot" size="10">
+		<input pin="acceleration" frame="0.2s"/>
+	</consumer>
+	
+	<consumer create="MlpXml">
+		<input pin="acceleration" frame="0.2s" delta="0"/>
+		<xinput size="1">
+			<input pin="button"/>
+		</xinput>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,200,200">plot*</area>
+	</object>
+	
+</pipeline>

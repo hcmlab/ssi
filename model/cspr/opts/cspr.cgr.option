@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="indx" type="INT" num="1" value="0" help="dimension of x coordinate (def 0)" />
+    <item name="indy" type="INT" num="1" value="1" help="dimension of y coordinate (def 1)" />
+    <item name="indconf" type="INT" num="1" value="2" help="dimension of y coordinate (def 2). Use -1 to disable confidence checking" />
+    <item name="recognizer" type="CHAR" num="1024" value="CGR" help="name of recognition algorithm cspr should use ($1, DM, $1_ci1) (def $1)" />
+    <item name="noiseFilter" type="FLOAT" num="1" value="0.007000" help="power of the noise filter (def 0.007)" />
+    <item name="matchingMode" type="INT" num="1" value="1" help="mode of computing gesture matches (0 = MIN_PROB, 1 = MIN_PROB_AND_MIN_DIFF, 2 = MIN_PROB_OR_MIN_DIFF, 3 = MIN_DIFF, 4 = LAST_MAN_STANDING) (def 1)" />
+    <item name="minProbForMatch" type="FLOAT" num="1" value="0.900000" help="minimum probability a blob has to reach to become a match (def 0.007)" />
+    <item name="minProbDiffForMatch" type="FLOAT" num="1" value="0.200000" help="minimum probability difference between the best two hypotheses of a blob, for the first hypothesis to become a match (def 0.2)" />
+    <item name="avgProbPerClass" type="BOOL" num="1" value="false" help="use the average prob of all examples of a class instead of the best prob (def false)" />
+    <item name="relativeCostScoring" type="BOOL" num="1" value="true" help="RCS ignores the constant maximum cost and dynamically sets the current worst match's cost as max cost (def true)" />
+    <item name="maxBlobs" type="UINT" num="1" value="60" help="maximum number of parallel blobs/threads (def 43). For beste recontion should be equal to maxBlobAge" />
+    <item name="maxBlobAge" type="UINT" num="1" value="55" help="maximum age a blob can reach (def 43). maxBlobAge * frame size = max gesture length in seconds" />
+    <item name="duplicateTimeout" type="FLOAT" num="1" value="1.200000" help="duration in seconds after a match in which the system treats all other matches as duplicates and deletes them (def 1). Use 0 to disable feature." />
+    <item name="duplicateMaxAgeDiff" type="UINT" num="1" value="8" help="after a match, all blobs within this age range get deleted (def 7). Use 0 to disable feature." />
+    <item name="sampleTmplSpace" type="BOOL" num="1" value="false" help="sample template space by creating additional templates from interpolation" />
+    <item name="numPointsInGesture" type="UINT" num="1" value="32" help="How many points do we use to represent a gesture (def 32)" />
+    <item name="pointsInterval" type="UINT" num="1" value="20" help="The distance between two adjacent points in a gesture path (def 20)" />
+    <item name="f_PathDistance" type="FLOAT" num="1" value="1.000000" help="computes euclidean disatance between two paths ($1). This option sets the weight of this feature used when comparing two paths (def 1). Use 0 to disable feature." />
+    <item name="f_pd_rotInvariance" type="BOOL" num="1" value="false" help="whether the algorithm should try to be rotational invariant (def false)" />
+    <item name="f_pd_max" type="FLOAT" num="1" value="350.000000" help="maximum distance between two paths (def 350)" />
+    <item name="f_DirectionVectors" type="FLOAT" num="1" value="0.000000" help="parses the path for direction vectors (N, W, S, E ..). This option sets the weight of this feature used when comparing two paths (def 3). Use 0 to disable feature." />
+    <item name="f_dv_Compress" type="BOOL" num="1" value="true" help="compress direction vectors (def true)" />
+    <item name="f_dv_FuzzyFilter" type="FLOAT" num="1" value="15.000000" help="direction vector filter to reduce small bumps. This option sets the filtering threshold in degrees (def 15). Use 0 to disable filter." />
+    <item name="f_dv_FilterStartJerks" type="BOOL" num="1" value="false" help="ignore direction jerks at path start when parsing direction vectors (def false)" />
+    <item name="f_dv_Shifting" type="BOOL" num="1" value="false" help="shift dirrection vectors to find optimal comparisson (DTW style) (def false)" />
+    <item name="f_dv_max" type="FLOAT" num="1" value="5.000000" help="maximum distance value this feature can return (def 5)" />
+    <item name="f_NumDirectionVectors" type="FLOAT" num="1" value="0.000000" help="computes the number of direction vectors of a path. This option sets the weight of this feature used when comparing two paths (def 1). Use 0 to disable feature." />
+    <item name="f_ConnectedShape" type="FLOAT" num="1" value="0.000000" help="computes whether a path is connected or not. This option sets the weight of this feature used when comparing two paths (def 4). Use 0 to disable feature." />
+    <item name="f_cs_MinDistMult" type="INT" num="1" value="3" help="multiplier applied to minimal distance calculation. The smaller this value the closer the start and end of a path have to be for the path to be connected (def 3)" />
+    <item name="f_StopPoints" type="FLOAT" num="1" value="0.500000" help="computes the number of stop points in a path. This option sets the weight of this feature when comparing two paths (def 1). Use 0 to disable feature." />
+    <item name="f_sp_AvgVelMult" type="FLOAT" num="1" value="0.250000" help="multiplier used to determine stop points based on average velocity (def 0.25)" />
+    <item name="f_sp_max" type="FLOAT" num="1" value="4.000000" help="maximum distance value this feature can return (def 5)" />
+    <item name="f_PathLength" type="FLOAT" num="1" value="0.300000" help="computes the length of a path. This option sets the weight of this feature used when comparing two paths (def 1). Use 0 to disable feature." />
+    <item name="f_PenaltySize" type="FLOAT" num="1" value="0.000000" help="weight of the feature score penalty size which penalizes the scores based on the difference between the paths' sizes (def 0.9)" />
+    <item name="f_PenaltyDirection" type="FLOAT" num="1" value="0.000000" help="weight of the feature score penalty direction which penalizes the scores based on the difference between the paths' draw direction (def 0.0)" />
+</options>

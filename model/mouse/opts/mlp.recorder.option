@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="path" type="CHAR" num="1024" value=".\data\user\2016-01-12_16-13-18\cursor.stream" lock="false" help="file path (empty for stdout)" />
+    <item name="type" type="UCHAR" num="1" value="0" lock="false" help="file type (0=binary, 1=ascii)" />
+    <item name="mode" type="UCHAR" num="1" value="1" lock="false" help="file access mode (1=w, 2=a, 3=r+, 4=w+, 5=a+)" />
+    <item name="version" type="UCHAR" num="1" value="2" lock="false" help="file version (0=V0, 1=V1, 2=V2(xml))" />
+    <item name="stream" type="BOOL" num="1" value="true" lock="false" help="continuous stream mode" />
+    <item name="delim" type="CHAR" num="1024" value=" " lock="false" help="delimiter string" />
+    <item name="flags" type="CHAR" num="1024" value="" lock="false" help="format flags" />
+</options>

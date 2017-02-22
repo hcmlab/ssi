@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="sname" type="CHAR" num="1024" value="kinect" help="name of sender" />
+    <item name="ConfigPath" type="CHAR" num="1024" value="SamplesConfig.xml" help="xml file for openni configuration" />
+    <item name="CalibPath" type="CHAR" num="1024" value="user.calib" help="loads calibration file if it exists otherwise calibration is stored under that path (leave empty to always apply re-calibration)" />
+    <item name="keep" type="BOOL" num="1" value="false" help="keep calibration of first user" />
+    <item name="users" type="UINT" num="1" value="1" help="max number of tracked users" />
+    <item name="project" type="BOOL" num="1" value="true" help="project skeleton to real world position" />
+    <item name="scale" type="BOOL" num="1" value="true" help="scale skeleton real world positions (x and y only) to interval [0..1]" />
+    <item name="flip" type="BOOL" num="1" value="true" help="flips y-axis (only works with scale=true)" />
+    <item name="sampleRate" type="DOUBLE" num="1" value="30.000000" help="sample rate" />
+    <item name="recognizer_xml" type="CHAR" num="1024" value="" help="xml recognizer definition file (see fubi documentation), overwrites 'recognizer' option" />
+    <item name="recognizer" type="CHAR" num="1024" value="" help="indices of recognizers (0=RIGHT_HAND_OVER_SHOULDER,1=LEFT_HAND_OVER_SHOULDER,2=ARMS_CROSSED,3=ARMS_NEAR_POCKETS,4=ARMS_DOWN_TOGETHER,5=RIGHT_HAND_OUT,6=LEFT_HAND_OUT,7=HANDS_FRONT_TOGETHER,8=LEFT_KNEE_UP,9=RIGHT_KNEE_UP,10=RIGHT_HAND_OVER_HEAD,11=LEFT_HAND_OVER_HEAD,12=RIGHT_HAND_LEFT_OF_SHOULDER,13=RIGHT_HAND_RIGHT_OF_SHOULDER)" />
+    <item name="hangin" type="UINT" num="1" value="0" help="number of successive frames to be recognized as a gestures before the begin of a gesture is verified" />
+    <item name="hangout" type="UINT" num="1" value="0" help="number of successive frames not to be recognized as a gestures before the end of a gesture is verified" />
+    <item name="showRGBScene" type="BOOL" num="1" value="true" help="show scene as rgb image instead of depth image (set only by xml options file)" />
+    <item name="profile" type="INT" num="1" value="2" help="skeleton profile: 	1=XN_SKEL_PROFILE_NONE, 2=XN_SKEL_PROFILE_ALL, 3=XN_SKEL_PROFILE_UPPER, 4=XN_SKEL_PROFILE_LOWER, 5=XN_SKEL_PROFILE_HEAD_HANDS" />
+</options>

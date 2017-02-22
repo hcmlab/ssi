@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--SSI MLP Project File-->
+<project>
+  <name>emovoice</name>
+  <stimuli>velten_de_positive_negative.xml</stimuli>
+  <signal>audio</signal>
+  <type>AUDIO</type>
+  <anno>turns</anno>  
+</project>

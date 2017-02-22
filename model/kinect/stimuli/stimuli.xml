@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--SSI MLP Stimuli File-->
+<stimuli>
+  <list size="10">    
+      <slide label="">
+		<source id="Text" text="In the following you will be asked to perform different gestures. To draw the requested gesture raise your left hand over your left shoulder and perform the gesture with the right hand. After the gesture is finished lower your left hand again. Press 'next' to start.." />
+        <trigger id="Button"/>
+    </slide> 
+    <slide label="1">
+		<source id="Text" text="Please draw a 1.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+	<slide label="2">
+		<source id="Text" text="Please draw a 2.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+    <slide label="3">
+		<source id="Text" text="Please draw a 3.." />
+        <trigger id="Event" number="1"/>
+    </slide>    
+    <slide label="1">
+		<source id="Text" text="Please draw a 1.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+	<slide label="2">
+		<source id="Text" text="Please draw a 2.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+    <slide label="3">
+		<source id="Text" text="Please draw a 3.." />
+        <trigger id="Event" number="1"/>
+    </slide>    
+	    <slide label="1">
+		<source id="Text" text="Please draw a 1.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+	<slide label="2">
+		<source id="Text" text="Please draw a 2.." />
+        <trigger id="Event" number="1"/>
+    </slide>          
+    <slide label="3">
+		<source id="Text" text="Please draw a 3.." />
+        <trigger id="Event" number="1"/>
+    </slide>       
+  </list>
+</stimuli>

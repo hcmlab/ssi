@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<training ssi-v="1">
+  <def>dollar</def>
+  <signal>acceleration</signal>
+  <type>0</type>
+  <anno>button</anno>
+  <paths>
+    <item>E:\demos\wiigesture\model\wiimote\data\user\2013-02-06_12-44-54</item>
+  </paths>
+</training>

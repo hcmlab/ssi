@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="hard" type="BOOL" num="1" value="false" help="threshold must be exceed in all dimensions" />
+    <item name="hangin" type="UINT" num="1" value="2" help="# of non-zero values before onset is detected" />
+    <item name="hangout" type="UINT" num="1" value="50" help="# of non-zero values before offset is detected" />
+    <item name="mindur" type="DOUBLE" num="1" value="0.500000" help="minimum duration in seconds" />
+    <item name="maxdur" type="DOUBLE" num="1" value="5.000000" help="maximum duration in seconds" />
+    <item name="skip" type="BOOL" num="1" value="false" help="skip if max duration is exceeded" />
+</options>

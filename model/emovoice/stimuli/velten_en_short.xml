@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--SSI MLP Stimuli File-->
+<stimuli>
+  <list size="10">
+      <slide label="negative">
+		<source id="Text" text="This is so unfair!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" text="You are such an idiot!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" text="I hate you!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" text="Who do you think you are?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negative">
+		<source id="Text" text="Now you've gone completely mad!" />
+        <trigger id="Event"  number="1"/>
+      </slide>      
+      <slide label="positive">
+		<source id="Text" text="I think my life is beautiful." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" text="I like listening to flowing water in the mountains." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" text="My life is completely under control." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" text="I'm quite satisfied with my result in the exam." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positive">
+		<source id="Text" text="I love my life." />
+        <trigger id="Event"  number="1"/>
+      </slide>      
+  </list>
+</stimuli>

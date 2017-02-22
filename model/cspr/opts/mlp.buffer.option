@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="size" type="DOUBLE" num="1" value="10.000000" help="buffer capacity in seconds" />
+</options>

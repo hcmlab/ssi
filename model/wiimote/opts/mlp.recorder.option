@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="path" type="CHAR" num="1024" value=".\data\user\2013-02-06_12-44-54\acceleration.stream" help="file path (empty for stdout)" />
+    <item name="type" type="UCHAR" num="1" value="0" help="file type (0=binary, 1=ascii)" />
+    <item name="mode" type="UCHAR" num="1" value="2" help="file access mode (1=w, 2=a, 3=r+, 4=w+, 5=a+)" />
+    <item name="version" type="UCHAR" num="1" value="2" help="file version (0=V0, 1=V1, 2=V2(xml))" />
+    <item name="stream" type="BOOL" num="1" value="true" help="continuous stream mode" />
+    <item name="delim" type="CHAR" num="1024" value=" " help="delimiter string" />
+    <item name="flags" type="CHAR" num="1024" value="" help="format flags" />
+</options>
