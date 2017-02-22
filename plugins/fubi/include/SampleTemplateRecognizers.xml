@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<FubiRecognizers globalMinConfidence="0.51" xmlns="http://www.hcm-lab.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.hcm-lab.de FubiRecognizers.xsd">
+  <!--  Wobbrocks  1$ gestures -->
+  <TemplateRecognizer name="triangle" maxDistance="2" distanceMeasure="malhanobis" 
+                      aspectInvariant="true" useDTW="true" maxRotation="60" resamplingTechnique="EquiDistant" 
+                      stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Triangle1.xml"/>
+    <TrainingData file="trainingData/Triangle2.xml"/>
+    <TrainingData file="trainingData/Triangle3.xml"/>
+    <TrainingData file="trainingData/Triangle4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="x" maxDistance="2" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="90" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/X1.xml"/>
+    <TrainingData file="trainingData/X2.xml"/>
+    <TrainingData file="trainingData/X3.xml"/>
+    <TrainingData file="trainingData/X4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="rectangle" maxDistance="1.5" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="90" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="4" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Rectangle1.xml"/>
+    <TrainingData file="trainingData/Rectangle2.xml"/>
+    <TrainingData file="trainingData/Rectangle3.xml"/>
+    <TrainingData file="trainingData/Rectangle4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="circle" maxDistance="10" distanceMeasure="turningAngleDiff" 
+                       aspectInvariant="true" useDTW="true" maxRotation="45" resamplingTechnique="HermiteSpline" resampleSize="48"
+                       stochasticModel="GMR" numGMRStates="24" searchBestInputLength="true" useFilteredData="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Circle1.xml"/>
+    <TrainingData file="trainingData/Circle2.xml"/>
+    <TrainingData file="trainingData/Circle3.xml"/>
+    <TrainingData file="trainingData/Circle4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="check" maxDistance="1.5" distanceMeasure="malhanobis"
+                      aspectInvariant="false" useDTW="true" maxRotation="30" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Check1.xml"/>
+    <TrainingData file="trainingData/Check2.xml"/>
+    <TrainingData file="trainingData/Check3.xml"/>
+    <TrainingData file="trainingData/Check4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="caret" maxDistance="2" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="45" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="2" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Caret1.xml"/>
+    <TrainingData file="trainingData/Caret2.xml"/>
+    <TrainingData file="trainingData/Caret3.xml"/>
+    <TrainingData file="trainingData/Caret4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="question" maxDistance="1.7" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="60" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR"  numGMRStates="12" searchBestInputLength="true" useFilteredData="true">
+    <Joints main="rightHand"  relative="torso"/>
+    <TrainingData file="trainingData/Question1.xml"/>
+    <TrainingData file="trainingData/Question2.xml"/>
+    <TrainingData file="trainingData/Question3.xml"/>
+    <TrainingData file="trainingData/Question4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="arrow" maxDistance="5" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="90" resamplingTechnique="PolyLine" 
+                      stochasticModel="GMR" numGMRStates="4" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Arrow1.xml" start="0" end="68"/>
+    <TrainingData file="trainingData/Arrow2.xml"/>
+    <TrainingData file="trainingData/Arrow3.xml"/>
+    <TrainingData file="trainingData/Arrow4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="leftSquareBracket" maxDistance="1.5" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="30" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/LeftSquareBracket1.xml"/>
+    <TrainingData file="trainingData/LeftSquareBracket2.xml"/>
+    <TrainingData file="trainingData/LeftSquareBracket3.xml"/>
+    <TrainingData file="trainingData/LeftSquareBracket4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="rightSquareBracket" maxDistance="1.5" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="30" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/rightSquareBracket1.xml"/>
+    <TrainingData file="trainingData/rightSquareBracket2.xml"/>
+    <TrainingData file="trainingData/rightSquareBracket3.xml"/>
+    <TrainingData file="trainingData/rightSquareBracket4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="v" maxDistance="1.5" distanceMeasure="malhanobis"
+                      aspectInvariant="false" useDTW="true" maxRotation="30" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR" numGMRStates="2" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/V1.xml"/>
+    <TrainingData file="trainingData/V2.xml"/>
+    <TrainingData file="trainingData/V3.xml"/>
+    <TrainingData file="trainingData/V4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="delete" maxDistance="2.5" distanceMeasure="malhanobis"
+                       aspectInvariant="true" useDTW="true" maxRotation="90" resamplingTechnique="EquiDistant"
+                       stochasticModel="GMR" numGMRStates="3" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Delete1.xml"/>
+    <TrainingData file="trainingData/Delete2.xml"/>
+    <TrainingData file="trainingData/Delete3.xml"/>
+    <TrainingData file="trainingData/Delete4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="leftCurlyBracket" maxDistance="1.8" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="45" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR" numGMRStates="6" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/LeftCurlyBracket1.xml"/>
+    <TrainingData file="trainingData/LeftCurlyBracket2.xml"/>
+    <TrainingData file="trainingData/LeftCurlyBracket3.xml"/>
+    <TrainingData file="trainingData/LeftCurlyBracket4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="rightCurlyBracket" maxDistance="1" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="45" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR" numGMRStates="6" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/rightCurlyBracket1.xml"/>
+    <TrainingData file="trainingData/rightCurlyBracket2.xml"/>
+    <TrainingData file="trainingData/rightCurlyBracket3.xml"/>
+    <TrainingData file="trainingData/rightCurlyBracket4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="star" maxDistance="2" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="180" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR"  numGMRStates="5" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/Star1.xml"/>
+    <TrainingData file="trainingData/Star2.xml"/>
+    <TrainingData file="trainingData/Star3.xml"/>
+    <TrainingData file="trainingData/Star4.xml"/>
+    <IgnoreAxes z="1"/>
+  </TemplateRecognizer>
+  <TemplateRecognizer name="pigtail" maxDistance="2" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="90" resamplingTechnique="HermiteSpline"
+                      stochasticModel="GMR"  numGMRStates="12" searchBestInputLength="true" useFilteredData="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/PigTail1.xml"/>
+    <TrainingData file="trainingData/PigTail2.xml"/>
+    <TrainingData file="trainingData/PigTail3.xml"/>
+    <TrainingData file="trainingData/PigTail4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+  <!-- On the website, Wobbrock replaced the question mark with the zig-zag gesture -->
+  <TemplateRecognizer name="zigZag" maxDistance="2.5" distanceMeasure="malhanobis"
+                      aspectInvariant="true" useDTW="true" maxRotation="60" resamplingTechnique="EquiDistant"
+                      stochasticModel="GMR" numGMRStates="5" searchBestInputLength="true">
+    <Joints main="rightHand" relative="torso"/>
+    <TrainingData file="trainingData/ZigZag1.xml"/>
+    <TrainingData file="trainingData/ZigZag2.xml"/>
+    <TrainingData file="trainingData/ZigZag3.xml"/>
+    <TrainingData file="trainingData/ZigZag4.xml"/>
+    <IgnoreAxes z="true"/>
+  </TemplateRecognizer>
+</FubiRecognizers>

@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="4">
+    <classes size="3">
+        <item name="Circle" id="0" />
+        <item name="Triangle" id="1" />
+        <item name="Rectangle" id="2" />
+    </classes>
+    <users size="1">
+        <item name="user" id="0" />
+    </users>
+    <streams size="1">
+        <item byte="4" dim="2" sr="30.000000" type="FLOAT" />
+    </streams>
+    <model name="Dollar$1" info="Dollar$1" stream="0" path="kinect.ssi_model_Dollar$1.model" />
+</trainer>

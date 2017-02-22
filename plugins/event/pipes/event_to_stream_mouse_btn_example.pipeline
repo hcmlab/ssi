@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<pipeline>
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssievent" />
+		<load name="ssimouse" />
+		
+	</register>
+	<sensor create="Mouse" event="True" mask="1">
+		<output channel="button" pin="btn" />
+	</sensor>
+	
+	<sensor create="EventToStream" useWindow="True" window="10000" sr="50" eventValue="number_of_events">		
+		<output channel="event output" pin="btn_to_stream" />
+		<listen address="@"/>
+	</sensor>	
+	
+	<consumer create="SignalPainter:plot" title=" btn to stream" size="10">
+		<input pin="btn_to_stream" frame="1" />
+	</consumer>
+	
+	<object create="EventMonitor:monitor">
+		<listen address="@" />		
+	</object>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

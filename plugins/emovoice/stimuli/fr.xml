@@ -1,0 +1,846 @@
+<?xml version="1.0"?>
+<!--SSI MLP Stimuli File-->
+<stimuli>
+  <list size="210">
+      <slide label="negativeActive">
+		<source id="Text" text="C'est tellement injuste !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Mais quel imbécile !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je te hais !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Pour qui tu te prends ??" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Mais t'es devenu completement dingue !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je déteste quand les gens me demandent mon age !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Sors d'ici !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je n'arrive pas a croire que j'aie toujours aussi peu de chance !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Quelle manque de chance !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="C'est dangereux ce que tu fais, arrête !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu détruis toujours tout, comme d'habitude !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Comment tu peux être aussi stupide ??" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Ça y est, j'en ai ras-le-bol !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Elle me rend fou !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu me tapes vraiment sur les nerfs !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="La cruauté des hommes me met vraiment en colère." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu peux arrêter de m'ennuyer ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu peux me laisser tranquille ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Arrête ça !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Arrête de me casser les pieds !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu ne peux pas être un peu plus prudent ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je suis de mauvaise humeur, dégagez de mon chemin !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu ferais bien de te calmer, j'en ai assez !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Encore une question stupide et tu vas l'avoir !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Le monde se porterait bien mieux sans toi !!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je déteste les examens, c'est une telle perte de temps !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="A chaque fois que j'ai besoin de toi, tu n'es pas là !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je pourrais devenir fou, coincé dans ce bouchon !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Qu'est-ce que tu croyais qu'il allait se passer ? Tu pensais que ca n'allait pas casser ??" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu es si naïf, c'est exasperant !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="C'est la pire chose qui me soit jamais arrivé dans la vie !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je te déteste, et je te détesterais toujours !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Si je te mets la main dessus, tu es mort !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je n'ai jamais imaginé être en colère a ce point-la !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Ne mets plus jamais les pieds chez moi !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Tu n'es qu'un crétin !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Ne me prends pas pour un con !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je ne vais pas te faire tout ton boulot ! Jamais !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="A ton avis, qui nettoie quand tu n'es pas là ??" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Je ne veux plus jamais te voir !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="A quoi sert toutes ces conneries ??" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativeActive">
+		<source id="Text" text="Dégage de ma vue !!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens plutôt mou là." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="De temps en temps, je me sens si fatigué et morose que je préfererais m'asseoir et ne rien faire." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Défois je me demande si les efforts que je fais servent vraiment à quelque chose..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Parfois on dirait que tout le monde a la pêche sauf moi." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Les autres m'agacent. J'aimerais être seul." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens plutôt endormi et abattu." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je n'arrive pas a avancer autant que d'habitude." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Le moindre effort m'épuise..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Ma vie est tellement ennuyeuse..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="La routine me déprime..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="On dirait que, peu importe a quel point j'essaie, les choses vont toujours mal." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens terriblement fatigué et indifférent à tout aujourd'hui..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Rien que de rester debout me demanderait un effort colossal." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Tout s'est passé misérablement mal." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je n'arrive pas à me décider." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="C'est tellement dur de prendre de simples décisions..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens pathétique et blasé..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Parfois je me demande si je sers à quelque chose..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens épuisé..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="La chimie est tellement difficile à comprendre quand on est fatigué..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Ma santé n'est peut pas être aussi bonne qu'elle devrait..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="On dirait que les autres ne savent même pas que j'existe..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="J'ai l'impression que rien ne va jamais s'arranger..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Personne n'a l'air de comprendre ou de faire attention quand je suis malheureux." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="J'ai vraiment des doutes sur l'avenir." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens vraiment malheureux et abattu." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="negativePassive" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Les choses sont pires qu'avant..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="L'avenir a l'air tellement désespérant et ennuyeux..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Mes parents n'ont jamais vraiment essayé de me comprendre..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens fatigué et déprimé." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="J'ai l'impression de ne pas pouvoir atteindre les gens." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Les choses ont l'air plus simples pour les autres que pour moi." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Tous les déboires de mon passé me rattrapent." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je voudrais aller me coucher et ne jamais me réveiller." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Ca a été une semaine épuisante." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="J'ai assez vu de ces peintures ennuyeuses. Je commence a etre fatigué." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="On dirait que tout le monde se plaint de moi." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je n'ai jamais vraiment eu de chance dans la vie." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Je me sens seul et déprimé." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="J'ai perdu toute foi en l'humanité." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="negativePassive">
+		<source id="Text" text="Tout le monde ignore ce que je dis..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les notes bibliographiques doivent apparaitrent à la fin du papier." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les images en noir et blanc sont rangés en 10 catégories." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les noms de la liste de diffusion sont rangés par ordre alphabétique." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les produits de l'agriculture comprennent 70% du revenu." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="L'argo est une partie du langage en constante évolution." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Il y a beaucoup de nouvelles entreprises de logiciel en Bavière. " />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le cours d'informatique commence à 10h aujourd'hui." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Cette page web fourni les prévisions météo nationales et locales pour les villes à travers le monde." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les mammifères sont des animaux a sang chaud." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="338 millions de bouteilles de champagne ont été produites en 2007." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="L'aire urbaine de Marseille regroupe plus d'un million et demi de personnes." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Il y a beaucoup de vols de Paris à Londres chaque jour." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Certains membres du projet donne une présentation la semaine prochaine." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Tous les numéros de téléphone peuvent être trouvé sur la page d'accueil de l'université." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Beaucoup de gens appellent un taxi pour aller à l'aéroport." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le musée est au bout de la route." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Longez cette rue jusqu'aux feux de circulation." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les membres du projet vont faire une réunion en octobre." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les étudiants ont besoin de plus de temps libre." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Ca les aide à mieux se concentrer sur les leçons en classe." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les américains mangent en moyenne 8 kilos de pommes fraiches par an." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="A l'origine, la glace était faite sans sucre et sans oeufs." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="La boisson préférée de Richard Nixon était un martini sec." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le seul président américain à avoir été à la tête d'un syndicat fut Ronald Reagan." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Personne ne sait où Mozart est enterré." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Un caféier produit un kilo de café noir par an." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Une famille américaine moyenne regarde la télévision 6 heures par jour." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="En dehors des Etats-Unis, l'Irlande est le plus grand producteur de logiciel dans le monde." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le son voyage 15 fois plus vite dans l'acier que dans l'air." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="L'espérance de vie d'un écureuil est d'environ 9 ans." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="La Russie a presque 2 fois plus de juges et magistrats que les Etats-Unis." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Dans 22 pays, plus de la moitié de la population est illettrée." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Plus de la moitié des enseignants du primaire en Indonésie ont moins de 30 ans." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="En Allemagne et en Italie, une personne sur deux possede une voiture." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le porte-épée est le poisson le plus rapide." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le guépard peut courir jusqu'a 76 km/h." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Le chef du gouvernement francais est appelé le Premier Ministre." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="L'actuel Premier Ministre a obtenu un DEA en Droit Public." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Hamburg est la deuxieme plus grande ville d'Allemagne." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Les Beatles étaient un groupe de musique de Liverpool." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Leur style de musique original est inspiré du rock'n'roll des années 50." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="neutral">
+		<source id="Text" text="Beaucoup de gens qui vivent près de Francfort prennent le train pour Paris maintenant." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je me sens plutot bien aujourd'hui !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Tout le monde est si agréable avec moi !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je me sens enthousiaste et confiant !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Les choses vont de mieux en mieux dans ma vie !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je me sens étonnamment bien aujourd'hui !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est le meilleur film que j'ai jamais vu ! Je n'arrete pas de le regarder !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est tout ce qu'un film devrait être, et meme plus !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="La vie est tellement amusante !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Wouah, je me sens bien !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je suis plein d'énergie !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Il en faudrait vraiment beaucoup pour m'arrêter maintenant !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Wouah, c'est vraiment cool !!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="La nourriture était excellente ! Le vin était super ! On s'est vraiment amusés !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="La randonnée a été fantastique ! Vous n'allez pas le croire : nous avons atteint le sommet !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est un film extraordinaire !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="J'adore cette actrice ! Elle est trop mignonne !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Elle accomplit un travail formidable, c'est une très grande actrice !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est un grand rôle pour elle ! Elle incarne vraiment le personnage !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Les choses s'annoncent bien ! Je me sens super bien !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Vous êtes une excellente cuisinière ! Ce gâteau est délicieux !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="La vie est tellement amusante !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Les choses vont de mieux en mieux aujourd'hui !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est tellement génial de te revoir !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="C'est un super livre ! Je l'adore !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Regarde le ciel ! N'est-il pas beau ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Wouah, c'est génial ! On a une maison juste sur la plage !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Regarde cette belle plage et l'eau claire !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Wouah ! Quel service ! Vous m'avez vraiment gâté !!" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Ouais, j'adore completement !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je n'en peux plus d'attendre de voir ce film fantastique !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Mon rêve, c'est d'acheter une maison sur la plage !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Wouah, cette salle de gym est super ! C'est un entraînement fantastique !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Je suis si enthousiaste à l'idée des vacances !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Ça va être merveilleux, non ? Ca fait si longtemps qu'on est pas parti !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Vous n'allez pas le croire ! J'ai obtenu un nouveau boulot !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Hé ! Devine quoi ? J'ai eu une augmentation !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Eh bien, félicitations mon pote ! C'est fantastique !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Ca mérite une bière ! Deux pintes de votre meilleure bière du coin !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="Les affaires ont vraiment bien marché ! Ca a dépassé nos meilleures estimations !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="L'entreprise fonctionne parfaitement ! On est dans le positif depuis plusieurs mois maintenant !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="La nourriture a l'air excellente !! Bon sang, j'ai faim !..." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positiveActive">
+		<source id="Text" text="J'aime les Impressionnistes. Ils avaient une façon très fraiche, vive, et colorée de peindre !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="J'aime m'allonger dans l'herbe et regarder les nuages." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="positivePassive" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Ce n'est pas si mal." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je me sens toujours détendu après un massage." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je suis vraiment content de ma vie." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Courage, les choses vont s'arranger !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Tout ce qui a de l'importance pour moi semble bien se passer." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="J'ai accompli tout ce que je pouvais espérer pour le moment." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Le bonheur est possible pour tout ceux qui se débrassent de ce qui est superflu." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je pense que ma vie est belle." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="J'aime écouter le bruit des ruisseaux dans les montagnes." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Ma vie est complètement contrôlée." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je suis assez satisfait de mes résultats à l'examen." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="j'adore ma vie." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je fais confiance au système judiciaire de ce pays." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Ca n'a aucune importance pour moi." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Peu importe, continue !" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Qu'est ce que je pourrais espérer d'autre ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je suis sûr que les choses vont bientot s'arranger." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Dans l'ensemble, il n'y a pas de quoi s'inquiéter." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Tu as loupé ton examen, et alors ? La vie continue." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je ne m'inquiete pas aussi facilement." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="positivePassive" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="positivePassive" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="positivePassive" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je suis en pleine forme." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="j'adore regarder les nuages passer." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Quand j'ai besoin de repos, je ferme les yeux et pense à quelque chose de plaisant." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Ne t'inquietes pas, un jour tu riras de tout ça." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Les meilleures choses dans la vie sont gratuites." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Le bleu est une couleur tellement réconfortante." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Une famille heureuse. Qu'est qu'on pourrait souhaiter d'autre ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Que ferait-on si tout dans la vie était parfait ?" />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Malgré toutes les malheurs qui me sont arrivées, je reste une personne optimiste." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Tu peux apprendre de tes erreurs et mener une vie meilleure." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Il y a un calme absolu au pôle sud." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Parfois je suis blessé, mais ça n'a pas d'importance pour moi." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je me fiche que tu perdes le livre." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Je me souviens encore de la bonne odeur du foin dans cette ferme." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Tous ces spams ont l'air ennuyeux mais je m'en moque." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="Ah, j'ai perdu la notion du temps à force d'écouter cette magnifique musique." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+      <slide label="positivePassive">
+		<source id="Text" text="En général, il n'y a rien à se soucier si tu vis dans un pays libre." />
+        <trigger id="Event"  number="1"/>
+      </slide>
+  </list>
+</stimuli>

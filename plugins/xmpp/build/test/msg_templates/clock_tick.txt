@@ -1,0 +1,13 @@
+{
+	"date": <ISODATE>,
+	"value": <VALUE>,
+	"reliability": <RELIABILITY>,
+
+	"roomType": "livingroom",
+	"roomID": 0,
+
+	"sensorType": "clock",
+	"positionType": "wall",
+	"positionID": 0,
+	"adminSoftware" : "SSI_1"
+}

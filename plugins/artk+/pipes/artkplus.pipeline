@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssiartkplus" />
+		<load name="ssigraphic" />
+		<load name="ssicamera" />
+		<load name="ssiioput" />
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera">
+		<output channel="video" pin="video"/>
+	</sensor>
+	
+	<!-- marker tracker -->
+	<transformer create="ARTKPlusTracker" n_marker="1" camcfg="LogitechPro4000.dat" markcfg="markerboard_1-20.cfg">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="marker"/>
+	</transformer>
+	
+	<!-- marker selector -->
+	<transformer create="ARTKPlusSelector" indices="2,3">
+		<input pin="marker" frame="1" delta="0"/>
+		<output pin="xy"/>
+	</transformer>
+	
+	<!-- marker writer -->
+	<consumer create="FileWriter" type="1">
+		<input pin="xy" frame="1"/>
+	</consumer>
+	
+	<!-- add marker to video -->
+	<transformer create="ARTKPlusPainter">
+		<input pin="video" frame="1" delta="0"/>
+		<xinput size="1">
+			<input pin="marker"/>
+		</xinput>
+		<output pin="video+marker"/>
+	</transformer>
+	
+	<!-- video plot -->	
+	<consumer create="VideoPainter:plot" title="camera">
+		<input pin="video+marker" frame="1" delta="0"/>
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
+

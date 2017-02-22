@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssiopensmile"/>
+		<load name="ssiaudio"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="OSPitchChain" option="pitch">
+		<input pin="audio" frame="0.01s" delta="0.02s"/>
+		<output pin="pitch"/>
+	</transformer>
+	<transformer create="OSMfccChain" option="mfcc">
+		<input pin="audio" frame="0.01s" delta="0.02s"/>
+		<output pin="mfcc"/>
+	</transformer>
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.2s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="pitch" type="0">
+		<input pin="pitch" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="mfcc" type="1">
+		<input pin="mfcc" frame="0.02s" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

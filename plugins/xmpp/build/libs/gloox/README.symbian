@@ -1,0 +1,25 @@
+Building on Symbian/Nokia S60 using S60 SDK 3rd Edition
+-------------------------------------------------------
+
+gloox compiles (at least) on:
+- Linux cross-compile environment (see http://martin.st/symbian)
+- Carbide.c++ 2.0
+
+You will need the Open C/C++ plugin for the S60 SDK.
+
+No other compilers are officially supported at this point. Please let me know about
+your experiences with other compilers.
+
+Project files (bld.inf, gloox.mmp) are included. They can be imported into Carbide.c++.
+
+- Edit config.h.symbian to suit your needs. The defaults should be fine.
+- build
+
+
+NOTE WELL
+---------
+The code has not been tested on Symbian/S60 by the author. It has only been compiled.
+Feedback is welcome.
+
+The OpenSSL server code (class OpenSSLServer from tlsopensslserver.h/cpp) does not
+compile at this point.

@@ -1,0 +1,1 @@
+java -classpath ".;C:\Program Files\Weka-3-6\weka.jar" WekaServer "..\models\mfcc12{f160d160}_dd{f100d0}_mlp_intensity.ssi_model_WekaWrapper.model" 1111 1024

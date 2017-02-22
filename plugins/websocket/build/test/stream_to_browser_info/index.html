@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>WebSocket Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style type="text/css"></style>
+
+<script language="javascript" type="text/javascript">
+
+
+  var ws = new WebSocket('ws://' + location.host + '/ws');
+
+  var wasclicked = false;
+  
+  var stream_info = null;
+  
+
+  var ctx = null;
+  
+  ws.onopen = function(ev)  { console.log(ev); };
+  ws.onerror = function(ev) { console.log(ev); };
+  ws.onclose = function(ev) { console.log(ev); };
+  ws.onmessage = function(ev) {
+  
+	var arrayBuffer;
+	var fileReader = new FileReader();
+	fileReader.onload = function() {
+		arrayBuffer = this.result;
+		var arrayBufferCursor = arrayBuffer.slice(0, stream_info["streams"][0]["tot"]);
+		var arrayBufferButton = arrayBuffer.slice(stream_info["streams"][0]["tot"]);
+		
+		var datavalues = new Float32Array(arrayBufferCursor);
+		
+		if (!wasclicked)
+			ctx.clearRect(0, 0, 500, 500);
+		
+		var lastPos = [0,0];
+		
+		for (var i = 0; i < datavalues.length; i++) {
+			var x = datavalues[i++];
+			var y = datavalues[i];
+			
+			ctx.beginPath();
+			ctx.arc(x*500,(1-y)*500,5,0,2*Math.PI);
+			ctx.stroke();
+			
+			lastPos[0] = x;
+			lastPos[1] = 1-y;
+		}
+		
+		document.getElementById("cursorPosition").innerHTML = "cursor x: " + lastPos[0].toFixed(3) + "; y: "+ lastPos[1].toFixed(3);
+		
+		
+		datavalues = new Int32Array(arrayBufferButton);
+		var val = 0;
+		for (var i = 0; i < datavalues.length; i++) {
+			 val = datavalues[i];
+		}
+
+		document.getElementById("buttonState").innerHTML = "left mouse button pressed: " + val;
+	};
+	
+
+	
+	if (typeof ev.data === "string") {
+		obj = JSON.parse(ev.data);
+		
+		if (obj.hasOwnProperty("stream_number")) {
+			stream_info = obj;
+			
+			console.log("got stream info!");
+			
+			var str = "";
+			str += "stream number: " + stream_info["stream_number"] + "<br><br>";
+			
+			for (var i = 0; i < stream_info["stream_number"]; i++) {
+				str += "<b>STREAM " + i + "</b>: <br>";
+				str += "dim: " + stream_info["streams"][i]["dim"] + "<br>";
+				str += "byte: " + stream_info["streams"][i]["byte"] + "<br>";
+				str += "sr: " + stream_info["streams"][i]["sr"] + "<br>";
+				str += "tot: " + stream_info["streams"][i]["tot"] + "<br>";
+				str += "type: " + stream_info["streams"][i]["type"] + "<br><br>";
+			}
+			
+			document.getElementById("streamInfo").innerHTML = str;
+		}
+		else if (obj["sender"] == "mouse" && obj["name"] == "click") {
+			wasclicked = !wasclicked;
+		}
+	}
+	else {
+		//blob data
+		fileReader.readAsArrayBuffer(ev.data);
+	}
+
+  };
+
+  window.onload = function() {
+	var c = document.getElementById("mouseCanvas");
+		ctx = c.getContext("2d");
+  };
+</script>
+</head>
+<body>
+	<canvas id="mouseCanvas" width="500" height="500" style="border:1px solid #d3d3d3;"></canvas>
+	<div id="buttonState">buttonstate</div>
+	<div id="cursorPosition">cursorposition</div>
+	<br>
+	<div id="streamInfo">info about the data stream(s)</div>
+</body>
+</html>

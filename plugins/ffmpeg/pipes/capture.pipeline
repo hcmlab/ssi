@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+		<load name="ssicamera" />
+		<load name="ssiaudio" />
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" width="640" height="480" fps="25.0" channel="3" depth="8" flip="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>	
+	
+	<!-- write -->
+	<consumer create="FFMPEGWriter" url="capture.mp4">
+		<input pin="video;audio" frame="1"/>		
+	</consumer>	
+	<!--consumer create="FFMPEGWriter" url="capture.mp3">
+		<input pin="audio" frame="0.04s"/>
+	</consumer-->	
+	<consumer create="WavWriter" path="capture.wav">
+		<input pin="audio" frame="0.04s"/>
+	</consumer>	
+	
+	<!-- visualize -->	
+	<consumer create="VideoPainter:plot" title="video" flip="false">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssiehealth" />
+		<load name="ssiioput" />
+		<load name="ssisignal"/>
+		<load name="ssigraphic" />				
+	</register>
+		
+	<eventboard update="100"/>
+
+	<!-- glove sensor
+
+		Connect sensor and adjust serial port.
+
+		gsr = galvanic skin reponse (mS)
+		ecg = electrocardiogram (mS)
+		air = airflow (?)
+		tmp = temperature (°C)
+		bpm = puls (bpm)
+		oxy = oxygen level (should be 95 to 99 percent)
+		
+	-->			
+	<sensor create="EHealth" port="3" sr="100">
+		<output channel="gsr" pin="gsr_p"/>
+		<output channel="ecg" pin="ecg_p"/>
+		<output channel="air" pin="air_p"/>
+		<output channel="tmp" pin="tmp_p"/>
+		<output channel="bpm" pin="bpm_p"/>
+		<output channel="oxy" pin="oxy_p"/>
+	</sensor>
+	
+	<!-- Visualization
+	
+	To omit visualization put following lines in comment.
+	
+	-->
+	<consumer create="SignalPainter:plot" type="0" size="10" title="GSR">
+		<input pin="gsr_p" frame="0.1s" delta="0"/>
+	</consumer>	
+	<consumer create="SignalPainter:plot" type="0" size="10" title="ECG">
+		<input pin="ecg_p" frame="0.1s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" type="0" size="10" title="AIR">
+		<input pin="air_p" frame="0.1s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" type="0" size="10" title="TMP">
+		<input pin="tmp_p" frame="0.1s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" type="0" size="10" title="BPM">
+		<input pin="bpm_p" frame="0.1s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" type="0" size="10" title="OXY">
+		<input pin="oxy_p" frame="0.1s" delta="0"/>
+	</consumer>	
+	
+	<!-- Storage
+
+	Stores streams on disk.
+	
+	-->
+	<consumer create="FileWriter" path="gsr" type="1">
+		<input pin="gsr_p" frame="0.1s" />
+	</consumer>
+	<consumer create="FileWriter" path="ecg" type="1">
+		<input pin="ecg_p" frame="0.1s" />
+	</consumer>
+	<consumer create="FileWriter" path="air" type="1">
+		<input pin="air_p" frame="0.1s" />
+	</consumer>
+	<consumer create="FileWriter" path="tmp" type="1">
+		<input pin="tmp_p" frame="0.1s" />
+	</consumer>
+	<consumer create="FileWriter" path="bpm" type="1">
+		<input pin="bpm_p" frame="0.1s" />
+	</consumer>
+	<consumer create="FileWriter" path="oxy" type="1">
+		<input pin="oxy_p" frame="0.1s" />
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

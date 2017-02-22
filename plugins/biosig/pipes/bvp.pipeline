@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>		
+		<load name="ssisignal" />
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+	</register>
+	
+	<!-- set up windows -->	
+
+	<!-- Read ECG data (ecg.stream)-->
+	<sensor create="FileReader" path="bvp" blockInSamples="1">
+		<output channel="file" pin="bvp"/>
+	</sensor>
+
+	<!-- lowpass -->
+	<transformer create="Butfilt" zero="true" type="0" low="0.02" order="3">
+		<input pin="bvp" frame="0.1s"/>
+		<output pin="bvp_low"/>
+	</transformer>
+
+	<!-- pulse -->
+	<transformer create="Pulse" minr="50" maxr="140" delta="0.2">
+		<input pin="bvp_low" frame="0.5s"/>
+		<output pin="bvp_hr"/>
+	</transformer>	
+	
+	<!-- Visualization -->	
+	<consumer create="SignalPainter:plot" title="RAW BVP" size="5">
+		<input pin="bvp" frame="1" delta="0"/>
+	</consumer>
+		<consumer create="SignalPainter:plot" title="LOWPASSED" size="5">
+		<input pin="bvp_low" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="HEART RATE" size="60">
+		<input pin="bvp_hr" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<framework sync="true" sport="9999" stype="0" slisten="false"/>
+	
+	<!-- sensor -->	
+	<sensor create="Mouse" sr="5.0">		
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+
+	<!-- triggered consumer -->
+	<consumer create="FileWriter" type="1">
+		<input pin="cursor" frame="1"/>		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

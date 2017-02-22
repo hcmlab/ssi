@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>		
+		<load name="ssisensingtex"/>
+		<load name="ssigraphic"/>		
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- pressure sensor -->
+	<sensor create="SensingTex" scale="true" port="11" cols="8" rows="8" sr="20.0">
+		<output channel="pressurematrix" pin="press_raw"/>
+	</sensor>	
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" size="10.0" >
+		<input pin="press_raw" frame="0.25s" />		
+	</consumer>
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" size="0.0" type="1" staticImage="true" indx="8" indy="8" autoscale="false" colormap="3" fix="[0,0.5]" >
+		<input pin="press_raw" frame="1" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

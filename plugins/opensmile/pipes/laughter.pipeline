@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssiopensmile"/>
+		<load name="ssiaudio"/>
+		<load name="ssisignal"/>
+		<load name="ssiioput"/>
+		<load name="ssimodel"/>
+	</register>
+
+	<!-- audio sensor -->
+	<!--<sensor create="Audio" option="audio" scale="true" sr="48000">
+		<output channel="audio" pin="audio"/>
+	</sensor>-->
+	<sensor create="WavReader" path="..\build\test\audio.wav" block="0.02" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- signal to noise transformer -->
+	<transformer create="SNRatio">
+		<input pin="audio" frame="0.2s"/>
+		<output pin="audio_snr"/>
+	</transformer>	
+	
+	<!-- audio pre-processor transformer -->
+	<transformer create="LaughterPreProcessor">
+		<input pin="audio" frame="0.01s" delta="0.01s"/>
+		<output pin="audio_lpp"/>
+	</transformer>	
+	
+	<!-- laughter classifier -->	
+	<consumer create="Classifier" trainer="..\build\test\laughter" sname="classifier" ename="decision" pthres="0">
+		<input pin="audio_lpp" frame="0.5s" delta="0.5s" trigger="audio_snr">
+			<transformer create="LaughterFeatureExtractor"/>
+		</input>		
+	</consumer>	
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="1024" delta="0"/>
+	</consumer>
+	
+	<!-- player -->	
+	<consumer create="AudioPlayer" option="aplayer">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	
+	<!-- event board -->
+	<listener create="EventMonitor:monitor">
+		<input listen="" span="20000" />
+	</listener>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

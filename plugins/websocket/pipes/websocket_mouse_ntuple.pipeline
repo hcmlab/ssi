@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssimouse" />
+		<load name="ssiwebsocket" />		
+	</register>	
+
+	<sensor create="Mouse" mask="1">
+		<output channel="cursor" pin="pin_cursor" />
+	</sensor>
+	
+	<consumer create="MapEventSender" sname="mouse" ename="cursor" keys="x,y">
+		<input pin="pin_cursor" frame="1" />
+	</consumer>
+	
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="20000" />
+	</object>
+	
+	<object create="websocket" http_root="website" >
+		<listen address="@" />
+	</object>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

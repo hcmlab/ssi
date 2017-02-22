@@ -1,0 +1,884 @@
+v1.0.14 -- 11 Aug 2015
+----------------------
+Note: This release is not binary compatible with previous releases. It is source compatible.
+
+- IOData: make it possible to pass more than one element as in/out/error data
+- Client: fix resetting of presence status text
+- TLSSChannel: fix memory leak (thanks to Alexander Weisner)
+- Error: added setAppError() to set application-specific error message
+- PubSub::Item: added setPayload(), setID()
+- Adhoc: return clone of plugin
+- PubSub::Manager: fix finding of subscription type (thanks to BillHoo)
+- ChatStateFilter: fix enable logic (thanks to Ivan Shmakov)
+- MessageEvent: added parsing of <id/> (thanks to Ivan Shmakov)
+- MessageEvent: added id() (thanks to Ivan Shmakov)
+- ClientBase: handle MUC invitation declines properly (thanks to Matias Snellingen)
+- DNS: IPv6 fix (thanks to garimacoe) (#249)
+- DelayedDelivery: propagate internal state properly (#251)
+- PubSub::Manager: fix GetSubscriberList and GetAffiliateList
+
+
+
+v1.0.13 -- 01 Feb 2015
+----------------------
+Note: This release is not binary compatible with previous releases. It is source compatible.
+
+- fixed compilation with libressl (thanks to Heiko Becker)
+- added IO Data (XEP-0244)
+- serialise access to compressionZlib::cleanup for thread safety (thanks to Stephen Hilliard)
+- prevent infinite loop in Tag::setCData() (thanks to Stephen Hilliard)
+- TLSOpenSSL: memory leak on every client connection attempt (thanks to Stephen Hilliard)
+- Client: initialize m_smWanted to avoid connection failures (thanks to Stephen Hilliard)
+
+
+
+v1.0.12 -- 12 Nov 2014
+----------------------
+- TLSOpenSSLClient/Server: disabled SSLv3, Google & co. finally support TLS
+
+
+
+v1.0.11 -- 13 Sep 2014
+----------------------
+- GnuTLS: updated use of priority API
+- LinkLocal*: compile fixes for MSVC 2008 (thanks to Serhiy M. Vasylenko)
+- fixed Debian bug #746857, worked around #758899
+- fixed memory leak (#240)
+- fixed compatibility with recent GnuTLS  versions, fixed GnuTLS check (thanks to Andreas Metzler) (#231)
+- Jingle::Session: fixed state error (thanks to leerymatthew) (#236)
+
+
+
+v1.0.10 -- 09 Apr 2014
+---------------------
+- TLSSChannel: use malloc/realloc/free instead of their legacy Local* variants (fixes #222)
+- VCard: remove \r from vcard photos. Fixes a recent change Facebook made to their vcard pictures (patch by Fernando Sanchez)
+- Jingle: fixed replying; distinguish between 'from' and 'initiator'; added Jingle::Session::setInitiator()
+- Jingle: fixed ::ICEUDP to actually add candidates; added ::Session::initiator(), ::setHandler(), ::sessionAccept( PluginList ); fixed storing of new sessions in ::SessionManager (patches by Erich Keane)
+- Jingle: removed Jingle::setInitiator() and ::setResponder() (now provided by ctor)
+- AtomicRefCount: fixed compilation on iOS (patch by Erich Keane)
+- Jingle::Plugin: added JinglePluginType, pluginType(), and findPlugin() to easily look for and retrieve specific plugins
+- ConnectionBOSH: fixed return value for recv() (patch by Sudarshan Prasad)
+- Parser: get rid of bogus isValid() (fixes #180, #224)
+
+
+
+v1.0.9 -- 15 Oct 2013
+---------------------
+- changed colon to dash in uid generation to possibly fix #191
+- added Channel Binding (needed for SASL SCRAM-SHA-1-PLUS) to SChannel on win32 (untested)
+- fixed SCRAM-SHA-1-PLUS
+
+
+
+v1.0.8 -- 15 Oct 2013
+---------------------
+- ConnectionTLS: make stacked TLS/SSL connections work again with HTTP proxies
+- added SASL SCRAM-SHA-1/SCRAM-SHA-1-PLUS authentication mechanisms (GnuTLS & OpenSSL only) (#201)
+- properly seed the RNG
+- SHA::hex(): finalize() only once
+
+
+
+v1.0.7.1 -- 11 Oct 2013
+---------------------
+- fixed/updated the win32 project files
+
+
+
+v1.0.7 -- 11 Oct 2013
+---------------------
+- added Jingle (XEP-0166)
+- added Jingle ICE-UDP Transport (XEP-0176)
+- added Jingle File Transfer (XEP-0234)
+- fixed compilation in iOS7 SDK (thanks to Kurt Vermeersch)
+- fixed bug in stanza handling/counting related to Stream Management (patch by Norbert Riedlin)
+- added protected ClientBase::stanzasSent() to return sent stanzas (if Stream Management enabled)
+
+
+
+v1.0.6 -- 04 Sep 2013
+---------------------
+- ClientBase: removed check for empty message body --> messages of type chat with empty bodies will be passed on to listeners - required for Message Carbons
+- MessageSession: removed check for empty message body --> messages of type chat with empty bodies will be passed on to listeners - required for Message Carbons
+- don't send presence after stream resumption
+- added ClientBase::sendQueue()
+- documentation updates and fixes
+
+
+
+v1.0.5 -- 02 Sep 2013
+---------------------
+- added support for Stanza Forwarding (XEP-0297)
+- added support for Message Carbons (XEP-0280)
+
+
+
+v1.0.4 -- 30 Aug 2013
+---------------------
+- added support for Stream Management (XEP-0198)
+- Fix some iterator usage for portability related to erase (patch by Daniel Bowen)
+- Ensure setting a connection does not leave a deleted value in the member variable for a time (patch by Daniel Bowen)
+- Add operator< and relatives to JID so that it can be in a map (patch by Daniel Bowen)
+- Sandboxing on Apple doesn't like getprotobyname (patch by Daniel Bowen)
+- MessageSession::send(): removed default argument of 2nd parameter to remove ambiguity of MS::send( string ) (#206) (source incompatible!)
+- VCard: renamed setPhoto( string ) to setPhotoUri( string ) (#166) (source and binary incompatible)
+
+
+
+v1.0.3 -- 22 Jul 2013
+---------------------
+- Changed license to GPLv3
+- removed space from VS project name (--> gloox-1.0)
+- VCardUpdate: fixed handling of empty hash (#203)
+- VCardUpdate: added hasPhoto() to inidicate whether there was a photo tag (#203)
+- compilation fixed when using getaddrinfo (patch by Roy van Dam)
+- Receipt: recognize id attribute (patch by Dídac Pérez) (#208)
+- MessageSession: added MS::send( string& ) to properly provide a base for MUCMS::send( string& ) (#206)
+- really fixed memory leak in prep::idna()
+- gloox.vcproj: removed not-yet-present tlsgnutlsserver.cpp/.h
+
+
+
+v1.0.2 -- 05 Jul 2013
+---------------------
+- SOCKS5Bytestream: Don't wait for incoming data, notify about open stream immediately upon
+connection (patch by Erik Horemans)
+- fixed/updated Code::Blocks and VS project files (fixes #197, #198)
+- fixed memory leak in ClientBase (fixes #204)
+- fixed memory leak in prep::idna()
+
+
+
+v1.0.1 -- 29 Jun 2013
+---------------------
+- Added support for Serverless Messaging (XEP-0174)
+- TLSOpenSSLServer: compilation fix
+- don't bail on DNS TCP queries
+- fixed µs timeout value (now defaults to 1.000.000)
+- omit port in initial greeting (usually -1 anyway)
+- fixed SHA1 hashes of 55 byte strings (#164)
+- fixed CFLAGS and LIBS in pkg-config file (#163)
+- fixed SOCKS5Bytestream double close notification
+- tell gcrypt that we're using pthreads (if available)
+- ClientBase: send IQ error response for unsupported features
+- ClientBase: fixed potential infinite loop on IQ error
+- ClientBase: fixed NTLM auth
+- ClientBase, SEF: mutex-protected SE handling
+- PubSub: added 'subscribe & configure'
+- PubSub: added optional subid
+- SOCKS5BytestreamServer: expose local socket
+- RosterManager: don't use string-comparison on JIDs; use JID class
+- NonSASLAuth: fixed resource usage by deprecating ClientBase::m_selectedResource
+- InBandBytestream: don't call handler in dtor
+- util: fixed long2string()
+- fixed a few leaks in GnuTLS client code (#181)
+- VCard: made getters const (#186) (binary-incompatible change!)
+- PubsubManager: fixed using wrong Tag (#190)
+- Search: fixed search() (#193)
+- DNS: fix socket leak if no network connection is available (#192)
+- PubsubManager: unconditionally call handleItemPublication() (#194)
+- configure: Added -lgcrypt (dependency of GNUTLS)
+
+
+
+v1.0 -- 31 Oct 2009
+---------------------
+
+general changes and additions:
+- XEP-0020 (Feature Negotiation) wrapper
+- XEP-0060 (Publish-Subscribe)
+- XEP-0071 (XHTML-IM) wrapper
+- XEP-0115 (Entity Capabilities)
+- XEP-0124 (BOSH)
+- XEP-0172 (User Nickname)
+- XEP-0184 (Message Receipts)
+- XEP-0199 (XMPP Ping)
+- XEP-0206 (XMPP Over BOSH)
+- integrated XEP-0047 (In-Band Bytestreams) with XEP-0096 (File Transfer)
+- integrated XEP-0066 (Out-of-Band Data) with XEP-0096 (File Transfer)
+- added IQ, Message, Subscription, Presence classes
+- added SASL error malformed-request from RFC 3920bis
+- added StanzaExtension and ported all XEPs
+- DataForm: removed 'Form' prefix from DataForm::DataFormType enum members
+- DataForm: removed 'Field' prefix from DataForm::FieldType enum members
+- JID: made setters return success/failure
+- Parser: feed() returns -1 on success, parse error position otherwise
+- Parser and Tag: support mixed content xml
+- Parser: XML namespace support
+- ConnectionListener: added onResourceBind( resource ) to notify about successfully bound resources
+- ConnectionListener: onResourceBindError() takes pointer to Error object
+- ConnectionListener: onSessionCreateError() takes pointer to Error object
+- Client: support for binding and unbinding of additional resources
+- SIProfileFTHandler: handleFTRequest() doesn't pass an id anymore, just a sid
+- SIProfileFT: acceptFTRequest() and declineFTRequest() don't take an id argument anymore, just a sid
+- Tag: check input for XML conformance
+- Tag: made findTag(), findTagList(), findCData() const
+- RosterItem: SubscriptionEnum moved to gloox namespace; renamed to SubscriptionType
+- MessageSession::send(): added StanzaExtensionList parameter
+- added SASL NTLM authentication (experimental, windows only)
+- added VC++ Express 2008 project file, updated Code::Blocks and MSVC++ project files
+
+deprecated:
+- MUCRoomHandler::handleMUCMessage( MUCRoom*, string, string, bool, string, bool ),
+    use handleMUCMessage( MUCRoom*, Message&, bool )
+
+removed:
+- class XDelayedDelivery, use DelayedDelivery
+- JID::fullJID(), use ctor
+- JID::empty(), use operator bool()
+- Tag::empty(), use operator bool()
+- Stanza::createMessageStanza(), Stanza::createPresenceStanza(),
+  Stanza::createIqStanza(), Stanza::createSubscriptionStanza(),
+  use Message, Presence, IQ, Subscription instead
+
+... and many more...
+
+
+v0.9.9.12 -- 31 Oct 2009
+------------------------
+- removed apparent openssl chunk size limit
+- win32 compile fixes (WIN32 --> _WIN32)
+- defined DLL_EXPORT in Code::Blocks project file
+- SChannel::decrypt(): defer cleanup in error case
+- SChannel: support over-sized TLS fragments
+
+
+v0.9.9.11 -- 22 Oct 2009
+------------------------
+- fixed potential crash in SOCKS5BytestreamManager
+
+
+v0.9.9.10 -- 19 Oct 2009
+------------------------
+- fixed potential crash in Rostermanager::fill() (when reusing the RosterManager)
+- fixed gnutls check in configure.ac (using pkg-config)
+
+
+v0.9.9.9 -- 23 Sep 2009
+-----------------------
+- fixed SChannel on NT4
+- fixed configure.ac tests for FreeBSD
+- preliminary workaround for connection problems when using recent OpenSSL + gtalk
+- accept DLL_EXPORT
+
+
+v0.9.9.8 -- 16 Aug 2009
+-----------------------
+- support tls zlib compression with openssl (wrong magic number used)
+- fixed setting client cert/key in gnutls
+- properly exported InstantMUCRoom and UniqueMUCRoom (GLOOX_API)
+- added MUCRoom::setRoomConfig()
+
+
+v0.9.9.7 -- 07 Mar 2009
+-----------------------
+- #define GLOOX_IMPORTS for the examples, fixes compilation in MinGW
+- removed use of deprecated ns_get16()
+- allow destruction of a MUC room if not currently in the room
+
+
+v0.9.9.6 -- 28 Feb 2009
+-----------------------
+- prevent crashes when closing a MUCRoom
+- compile fix for gcc 4.4, fixes debian bug 505333
+- MacOS compile fix
+- fixed a potential crash when the server sends no 'version' attribute in the opening stream
+
+
+v0.9.9.5 -- 22 Mar 2008
+-----------------------
+- added Parser::reset()
+- added Client::login()
+- fixed detection of res_query (Gentoo bug #212316)
+
+
+v0.9.9.4 -- 05 Mar 2008
+-----------------------
+- MUCRoom: don't leak a MessageSession on presence error
+- compile fix for gcc 4.3 (thanks to Cyril Brulebois)
+
+
+v0.9.9.3 -- 18 Jan 2008
+-----------------------
+- MUCRoom: properly recover after nick name conflict
+- TLSSChannel: properly recover after disconnect
+
+
+v0.9.9.2 -- 17 Jan 2008
+-----------------------
+- fix for the gcc 4.3 compile fix
+
+
+v0.9.9.1 -- 16 Jan 2008
+-----------------------
+- gcc 4.3 compile fix
+
+
+v0.9.9 -- 16 Jan 2008
+---------------------
+- MUCRoom: fixed finding the 'delayed delivery' stamp
+- MUCRoom: fixed adding of chat history to rooms
+- Client: fixed TLSRequired policy
+- RosterManager: fixed (removed) 'from' attribute for subscription stanzas
+- call removeIDHandler() from more places
+- VCard: work around MIME-like photo/logo formatting
+- TLSOpenSSL: provide date_from/date_to in certinfo
+
+
+v0.9.8 -- 07 Dec 2007
+---------------------
+- Client: clear list of presence exts in removePresenceExtensions()
+- SIManager: fixed ID tracking
+- MUCRoom: fixed bit clearing
+- MessageEventFilter: fixed bit clearing
+
+
+v0.9.7 -- 13 Nov 2007
+---------------------
+- InbandBytestreamManager: marked as deprecated
+- InbandBytestreamManager: fixed ID tracking
+- MessageSession: added setThreadID()
+- better overall MinGW support
+
+
+v0.9.6.1 -- 25 Oct 2007
+-----------------------
+- win32 build fix
+
+
+v0.9.6 -- 25 Oct 2007
+---------------------
+- fixed position of GLOOX_DEPRECATED macro in tag.h
+- ClientBase: added private copy & assignment ctors
+- SOCKS5Bytestream: recognize established connections (when using local streamhost)
+- SOCKS5BytestreamServer: avoid a crash when a connection is closed prematurely
+- SIProfileFTHandler, SIHandler, SOCKS5BytestreamHandler: pass SID to handle*Error() functions
+- CompressionZlib: made thread-safe
+- ConnectionTCPBase: avoid multi-threading issue in recv()/disconnect()/cleanup()
+- TLSSChannel: fixed off-by-one error
+
+
+v0.9.5 -- 27 Sep 2007
+---------------------
+
+general changes and additions:
+- PrivacyManager: do not allow store()'ing of empty lists (aka removeList)
+- PrivacyManager: properly handle the error case in handleIqID()
+- JID: added operator bool()
+- Tag: added operator bool()
+- DelayedDelivery: added setReason()
+- skip zlib tests if zlib is not available
+
+deprecated functions:
+- JID::fullJID(), use ctor
+- JID::empty(), use operator bool()
+- Tag::empty(), use operator bool()
+- XDelayedDelivery::XDelayedDelivery( JID, string, string ), the spec is deprecated, use DelayedDelivery
+- DelayedDelivery::setBody(), typo, use setReason()
+
+
+v0.9.4.1 -- 15 Aug 2007
+-----------------------
+- ClientBase: fix TLS wrapper instantiation
+
+
+v0.9.4 -- 14 Aug 2007
+---------------------
+- ChatStateHandler: make sure to never send the same chat state twice in a row
+- Tag: make ctors explicit
+- ClientBase: added setTls( TLSPolicy ) to allow enforcing of TLS
+- ClientBase: deprecated setTls( bool )
+- conform to XEP-0170 (Recommended Order of Stream Feature Negotiation)
+- ConnectionTCPBase: avoid race condition in cleanup()
+- ConnectionTCPBase: reset byte counters on disconnect
+- DataFormBase: added addField( DataFormFieldType, ... )
+- DataFormField: added addOption( string, string )
+- MUCRoom: fix potential crash in dtor
+- SHA: fix potential crash in hex()
+- MUCRoom: fix detection of nick changes
+- UniqueMUCRoom: fix creation of unique room names
+- XPath: support expressions like /abc[@foo='bar']/def[@bar='foo']
+- MessageFilter: enabled writing of custom MessageFilters
+- ChatStateFilter: made members protected
+- MessageSession: added resetResource()
+- Search: made members protected
+- DNS: re-use server port if setsockopt() is available
+- XPath: accept any characters in string literals
+- Tag: deprecated relax() and escape()
+
+
+v0.9.3 -- 18 Jul 2007
+---------------------
+- SOCKS5BytestreamManager: include error child in IQ of type error
+- allow a default value to be set for data form fields of type FieldTypeListSingle (thanks to Roelof Naude)
+- DelayedDelivery: fixed SE type
+- Registration: fixed error handling
+- Parser: disallow ", ' and > again for full XMPP compliance
+- XPath: accept @ in string literals
+
+
+v0.9.2 -- 23 Jun 2007
+---------------------
+- Parser: accept ' and > in attribute values and cdata
+- Parser: log parse errors
+- SIManager, SIProfileFT: return requested stream's id (SID)
+- SIProfileFTHandler: new argument: stream's ID (SID)
+
+
+v0.9.1 -- 20 Jun 2007
+---------------------
+- MessageSession: fix potential crash when ClientBase deletes MessageSessions in its dtor
+- DNS: increase verbosity if no SRV record found
+- ClientBase: avoid double call of onDisconnect() under rare circumstances
+- ClientBase: reply with 'service-unavailable' to unhandled IQs
+- documentation updates and fixes
+- ClientBase: avoid disconnect loop if TLS failed
+- Client: added Session Creation event
+
+
+v0.9 -- 17 Jun 2007
+-------------------
+- rewrote XML parser (no dependency on iksemel anymore)
+- XEP-0045 (Multi-User Chat)
+- XEP-0065 (SOCKS5 Bytestreams)
+- XEP-0095 (Stream Initiation)
+- XEP-0096 (File Transfer)
+- added StanzaExtensions
+  - XEP-0027 (Current Jabber OpenPGP Usage) abstraction
+  - XEP-0066 (Out of Band Data) abstraction
+  - XEP-0091 (Delayed Delivery) abstraction
+  - XEP-0153 (vCard-Based Avatars) abstraction
+  - XEP-0203 (Delayed Delivery) abstraction
+- added msec timeout to recv()
+- Client: fetch roster immediately after requesting roster:delimiter
+- delete() --> delete
+- Registration: allow registration with services
+- implement dataforms as list of pointers to DataFormFields
+- ClientBase: cleaner Stanza deleting
+- Adhoc: full Adhoc support
+- Disco::getDiscoItems() and ::getDiscoInfo() take JIDs instead of std::strings
+- Tag: added virtual void addChild( const Tag *child )
+- DataForm: added ::type()
+- RosterManager: take JIDs in un/subscribe()/add()
+- RosterListener: announce JIDs, not std::strings
+- DataFormBase: added addField() to add a single field
+- DNS: SRV record resolving on win32 (thanks to Marc Rousseau)
+- Client: removed setInitialPriority() and setAutoPresence() in favour of setPresence()
+- support for SASL authorization id != authentication id
+- Disco: added removeFeature()
+- Tag: added setAttributes()
+- merged patch by Marc Rousseau to distiguish between incoming and outgoing Tags/Stanzas
+- moved several structs and enums into gloox namespace (mostly from *Handlers)
+- move Resource into gloox namespace (from RosterItem)
+- MessageEventFilter: fixed a bug where error messages triggered events
+- MessageEventFilter: honor feature-not-implemented error
+- Connection: included server name in dns error message (--> 'server.tld: connection refused')
+- ClientBase: onDisconnect() gets called if the connection got refused or DNS error occurred
+- statistics interface (connection/compression/encryption statistics and status, etc)
+- Tag: added 'TagList findChildren( std::string& )'
+- Disco: lifted limit of one DiscoNodeHandler per Node
+- Parser: install parser.h
+- Tag: added operator== & operator!=
+- ClientBase: added setCompression( bool ) to switch stream compression on/off
+- renamed Stanza::show() --> Stanza::presence()
+- RosterListener: moved Roster to gloox namespace
+- RosterListener: new handleRosterPresence() replaces itemUn/Available() and presenceUpdated()
+- RosterListener: added handleSelfPresence()
+- RosterListener: added 'handle' prefix to function names
+- MessageHandler: handleMessage() takes optional MessageSession arg
+- DiscoNodeHandler: added DiscoNodeItem to properly represent a disco#item
+- ClientBase: removed setAutoMessageSession() in favor of registerMessageSessionHandler()
+- PrivacyItem: renamed enum members from ALL_UPPER_CASE to MixedCase
+- PrivateXMLHandler: renamed enum members from ALL_UPPER_CASE to MixedCase
+- MessageSession: added filtering by message type
+- AdhocHandler: added 'handleAdhoc' prefix
+- Adhoc: handle Disco errors
+- removed unmaintained Dev-C++ project (in favor of Code::Blocks project)
+- ClientBase: added whitespacePing()
+- HTTP proxy support, incl. Basic auth support
+- Tag: basic XPath support
+- DNS: cleanup
+- TagHandler: now receives Tag, not Stanza
+- Parser: cleanup, now uses TagHandler
+- ClientBase: added removeIDHandler() to cancel trackID() operations
+- added DataFormField( const std::string& name, const std::string& label = "",
+                       const std::string& value = "", DataFormFieldType type = FieldTypeTextSingle );
+- ClientBase: added setSASLMechanisms()
+- revamped and modularized the entire connection backend
+- Adhoc: added JID to Adhoc item (thanks to Roelof Naude)
+- MUCRoom: fixed memleak (thanks to Roelof Naude)
+- ClientBase: added registerPresenceHandler( const JID& jid, PresenceHandler *ph )
+- MUCRoomParticipant: added 'status' member to hold the presence's status message
+- ClientBase/MessageSession: conform to XEP-0201
+- ClientBase: don't delete a MessageSession manually, use ClientBase::disposeMessageSession()
+- MessageSession: don't delete a MessageFilter manually, use MessageSession::disposeMessageFilter()
+- JID: added fullJID() & bareJID(), returning JID objects
+- Stanza: added setThread()
+- MUCRoomParticipant: added status member
+- VCardManager: allow cancellation of VCard operations
+- ConnectionListener/Client/Component: added stream events/onStreamEvent()
+- ClientBase: removed fileDescriptor(). Use ConnectionTCP instead.
+- Search::search(): Dataform *form --> const DataForm& form
+- Registration: fixed createAccount( const DataForm& form ) to do something useful
+- ported to Win CE/Mobile (experimental). see README.wince
+- ClientBase::setServer: update's Connection(Base)'s server as well
+- VCard: const *List& *() --> *List& *() to allow modification
+- SOCKS5 proxy support (RFC 1928), incl. username/password auth (RFC 1929)
+- Disco: minor spec compliance fixes
+- Adhoc: minor spec compliance fixes
+- Tag: added ctors to easily create a single attribute
+- ConnectionTCP: protected send() and recv() with simple Mutexes
+- GCC 4.3 compile fixes
+- OpenSSL: check cert dates
+- Parser: don't throw parse error on incoming </stream>
+- SIProfileFT: fixed ranged file transfers
+- Disco: more spec compliance fixes
+- DataFormField: added addValue()
+- Stanza: removed clone(), use: new Stanza( Tag* ); Tag::clone() is not affected
+- RosterManager: added cancel()
+- RosterManager: split unsubscribe() into unsubscribe() + remove()
+- Client: added presence(), status()
+- RosterListener: added handleRosterError()
+- PrivacyListHandler: handle unknown errors
+- TLSOpenSSL: don't throw handshake errors if the connection was closed by the server
+- allow manual deletion of MessageSessions again (thanks to Martin Milata)
+
+
+v0.8.8-sic -- 24 Apr 2007
+-------------------------
+- ClientBase/Client/NonSaslAuth: made re-connect-safe
+- MessageEventFilter: fixed sending of MessageEventCancel
+- MessageEventFilter: fixed handling of IDs
+- ChatStateFilter: fixed hypothetical revival of chat states
+- Connection: fixed timeout conversion
+- Connection: fixed 'valid from' and 'valid to' with gnutls
+- compile fix for gcc 4.3 (thanks to Martin Michlmayr)
+- Registration: fixed createAccount( const DataForm& form ) to do something useful
+
+
+v0.8.7-sic -- 06 Mar 2007
+-------------------------
+- ClientBase: allow cancellation of ID tracking
+- VCardManager: allow cancellation of VCard operations
+- ClientBase: ugly fix to avoid onDisconnect() being called twice
+
+
+v0.8.6-sic -- 14 Dec 2006
+-------------------------
+- Tag: proper escaping of names/attributes/cdata (thanks to Marc Rousseau)
+- VCardManager: call handleVCard if VCard is empty
+- ClientBase: some disconnect fixes (thanks to Marc Rousseau)
+- Adhoc: de-registrataion of commands
+- Adhoc: supply IQ id in handleAdhocCommand()
+
+
+v0.8.5-sic -- 10 Nov 2006
+-------------------------
+- JEP-0055 (Jabber Search)
+- DataForm::tag() returns non-const Tag
+- enable DataForm to parse <reported> and <item> elements
+- DataFormBase: FieldList holds pointers to DataFormFields now
+- DataForm: added simplified ctor
+- MessageSession::send(): added default for subject param (empty)
+- MessageSession: allow conversation started with bare JID to 'upgrade'
+  to full JID when reply comes in
+- RosterManager: keep Roster up-to-date even if no RosterListener is registered
+- ClientBase: only log stanzas if actually sent
+- ClientBase: more correct return value on disconnect
+
+v0.8.4-sic -- 18 Sep 2006
+-------------------------
+- compile fix for Mac OS X (thanks to Geoff Schmidt)
+
+
+v0.8.3-sic -- 14 Sep 2006
+-------------------------
+- ClientBase: added whitespace ping()
+- VCard: fixed typo (vcard --> vCard)
+
+
+v0.8.2-sic -- 11 Sep 2006
+-------------------------
+- find dn_skipname on Mac OS X (thanks to Geoff Schmidt)
+- look for libgnutls-config in specified path, if given
+- VCardHandler: return non-const VCard (*)
+- fixed compilation on SkyOS
+- maybe-fixed resolver on HPUX
+- **experimental** native TLS support on win32
+(*) these changes render 0.8.2 source incompatible compared to 0.8
+
+v0.8.1-sic -- 28 Jul 2006
+-------------------------
+- Registration: allow registration with services (*)
+- async inbandbytestreams ack
+- fixed memory leak in RosterItem
+- RosterListener: announce un/available resource in itemUn/Available() (*)
+- RosterManager: don't sync self contact to server
+- PrivacyManager: give a privacy list a proper name (thanks to Chris Bond)
+- InBandBytestreams: ack closing with correct ID
+- Adhoc: provide requesting entities JID in the callback (*)
+- DataForm: fixed few minor field handling bugs
+- Client: allow lazy username provisioning
+(*) these changes render 0.8.1 source incompatible compared to 0.8
+
+
+v0.8 -- 08 Apr 2006
+-------------------
+- added an extensible message session abstraction
+- added automatic MessageSession creation facilities upon incoming messages
+- JEP-0022 (Message Events)
+- JEP-0047 (In-Band Bytestreams)
+- JEP-0054 (vcard-temp)
+- JEP-0085 (Chat State Notifications)
+- 'ported' to Linux on Arm (Intel XScale on gumstix in this case)
+- RosterManager: returning true from RosterListener::unsubscriptionRequest()
+  makes the RosterManager no longer remove the item from the roster. It is
+  unsubscribed from only. Use unsubscribe( jid, msg, true ) to remove it manually.
+- RosterListener: renamed itemChanged() --> presenceUpdated()
+- RosterListener: added nonrosterPresenceReceived()
+- revamped logging system, introducing per-ClientBase log instance
+- Tag: renamed addAttrib() --> addAttribute()
+- RosterItem & RosterListener: more const & return values and parameters
+- RosterItem: support for multiple resources, introducing RosterItem::Resource
+- Stanza: added 'int priority()'
+- renamed enum members from ALL_UPPER_CASE to MixedCase
+- SASL EXTERNAL and support for client key/cert
+- RosterManager: added RosterItem* getRosterItem( const JID& jid )
+- added extern "C" const char* gloox_version()
+- Tag: made findChild(...) return 0 instead of new Tag (reverted change from 0.7.6)
+- Tag: added addAttribute( const std::string, int )
+- revamped MessageSession to accept external MessageFilters
+- Disco: added const StringList& features()
+- allow for immediate re-connect() after disconnect()
+- fixed compilation with gcc 4.1
+- semi-fixed missing onDisconnect() call if file descriptor has been fetched and stream error occured
+
+
+v0.7.6.1 -- 10 Feb 2006
+-----------------------
+- fixed OpenSSL check on MinGW
+
+
+v0.7.6 -- 07 Feb 2006
+--------------------
+- fixed alignment issues on ARM
+- more const'ness where possible (thanks to Marc Rousseau)
+- configure checks for res_querydomain et.al.
+- doc updates
+- Tag: added findChild( name, attr, value )
+- Tag: made findChild(...) return new Tag instead of 0
+- DataForm (JEP-0004) awareness for Registration class
+- workaround for iksemel's base64 bug
+  SASL Plain with GTalk and SASL Digest-MD5 with Wildfire now possible
+- XMPP version requirement relaxed for Components
+- added __declspec( dllimport ) on win32 (thanks to Low Weng Liong)
+- fixed OpenSSL lib dependency on MinGW (thanks to Low Weng Liong)
+- 'ported' to Syllable
+
+
+v0.7.5 -- 05 Jan 2006
+--------------------
+- fixed a crash occuring if no DNS servers could be reached
+- added virtual destructors to *Handlers
+- fixed &quot; bug
+- various documentation updates
+
+
+v0.7.4 -- 15 Dec 2005
+--------------------
+- RosterListener: added asynchronous subscription request notification
+- LastActivity: fixed bug were stanza was not sent
+- NonSaslAuth: don't confuse auth failure reason
+- Connection: return correct disconnect reason if non-SASL auth fails in non-blocking connect mode
+- RosterManager: handle 'early presence' correctly
+- when using OpenSSL: imply: no cert == invalid cert
+- RosterItem: added statusMsg()
+
+
+v0.7.3 -- 10 Dec 2005
+--------------------
+- added optional OpenSSL support
+
+
+v0.7.2 -- 06 Dec 2005
+--------------------
+- RosterManager: fixed a problem with servers not supporting private XML storage
+
+
+v0.7.1 -- 24 Nov 2005
+--------------------
+- ported to NetBSD 2.1
+- RosterManager: use the group's name, not 'group' (thanks to Maciej Paszta)
+- RosterManager: update/set an item's name
+- include config.h.win in distribution
+- Stanza: allow presence broadcasting in createPresenceStanza()
+- Client: allow registration with server which supports SASL ANONYMOUS
+- Client: init m_jid::server for registration
+
+
+v0.7 -- 02 Nov 2005
+-------------------
+- JEP-0004 (Data Forms) (complete, experimental)
+- JEP-0013 (Flexible Offline Message Retrieval) (complete)
+- JEP-0083 (Nested Roster Groups) (complete)
+- JEP-0138 (Stream Compression) (experimental)
+- removed pkg-config dependency (in check for iksemel)
+- fixed pkg-config file (all libs)
+- RosterItem: added status(); made setStatus() take a PresenceStatus
+- RosterManager: added self-contact (optional; hard-wired in Client for now)
+- Disco: no need to register the handler to receive query results (still necessary for 'set's)
+- PrivateXML: no need to register the handler to store or receive private XML
+- added IQ error handling in PrivateXML class
+- port to Win32; SRV lookups do not work. See README.win32 for more information.
+- some MacOS X #include fixes
+- added Tag::clone() and Stanza::clone()
+- added static functions to Stanza to create common packet types (IQ, Message, Presence, Subscription)
+- gloox-config script
+- call onDisconnect() in non-blocking connect() mode
+- added debug notice about remote server not being XMPP compliant
+- added an API docs notice about unsupported legacy SSL connections to port 5223
+- fixed a presence related bug in Stanza, where presence always was reported as 'available' (thanks to
+Luis Cidoncha)
+- made code ISO C++ compliant (-pedantic et al.)
+- various API doc fixes
+- many more virtuals in the handler interfaces instead of empty functions
+- export raw file descriptor
+- got rid of libm(ath) dependency (by using ostringstream)
+- always use pre-increment instead of post-increment in for-loops
+- export classes on w32
+- let configure check for libresolv
+- don't use resolver functions on SkyOS for now (thanks to Peter Speybrouck & Robert Szeleney)
+- made ClientBase::streamErrorAppCondition() const
+- added ClientBase::removeConnectionListener()
+- namespace checking for SASL success
+
+
+v0.6.3 -- 15 Sep 2005
+---------------------
+- #include fixes for MacOS X
+
+
+v0.6.2 -- 23 Sep 2005
+---------------------
+- pkgconfig file
+
+
+v0.6.1 -- 22 Sep 2005
+---------------------
+- fixed Makefile.ams for make distcheck
+- removed unused iksemel types and includes
+- made void ClientBase::send( const std::string& ) private
+- made void ClientBase::send( Tag* ) virtual
+- Tag constructor: parent must know about its new child
+- avoid non-constant array sizes in getID() et al.
+
+
+v0.6 -- 02 Sep 2005
+-------------------
+- more namespace checking
+- extraction of application-specific error condition element of stream & stanza errors
+- SASL Anonymous mechanism
+- JEP-0012 (Last Activity) (experimental)
+- fixes for a couple of small problems reported by Konstantin Klyagin
+- made checkStreamVersion() a protected virtual
+- extensive doc update: mainpage
+- added 'from' attribute to presence stanzas (seems necessary under some circumstances, reported by Johan Bondeson)
+- disabled sending of ack'ing 'subscribe'/'unsubscribe' in response to 'subscribed'/'unsubscribed' due to problems with jabberd2
+
+
+v0.5 -- 28 Aug 2005
+-------------------
+- xml:lang for initial stream
+- xml:lang support for subject, body and status of message and presence stanzas, respectively
+- added ability to specify a server to connect to which is different from the JID's domain part
+- xmpp version check
+- recognition of all stream errors as defined in RFC 3920, including xml:lang of the text element
+- recognition of all SASL/Non-SASL error conditions as defined in RFC 3920 and JEP-0078
+- added a LogHandler for external (non-tty) logging (thanks to Konstantin Klyagin)
+- re-introduction of non-blocking connect (thanks to Konstantin Klyagin)
+- recognition of all stanza errors as defined in RFC 3920, including xml:lang of the text element
+- only include non-empty attributes
+- prefer child elements over cdata when returning a tag's xml, prevents empty log if whitespace was sent
+- correctly detect availability presence
+- take autoPresence etc. into account when doing non-SASL auth
+- in the JEP-0092 (Software Version) implementation: OS support, create a valid 'result' type of packet
+
+
+v0.4.1 -- 25 Aug 2005
+---------------------
+- install missing header files (gloox.h, tag.h, stanza.h)
+
+
+v0.4 -- 25 Aug 2005
+-------------------
+- fixed some memory leaks
+- renamed classes: JClient    --> Client
+                   JComponent --> Component
+- got rid of the Iksemelmm wrapper classes
+- added native Tag and Stanza classes
+- added a (dummy) Parser class which currently only converts from Iksemel
+  types to gloox native types
+- natively handle connection (send & recv), incl. TLS/SSL
+- a generic tag handler (for non-XMPP:Core elements)
+- fixed roster management (somehow everything but the jid in the initial
+  roster was ignored)
+- process resource binding response
+- process session creation response
+- added forgotten 'autojoin' attribute to bookmark storage
+- got rid of the thread
+- TLS/SSL certificate verification
+- changed license to GNU GPL
+
+
+v0.3.2 -- 09 Aug 2005
+---------------------
+- fixed namespace typos
+- correctly handle explicitely given port numbers
+
+
+v0.3.1 -- 09 Aug 2005
+---------------------
+- documentation updates
+- fixed crash with bare JID in constructor of JClient
+
+
+v0.3  --  08 Aug 2005
+---------------------
+- use ID tracking whereever possible/feasible
+- privacy lists (RFC 3921)
+- wrapped everything in 'gloox' namespace
+- JEP-0048 (Bookmark Storage)
+- JEP-0145 (Annotations)
+- replaced IQ-Tag handler with better IQ-Namespace handler
+- removed generic (catch-all) IQ handler
+- JEP-0114 (Jabber Component Protocol)
+- unregister *Handlers and *Listeners on destruction (thanks to Ray Keung)
+- overhauled Private XML Storage
+- revision of JEP-0050 (Ad-hoc Commands)
+- revision of JEP-0030 (Service Discovery)
+- overhauled Roster management
+  - finished RosterItem class
+- JEP-0078 (Non-SASL Authentication)
+- SRV lookups (w/o sorting by weight/cost)
+- fix for JEP-0077 implementation to be compatible with ejabberd 0.9.1 which
+  sends registration values back in the result.
+
+
+v0.2  --  08 Jul 2005
+---------------------
+- JEP-0077 (In-Band Registration)
+- prepping of JIDs according to RFC 3920
+
+
+v0.1  --  04 May 2005
+---------------------
+* initial release with support for
+  - JEP-0030 (Service Discovery)
+  - JEP-0049 (Private XML Storage)
+  - JEP-0050 (Ad-hoc Commands) (providing commands to remote entities is implemented)
+  - JEP-0092 (Software Version)
+- removed iksemelmm dependency
+- iq xmlns filter
+- introduced result handler
+- extracted disco into separate class

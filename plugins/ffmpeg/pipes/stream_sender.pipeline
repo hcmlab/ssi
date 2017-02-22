@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiaudio" />
+		<load name="ssicamera" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+		<load name="ssiimage" />
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" width="320" height="240" fps="25.0" channel="3" depth="8" flip="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	<!--sensor create="CameraScreen" resize="true" resize_width="320" resize_height="240" fps="25.0" full="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor-->
+	
+	
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" sr="48000" blockInSamples="0.01">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+		
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="server - video" flip="false">
+		<input pin="video" frame="1"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="server - audio" size="10" type="2">
+		<input pin="audio" frame="0.04s"/>
+	</consumer>
+	
+	<!--stream -->
+	<!--consumer create="FFMPEGWriter" url="rtp://127.0.0.1:1111" format="rtp" sdp="my-video.sdp" stream="true">
+		<input pin="video" frame="1" />
+	</consumer>	
+	<consumer create="FFMPEGWriter" url="rtp://127.0.0.1:2222" format="rtp" sdp="my-audio.sdp" stream="true">
+		<input pin="audio" frame="0.04s" />
+	</consumer-->		
+	<consumer create="FFMPEGWriter" url="udp://127.0.0.1:1111" format="mpegts" stream="true">
+		<input pin="video" frame="1" />
+	</consumer>	
+	<consumer create="FFMPEGWriter" url="udp://127.0.0.1:2222" format="mpegts" stream="true">
+		<input pin="audio" frame="0.04s" />
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+	</object>
+
+</pipeline>

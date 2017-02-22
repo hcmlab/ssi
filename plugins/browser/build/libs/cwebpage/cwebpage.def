@@ -1,0 +1,17 @@
+LIBRARY CWEBPAGE
+EXPORTS
+	EmbedBrowserObject
+	UnEmbedBrowserObject
+	DisplayHTMLStr
+	DisplayHTMLPage
+	ResizeBrowser
+	DoPageAction
+	WaitOnReadyState
+	GetWebPtrs
+	GetWebElement
+	GetWebSrcElement
+	SetWebReturnValue
+	CreateWebEvtHandler
+	FreeWebEvtHandler
+	TStr2BStr
+	BStr2TStr

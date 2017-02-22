@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+	
+	<!-- set framework options -->
+	<framework sync="true" sport="9999" stype="0" slisten="true" countdown="0"/>
+	
+	<!-- sensor -->	
+	<sensor create="SocketReader" type="0" port="9998" sbyte="4" sdim="2" stype="9" ssr="5.0">		
+		<output channel="socket" pin="cursor"/>
+	</sensor>
+
+	<!-- triggered consumer -->
+	<consumer create="SignalPainter:plot" title="CLIENT" size="10" pos="650,300,400,300">
+		<input pin="cursor" frame="1"/>		
+	</consumer>
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="1050,0,650,600">console</area>
+		<area pos="650,300,400,300" nv="1">vplot*</area>	
+	</object>
+	
+</pipeline>

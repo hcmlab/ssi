@@ -1,0 +1,116 @@
+------------------------------------------------------------
+	EmoVoice Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	Parts of this software were based 
+- on source code of the phonetics software PRAAT, available under the GPL v. 2 (see file gpl-2.0.txt) from http://www.fon.hum.uva.nl/praat/. In particular, the following files are based on PRAAT:
+     ev_hnr.c
+     ev_pitch.c
+
+- on the freely available code from "Feature Selection Algorithms - A Brief Guide", P. Somol and P. Pudil, http://ro.utia.cz/fs/fs_guideline.html. This concerns the following files:
+     ev_fselect.h
+     ev_fselect.c 
+
+
+- on the LIBSVM package available from "LIBSVM -- A Library for Support Vector Machines", Chih-Chung Chang and Chih-Jen Lin, http://www.csie.ntu.edu.tw/~cjlin/libsvm/. See the file COPYRIGHT-libsvm.txt provided with this distribution. In particular, the following files are based on or from LIBSVM:
+     ev_svm.h
+     ev_svm.cpp
+     ev_svm_wrapper.c
+ 
+- on or use source code of the ESMERALDA environment for HMM-based speech recognisers, available under the Lesser GPL v. 2.1 (see file lgpl-2.1.txt) from http://sourceforge.net/projects/esmeralda/. In particular, the following files are from or based on ESMERALDA:
+     ev_acf.h
+     ev_basics.h
+     ev_bitmask.h
+     ev_channel.h
+     ev_complex.h
+     ev_csp.h
+     ev_dct.h
+     ev_delay.h
+     ev_dsp.h
+     ev_dwt.h
+     ev_eigen.h
+     ev_errors.h
+     ev_fextract.h
+     ev_fw_masking.h
+     ev_hashq.h
+     ev_histogram.h
+     ev_io.h
+     ev_lpc.h
+     ev_matrix.h
+     ev_memory.h
+     ev_messages.h
+     ev_mfcc.h
+     ev_mfcc_1_1.h
+     ev_mfcc_1_2.h
+     ev_mfcc_1_3.h
+     ev_mfcc_1_4.h
+     ev_mfcc_1_5.h
+     ev_mfcc_1_6.h
+     ev_name.c
+     ev_prob.h
+     ev_queue.h
+     ev_real.h
+     ev_score.h
+     ev_sdft.h
+     ev_select.h
+     ev_shift.h
+     ev_sum.h
+     ev_vad.h
+     ev_vector.h
+     ev___program.c
+     ev_acf.c
+     ev_basics.c
+     ev_channel.c
+     ev_csp.c
+     ev_dct.c
+     ev_delay.c
+     ev_deriv.c
+     ev_dwt.c
+     ev_eigen.c
+     ev_fex.c
+     ev_fextract.c
+     ev_fft.c
+     ev_filterbank.c
+     ev_fw_masking.c
+     ev_hashq.c
+     ev_histogram.c
+     ev_io.c
+     ev_lpc.c
+     ev_matrix.c
+     ev_mel.c
+     ev_memory.c
+     ev_messages.c
+     ev_mfcc.c
+     ev_mfcc_1_3.c
+     ev_mfcc_1_4.c
+     ev_mfcc_1_6.c
+     ev_name.c
+     ev_preemph.c
+     ev_prob.c
+     ev_queue.c
+     ev_score.c
+     ev_sdft.c
+     ev_select.c
+     ev_shift.c
+     ev_sum.c
+     ev_tirol.c
+     ev_vad.c
+     ev_vector.c
+     ev_window.c
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

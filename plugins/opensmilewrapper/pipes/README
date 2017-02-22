@@ -1,0 +1,2 @@
+before running 'opensmile.pipeline' copy ssi's openSMILE plugin 'osssiplugin[d].dll' from plugins/<platform>/<version> to pipes/plugins/
+make sure that only the correct version of the plugin stays in the folder, otherwise openSMILE may crash

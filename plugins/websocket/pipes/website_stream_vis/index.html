@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- (c)2016 Andreas Seiderer -->
+   
+  <meta charset="utf-8" />
+  <title>GPU Accelerated Visualization</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <script src="jquery-2.2.3_min.js"></script>
+  
+  <script src="pixi.min.js"></script>
+  <script src="pixichart.js"></script>
+
+
+<script language="javascript" type="text/javascript">
+
+  var ws = new WebSocket('ws://' + location.host + '/ws');
+
+  var chart1 = null;
+  var chart2 = null;
+
+  
+  ws.onopen = function(ev)  { console.log(ev); };
+  ws.onerror = function(ev) { console.log(ev); };
+  ws.onclose = function(ev) { console.log(ev); };
+  ws.onmessage = function(ev) {
+	var arrayBuffer;
+	var fileReader = new FileReader();
+	fileReader.onload = function() {
+		arrayBuffer = this.result;
+		var datavalues = new Float32Array(arrayBuffer);
+		
+        var timestamp = (new Date()).getTime() / 1000;
+        
+        var active = [
+            document.getElementById("chk_x").checked, 
+            document.getElementById("chk_y").checked, 
+            ];
+        
+        chart1.push(datavalues, active);
+		chart2.push(datavalues, active);		
+	};
+	
+	if (typeof ev.data === "string") {
+              
+	}
+	else {
+		//read blob data from socket
+		fileReader.readAsArrayBuffer(ev.data);
+	}
+  };
+
+  
+  window.onload = function() {	
+      chart1 = new PixiChart("pixi1", {dataDim:2, type:'line', maxY:1});
+	  chart2 = new PixiChart("pixi2", {dataDim:2, type:'bars', maxY:1, showText:true});
+  };
+</script>
+</head>
+
+<body>
+    <h3>raw data</h3>
+    <div id="pixi1"></div>
+    <label style="background-color: #FF0000;"> <input type="checkbox" id="chk_x" name="chk_x" value="chk_group1" checked = "true"> x </label>
+    <label style="background-color: #00BB00;"> <input type="checkbox" id="chk_y" name="chk_y" value="chk_group2" checked = "true"> y </label>
+
+    <div id="pixi2"></div>
+
+</body>
+
+</html>

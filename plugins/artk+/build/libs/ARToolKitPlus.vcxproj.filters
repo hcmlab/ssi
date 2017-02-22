@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\extra">
+      <UniqueIdentifier>{42d92d7a-368b-4933-b998-4b47800a8b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{2c47b829-42ae-4735-809c-111fb51ec4a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extra">
+      <UniqueIdentifier>{ca9538c8-a24b-42f9-8473-75241dba3a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\librpp">
+      <UniqueIdentifier>{59cc5a56-eee9-411f-a68e-c06476ef37ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{a357a880-6ec8-44a3-a6ba-3d9001fe9297}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\ar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\arBitFieldPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\arMulti.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\ARToolKitPlus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\byteSwap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\CameraAdvImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\CameraFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\CameraImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\ImageGrabber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\MemoryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\MemoryManagerMemMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\param.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\Tracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\TrackerImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\TrackerMultiMarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\TrackerMultiMarkerImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\TrackerSingleMarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\TrackerSingleMarkerImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\extra\BCH.h">
+      <Filter>Header Files\extra</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\extra\GPP.h">
+      <Filter>Header Files\extra</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\extra\Profiler.h">
+      <Filter>Header Files\extra</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\include\ARToolKitPlus\extra\rpp.h">
+      <Filter>Header Files\extra</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\extra\FixedPoint.h">
+      <Filter>Source Files\extra</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\librpp\librpp.h">
+      <Filter>Source Files\librpp</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\librpp\rpp.h">
+      <Filter>Source Files\librpp</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\librpp\rpp_const.h">
+      <Filter>Source Files\librpp</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\librpp\rpp_types.h">
+      <Filter>Source Files\librpp</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\librpp\rpp_vecmat.h">
+      <Filter>Source Files\librpp</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\math\artkpFixedBase_generic.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\math\artkpFixedBase_gpp.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\math\artkpFloat_fixed.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ARToolKitPlus_2.1.1\source\math\artkpFloat_float.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\CameraAdvImpl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\CameraFactory.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\CameraImpl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\MemoryManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\MemoryManagerMemMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\TrackerImpl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\TrackerMultiMarkerImpl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\TrackerSingleMarkerImpl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arBitFieldPattern.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arDetectMarker.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arDetectMarker2.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetCode.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetMarkerInfo.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetTransMat.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetTransMat2.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetTransMat3.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arGetTransMatCont.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arLabeling.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arMultiActivate.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arMultiGetTransMat.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arMultiReadConfigFile.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\arUtil.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\byteSwap.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\matrix.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\mPCA.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\paramDecomp.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\paramDistortion.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\paramFile.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\rppGetTransMat.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\rppMultiGetTransMat.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\core\vector.cxx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\extra\BCH.cxx">
+      <Filter>Source Files\extra</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\extra\FixedPoint.cpp">
+      <Filter>Source Files\extra</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\extra\Profiler.cpp">
+      <Filter>Source Files\extra</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\librpp\librpp.cpp">
+      <Filter>Source Files\librpp</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\librpp\rpp.cpp">
+      <Filter>Source Files\librpp</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\librpp\rpp_quintic.cpp">
+      <Filter>Source Files\librpp</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\librpp\rpp_svd.cpp">
+      <Filter>Source Files\librpp</Filter>
+    </ClCompile>
+    <ClCompile Include="ARToolKitPlus_2.1.1\source\librpp\rpp_vecmat.cpp">
+      <Filter>Source Files\librpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="ARToolKitPlus_2.1.1\source\core\arLabelingImpl.hxx">
+      <Filter>Source Files\core</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

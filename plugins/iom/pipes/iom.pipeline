@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssiioput" />
+		<load name="ssisignal" />
+		<load name="ssigraphic" />
+		<load name="ssiiom" />
+	</register>
+
+	<!-- sensor -->
+	<sensor create="Iom" id="0">
+		<output channel="bvp" pin="bvp"/>
+		<output channel="sc" pin="sc"/>
+	</sensor>	
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="bvp" size="30">
+		<input pin="bvp" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="sc" size="30">
+		<input pin="sc" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

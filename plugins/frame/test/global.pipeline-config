@@ -1,0 +1,16 @@
+
+	# this is a comment
+
+# some invalid key/value pairs
+						
+	=    #invalid
+	=invalid	
+not a valid key / value pair
+
+# some valid key/value pairs
+empty=
+ip=127.0.0.1#ip  
+  port =      5555 #port
+
+
+

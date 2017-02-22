@@ -1,0 +1,26 @@
+------------------------------------------------------------
+	GazeTracker Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+	
+	- Haytham gaze tracking algorithm and calibration ported from: https://sourceforge.net/projects/haytham/ under the GNU General Public License Version 3.0
+
+	- SimpleEyeTracker gaze tracking algorithm from: http://gazeparser.sourceforge.net/
+
+	- Original version of heatmap in ScenePainterUtils.cpp from https://github.com/wlitwin/heatmap
+
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

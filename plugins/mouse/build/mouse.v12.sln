@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dlls", "dlls", "{7E2B631D-0334-422B-83C3-4093B38D8145}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mouse", "dlls\mouse.v12.vcxproj", "{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mouse", "test\mouse.v12.vcxproj", "{A9685499-9CF7-4F8B-9862-0B8EADACCD14}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3} = {56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Debug|Win32.Build.0 = Debug|Win32
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Debug|x64.ActiveCfg = Debug|x64
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Debug|x64.Build.0 = Debug|x64
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Release|Win32.ActiveCfg = Release|Win32
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Release|Win32.Build.0 = Release|Win32
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Release|x64.ActiveCfg = Release|x64
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}.Release|x64.Build.0 = Release|x64
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Debug|Win32.Build.0 = Debug|Win32
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Debug|x64.ActiveCfg = Debug|x64
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Debug|x64.Build.0 = Debug|x64
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Release|Win32.ActiveCfg = Release|Win32
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Release|Win32.Build.0 = Release|Win32
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Release|x64.ActiveCfg = Release|x64
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+		{A9685499-9CF7-4F8B-9862-0B8EADACCD14} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+	EndGlobalSection
+EndGlobal

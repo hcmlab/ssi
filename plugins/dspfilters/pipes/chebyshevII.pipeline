@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssidspfilters"/>
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" block="0.02">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="ChebyshevIIFilter" type="1" state="1" order="3" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_low"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="2" state="1" order="3" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_high"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="4" state="1" order="3" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_band"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="5" state="1" order="3" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_stop"/>
+	</transformer>
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="low" type="2">
+		<input pin="chebyshevII_low" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="high" type="2">
+		<input pin="chebyshevII_high" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="band" type="2">
+		<input pin="chebyshevII_band" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="stop" type="2">
+		<input pin="chebyshevII_stop" frame="0.02s" />
+	</consumer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="chebyshevII.wav">
+		<input pin="audio" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevII_low.wav">
+		<input pin="chebyshevII_low" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevII_high.wav">
+		<input pin="chebyshevII_high" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevII_band.wav">
+		<input pin="chebyshevII_band" frame="0.02s"/>
+	</consumer>	
+	<consumer create="WavWriter" path="chebyshevII_stop.wav">
+		<input pin="chebyshevII_stop" frame="0.02s"/>
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

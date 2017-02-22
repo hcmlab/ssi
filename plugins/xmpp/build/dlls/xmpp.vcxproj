@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{682E784C-BD4B-4EA1-BEF3-5B7297DCE20E}</ProjectGuid>
+    <RootNamespace>ssi</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ssi$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ssi$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\libs\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssid.lib;gloox-1.0d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;SWIFTEN_BUILDING;SWIFTEN_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssi.lib;gloox-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp" />
+    <ClCompile Include="..\..\source\XMPP.cpp" />
+    <ClCompile Include="..\..\source\XMPPclient.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\gloox\adhoc.h" />
+    <ClInclude Include="..\..\include\gloox\adhoccommandprovider.h" />
+    <ClInclude Include="..\..\include\gloox\adhochandler.h" />
+    <ClInclude Include="..\..\include\gloox\adhocplugin.h" />
+    <ClInclude Include="..\..\include\gloox\amp.h" />
+    <ClInclude Include="..\..\include\gloox\annotations.h" />
+    <ClInclude Include="..\..\include\gloox\annotationshandler.h" />
+    <ClInclude Include="..\..\include\gloox\atomicrefcount.h" />
+    <ClInclude Include="..\..\include\gloox\attention.h" />
+    <ClInclude Include="..\..\include\gloox\base64.h" />
+    <ClInclude Include="..\..\include\gloox\bookmarkhandler.h" />
+    <ClInclude Include="..\..\include\gloox\bookmarkstorage.h" />
+    <ClInclude Include="..\..\include\gloox\bytestream.h" />
+    <ClInclude Include="..\..\include\gloox\bytestreamdatahandler.h" />
+    <ClInclude Include="..\..\include\gloox\bytestreamhandler.h" />
+    <ClInclude Include="..\..\include\gloox\capabilities.h" />
+    <ClInclude Include="..\..\include\gloox\carbons.h" />
+    <ClInclude Include="..\..\include\gloox\chatstate.h" />
+    <ClInclude Include="..\..\include\gloox\chatstatefilter.h" />
+    <ClInclude Include="..\..\include\gloox\chatstatehandler.h" />
+    <ClInclude Include="..\..\include\gloox\client.h" />
+    <ClInclude Include="..\..\include\gloox\clientbase.h" />
+    <ClInclude Include="..\..\include\gloox\component.h" />
+    <ClInclude Include="..\..\include\gloox\compressionbase.h" />
+    <ClInclude Include="..\..\include\gloox\compressiondatahandler.h" />
+    <ClInclude Include="..\..\include\gloox\compressiondefault.h" />
+    <ClInclude Include="..\..\include\gloox\compressionzlib.h" />
+    <ClInclude Include="..\..\include\gloox\config.h" />
+    <ClInclude Include="..\..\include\gloox\connectionbase.h" />
+    <ClInclude Include="..\..\include\gloox\connectionbosh.h" />
+    <ClInclude Include="..\..\include\gloox\connectiondatahandler.h" />
+    <ClInclude Include="..\..\include\gloox\connectionhandler.h" />
+    <ClInclude Include="..\..\include\gloox\connectionhttpproxy.h" />
+    <ClInclude Include="..\..\include\gloox\connectionlistener.h" />
+    <ClInclude Include="..\..\include\gloox\connectionsocks5proxy.h" />
+    <ClInclude Include="..\..\include\gloox\connectiontcpbase.h" />
+    <ClInclude Include="..\..\include\gloox\connectiontcpclient.h" />
+    <ClInclude Include="..\..\include\gloox\connectiontcpserver.h" />
+    <ClInclude Include="..\..\include\gloox\connectiontls.h" />
+    <ClInclude Include="..\..\include\gloox\connectiontlsserver.h" />
+    <ClInclude Include="..\..\include\gloox\dataform.h" />
+    <ClInclude Include="..\..\include\gloox\dataformfield.h" />
+    <ClInclude Include="..\..\include\gloox\dataformfieldcontainer.h" />
+    <ClInclude Include="..\..\include\gloox\dataformitem.h" />
+    <ClInclude Include="..\..\include\gloox\dataformreported.h" />
+    <ClInclude Include="..\..\include\gloox\delayeddelivery.h" />
+    <ClInclude Include="..\..\include\gloox\disco.h" />
+    <ClInclude Include="..\..\include\gloox\discohandler.h" />
+    <ClInclude Include="..\..\include\gloox\disconodehandler.h" />
+    <ClInclude Include="..\..\include\gloox\dns.h" />
+    <ClInclude Include="..\..\include\gloox\error.h" />
+    <ClInclude Include="..\..\include\gloox\event.h" />
+    <ClInclude Include="..\..\include\gloox\eventdispatcher.h" />
+    <ClInclude Include="..\..\include\gloox\eventhandler.h" />
+    <ClInclude Include="..\..\include\gloox\featureneg.h" />
+    <ClInclude Include="..\..\include\gloox\flexoff.h" />
+    <ClInclude Include="..\..\include\gloox\flexoffhandler.h" />
+    <ClInclude Include="..\..\include\gloox\forward.h" />
+    <ClInclude Include="..\..\include\gloox\gloox.h" />
+    <ClInclude Include="..\..\include\gloox\glooxversion.h" />
+    <ClInclude Include="..\..\include\gloox\gpgencrypted.h" />
+    <ClInclude Include="..\..\include\gloox\gpgsigned.h" />
+    <ClInclude Include="..\..\include\gloox\inbandbytestream.h" />
+    <ClInclude Include="..\..\include\gloox\instantmucroom.h" />
+    <ClInclude Include="..\..\include\gloox\iodata.h" />
+    <ClInclude Include="..\..\include\gloox\iq.h" />
+    <ClInclude Include="..\..\include\gloox\iqhandler.h" />
+    <ClInclude Include="..\..\include\gloox\jid.h" />
+    <ClInclude Include="..\..\include\gloox\jinglecontent.h" />
+    <ClInclude Include="..\..\include\gloox\jinglefiletransfer.h" />
+    <ClInclude Include="..\..\include\gloox\jingleiceudp.h" />
+    <ClInclude Include="..\..\include\gloox\jingleplugin.h" />
+    <ClInclude Include="..\..\include\gloox\jinglepluginfactory.h" />
+    <ClInclude Include="..\..\include\gloox\jinglesession.h" />
+    <ClInclude Include="..\..\include\gloox\jinglesessionhandler.h" />
+    <ClInclude Include="..\..\include\gloox\jinglesessionmanager.h" />
+    <ClInclude Include="..\..\include\gloox\lastactivity.h" />
+    <ClInclude Include="..\..\include\gloox\lastactivityhandler.h" />
+    <ClInclude Include="..\..\include\gloox\linklocal.h" />
+    <ClInclude Include="..\..\include\gloox\linklocalclient.h" />
+    <ClInclude Include="..\..\include\gloox\linklocalhandler.h" />
+    <ClInclude Include="..\..\include\gloox\linklocalmanager.h" />
+    <ClInclude Include="..\..\include\gloox\loghandler.h" />
+    <ClInclude Include="..\..\include\gloox\logsink.h" />
+    <ClInclude Include="..\..\include\gloox\macros.h" />
+    <ClInclude Include="..\..\include\gloox\md5.h" />
+    <ClInclude Include="..\..\include\gloox\message.h" />
+    <ClInclude Include="..\..\include\gloox\messageevent.h" />
+    <ClInclude Include="..\..\include\gloox\messageeventfilter.h" />
+    <ClInclude Include="..\..\include\gloox\messageeventhandler.h" />
+    <ClInclude Include="..\..\include\gloox\messagefilter.h" />
+    <ClInclude Include="..\..\include\gloox\messagehandler.h" />
+    <ClInclude Include="..\..\include\gloox\messagesession.h" />
+    <ClInclude Include="..\..\include\gloox\messagesessionhandler.h" />
+    <ClInclude Include="..\..\include\gloox\mucinvitationhandler.h" />
+    <ClInclude Include="..\..\include\gloox\mucmessagesession.h" />
+    <ClInclude Include="..\..\include\gloox\mucroom.h" />
+    <ClInclude Include="..\..\include\gloox\mucroomconfighandler.h" />
+    <ClInclude Include="..\..\include\gloox\mucroomhandler.h" />
+    <ClInclude Include="..\..\include\gloox\mutex.h" />
+    <ClInclude Include="..\..\include\gloox\mutexguard.h" />
+    <ClInclude Include="..\..\include\gloox\nickname.h" />
+    <ClInclude Include="..\..\include\gloox\nonsaslauth.h" />
+    <ClInclude Include="..\..\include\gloox\oob.h" />
+    <ClInclude Include="..\..\include\gloox\parser.h" />
+    <ClInclude Include="..\..\include\gloox\prep.h" />
+    <ClInclude Include="..\..\include\gloox\presence.h" />
+    <ClInclude Include="..\..\include\gloox\presencehandler.h" />
+    <ClInclude Include="..\..\include\gloox\privacyitem.h" />
+    <ClInclude Include="..\..\include\gloox\privacylisthandler.h" />
+    <ClInclude Include="..\..\include\gloox\privacymanager.h" />
+    <ClInclude Include="..\..\include\gloox\privatexml.h" />
+    <ClInclude Include="..\..\include\gloox\privatexmlhandler.h" />
+    <ClInclude Include="..\..\include\gloox\pubsub.h" />
+    <ClInclude Include="..\..\include\gloox\pubsubevent.h" />
+    <ClInclude Include="..\..\include\gloox\pubsubitem.h" />
+    <ClInclude Include="..\..\include\gloox\pubsubmanager.h" />
+    <ClInclude Include="..\..\include\gloox\pubsubresulthandler.h" />
+    <ClInclude Include="..\..\include\gloox\receipt.h" />
+    <ClInclude Include="..\..\include\gloox\registration.h" />
+    <ClInclude Include="..\..\include\gloox\registrationhandler.h" />
+    <ClInclude Include="..\..\include\gloox\resource.h" />
+    <ClInclude Include="..\..\include\gloox\rosteritem.h" />
+    <ClInclude Include="..\..\include\gloox\rosteritemdata.h" />
+    <ClInclude Include="..\..\include\gloox\rosterlistener.h" />
+    <ClInclude Include="..\..\include\gloox\rostermanager.h" />
+    <ClInclude Include="..\..\include\gloox\search.h" />
+    <ClInclude Include="..\..\include\gloox\searchhandler.h" />
+    <ClInclude Include="..\..\include\gloox\sha.h" />
+    <ClInclude Include="..\..\include\gloox\shim.h" />
+    <ClInclude Include="..\..\include\gloox\sihandler.h" />
+    <ClInclude Include="..\..\include\gloox\simanager.h" />
+    <ClInclude Include="..\..\include\gloox\siprofileft.h" />
+    <ClInclude Include="..\..\include\gloox\siprofilefthandler.h" />
+    <ClInclude Include="..\..\include\gloox\siprofilehandler.h" />
+    <ClInclude Include="..\..\include\gloox\socks5bytestream.h" />
+    <ClInclude Include="..\..\include\gloox\socks5bytestreammanager.h" />
+    <ClInclude Include="..\..\include\gloox\socks5bytestreamserver.h" />
+    <ClInclude Include="..\..\include\gloox\softwareversion.h" />
+    <ClInclude Include="..\..\include\gloox\stanza.h" />
+    <ClInclude Include="..\..\include\gloox\stanzaextension.h" />
+    <ClInclude Include="..\..\include\gloox\stanzaextensionfactory.h" />
+    <ClInclude Include="..\..\include\gloox\statisticshandler.h" />
+    <ClInclude Include="..\..\include\gloox\subscription.h" />
+    <ClInclude Include="..\..\include\gloox\subscriptionhandler.h" />
+    <ClInclude Include="..\..\include\gloox\tag.h" />
+    <ClInclude Include="..\..\include\gloox\taghandler.h" />
+    <ClInclude Include="..\..\include\gloox\tlsbase.h" />
+    <ClInclude Include="..\..\include\gloox\tlsdefault.h" />
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsbase.h" />
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsclient.h" />
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsclientanon.h" />
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsserveranon.h" />
+    <ClInclude Include="..\..\include\gloox\tlshandler.h" />
+    <ClInclude Include="..\..\include\gloox\tlsopensslbase.h" />
+    <ClInclude Include="..\..\include\gloox\tlsopensslclient.h" />
+    <ClInclude Include="..\..\include\gloox\tlsopensslserver.h" />
+    <ClInclude Include="..\..\include\gloox\tlsschannel.h" />
+    <ClInclude Include="..\..\include\gloox\uniquemucroom.h" />
+    <ClInclude Include="..\..\include\gloox\util.h" />
+    <ClInclude Include="..\..\include\gloox\vcard.h" />
+    <ClInclude Include="..\..\include\gloox\vcardhandler.h" />
+    <ClInclude Include="..\..\include\gloox\vcardmanager.h" />
+    <ClInclude Include="..\..\include\gloox\vcardupdate.h" />
+    <ClInclude Include="..\..\include\gloox\xhtmlim.h" />
+    <ClInclude Include="..\..\include\XMPP.h" />
+    <ClInclude Include="..\..\include\ssixmpp.h" />
+    <ClInclude Include="..\..\include\XMPPclient.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

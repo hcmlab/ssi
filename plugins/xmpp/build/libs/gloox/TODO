@@ -1,0 +1,56 @@
+Todo
+----
+
+for 1.0
+- XEP-0155 (Stanza Session Negotiation)
+- XEP-0213 (XMPP Intermediate IM Client 2008) (Stanza Session Negotiation)
+- complete XEP-0077 (DataForms)
+- check again for conformance to XEP-0085
+- check again for conformance to XEP-0022
+- in FT, add Fast Mode:
+    http://delta.affinix.com/specs/stream.html
+- comply with rfc3920bis/rfc3921bis (or current drafts), which includes at least:
+  - look into (removed) acks for presence subscribed, unsubscribe, unsubscribed
+- more XPath
+  - XPath stanza filter
+- check serverRaw() use (ClientBase::m_server)
+- comply with RFC2831, Section 7.2, i.e. escape SASL-special chars in usernames
+- check Openfire/no-SSL + gloox. seems to cause problems after requesting the roster. -- not reproducible
+- get rid of IQ::m_tag/IQ::query()/IQ::xmlns()
+- add inspector?
+
+- unit tests for: PrivacyManager, LastActivity, FlexOff
+
+
+optional for 1.0:
+- XEP-0174 (Link-Local Messaging)
+  - zeroconf support in XEP-0065
+- ClientBase: Tag queueing?
+
+- libidn replacement?
+
+- unit tests
+- dns, linux, dyndns and 127.0.0.1
+
+- overhaul all XEP implementations (and note implemented version number)
+- RosterItem::status ::statusMsg for highest prio
+
+- XEP-0166 (Jingle Signaling)
+- XEP-0175 (Best Practices for Use of SASL ANONYMOUS)
+- XEP-0186 (Invisible Command)
+- XEP-0198 (Stanza Acknowledgements)
+- vcard-temp: support AGENT, CATEGORIES, SOUND, KEY
+- make socket tunable (keepalive)
+- allow for registration and immediate connection from within the same Client object
+- bindings (C, ...) (SWIG)
+- add prePresenceHook (for XEP-0182 (Invisible Command))
+- fix STLport support/configure check (broken on autoconf 2.61?)
+- IPv6 support
+
+
+- check subjectAltName for JIDs (core sec. 5.1 rule 8)
+- introduce some 'randomness' for IDs
+- introduce return values for *Handlers to indicate whether following handlers should be invoked as well
+- empty passwords allowed?
+
+

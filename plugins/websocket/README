@@ -1,0 +1,25 @@
+------------------------------------------------------------
+	websocket Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+	
+	Fossa is a multi-protocol networking library written in C. 
+	https://cesanta.com/fossa.shtml
+	https://github.com/cesanta/fossa
+	Fossa is released under GNU GPL v.2
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssilibsoxfilter"/>
+		<load name="ssiioput"/>
+		<load name="ssiaudio"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="WavReader" path="../build/test/testfiles/79_nlb-20dB.wav" block="0.02">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="LibsoxFilter" ssi_sample_block_offset="1" sox_global_buffer="1024" sox_signal_length="1024" sox_effect_chain_str="highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 highpass 40 lowpass 10000 noisered '../build/test/testfiles/nlb-20dB_hlfamp.noise-prof' 0.1">
+		<input pin="audio" frame="1024"/>
+		<output pin="noisered"/>
+	</transformer>	
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="1024" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" title="denoised" type="2">
+		<input pin="noisered" frame="1024" />
+	</consumer>
+	
+	<!-- write -->
+	<consumer create="WavWriter" path="../build/test/testfiles/noisered.wav">
+		<input pin="noisered" frame="1024" />
+	</consumer>
+	
+	<!-- player -->	
+	<consumer create="AudioPlayer" option="aplayer">
+		<input pin="noisered" frame="0.1s"/>
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

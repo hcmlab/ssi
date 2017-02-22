@@ -1,0 +1,12 @@
+1) Es gibt eine neue aktive Infrarot-Kamera, die Bilder in dunklen Räumen liefern kann
+
+2) Kameras geben nur noch Bilder mit ihrer maximalen Auflösung zurück:
+     RGB: 	1920*1080@30fps
+     depth: 	512*424@30fps
+     infrared: 	512*424@30fps
+
+3) Es können bis zu sechs Skelette getracked werden. Deshalb wurde die Option trackNearestPerson (bool) auf trackNearestPersons (ssi_size_t) geändert.
+
+4) Das neue Skelett hat 25 statt 20 Joints (Fingerspitzen, Daumen und Hals sind neu). Details sind auf dem Bild zu sehen.
+
+5) Es gibt jetzt 1347 Facepoints

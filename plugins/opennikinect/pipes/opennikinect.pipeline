@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssisignal" />
+		<load name="ssiioput" />
+		<load name="ssigraphic" />
+		<load name="ssiopennikinect" />
+	</register>
+
+	<!-- sensor -->
+	<sensor create="OpenNIKinect" project="False">
+		<output channel="rgb" pin="rgb"/>
+		<output channel="scene" pin="scene"/>
+		<output channel="depth" pin="depth"/>
+		<output channel="skeleton" pin="skeleton"/>
+	</sensor>
+	
+	<!-- select right hand -->
+	<transformer create="OpenNIKinectSelector" joints="11" values="0,1">
+		<input pin="skeleton" frame="1"/>
+		<output pin="hand"/>
+	</transformer>
+	
+	<!-- visualization -->
+	<consumer create="VideoPainter:plot" flip="False" title="rgb">
+		<input pin="rgb" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" flip="False" title="scene">
+		<input pin="scene" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" flip="False" title="depth" maxValue="10000">
+		<input pin="depth" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="right hand" size="10">
+		<input pin="hand" frame="0.1s"/>					
+	</consumer>
+
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

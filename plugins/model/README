@@ -1,0 +1,46 @@
+------------------------------------------------------------
+	Model Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	Dollar$1 Implementation by Baylor Wetzel
+	http://depts.washington.edu/aimgroup/proj/dollar/others/cpp.bw.zip
+	Wobbrock, J.O., Wilson, A.D. and Li, Y. (2007) Gestures without libraries, toolkits
+	or training: A $1 recognizer for user interface prototypes.
+	<http://faculty.washington.edu/wobbrock/pubs/uist-07.1.pdf> Proceedings
+	of the ACM Symposium on User Interface Software and Technology (UIST '07). Newport,
+	Rhode Island (October 7-10, 2007). New York: ACM Press, pp. 159-168.
+		
+	Libsvm -- a simple, easy-to-use, and efficient software for SVM
+	Copyright (c) 2000-2010 Chih-Chung Chang and Chih-Jen Lin
+	http://www.csie.ntu.edu.tw/~cjlin/libsvm
+	see also LICENSE.LIBSVM
+	
+	David Arthur's implementation of the kmeans++ algorithm
+	http://www.stanford.edu/~darthur/kmpp.zip
+	
+	AlgLib, a cross-platform numerical analysis and data processing library
+	ALGLIB® - numerical analysis library, 1999-2012.
+	ALGLIB is a registered trademark of the ALGLIB Project. 
+	see also LICENSE.ALGLIB
+		
+	ARFF file-reader, a C++ library to parse ARFF files
+	Copyright (C) 2011 Tejaswi <rao.thejaswi@gmail.com>
+	http://ficklemind.blogspot.com/2011/09/arff-file-reader-in-c.html
+	see also LICENSE.ARFFREADER	
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

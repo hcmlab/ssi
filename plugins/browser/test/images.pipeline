@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssibrowser" />		
+		<load name="ssimouse" />	
+		<load name="ssiioput" />	
+	</register>	
+
+	<!-- detect mouse clicks --> 
+	<thread create="ClockEventSender" sname="clock" ename="tick" clocks="1000;3000"/>			
+	
+	<!-- send stimuli -->
+	<object create="Stimuli" sname="stimuli" ename="image"
+		folder="..\build\test\images" labelFromFile="false" insertBlank="true">
+		<listen address="tick@clock"/>
+	</object>
+	
+	<!-- display stimuli -->
+	<object create="ImageViewer">
+		<listen address="image@stimuli"/>
+	</object>
+		
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

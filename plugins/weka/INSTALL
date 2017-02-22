@@ -1,0 +1,12 @@
+To compile 'ssiweka.dll' you need to install the latest java sdk and set up the following system variables:
+
+	JAVA_JDK_INCLUDE = 
+	<java-jdk>\include;<java-jdk>\include\win32
+
+	JAVA_JDK_LIBS =
+	<java-jdk>\lib
+	
+To run 'ssiweka.dll' make sure to:
+
+	add <java-jdk OR java-jre>/bin the %PATH% variable
+

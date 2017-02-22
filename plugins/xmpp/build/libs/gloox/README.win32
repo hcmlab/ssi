@@ -1,0 +1,60 @@
+Building on Win32
+-----------------
+
+gloox compiles (at least) on:
+- MinGW (http://mingw.org)
+- MS Visual C++ Express 2008
+
+As of 1.0-alpha1, gloox DOES NOT compile on:
+- MSVC 6
+
+No other compilers are officially supported at this point. Please let me know about
+your experiences with other compilers.
+
+See README.wince for info on building gloox for Win CE/Mobile
+
+Project files for Code::Blocks (gloox.cbp), Visual C++ Express 2008 (gloox.vcproj),
+and MSVC 6 (gloox.dsp) are included. The latter can be imported by other IDEs.
+
+- Edit config.h.win to suit your needs.
+- Add additional libs you have available to the project.
+- If you have an old Platform SDK (e.g. the one shipped with stock MSVC6, which lacks windns.h),
+  undefine HAVE_WINDNS_H in config.h.win. SRV resolving is disabled in this case.
+- You will also need a newer Platform SDK if you wanted to use winapi's TLS implementation (SChannel).
+  Undefine HAVE_WINTLS in config.h.win if you don't have schannel.h.
+
+
+Building gloox in MinGW and Code::Blocks
+----------------------------------------
+
+gloox should build out of the box on MinGW. If using MSys, you should run configure with
+the --with-schannel flag.
+
+
+Building gloox on MSVC++
+------------------------
+
+- use the included project file or create your own
+- adjust include + library paths if necessary
+- to receive any debug output you should use the LogSink facilities (this is not win32-specific)
+- build
+
+
+Building libidn in Win32
+------------------------
+
+- install mingw + msys from http://www.mingw.org, including mingw-utils
+- build libidn 1.1 or above in msys/mingw
+
+If you want to use libidn in MSVC, type the following in a shell to create msvc import libs:
+  $ pexports libidn-11.dll > libidn-11.def
+  $ lib /def:libidn-11.def
+
+pexports is part of the mingw-utils package.
+
+
+Linking your application against gloox
+--------------------------------------
+
+- When building a program that links against gloox, make sure you have GLOOX_IMPORTS defined.
+- Make sure you use the same runtime library for both gloox and your app.

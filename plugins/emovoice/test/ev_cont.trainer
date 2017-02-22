@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="5">
+    <info trained="true" />
+    <streams>
+        <item byte="4" dim="1" sr="16000.000000" type="FLOAT" />
+    </streams>
+    <classes>
+        <item name="NegativeActive" />
+        <item name="NegativePassive" />
+        <item name="Neutral" />
+        <item name="PositivePassive" />
+        <item name="PositiveActive" />
+    </classes>
+    <users>
+        <item name="Johannes" />
+    </users>
+    <activity>
+        <item create="AudioActivity" stream="0" frame="0.000000" delta="0.000000" option="ev_cont.trainer.#0.ssi_feature_AudioActivity" />
+    </activity>	
+    <transform>
+        <item create="EmoVoiceFeat" stream="0" frame="0.000000" delta="0.000000" option="ev_cont.trainer.#0.ssi_feature_EmoVoiceFeat" />
+    </transform>
+    <model create="SVM" stream="0" path="ev_cont.trainer.ssi_model_SVM" option="ev_cont.trainer.ssi_model_SVM" />
+</trainer>

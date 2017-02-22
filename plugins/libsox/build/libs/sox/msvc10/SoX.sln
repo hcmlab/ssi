@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibSoX", "LibSoX.vcxproj", "{F17BE535-C7E8-4930-A6FD-32498D73A533}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoX", "SoX.vcxproj", "{AC136601-504C-4E1A-9DC8-0CC493AA0983}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoX_Example", "SoX_Example.vcxproj", "{B5296160-964E-406F-B5F8-FF5D561C5E68}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F17BE535-C7E8-4930-A6FD-32498D73A533}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F17BE535-C7E8-4930-A6FD-32498D73A533}.Debug|Win32.Build.0 = Debug|Win32
+		{F17BE535-C7E8-4930-A6FD-32498D73A533}.Release|Win32.ActiveCfg = Release|Win32
+		{F17BE535-C7E8-4930-A6FD-32498D73A533}.Release|Win32.Build.0 = Release|Win32
+		{AC136601-504C-4E1A-9DC8-0CC493AA0983}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AC136601-504C-4E1A-9DC8-0CC493AA0983}.Debug|Win32.Build.0 = Debug|Win32
+		{AC136601-504C-4E1A-9DC8-0CC493AA0983}.Release|Win32.ActiveCfg = Release|Win32
+		{AC136601-504C-4E1A-9DC8-0CC493AA0983}.Release|Win32.Build.0 = Release|Win32
+		{B5296160-964E-406F-B5F8-FF5D561C5E68}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B5296160-964E-406F-B5F8-FF5D561C5E68}.Debug|Win32.Build.0 = Debug|Win32
+		{B5296160-964E-406F-B5F8-FF5D561C5E68}.Release|Win32.ActiveCfg = Release|Win32
+		{B5296160-964E-406F-B5F8-FF5D561C5E68}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

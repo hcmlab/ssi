@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssieyesig"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" scale="false">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- fixations -->
+	<consumer create="EyeFixation" thres="90" mindur="1.0">
+		<input pin="cursor" frame="0.2s" />	
+	</consumer>
+	
+	<!-- area of interest -->
+	<consumer create="GazeArea" mindur="0" area="0.25,0.25,0.5,0.5" norm="true">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="gaze" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<listener create="EventMonitor:monitor">
+		<input listen="@" span="20000" />
+	</listener>
+	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

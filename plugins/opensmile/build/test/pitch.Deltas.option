@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="keep original" type="INT" num="1" value="1" help="0 = deltas , 1 = keep original stream with deltas" />
+</options>

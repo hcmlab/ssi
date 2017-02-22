@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>
+		<load name="ssiframe" />
+		<load name="ssievent" />
+		<load name="ssigraphic" />
+		<load name="ssiehealth" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+		
+	</register>
+	
+	<!-- Read file -->
+	<sensor create="FileReader" path="..\..\..\..\..\hertwig_obermayer\Stress_Test_Sessions\30.0-.2-15_15-37-12(Stephan)\bvp" loop="False">
+		<output channel="file" pin="bvp" sync="0" watch="0" />
+	</sensor>	
+	
+	
+	<!-- Beat finder and event sender -->
+	<consumer create="BVPEventSender" mean_window="1" print="True" sname="bvp_tuple">
+		<input pin="bvp" frame="1" />
+	</consumer>
+	
+	
+	
+	<!-- Event Monitor-->
+	<listener create="EventMonitor:monitor">
+		<!-- <input listen="@bvp_tuple" span=30000/> -->
+	</listener>		
+	
+	<!-- Raw features: Heart Rate, Inter Beat Interval, Amplitude -->
+	<sensor create="BVPEventRawListener" sr="9">
+		<output channel="interbeat interval" pin="ib_raw" />
+		<output channel="heart rate" pin="hr_raw" />
+		<output channel="amplitude" pin="amp_raw" />
+		<listen address="@bvp_tuple"/>
+	</sensor>
+	
+	<!-- Features with a statistical function (here sum) over a window -->
+	<sensor create="BVPEventStatisticalListener" sr="1" window="60000" statisticalFunction="1">
+		<output channel="interbeat interval" pin="ib_sum" />
+		<output channel="heart rate" pin="hr_sum" />
+		<output channel="amplitude" pin="amp_sum" />
+		<listen address="@bvp_tuple"/>
+	</sensor>
+	
+	<!-- RMSSD Feature -->
+	<sensor create="BVPEventRMSSDListener" window="10000">
+		<output channel="RMSSD" pin="rmssd" />
+		<listen address="@bvp_tuple"/>
+	</sensor>	
+	
+	<!-- Signal Painters -->
+	<consumer create="SignalPainter:plot" size="60" title="bvp">
+		<input pin="bvp" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="ib_raw">
+		<input pin="ib_raw" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="hr_raw">
+		<input pin="hr_raw" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="amp_raw">
+		<input pin="amp_raw" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="ib_mean">
+		<input pin="ib_sum" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="hr_mean">
+		<input pin="hr_sum" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="amp_mean">
+		<input pin="amp_sum" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plot" size="60" title="RMSSD">
+		<input pin="rmssd" frame="1" />
+	</consumer>
+	
+	<!-- Write events to file -->
+	<object create="FileEventWriter">
+		<listen address="@bvp_tuple"/>	
+	</object>	
+	
+	<!-- Write raw data to file -->
+	<consumer create="FileWriter" path="ibi_raw" type="1">
+		<input pin="ib_raw" frame="1" />
+	</consumer>
+	<consumer create="FileWriter" path="amp_raw" type="1">
+		<input pin="amp_raw" frame="1" />
+	</consumer>
+	<consumer create="FileWriter" path="hr_raw" type="1">
+		<input pin="hr_raw" frame="1" />
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

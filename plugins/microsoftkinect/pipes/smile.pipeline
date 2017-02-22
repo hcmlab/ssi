@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssiioput" />
+		<load name="ssigraphic" />
+		<load name="ssimodel" />
+		<load name="ssisignal" />
+		<load name="ssimicrosoftkinect"/>
+		<load name="ssicamera"/>
+	</register>
+
+	<!-- kinect sensor 
+	
+	- turn on trackNearestPerson to always track the nearest person
+	- turn on seatedSkeletonMode if tracked person is seating
+	- turn off showFaceTracking and showBodyTracking to NOT visulaize tracking results in the rgb image
+	
+	-->
+	<sensor create="MicrosoftKinect" trackNearestPerson="true" seatedSkeletonMode="false" simpleFaceTracking="false" showFaceTracking="false" showBodyTracking="false" nearTrackingMode="true">
+		<output channel="rgb" pin="rgb"/>
+		<output channel="au" pin="au"/>
+		<output channel="skeleton" pin="skel"/>
+		<output channel="face" pin="face"/>
+	</sensor>
+	
+	<!-- smile detection -->
+	<transformer create="MicrosoftKinectSmileDetector">
+		<input pin="au" frame="5"/>
+		<output pin="au_smile"/>
+	</transformer>	
+	<consumer create="ThresEventSender" thres="0" hangin="3" hangout="3" mindur="1.0" ename="smile" sname="kinect" eager="true">
+		<input pin="au_smile" frame="5"/>
+	</consumer>
+	
+	<!-- prepare visualization -->
+	
+	<transformer create="MicrosoftKinectPainter">	
+		<input pin="rgb" frame="1"/>
+		<xinput size="1">
+			<input pin="face"/>
+		</xinput>
+		<output pin="rgb_face"/>
+	</transformer>	
+	
+	<!-- visualization -->
+	
+	<consumer create="VideoPainter:plot" flip="False" mirror="False" title="rgb">
+		<input pin="rgb_face" frame="1"/>
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="au" size="10">
+		<input pin="au_smile" frame="0.1s"/>					
+	</consumer>	
+	<listener create="EventMonitor:monitor">
+		<input listen="@" span="5000"/>
+	</listener>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,28 @@
+------------------------------------------------------------
+	Signal Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+		
+	ExpressionParser, parser for mathematical expressions
+	Copyright (C) 2007-2011 Jos de Jong, http://www.speqmath.com
+	see also LICENSE.EXPRESSIONPARSER
+	
+	KISS FFT -- A mixed-radix Fast Fourier Transform 
+	Copyright (c) 2003-6 Mark Borgerding	
+	see also LICENSE.KISSFFT	
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

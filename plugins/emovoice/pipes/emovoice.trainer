@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="3">
+    <classes size="2">
+        <item name="positive" id="0" />
+        <item name="negative" id="1" />
+    </classes>
+    <users size="1">
+        <item name="user" id="0" />
+    </users>
+    <streams size="1" select="false">
+        <item byte="4" dim="1316" sr="0.740741" type="FLOAT" />
+    </streams>
+    <model name="NaiveBayes" info="Naive Bayes Classifier" stream="0" path="emovoice.model" />
+</trainer>

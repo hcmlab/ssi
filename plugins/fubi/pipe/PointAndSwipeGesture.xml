@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE FubiRecognizers PUBLIC "-//Human Centered Multimedia Lab - Augsburg University//DTD FubiRecognizers V 0.5//EN" "http://hcm-lab.de/downloads/FubiRecognizers.dtd">
+<!--Use the next doctype definition if you want to use the local dtd-->
+<!--<!DOCTYPE FubiRecognizers SYSTEM "FubiRecognizers.dtd">-->
+<FubiRecognizers>
+
+<!--
+defined Postures
+- point with right hand
+- swipe with right hand
+-->
+
+  <!-- A special linear movement: keeping the hand still -->
+  <LinearMovementRecognizer name="pRightHandStill" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Speed min="0" max="300"/>
+  </LinearMovementRecognizer>
+
+  <!-- Pointing with right hand -->
+  <CombinationRecognizer name="pointRightHand">
+    <State minDuration="1.0" maxInterruptionTime="2.0" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pointingRight"/>
+      <Recognizer name="pRightHandStill"/>
+    </State>
+  </CombinationRecognizer>
+
+
+  <!-- Hand in front -->
+  <JointRelationRecognizer name="rightHandInFront" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Relation type="inFrontOf" min="200"/>
+  </JointRelationRecognizer> 
+  
+   <!-- Keeping the hand still -->
+  <LinearMovementRecognizer name="rightHandStill" visibility="hidden">
+    <Joints main="rightHand"/>
+    <Speed min="0" max="300"/>
+  </LinearMovementRecognizer>
+
+  <!-- The swipe itself -->
+  <LinearMovementRecognizer name="rightHandMovesRight" visibility="hidden">
+    <Joints main="rightHand"/>
+    <BasicDirection type="right" maxAngleDifference="45"/>
+    <Speed min="300"/>
+  </LinearMovementRecognizer>
+
+
+  <!-- The final recognizer combining all the parts-->
+  <CombinationRecognizer name="swipeRightHandToRight">
+    <State minDuration="0.2" timeForTransition="0.1">
+      <Recognizer name="rightHandInFront"/>
+      <!--You can remove the still recognizer if you don't want to have the pause at the beginning-->
+      <Recognizer name="rightHandStill"/>
+    </State>
+    <State minDuration="0.2" maxInterruptionTime="0.08">
+      <Recognizer name="rightHandMovesRight"/>
+    </State>
+  </CombinationRecognizer>  
+</FubiRecognizers>

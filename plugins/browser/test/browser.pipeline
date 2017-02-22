@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssibrowser" />		
+		<load name="ssimouse" />	
+	</register>	
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="32" event="true">
+		<provider channel="button" pin="button" />
+	</sensor>
+	
+	<!-- send stimuli -->
+	<object create="Stimuli" sname="stimuli" ename="url" startName="..\..\..\docs\api\index.html" names="http:\\hcm-lab.de" endName="http://openssi.net">
+		<listen address="click@mouse"/>
+	</object>
+		
+	<object create="Browser">
+		<listen address="url@stimuli"/>
+	</object>
+		
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

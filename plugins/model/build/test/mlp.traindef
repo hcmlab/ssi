@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<traindef ssi-v="1">
+	<item name="knn">
+		<transform create="ssi_feature_Functionals" option="opts/functs"/>
+		<model create="ssi_model_KNearestNeighbors" option="opts/knn"/>
+	</item>
+	<item name="dollar">
+		<model create="ssi_model_Dollar$1"/>
+	</item>	
+</traindef>

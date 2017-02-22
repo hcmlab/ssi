@@ -1,0 +1,324 @@
+/**
+ * @page upgrading Upgrading from earlier versions
+ *
+ * This page contains information about upgrading gloox from an earlier version to the current one.
+ * It lists the API changes that were made and how to change your code to achieve the same
+ * (or better) functionality as with the earlier version.
+ *
+ * @tableofcontents
+ * 
+ * @section upgrading_09_10 1. Upgrading from 0.9.x to 1.0
+ *
+ * Besides the changes detailed below, a major change is that the Stanza class now is an abstract
+ * base for more specialized
+ * @link gloox::Message Message @endlink, @link gloox::Presence Presence @endlink,
+ * @link gloox::IQ IQ @endlink, and @link gloox::Subscription Subscription @endlink classes.
+ * Therefore,
+ * @link gloox::PresenceHandler PresenceHandler @endlink,
+ * @link gloox::MessageHandler MessageHandler @endlink,
+ * @link gloox::SubscriptionHandler SubscriptionHandler @endlink, and
+ * @link gloox::IqHandler IqHandler @endlink no longer take a Stanza* argument, but receive
+ * a pointer to the respective specialized class. Additionally, in a move to get away from
+ * unsafe pointers to safer references, these pointer-taking functions have been deprecated
+ * (but will continue to be available throughout the 1.0.x cycle).
+ * The recommended usage looks as follows:
+ *
+ * Old code:
+ * @code
+ * void MyClass::handlePresence( Stanza* stanza )
+ * {
+ *   // ...
+ * }
+ * @endcode
+ *
+ * New code (deprecated):
+ * @code
+ * void MyClass::handlePresence( Presence* pres )
+ * {
+ *   // ...
+ * }
+ * @endcode
+ * or
+ * New code (recommended):
+ * @code
+ * void MyClass::handlePresence( const Presence& pres )
+ * {
+ *   // ...
+ * }
+ * @endcode
+ *
+ * @subsection deprecated_10 1.1 Deprecated classes and functions
+ *
+ * @subsubsection func_MUCRoomHandler_handleMucMessage 1.1.1 MUCRoomHandler::handleMUCMessage( MUCRoom*, string, string, bool, string, bool ),
+ *
+ * Use @link gloox::MUCRoomHandler::handleMUCMessage( MUCRoom*, const Message&, bool ) handleMUCMessage( MUCRoom*, Message&, bool ) @endlink instead.
+ *
+ * Due to the newly available StanzaExtensions, some of handleMUCMessage()'s arguments are obsolete:
+ * Instead of single values, all of these are included in the new @c msg parameter, which is the
+ * full Message stanza:
+ *
+ * @li the speaker's nick name,
+ * @code const std::string nick = msg.from().resource(); @endcode
+ * @li the message body,
+ * @code const std::string body = msg.body(); @endcode
+ * @li whether this message is part of the room history,
+ * @code
+ * bool history = msg.when() ? true : false;
+ * @endcode
+ * @li the message's time stamp.
+ * @code
+ * const DelayedDelivery* dd = msg.when();
+ * if( dd )
+ *   printf( "message was sent at %s\n", dd->stamp().c_str() );
+ * @endcode
+ *
+ * @subsubsection func_ClientBase_trackID 1.1.2 ClientBase::trackID()
+ *
+ * The functionality provided by this function really makes sense only for IQ stanzas of type
+ * get or set. As a result, there is a new function
+ * @link gloox::ClientBase::send( IQ&, IqHandler*, int, bool ) ClientBase::send( IQ&, IqHandler*, int ) @endlink
+ * that combines trackID()'s and send()'s functionality.
+ *
+ * Old code:
+ * @code
+ * const std::string& id = m_client->getID();
+ * Tag* iq = ...
+ * iq->addAtrribute( "id", id );
+ * ...
+ * m_client->trackID( this, id, SomeContext );
+ * m_client->send( iq );
+ * @endcode
+ *
+ * New code:
+ * @code
+ * IQ iq( IQ::Set, recipientJID );
+ * ...
+ * m_client->send( iq, this, SomeContext );
+ * @endcode
+ *
+ * Further, it is no longer necessary to explicitely add an ID to the IQ (for requests of type
+ * 'get' or 'set; 'result' and 'error' IQs need to have the IQ's ID passed they are supposed
+ * to answer). send() will take care of this.
+ *
+ * @subsubsection func_DiscoHandler_handleDiscoInfoResult 1.1.3 DiscoHandler::handleDiscoInfoResult()
+ *
+ * The function
+ * gloox::DiscoHandler::handleDiscoInfoResult()
+ * has been removed. Replacement is:
+ * @link gloox::DiscoHandler::handleDiscoInfo() DiscoHandler::handleDiscoInfo() @endlink.
+ *
+ * @subsubsection func_DiscoHandler_handleDiscoItemsResult 1.1.4 DiscoHandler::handleDiscoItemsResult()
+ *
+ * The function
+ * gloox::DiscoHandler::handleDiscoItemsResult()
+ * has been removed. Replacement is:
+ * @link gloox::DiscoHandler::handleDiscoItems() DiscoHandler::handleDiscoItems() @endlink.
+ *
+ * @subsubsection func_DiscoHandler_handleDiscoError 1.1.5 DiscoHandler::handleDiscoError()
+ *
+ * The function
+ * gloox::DiscoHandler::handleDiscoError( IQ*, int )
+ * has been removed. Replacement is:
+ * @link gloox::DiscoHandler::handleDiscoError( const JID&, const Error*, int ) DiscoHandler::handleDiscoError( const JID&, const Error*, int ) @endlink.
+ *
+ * @subsubsection func_MUCRoom_destroy 1.1.6 MUCRoom::destroy()
+ *
+ * The default argument now is a const reference to a JID -- defaulting to en empty JID --
+ * instead of a pointer to a JID object.
+ *
+ *
+ *
+ *
+ * @subsection removed_10 1.2 Removed classes and functions
+ *
+ * @subsubsection class_XDelayedDelivery 1.2.1 XDelayedDelivery
+ *
+ * The class XDelayedDelivery has been removed as the XSF replaced XEP-0091 with XEP-0203. The class
+ * @link gloox::DelayedDelivery DelayedDelivery @endlink covers both XEPs.
+ *
+ * @subsubsection func_JID_fullJID 1.2.2 JID::fullJID()
+ *
+ * Use the copy constructor instead. E.g.:
+ *
+ * Old code:
+ * @code
+ * JID j( "somejid" );
+ * JID copy = j.fullJID();
+ * @endcode
+ *
+ * New code:
+ * @code
+ * JID j( "somejid" );
+ * JID copy( j );
+ * @endcode
+ *
+ * @subsubsection func_JID_empty 1.2.3 JID::empty()
+ *
+ * This function has been replaced by JID::operator bool(). This has the added benefit of validity
+ * checking. E.g.:
+ *
+ * Old code:
+ * @code
+ * JID j;
+ * // ...
+ * if( !j.empty() )
+ * {
+ *   // do something
+ * }
+ * @endcode
+ *
+ * New code:
+ * @code
+ * JID j;
+ * // ...
+ * if( j ) // this evaluates to true only if the JID is not empty and if the contained JID
+ *         // is in fact valid, i.e. if no prepping operation failed.
+ * {
+ *   // do something
+ * }
+ * @endcode
+ *
+ * @subsubsection func_Tag_empty 1.2.4 Tag::empty()
+ *
+ * This function has been replaced by Tag::operator bool(). This has the added benefit of validity
+ * checking. E.g.:
+ *
+ * Old code:
+ * @code
+ * Tag t;
+ * // ...
+ * if( !t.empty() )
+ * {
+ *   // do something
+ * }
+ * @endcode
+ * Or:
+ * @code
+ * Tag* t = new Tag( "foo" );
+ * // ...
+ * if( !t->empty() )
+ * {
+ *   // do something
+ * }
+ * @endcode
+ *
+ * New code:
+ * @code
+ * Tag t;
+ * // ...
+ * if( t )
+ * {
+ *   // do something
+ * }
+ * @endcode
+ * Or:
+ * @code
+ * Tag* t = new Tag( "foo" );
+ * // ...
+ * if( *t )
+ * {
+ *   // do something
+ * }
+ * @endcode
+ *
+ * @subsubsection func_Tag_attributes 1.2.5 Tag::attributes() (non-const)
+ *
+ * This function has been removed. Use the const version instead. To delete an attribute,
+ * use the new @link gloox::Tag::removeAttribute() removeAttribute() @endlink.
+ *
+ * @subsubsection func_Tag_attributes 1.2.6 Tag::children() (non-const)
+ *
+ * This function has been removed. Use the const version instead. To delete a child element,
+ * use @link gloox::Tag::removeChild() removeChild() @endlink.
+ *
+ * @subsubsection func_createStanzas 1.2.7 Stanza::createMessageStanza(), Stanza::createPresenceStanza(), Stanza::createIqStanza(), Stanza::createSubscriptionStanza()
+ *
+ * These functions have been removed in favour of the more specialized classes
+ * @link gloox::Message Message @endlink, @link gloox::Presence Presence @endlink,
+ * @link gloox::IQ IQ @endlink, and @link gloox::Subscription Subscription @endlink.
+ *
+ * @subsubsection class_InBandBytestreamManager 1.2.8 InBandBytestreamManager
+ *
+ * The Message-based Inband Bytestream implementation has been removed in favour of an IQ-based one.
+ * Also, Inband Bytestreams are now handled (transparently) by @link gloox::SIProfileFT SIProfileFT @endlink.
+ *
+ * @subsubsection func_AdhocHandler_handleAdhocError 1.2.9 AdhocHandler::handleAdhocError( const JID&, StanzaError )
+ *
+ * This function has been removed in favor of
+ * @link gloox::AdhocHandler::handleAdhocError( const JID&, const Error* ) handleAdhocError( const JID&, const Error* ) @endlink.
+ *
+ * @subsubsection func_SIProfileFTHandler_handleFTRequestError 1.2.10 SIProfileFTHandler::handleFTRequestError( IQ*, const std::string& )
+ *
+ * This function has been removed in favor of
+ * @link gloox::SIProfileFTHandler::handleFTRequestError( const IQ&, const std::string& ) handleFTRequestError( const IQ&, const std::string& ) @endlink.
+ *
+ * @subsubsection func_BytestreamHandler_handelBytestreamError 1.2.11 BytestreamHandler::handleBytestreamError( IQ* iq, const std::string& sid )
+ *
+ * This function has been removed in favor of
+ * @link gloox::BytestreamHandler::handleBytestreamError( const IQ& iq, const std::string& ) handleBytestreamError( const IQ& iq, const std::string& sid ) @endlink.
+ *
+ * @subsubsection func_BytestreamDataHandler_handelBytestreamError 1.2.12 BytestreamDataHandler::handleBytestreamError( Bytestream* bs, IQ* )
+ *
+ * This function has been removed in favor of
+ * @link gloox::BytestreamDataHandler::handleBytestreamError( Bytestream* bs, const IQ& ) handleBytestreamError( Bytestream* bs, const IQ& ) @endlink.
+ *
+ * @subsubsection func_Disco_category 1.2.13 Disco::category()
+ *
+ * This function has been removed. Use @link gloox::Disco::identities() Disco::identities() @endlink
+ * instead.
+ *
+ * @subsubsection func_Disco_type 1.2.14 Disco::type()
+ *
+ * This function has been removed. Use @link gloox::Disco::identities() Disco::identities() @endlink
+ * instead.
+ *
+ * @subsubsection func_PrivateXMLHandler_handlePrivateXML 1.2.15 PrivateXMLHandler::handlePrivateXML( const std::string&, Tag* )
+ *
+ * This function has been removed in favor of
+ * @link gloox::PrivateXMLHandler::handlePrivateXML() PrivateXMLHandler::handlePrivateXML( const Tag* ) @endlink.
+ *
+ * @subsubsection func_PrivateXML_storeXML 1.2.16 PrivateXML::storeXML( Tag*, PrivateXMLHandler* )
+ *
+ * This function has been removed in favor of
+ * @link gloox::PrivateXML::storeXML() PrivateXML::storeXML( const Tag*, PrivateXMLHandler* ) @endlink.
+ *
+ * @subsubsection func_Client 1.2.17 Client::Client( string, string, string, string, int )
+ *
+ * This function has been removed. The only recommended alternative is
+ * @link gloox::Client::Client() Client::Client( const JID&, const std::string&, int ) @endlink.
+ *
+ *
+ *
+ *
+ *
+ *
+ * @subsection semantics_10 1.3 Semantic Changes
+ *
+ * @subsubsection param_handleFTRequest 1.3.1 SIProfileFTHandler::handleFTRequest()
+ *
+ * The second parameter is now a Session ID (sid). This should be used with
+ * @link gloox::SIProfileFT::acceptFT() SIProfileFT::acceptFTRequest() @endlink or
+ * @link gloox::SIProfileFT::declineFT() SIProfileFT::declineFTRequest() @endlink.
+ *
+ * @subsubsection param_acceptFTRequest 1.3.2 SIProfileFT::acceptFTRequest()
+ *
+ * The second parameter is now a Session ID (sid). It must be the same value as the Session ID (sid)
+ * passed to
+ * @link gloox::SIProfileFTHandler::handleFTRequest() SIProfileFTHandler::handleFTRequest() @endlink.
+ * Further, the function has been renamed to
+ * @link gloox::SIProfileFT::acceptFT() acceptFT() @endlink.
+ *
+ * @subsubsection param_declineFTRequest 1.3.3 SIProfileFT::declineFTRequest()
+ *
+ * The second parameter is now a Session ID (sid). It must be the same value as the Session ID (sid)
+ * passed to
+ * @link gloox::SIProfileFTHandler::handleFTRequest() SIProfileFTHandler::handleFTRequest() @endlink.
+ * Further, the function has been renamed to
+ * @link gloox::SIProfileFT::declineFT() declineFT() @endlink.
+ *
+ * @section upgrading_10_101 2. Upgrading from to 1.0 to 1.0.1
+ * 
+ * NB: 1.0.1 is not binary-compatible to 1.0. The reason for that is the addition of support for XEP-0174, which made it
+ * necessary to add a parameter to @link gloox::ClientBase::handleStartNode( const Tag* ) ClientBase::handleStartNode() @endlink.
+ * 
+ */

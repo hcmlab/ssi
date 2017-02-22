@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="names" type="CHAR" num="1024" value="mean" help="names of functionals separated by blank (mean,energy,std,min,max,range,minpos,maxpos,zeros,peaks,len) or leave empty to select all)" />
+    <item name="delta" type="UCHAR" num="1" value="2" help="zero/peaks search offset" />
+</options>

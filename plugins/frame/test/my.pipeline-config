@@ -1,0 +1,5 @@
+caption = DEFAULT # a window caption
+derivatives=0th,1st     # derivatives
+include:skip = false
+write:console = false
+monitor_address = 

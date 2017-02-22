@@ -1,0 +1,151 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssidspfilters"/>
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="WavReader" block="0.02" scale="true" path="brownnoise.wav">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="ButtworthFilter" type="1" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="butter_low"/>
+	</transformer>
+	<transformer create="ButtworthFilter" type="2" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="butter_high"/>
+	</transformer>
+	<transformer create="ButtworthFilter" type="4" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="butter_band"/>
+	</transformer>
+	<transformer create="ButtworthFilter" type="5" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="butter_stop"/>
+	</transformer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="butter_low.wav">
+		<input pin="butter_low" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="butter_high.wav">
+		<input pin="butter_high" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="butter_band.wav">
+		<input pin="butter_band" frame="0.02s"/>
+	</consumer>	
+	<consumer create="WavWriter" path="butter_stop.wav">
+		<input pin="butter_stop" frame="0.02s"/>
+	</consumer>
+
+		<!-- filtering -->
+	<transformer create="RBJFilter" type="1" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="rbj_low"/>
+	</transformer>
+	<transformer create="RBJFilter" type="2" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="rbj_high"/>
+	</transformer>
+	<transformer create="RBJFilter" type="4" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="rbj_band"/>
+	</transformer>
+	<transformer create="RBJFilter" type="5" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="rbj_stop"/>
+	</transformer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="rbj_low.wav">
+		<input pin="rbj_low" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="rbj_high.wav">
+		<input pin="rbj_high" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="rbj_band.wav">
+		<input pin="rbj_band" frame="0.02s"/>
+	</consumer>	
+	<consumer create="WavWriter" path="rbj_stop.wav">
+		<input pin="rbj_stop" frame="0.02s"/>
+	</consumer>		
+	
+	<!-- filtering -->
+	<transformer create="ChebyshevIFilter" type="1" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevI_low"/>
+	</transformer>
+	<transformer create="ChebyshevIFilter" type="2" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevI_high"/>
+	</transformer>
+	<transformer create="ChebyshevIFilter" type="4" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevI_band"/>
+	</transformer>
+	<transformer create="ChebyshevIFilter" type="5" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevI_stop"/>
+	</transformer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="chebyshevI_low.wav">
+		<input pin="chebyshevI_low" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevI_high.wav">
+		<input pin="chebyshevI_high" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevI_band.wav">
+		<input pin="chebyshevI_band" frame="0.02s"/>
+	</consumer>	
+	<consumer create="WavWriter" path="chebyshevI_stop.wav">
+		<input pin="chebyshevI_stop" frame="0.02s"/>
+	</consumer>			
+	
+	<!-- filtering -->
+	<transformer create="ChebyshevIIFilter" type="1" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_low"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="2" state="2" order="32" freq="2000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_high"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="4" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_band"/>
+	</transformer>
+	<transformer create="ChebyshevIIFilter" type="5" state="2" order="32" freq="2000" width="1000" norm="false">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="chebyshevII_stop"/>
+	</transformer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="chebyshevII_low.wav">
+		<input pin="chebyshevII_low" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevII_high.wav">
+		<input pin="chebyshevII_high" frame="0.02s"/>
+	</consumer>
+	<consumer create="WavWriter" path="chebyshevII_band.wav">
+		<input pin="chebyshevII_band" frame="0.02s"/>
+	</consumer>	
+	<consumer create="WavWriter" path="chebyshevII_stop.wav">
+		<input pin="chebyshevII_stop" frame="0.02s"/>
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,22 @@
+Note: The following is not currently verified to be true for gloox 1.0-alpha1.
+
+Building on Win CE/Pocket PC 2003
+---------------------------------
+
+gloox compiles (at least) on
+- eMbedded Visual C++ 4.0
+
+No other compilers have been tested.
+
+A project file for eVC++4 is included.
+
+For eVC++ 4 you will need:
+- the STL update from http://users.libero.it/g.govi/ or
+  http://www.pocketpcdn.com/libraries/stl.html
+- RTTI fixes from http://support.microsoft.com/kb/830482
+
+- Edit config.h.win to suit your needs. As far as I know you should comment out everything.
+
+disabled features:
+- SRV record support
+- In-Band Bytestreams

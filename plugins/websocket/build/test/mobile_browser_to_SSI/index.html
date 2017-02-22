@@ -1,0 +1,330 @@
+﻿<!doctype html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  
+  <style type="text/css">
+    body {
+      font-family: sans-serif;
+    }
+  
+      .main {
+      border: 1px solid black;
+      box-shadow: 10px 10px 5px #888;
+      border-radius: 12px;
+      padding: 20px;
+      background-color: #ddd;
+      margin: 25px;
+      width: 450px;
+      margin-left:auto;
+      margin-right:auto;  
+    }
+    
+    .logo {
+      width:275px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      padding: 15px;
+    }
+    
+    .container {
+      -webkit-perspective: 300; perspective: 300;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="main">
+      <h2>Device Orientation</h2>
+      <table>
+        <tr>
+          <td>Event Supported</td>
+          <td id="doEvent"></td>
+        </tr>
+        <tr>
+          <td>Tilt Left/Right [gamma]</td>
+          <td id="doTiltLR"></td>
+        </tr>
+        <tr>
+          <td>Tilt Front/Back [beta]</td>
+          <td id="doTiltFB"></td>
+        </tr>
+        <tr>
+          <td>Direction [alpha]</td>
+          <td id="doDirection"></td>
+        </tr>
+      </table>
+	  <br>
+	  <div id ="ambientLight">AmbientLight</div>
+	  
+	  <h2>Battery</h2>
+      <table>
+        <tr>
+          <td>Charging</td>
+          <td id="batCharge"></td>
+        </tr>
+        <tr>
+          <td>Level</td>
+          <td id="batLevel"></td>
+        </tr>
+        <tr>
+          <td>Discharging time</td>
+          <td id="batDischargT"></td>
+        </tr>
+      </table>
+  </div>
+  
+  <script type="text/javascript">
+  
+    var ws = new WebSocket('ws://' + location.host + '/ws');
+  
+    ws.onopen = function(ev)  { console.log(ev); };
+    ws.onerror = function(ev) { console.log(ev); };
+    ws.onclose = function(ev) { console.log(ev); };
+    ws.onmessage = function(ev) { console.log(ev); };
+  
+  
+    init();
+    var count = 0;
+    
+    function init() {
+	
+	  //orientation
+      if (window.DeviceOrientationEvent) {
+        document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+        // Listen for the deviceorientation event and handle the raw data
+        window.addEventListener('deviceorientation', function(eventData) {
+          // gamma is the left-to-right tilt in degrees, where right is positive
+          var tiltLR = eventData.gamma;
+          
+          // beta is the front-to-back tilt in degrees, where front is positive
+          var tiltFB = eventData.beta;
+          
+          // alpha is the compass direction the device is facing in degrees
+          var dir = eventData.alpha
+          
+          // call our orientation event handler
+          deviceOrientationHandler(tiltLR, tiltFB, dir);
+          }, false);
+      } else {
+        document.getElementById("doEvent").innerHTML = "Not supported on your device or browser.  Sorry."
+      }
+	  
+	  
+	  //ambient light
+	  if (!('ondevicelight' in window)) {
+		  window.addEventListener("devicelight", function (event) {
+				// Read out the lux value
+				var lux = event.value;
+				alert(lux);
+				
+				document.getElementById("ambientLight").innerHTML = "AmbientLight: " + lux;
+				
+				var obj = new Object();
+				obj.ambientLight = lux;
+				
+				ws.send(JSON.stringify(obj));
+			});
+		} else {
+			document.getElementById("ambientLight").innerHTML = "AmbientLight: Not supported!";
+		}
+	  
+	  
+	  //battery
+	  
+	  if("getBattery" in navigator) {
+		  function updateBatteryStatus(battery) {
+			document.getElementById("batCharge").innerHTML = battery.charging ? 'charging' : 'not charging';
+			document.getElementById("batLevel").innerHTML = battery.level;
+			document.getElementById("batDischargT").innerHTML = battery.dischargingTime / 60;
+			
+			var obj = new Object();
+			obj.battery = new Object();
+			obj.battery.charging = battery.charging ? 'charging' : 'not charging';
+			obj.battery.level = battery.level;
+			obj.battery.dischargingTime = battery.dischargingTime / 60;
+			
+			ws.send(JSON.stringify(obj));
+		  }
+		  
+		  navigator.getBattery().then(function(battery) {
+			
+			updateBatteryStatus(battery);
+			
+			battery.onchargingchange = function () {
+				updateBatteryStatus(battery);
+			};
+
+			battery.onlevelchange = function () {
+				updateBatteryStatus(battery);
+			};
+
+			battery.ondischargingtimechange = function () {
+				updateBatteryStatus(battery);
+			};
+		  });
+		} else {
+			document.getElementById("batCharge").innerHTML = "Not supported!";
+			document.getElementById("batLevel").innerHTML = "Not supported!";
+			document.getElementById("batDischargT").innerHTML = "Not supported!";
+		}
+	  
+	  
+		var rafID = null;
+		var analyser = null;
+
+		var context = new (window.AudioContext || window.webkitAudioContext)();
+	  
+	  //microphone
+	  
+	  //handle different types navigator objects of different browsers
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+	            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+	  
+	  
+		navigator.getUserMedia({audio: true, video: false}, 
+			//success
+			handleMicrophoneInput, 
+			//failed    
+			function () {
+				console.log('capturing microphone data failed!');
+				console.log(evt);
+			}
+		);
+		
+		function handleMicrophoneInput (stream) {    
+		
+			//convert audio stream to mediaStreamSource (node)
+			microphone = context.createMediaStreamSource(stream);
+			//create analyser
+			if (analyser == null) analyser = context.createAnalyser();
+			
+			
+			analyser.smoothingTimeConstant = 0.3;
+			analyser.fftSize = 2048;
+			
+			//connect microphone to analyser
+			microphone.connect(analyser);
+			//start updating
+			rafID = window.requestAnimationFrame( updateVisualization );
+		}
+			
+		function updateVisualization () {
+			// get the average, bincount is fftsize / 2
+			
+			//http://stackoverflow.com/questions/14169317/interpreting-web-audio-api-fft-results
+			var array = new Float32Array(analyser.frequencyBinCount);
+			analyser.getFloatFrequencyData(array);
+			
+			var average = getAverageVolume(array);
+
+			
+			//console.log('fft data');
+			//drawBars(array);
+			//drawSpectrogram(array);
+			
+			var obj = new Object();
+			obj.audio = new Object();
+			obj.audio.sampleRate = context.sampleRate;
+			obj.audio.averageVol = average; 
+			obj.audio.minDecibels = analyser.minDecibels;
+			obj.audio.maxDecibels = analyser.maxDecibels;
+			obj.audio.timeSmoothing = analyser.smoothingTimeConstant;
+			obj.audio.fft = base64ArrayBuffer(array);
+
+			var jsonstr = JSON.stringify(obj);
+			ws.send(jsonstr);
+
+			rafID = window.requestAnimationFrame(updateVisualization);
+		}
+		
+		//http://www.smartjava.org/content/exploring-html5-web-audio-visualizing-sound
+		function getAverageVolume(array) {
+			var values = 0;
+			var average;
+
+			var length = array.length;
+
+			// get all the frequency amplitudes
+			for (var i = 0; i < length; i++) {
+				values += array[i];
+			}
+
+			average = values / length;
+			return average;
+		}
+	  
+	  
+    }
+  
+    function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+      document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+      document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+      document.getElementById("doDirection").innerHTML = Math.round(dir);
+	  
+	  var obj = new Object();
+	  obj.orientation = [tiltLR, tiltFB, dir];
+	  
+	  ws.send(JSON.stringify(obj));
+    }
+	
+	//https://gist.github.com/jonleighton/958841
+	function base64ArrayBuffer(arrayBuffer) {
+	  var base64    = ''
+	  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+	  var bytes         = new Uint8Array(arrayBuffer)
+	  var byteLength    = bytes.byteLength
+	  var byteRemainder = byteLength % 3
+	  var mainLength    = byteLength - byteRemainder
+
+	  var a, b, c, d
+	  var chunk
+
+	  // Main loop deals with bytes in chunks of 3
+	  for (var i = 0; i < mainLength; i = i + 3) {
+		// Combine the three bytes into a single integer
+		chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+		// Use bitmasks to extract 6-bit segments from the triplet
+		a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+		b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+		c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+		d = chunk & 63               // 63       = 2^6 - 1
+
+		// Convert the raw binary segments to the appropriate ASCII encoding
+		base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+	  }
+
+	  // Deal with the remaining bytes and padding
+	  if (byteRemainder == 1) {
+		chunk = bytes[mainLength]
+
+		a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+
+		// Set the 4 least significant bits to zero
+		b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+
+		base64 += encodings[a] + encodings[b] + '=='
+	  } else if (byteRemainder == 2) {
+		chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+
+		a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+		b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+
+		// Set the 2 least significant bits to zero
+		c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+
+		base64 += encodings[a] + encodings[b] + encodings[c] + '='
+	  }
+	  
+	  return base64
+	}
+  </script>
+  
+  
+
+</body>
+</html>

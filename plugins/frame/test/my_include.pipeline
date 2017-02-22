@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- classifier -->
+	<consumer create="Classifier" trainer="$(trainer)" address="gesture@classifier">
+		<input pin="$(cursor_pin)" address="pressed@button" state="nonzerodur"/>
+	</consumer>
+
+</pipeline>

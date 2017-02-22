@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>
+		<load name="ssiframe" />
+		<load name="ssievent" />
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+		
+	</register>
+	
+	<!-- Read file -->
+	<sensor create="FileReader" loop="False" path="event_to_stream">
+		<output channel="file" pin="bvp" sync="0" watch="0" />
+	</sensor>	
+	
+	<!-- Beat finder and event sender -->
+	<consumer create="BVPEventSender" mean_window="1" print="False" sname="bvp_tuple" tuple="True">
+		<input pin="bvp" frame="1" />
+	</consumer>	
+	
+	<!-- Event Monitor-->
+	<listener create="EventMonitor:monitor">
+		<input listen="@bvp_tuple"/>
+	</listener>		
+	
+	<!-- Event to stream with event time value-->
+	<sensor create="EventToStream" eventValue="number_of_events" useWindow="True">
+		<listen address="@bvp_tuple"/>
+		<output channel="event output" pin="event" />
+	</sensor>
+	
+	<!-- Event to stream with event tuple name value-->
+	<sensor create="EventToStream" eventValue="amplitude" useWindow="False">
+		<listen address="@bvp_tuple"/>
+		<output channel="event output" pin="event_amp" />
+	</sensor>
+	
+	<!-- Event to stream with event position index value-->
+	<sensor create="EventToStream" eventValue="2" useWindow="False">
+		<listen address="@bvp_tuple"/>
+		<output channel="event output" pin="event_amp2" />
+	</sensor>
+
+	<consumer create="SignalPainter:plot" title="event to stream nr events" size="60">
+		<input pin="event" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="event to stream amplitude" size="60">
+		<input pin="event_amp" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="event to stream amplitude 2" size="60">
+		<input pin="event_amp2" frame="1" />
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

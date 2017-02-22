@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="camera" />		
+		<load name="graphic" />	
+		<load name="openface" />		
+		<load name="ioput" />
+	</register>	
+	
+	<sensor create="Camera" option="camera" flip="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+		
+	<transformer create="Openface:openface"  
+		modelPath="model" 
+		triPath="model\tris_68_full.txt" 
+		auPath="model\AU_predictors\AU_all_best.txt">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="openface"/>
+	</transformer>
+	
+	<!-- output features -->
+	<consumer create="FileWriter:writer" path="openface">
+		<input pin="openface" frame="10"/>
+	</consumer>
+	
+	<!-- prepare video -->
+	<transformer create="OpenfacePainter:painter">
+		<input pin="video;openface" frame="1"/>		
+		<output pin="video_openface"/>
+	</transformer>
+	
+	<!-- show video -->
+	<consumer create="VideoPainter:video" flip="false">
+		<input pin="video_openface" frame="1"/>
+	</consumer>
+	
+	<!-- show action units (classification) -->
+	<consumer create="SignalPainter:plot" title="AU Classification" type="5" barNames="Brow|Lowerer,Lip|Corner|Puller,Lip|Corner|Depressor,Lip|Tightener,Lip|Suck,Blink">
+		<input pin="openface" frame="1">
+			<transformer create="OpenfaceSelector:selector" auclass="true"/>
+		</input>
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="AU Regression" type="5" barNames="Inner|Brow|Raiser,Outer|Brow|Raiser,Brow|Lowerer,Upper|Lid|Raiser,Cheek|Raiser,Nose|Wrinkler,Upper|Lip|Raiser,Lip|Corner|Puller,Dimpler,Lip|Corner|Depressor,Chin|Raiser,Lip|Stretcher,Lips|Part,Jaw|Drop">
+		<input pin="openface" frame="1">
+			<transformer create="OpenfaceSelector:selector" aureg="true"/>
+		</input>
+	</consumer>	
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,800">console</area>
+		<area pos="400,0,640,480">video*</area>		
+		<area pos="400,480,640,320">plot*</area>	
+	</object>
+		
+</pipeline>

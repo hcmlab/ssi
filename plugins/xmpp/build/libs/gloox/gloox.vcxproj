@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>gloox-1.0</ProjectName>
+    <ProjectGuid>{36E32BC3-0645-4C90-8BF5-6495ACB7CF5F}</ProjectGuid>
+    <RootNamespace>gloox10</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\amp.cpp" />
+    <ClCompile Include="src\annotations.cpp" />
+    <ClCompile Include="src\atomicrefcount.cpp" />
+    <ClCompile Include="src\attention.cpp" />
+    <ClCompile Include="src\base64.cpp" />
+    <ClCompile Include="src\bookmarkstorage.cpp" />
+    <ClCompile Include="src\capabilities.cpp" />
+    <ClCompile Include="src\carbons.cpp" />
+    <ClCompile Include="src\chatstate.cpp" />
+    <ClCompile Include="src\chatstatefilter.cpp" />
+    <ClCompile Include="src\client.cpp" />
+    <ClCompile Include="src\clientbase.cpp" />
+    <ClCompile Include="src\component.cpp" />
+    <ClCompile Include="src\compressiondefault.cpp" />
+    <ClCompile Include="src\compressionzlib.cpp" />
+    <ClCompile Include="src\connectionbosh.cpp" />
+    <ClCompile Include="src\connectionhttpproxy.cpp" />
+    <ClCompile Include="src\connectionsocks5proxy.cpp" />
+    <ClCompile Include="src\connectiontcpbase.cpp" />
+    <ClCompile Include="src\connectiontcpclient.cpp" />
+    <ClCompile Include="src\connectiontcpserver.cpp" />
+    <ClCompile Include="src\connectiontls.cpp" />
+    <ClCompile Include="src\connectiontlsserver.cpp" />
+    <ClCompile Include="src\dataform.cpp" />
+    <ClCompile Include="src\dataformfield.cpp" />
+    <ClCompile Include="src\dataformfieldcontainer.cpp" />
+    <ClCompile Include="src\dataformitem.cpp" />
+    <ClCompile Include="src\dataformreported.cpp" />
+    <ClCompile Include="src\delayeddelivery.cpp" />
+    <ClCompile Include="src\disco.cpp" />
+    <ClCompile Include="src\dns.cpp" />
+    <ClCompile Include="src\error.cpp" />
+    <ClCompile Include="src\eventdispatcher.cpp" />
+    <ClCompile Include="src\featureneg.cpp" />
+    <ClCompile Include="src\flexoff.cpp" />
+    <ClCompile Include="src\forward.cpp" />
+    <ClCompile Include="src\gloox.cpp" />
+    <ClCompile Include="src\gpgencrypted.cpp" />
+    <ClCompile Include="src\gpgsigned.cpp" />
+    <ClCompile Include="src\inbandbytestream.cpp" />
+    <ClCompile Include="src\instantmucroom.cpp" />
+    <ClCompile Include="src\iq.cpp" />
+    <ClCompile Include="src\jid.cpp" />
+    <ClCompile Include="src\jinglecontent.cpp" />
+    <ClCompile Include="src\jinglefiletransfer.cpp" />
+    <ClCompile Include="src\jingleiceudp.cpp" />
+    <ClCompile Include="src\jinglepluginfactory.cpp" />
+    <ClCompile Include="src\jinglesession.cpp" />
+    <ClCompile Include="src\jinglesessionmanager.cpp" />
+    <ClCompile Include="src\lastactivity.cpp" />
+    <ClCompile Include="src\logsink.cpp" />
+    <ClCompile Include="src\md5.cpp" />
+    <ClCompile Include="src\message.cpp" />
+    <ClCompile Include="src\messageevent.cpp" />
+    <ClCompile Include="src\messageeventfilter.cpp" />
+    <ClCompile Include="src\messagefilter.cpp" />
+    <ClCompile Include="src\messagesession.cpp" />
+    <ClCompile Include="src\mucmessagesession.cpp" />
+    <ClCompile Include="src\mucroom.cpp" />
+    <ClCompile Include="src\mutex.cpp" />
+    <ClCompile Include="src\nickname.cpp" />
+    <ClCompile Include="src\nonsaslauth.cpp" />
+    <ClCompile Include="src\oob.cpp" />
+    <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\prep.cpp" />
+    <ClCompile Include="src\presence.cpp" />
+    <ClCompile Include="src\privacyitem.cpp" />
+    <ClCompile Include="src\privacymanager.cpp" />
+    <ClCompile Include="src\privatexml.cpp" />
+    <ClCompile Include="src\pubsubevent.cpp" />
+    <ClCompile Include="src\pubsubitem.cpp" />
+    <ClCompile Include="src\pubsubmanager.cpp" />
+    <ClCompile Include="src\receipt.cpp" />
+    <ClCompile Include="src\registration.cpp" />
+    <ClCompile Include="src\rosteritem.cpp" />
+    <ClCompile Include="src\rostermanager.cpp" />
+    <ClCompile Include="src\search.cpp" />
+    <ClCompile Include="src\sha.cpp" />
+    <ClCompile Include="src\shim.cpp" />
+    <ClCompile Include="src\simanager.cpp" />
+    <ClCompile Include="src\siprofileft.cpp" />
+    <ClCompile Include="src\socks5bytestream.cpp" />
+    <ClCompile Include="src\socks5bytestreammanager.cpp" />
+    <ClCompile Include="src\socks5bytestreamserver.cpp" />
+    <ClCompile Include="src\softwareversion.cpp" />
+    <ClCompile Include="src\stanza.cpp" />
+    <ClCompile Include="src\stanzaextensionfactory.cpp" />
+    <ClCompile Include="src\subscription.cpp" />
+    <ClCompile Include="src\tag.cpp" />
+    <ClCompile Include="src\tlsdefault.cpp" />
+    <ClCompile Include="src\tlsgnutlsbase.cpp" />
+    <ClCompile Include="src\tlsgnutlsclient.cpp" />
+    <ClCompile Include="src\tlsgnutlsclientanon.cpp" />
+    <ClCompile Include="src\tlsgnutlsserveranon.cpp" />
+    <ClCompile Include="src\tlsopensslbase.cpp" />
+    <ClCompile Include="src\tlsopensslclient.cpp" />
+    <ClCompile Include="src\tlsopensslserver.cpp" />
+    <ClCompile Include="src\tlsschannel.cpp" />
+    <ClCompile Include="src\uniquemucroom.cpp" />
+    <ClCompile Include="src\util.cpp" />
+    <ClCompile Include="src\vcard.cpp" />
+    <ClCompile Include="src\vcardmanager.cpp" />
+    <ClCompile Include="src\vcardupdate.cpp" />
+    <ClCompile Include="src\xhtmlim.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\adhoccommandprovider.h" />
+    <ClInclude Include="src\adhochandler.h" />
+    <ClInclude Include="src\amp.h" />
+    <ClInclude Include="src\annotations.h" />
+    <ClInclude Include="src\annotationshandler.h" />
+    <ClInclude Include="src\atomicrefcount.h" />
+    <ClInclude Include="src\attention.h" />
+    <ClInclude Include="src\base64.h" />
+    <ClInclude Include="src\bookmarkhandler.h" />
+    <ClInclude Include="src\bookmarkstorage.h" />
+    <ClInclude Include="src\bytestream.h" />
+    <ClInclude Include="src\bytestreamdatahandler.h" />
+    <ClInclude Include="src\bytestreamhandler.h" />
+    <ClInclude Include="src\capabilities.h" />
+    <ClInclude Include="src\carbons.h" />
+    <ClInclude Include="src\chatstate.h" />
+    <ClInclude Include="src\chatstatefilter.h" />
+    <ClInclude Include="src\chatstatehandler.h" />
+    <ClInclude Include="src\client.h" />
+    <ClInclude Include="src\clientbase.h" />
+    <ClInclude Include="src\component.h" />
+    <ClInclude Include="src\compressionbase.h" />
+    <ClInclude Include="src\compressiondatahandler.h" />
+    <ClInclude Include="src\compressiondefault.h" />
+    <ClInclude Include="src\compressionzlib.h" />
+    <ClInclude Include="src\connectionbase.h" />
+    <ClInclude Include="src\connectionbosh.h" />
+    <ClInclude Include="src\connectiondatahandler.h" />
+    <ClInclude Include="src\connectionhandler.h" />
+    <ClInclude Include="src\connectionhttpproxy.h" />
+    <ClInclude Include="src\connectionlistener.h" />
+    <ClInclude Include="src\connectionsocks5proxy.h" />
+    <ClInclude Include="src\connectiontcpbase.h" />
+    <ClInclude Include="src\connectiontcpclient.h" />
+    <ClInclude Include="src\connectiontcpserver.h" />
+    <ClInclude Include="src\connectiontls.h" />
+    <ClInclude Include="src\connectiontlsserver.h" />
+    <ClInclude Include="src\dataform.h" />
+    <ClInclude Include="src\dataformfield.h" />
+    <ClInclude Include="src\dataformfieldcontainer.h" />
+    <ClInclude Include="src\dataformitem.h" />
+    <ClInclude Include="src\dataformreported.h" />
+    <ClInclude Include="src\delayeddelivery.h" />
+    <ClInclude Include="src\disco.h" />
+    <ClInclude Include="src\discohandler.h" />
+    <ClInclude Include="src\disconodehandler.h" />
+    <ClInclude Include="src\dns.h" />
+    <ClInclude Include="src\error.h" />
+    <ClInclude Include="src\event.h" />
+    <ClInclude Include="src\eventdispatcher.h" />
+    <ClInclude Include="src\eventhandler.h" />
+    <ClInclude Include="src\featureneg.h" />
+    <ClInclude Include="src\flexoff.h" />
+    <ClInclude Include="src\flexoffhandler.h" />
+    <ClInclude Include="src\forward.h" />
+    <ClInclude Include="src\gloox.h" />
+    <ClInclude Include="src\gpgencrypted.h" />
+    <ClInclude Include="src\gpgsigned.h" />
+    <ClInclude Include="src\inbandbytestream.h" />
+    <ClInclude Include="src\instantmucroom.h" />
+    <ClInclude Include="src\iq.h" />
+    <ClInclude Include="src\iqhandler.h" />
+    <ClInclude Include="src\jid.h" />
+    <ClInclude Include="src\jinglecontent.h" />
+    <ClInclude Include="src\jinglefiletransfer.h" />
+    <ClInclude Include="src\jingleiceudp.h" />
+    <ClInclude Include="src\jingleplugin.h" />
+    <ClInclude Include="src\jinglepluginfactory.h" />
+    <ClInclude Include="src\jinglesession.h" />
+    <ClInclude Include="src\jinglesessionhandler.h" />
+    <ClInclude Include="src\jinglesessionmanager.h" />
+    <ClInclude Include="src\jingletransport.h" />
+    <ClInclude Include="src\lastactivity.h" />
+    <ClInclude Include="src\lastactivityhandler.h" />
+    <ClInclude Include="src\loghandler.h" />
+    <ClInclude Include="src\logsink.h" />
+    <ClInclude Include="src\macros.h" />
+    <ClInclude Include="src\md5.h" />
+    <ClInclude Include="src\message.h" />
+    <ClInclude Include="src\messageevent.h" />
+    <ClInclude Include="src\messageeventfilter.h" />
+    <ClInclude Include="src\messageeventhandler.h" />
+    <ClInclude Include="src\messagefilter.h" />
+    <ClInclude Include="src\messagehandler.h" />
+    <ClInclude Include="src\messagesession.h" />
+    <ClInclude Include="src\messagesessionhandler.h" />
+    <ClInclude Include="src\mucinvitationhandler.h" />
+    <ClInclude Include="src\mucmessagesession.h" />
+    <ClInclude Include="src\mucroom.h" />
+    <ClInclude Include="src\mucroomconfighandler.h" />
+    <ClInclude Include="src\mucroomhandler.h" />
+    <ClInclude Include="src\mutex.h" />
+    <ClInclude Include="src\mutexguard.h" />
+    <ClInclude Include="src\nickname.h" />
+    <ClInclude Include="src\nonsaslauth.h" />
+    <ClInclude Include="src\oob.h" />
+    <ClInclude Include="src\parser.h" />
+    <ClInclude Include="src\prep.h" />
+    <ClInclude Include="src\presence.h" />
+    <ClInclude Include="src\presencehandler.h" />
+    <ClInclude Include="src\privacyitem.h" />
+    <ClInclude Include="src\privacylisthandler.h" />
+    <ClInclude Include="src\privacymanager.h" />
+    <ClInclude Include="src\privatexml.h" />
+    <ClInclude Include="src\privatexmlhandler.h" />
+    <ClInclude Include="src\pubsub.h" />
+    <ClInclude Include="src\pubsubevent.h" />
+    <ClInclude Include="src\pubsubitem.h" />
+    <ClInclude Include="src\pubsubmanager.h" />
+    <ClInclude Include="src\pubsubresulthandler.h" />
+    <ClInclude Include="src\receipt.h" />
+    <ClInclude Include="src\registration.h" />
+    <ClInclude Include="src\registrationhandler.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\rosteritem.h" />
+    <ClInclude Include="src\rosteritemdata.h" />
+    <ClInclude Include="src\rosterlistener.h" />
+    <ClInclude Include="src\rostermanager.h" />
+    <ClInclude Include="src\search.h" />
+    <ClInclude Include="src\searchhandler.h" />
+    <ClInclude Include="src\sha.h" />
+    <ClInclude Include="src\shim.h" />
+    <ClInclude Include="src\sihandler.h" />
+    <ClInclude Include="src\simanager.h" />
+    <ClInclude Include="src\siprofileft.h" />
+    <ClInclude Include="src\siprofilefthandler.h" />
+    <ClInclude Include="src\siprofilehandler.h" />
+    <ClInclude Include="src\socks5bytestream.h" />
+    <ClInclude Include="src\socks5bytestreammanager.h" />
+    <ClInclude Include="src\socks5bytestreamserver.h" />
+    <ClInclude Include="src\softwareversion.h" />
+    <ClInclude Include="src\stanza.h" />
+    <ClInclude Include="src\stanzaextension.h" />
+    <ClInclude Include="src\stanzaextensionfactory.h" />
+    <ClInclude Include="src\statisticshandler.h" />
+    <ClInclude Include="src\subscription.h" />
+    <ClInclude Include="src\subscriptionhandler.h" />
+    <ClInclude Include="src\tag.h" />
+    <ClInclude Include="src\taghandler.h" />
+    <ClInclude Include="src\tlsbase.h" />
+    <ClInclude Include="src\tlsdefault.h" />
+    <ClInclude Include="src\tlsgnutlsbase.h" />
+    <ClInclude Include="src\tlsgnutlsclient.h" />
+    <ClInclude Include="src\tlsgnutlsclientanon.h" />
+    <ClInclude Include="src\tlsgnutlsserveranon.h" />
+    <ClInclude Include="src\tlshandler.h" />
+    <ClInclude Include="src\tlsopensslbase.h" />
+    <ClInclude Include="src\tlsopensslclient.h" />
+    <ClInclude Include="src\tlsopensslserver.h" />
+    <ClInclude Include="src\tlsschannel.h" />
+    <ClInclude Include="src\uniquemucroom.h" />
+    <ClInclude Include="src\util.h" />
+    <ClInclude Include="src\vcard.h" />
+    <ClInclude Include="src\vcardhandler.h" />
+    <ClInclude Include="src\vcardmanager.h" />
+    <ClInclude Include="src\vcardupdate.h" />
+    <ClInclude Include="src\xhtmlim.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.h.win" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

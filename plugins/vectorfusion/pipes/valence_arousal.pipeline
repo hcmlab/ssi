@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<register>
+		<load name="ssiioput"/>		
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssimouse"/>
+		<load name="ssivectorfusion"/>
+	</register>	
+
+	<!-- set eventboard options -->
+	<eventboard update="100"/>
+
+	<!-- sensor -->
+	<sensor create="Mouse" mask="1" flip="true" scale ="false">
+		<output channel="button" pin="button_p" />
+		<output channel="cursor" pin="cursor_p" />
+	</sensor>
+	
+	<!-- normalisation -->
+	<transformer create="Normalize" max="1.0" min="-1.0">
+		<input pin="cursor_p" frame="0.1s"/>
+		<output pin="cursor_norm_t"/>
+	</transformer>
+	
+	<!-- functionals -->
+	<consumer create="FunctionalsEventSender" names="mean" address="mean@mouse">
+		<input pin="cursor_norm_t" frame="0.1s"/>
+	</consumer>
+	
+	<!-- map events -->
+	<object create="TupleConverter" address="tuple@converter">
+		<listen address="mean@mouse"/>
+	</object>
+	<object create="TupleMap" dimension="2" mapped="true" mapping="1.0,-1.0" address="tuple@mouse">
+		<listen address="tuple@converter"/>
+	</object>
+	
+	<!-- fusion -->
+	<object create="VectorFusionVA:plot2" 	print = "false"
+										paint="true"
+										decay_type = "0"
+										gradient = "0.5"
+										fusionspeed = "0.01"
+										eventspeed = "0.2"
+										threshold = "0.05f"
+										accelerate = "true"
+										update_ms = "100">
+		<listen address="tuple@mouse"/>	
+	</object>
+	
+	<!-- visualization -->
+	<!--consumer create="SignalPainter:plot" title="RAW" size="10.0" type="0">
+		<input pin="cursor_p" frame="0.1s"/>
+	</consumer-->
+	<consumer create="SignalPainter:plot" title="NORM" size="10.0" type="0">
+		<input pin="cursor_norm_t" frame="0.1s"/>
+	</consumer>
+	
+	<!-- listener -->
+	<object create="EventMonitor:monitor">
+		<listen address="tuple@mouse" span="10000" />
+	</object>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

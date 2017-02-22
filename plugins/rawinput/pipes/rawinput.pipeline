@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssirawinput" />		
+	</register>	
+
+	<thread create="Rawinput" activedevices="false,false,true"></thread>
+	
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="10000"/>
+	</object>
+		
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

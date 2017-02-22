@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="configFilePath" type="CHAR" num="1024" value="my.conf" help="the openSmile config file path" />
+    <item name="sourceName" type="CHAR" num="1024" value="openSmileSSIsource" help="the name of the ssiSource in the openSmile config file" />
+    <item name="sinkName" type="CHAR" num="1024" value="openSmileSSIsink" help="the name of the ssiSink in the openSmile config file" />
+</options>

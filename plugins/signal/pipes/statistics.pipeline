@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssisignal" />
+	</register>
+	
+	<!-- set up windows -->	
+
+	<sensor create="FileReader" path="../test/gauss_m0_sigma_10">
+		<output pin="sig" channel="file" size="61.0s" sync="0" watch="0"/>
+	</sensor>
+	
+	<transformer create="Statistics" A-kurtosis="True" B-skewness="True" C-mean="True" E-var="True" D-stddev="True" F-number-of-values="True">	
+		<input pin="sig" frame="1s" delta="19s" />
+		<output pin="stat" />
+	</transformer>
+	
+	<consumer create="SignalPainter:plot" title="Signal (raw)" size="40" type="0">
+		<input pin="sig" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="Statistics" size="40" type="0">
+		<input pin="stat" frame="1" />
+	</consumer>	
+	
+	<consumer create="FileWriter" path="statistics" type="1">
+		<input pin="stat" frame="1" />
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

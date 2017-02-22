@@ -1,0 +1,30 @@
+------------------------------------------------------------
+	VectorFusion Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	Richard Sikora, fast signal-to-noise ratio estimation.
+	http://www.mathworks.com/matlabcentral/fileexchange/9808-audio-noise-gate-for-texas-instruments-c5510-c6713
+	
+	openSMILE - open Speech and Music Interpretation by Large-space Extraction
+        the open-source Munich Audio Feature Extraction Toolkit
+    Copyright (C) 2008-2009  Florian Eyben, Martin Woellmer, Bjoern Schuller
+	
+	Alex Chmut, volume controls for Output Master Volume, WaveOut Volume and Input (WaveIn) Volume
+	https://workspaces.codeproject.com/alex-chmut/volume-manipulation-classes/article/
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<pipeline>
+	 
+	<register>
+		<load name="ssiframe" />
+		<load name="ssievent" />
+		<load name="ssicamera" />
+		<load name="ssigazetracker" />
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+	</register>
+
+	<!-- eye camera sensor -->
+	<sensor create="Camera" option="eyecamera" flip="true">
+		<output channel="video" pin="eyevideo" size="1.0s"/>
+	</sensor>	
+	
+	<!-- scene camera sensor -->
+	<sensor create="Camera" option="scenecamera" flip="true">
+		<output channel="video" pin="scenevideo" size="1.0s"/>
+	</sensor>
+
+	<!-- eye tracker -->
+	<transformer create="EyeTracker" liveAdjustOptions="false" showDebugImage="false">
+		<input pin="eyevideo" frame="1" delta="0"/>
+		<output pin="et"/>
+	</transformer>
+
+	<!-- scene tracker -->
+	<transformer create="SceneTracker" windowName="Scene" preciseCalibration="true" trackHeadMovement="true" showHeadtrackingDebugImage="false">
+		<input pin="scenevideo" frame="1" delta="0"/>
+		<xinput size="1">
+			<input pin="et"/>
+		</xinput>
+		<output pin="st"/>
+	</transformer>
+
+	<transformer create="EyePainter">
+		<input pin="eyevideo" frame="1"/>
+		<xinput size="1">
+			<input pin="et"/>
+		</xinput>
+		<output pin="ep"/>
+	</transformer>
+
+	<transformer create="ScenePainter" drawHeatmap="true">
+		<input pin="scenevideo" frame="1"/>
+		<xinput size="1">
+			<input pin="st"/>
+		</xinput>
+		<output pin="sp"/>
+	</transformer>
+
+
+	<!-- show eye video -->
+	<consumer create="VideoPainter:plot" flip="false" title="Eye">
+		<input pin="ep" frame="1"/>
+	</consumer>
+
+	<!-- show scene video -->
+	<consumer create="VideoPainter:plot" flip="false" title="Scene">
+		<input pin="sp" frame="1"/>
+	</consumer>
+
+	<!-- record eye gaze -->
+	<consumer create="FileWriter" path="Record\CurrentSession\eye_gaze" type="1">
+		<input pin="et" frame="1"/>
+	</consumer>
+
+	<!-- record scene gaze -->
+	<consumer create="FileWriter" path="Record\CurrentSession\scene_gaze" type="1">
+		<input pin="st" frame="1"/>
+	</consumer>
+
+	<!-- record eye video -->
+	<consumer create="FFMPEGWriter" url="Record\CurrentSession\eye_video.mp4">
+		<input pin="ep" frame="1"/>
+	</consumer>
+
+	<!-- record scene video -->
+	<consumer create="FFMPEGWriter" url="Record\CurrentSession\scene_video.mp4">
+		<input pin="sp" frame="1"/>
+	</consumer>
+
+
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,600,900">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

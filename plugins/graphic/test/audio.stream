@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<stream ssi-v="2">
+    <info ftype="BINARY" sr="16000.000000" dim="1" byte="4" type="FLOAT" />
+	<chunk from="0.000000" to="1.854062" byte="0" num="29665"/>
+</stream>

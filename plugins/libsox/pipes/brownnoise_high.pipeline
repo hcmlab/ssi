@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssilibsoxfilter"/>
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="WavReader" block="0.02" scale="true" path="brownnoise.wav">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="LibsoxFilter" sox_global_buffer="1024" sox_signal_length="1024" sox_effect_chain_str="highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000 highpass 2000">
+		<input pin="audio" frame="0.02s"/>
+		<output pin="butter_high"/>
+	</transformer>
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="1024" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="filtered" size="10" type="2">
+		<input pin="butter_high" frame="1024" />
+	</consumer>
+	
+	<!-- output -->
+	<consumer create="WavWriter" path="butter_high.wav">
+		<input pin="butter_high" frame="0.02s"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

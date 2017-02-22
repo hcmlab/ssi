@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- Use the commented FubiRecognizers version if you want to use a local xsd that is placed in the same folder -->
+<!--<FubiRecognizers globalMinConfidence="0.51" xmlns="http://www.hcm-lab.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.hcm-lab.de FubiRecognizers.xsd">-->
+<FubiRecognizers globalMinConfidence="0.51" xmlns="http://www.hcm-lab.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.hcm-lab.de http://www.hcm-lab.de/downloads/FubiRecognizers.xsd">
+  <!-- Some joint orientation recognizers -->
+  <JointOrientationRecognizer name="LeanLeft">
+    <Joint name="torso"/>
+    <MinDegrees z="15"/>
+  </JointOrientationRecognizer>
+  <JointOrientationRecognizer name="LeanRight">
+    <Joint name="torso"/>
+    <MaxDegrees z="-15"/>
+  </JointOrientationRecognizer>
+  <JointOrientationRecognizer name="LeanFront">
+    <Joint name="torso"/>
+    <MaxDegrees x="-15"/>
+  </JointOrientationRecognizer>
+  <JointOrientationRecognizer name="LeanBack">
+    <Joint name="torso"/>
+    <MinDegrees x="15"/>
+  </JointOrientationRecognizer>
+
+  <!-- Some joint relations -->
+  <JointRelationRecognizer name="rightHandNearHead" visibility="hidden">
+    <Joints main="rightHand" relative="head"/>
+    <MaxValues dist="200"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="HandsTogether" visibility="hidden">
+    <Joints main="rightHand" relative="leftHand"/>
+    <MaxValues dist="200"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="RightHandInHeadHeight" visibility="hidden">
+    <Joints main="rightHand" relative="head"/>
+    <MaxValues y="150"/>
+    <MinValues y="-150"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="LeftHandInHeadHeight" visibility="hidden">
+    <Joints main="leftHand" relative="head"/>
+    <MaxValues y="150"/>
+    <MinValues y="-150"/>
+  </JointRelationRecognizer>
+  <!-- A combination only for combining three relations -->
+  <CombinationRecognizer name="HandsToghetherInHeadHeight">
+    <State minDuration="0.1">
+      <Recognizer name="HandsTogether"/>
+      <Recognizer name="RightHandInHeadHeight"/>
+      <Recognizer name="LeftHandInHeadHeight"/>
+    </State>
+  </CombinationRecognizer>
+  <!-- Alternative recognizers: a way of using OR instead of AND between recognizers of one state-->
+  <CombinationRecognizer name="AtLeastOneHandInHeadHeight">
+    <State minDuration="0.1">
+      <Recognizer name="RightHandInHeadHeight"/>
+      <AlternativeRecognizers>
+        <Recognizer name="LeftHandInHeadHeight"/>
+      </AlternativeRecognizers>
+    </State>
+  </CombinationRecognizer>
+  <!--Even more complicated with "not recognizers"-->
+  <CombinationRecognizer name="OnlyOneHandInHeadHeight">
+    <State minDuration="0.1">
+      <Recognizer name="RightHandInHeadHeight"/>
+      <NotRecognizer name="LeftHandInHeadHeight"/>
+      <AlternativeRecognizers>
+        <Recognizer name="LeftHandInHeadHeight"/>
+        <NotRecognizer name="RightHandInHeadHeight"/>
+      </AlternativeRecognizers>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Adding duration to a predefined posture-->
+  <CombinationRecognizer name="ArmsCrossedShortly">
+    <State minDuration="0.5">
+      <!--lower confidence for arms crossed allowed as there are always problems...-->
+      <Recognizer name="ArmsCrossed" minConfidence="0.3"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Some linear movements-->
+  <LinearMovementRecognizer name="rightHandRight" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="1" y="0" z="0" maxAngleDifference="30"/>
+    <Speed min="1200"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="rightHandLeftDown" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="-1" y="-1" z="0" maxAngleDifference="30"/>
+    <!--max angle difference is important here to distinguish it from a waving gesture-->
+    <Speed min="1200"/>
+  </LinearMovementRecognizer>
+  <!-- A more complex movement combining multiple linear movements -->
+  <CombinationRecognizer name="Zorro">
+    <State maxDuration="1.2" minDuration="0.05" timeForTransition="0.4">
+      <Recognizer name="rightHandRight"/>
+    </State>
+    <State maxDuration="1.2" minDuration="0.1" timeForTransition="0.4">
+      <Recognizer name="rightHandLeftDown"/>
+    </State>
+    <State minDuration="0.05">
+      <Recognizer name="rightHandRight"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- A special linear movement: keeping the hand still -->
+  <LinearMovementRecognizer name="rightHandStill" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Speed min="0" max="300"/>
+  </LinearMovementRecognizer>
+
+  <!-- Adding some duration and a required stillness to a predefined gesture -->
+  <CombinationRecognizer name="pointLong">
+    <State minDuration="1">
+      <Recognizer name="pointingRight"/>
+      <Recognizer name="rightHandStill"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Finger count recognizers -->
+  <JointRelationRecognizer name="rightHandFront" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <MaxValues z="-100"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="rightHandCloseToSensor" visibility="hidden">
+    <Joints main="rightHand"/>
+    <MaxValues z="1750"/>
+  </JointRelationRecognizer>
+  <FingerCountRecognizer name="OpenFist" visibility="hidden">
+    <Joint name="rightHand"/>
+    <FingerCount min="3"/>
+  </FingerCountRecognizer>
+  <FingerCountRecognizer name="ClosedFist" visibility="hidden">
+    <Joint name="rightHand"/>
+    <FingerCount max="1"/>
+  </FingerCountRecognizer>
+  <!-- Combining the finger counts for grabbing -->
+  <CombinationRecognizer name="Grabbing">
+    <State minDuration="0.5" >
+      <!-- ignoreOnTrackingError used, so it still works if shoulder is lost -->
+      <Recognizer name="rightHandFront" ignoreOnTrackingError="true"/>
+      <Recognizer name="rightHandCloseToSensor"/>
+    </State>
+    <State minDuration="0.2" timeForTransition="1">
+      <Recognizer name="ClosedFist"/>
+      <Recognizer name="rightHandFront" ignoreOnTrackingError="true"/>
+      <Recognizer name="rightHandCloseToSensor"/>
+    </State>
+    <State minDuration="0.1" maxDuration="2" timeForTransition="1">
+      <Recognizer name="OpenFist"/>
+    </State>
+    <State minDuration="0.2">
+      <Recognizer name="ClosedFist"/>
+      <Recognizer name="rightHandFront" ignoreOnTrackingError="true"/>
+      <Recognizer name="rightHandCloseToSensor"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- A little bigger example with a bowing gesture -->
+  <JointRelationRecognizer name="rightHandBelowShoulder" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <MaxValues y="0"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="leftHandBelowShoulder" visibility="hidden">
+    <Joints main="leftHand" relative="leftShoulder"/>
+    <MaxValues y="0" />
+  </JointRelationRecognizer>
+  <JointOrientationRecognizer name="torsoStraight" visibility="hidden">
+    <Joint name="torso"/>
+    <MinDegrees x="-15"/>
+    <MaxDegrees x="15"/>
+  </JointOrientationRecognizer>
+  <JointOrientationRecognizer name="Bow" visibility="hidden">
+    <Joint name="torso"/>
+    <MaxDegrees x="-20"/>
+    <MinDegrees x="-65"/>
+  </JointOrientationRecognizer>
+  <CombinationRecognizer name="SmallBowWithHandsDown">
+    <State minDuration="0.5" timeForTransition="0.1">
+      <Recognizer name="rightHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="leftHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="torsoStraight"/>
+    </State>
+    <State minDuration="0.5" maxDuration="1.5" timeForTransition="0.2">
+      <Recognizer name="rightHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="leftHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="Bow"/>
+    </State>
+    <State minDuration="0.5">
+      <Recognizer name="rightHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="leftHandBelowShoulder" ignoreOnTrackingError="true"/>
+      <Recognizer name="torsoStraight"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Recognizers with head orientation (nead KinectSDK Face tracking activated) -->
+  <!--Use a little stronger filtering for head nod/shake: minCutOff:0.5/cutOffSlope:0.005-->
+  <!--HeadNod-->
+  <AngularMovementRecognizer name="HeadDown" useFilteredData="true" visibility="hidden">
+    <Joint name="head"/>
+    <BasicAngularVelocity type="pitchDown" min="15"/>
+  </AngularMovementRecognizer>
+  <AngularMovementRecognizer name="HeadUp" useFilteredData="true" visibility="hidden">
+    <Joint name="head"/>
+    <BasicAngularVelocity type="pitchUp" min="15"/>
+  </AngularMovementRecognizer>
+  <CombinationRecognizer name="HeadNod">
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadUp"/>
+    </State>
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadDown"/>
+    </State>
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadUp"/>
+    </State>
+    <State minDuration="0.05">
+      <Recognizer name="HeadDown"/>
+    </State>
+  </CombinationRecognizer>
+  <!--HeadShake-->
+  <AngularMovementRecognizer name="HeadLeft" useFilteredData="true" visibility="hidden">
+    <Joint name="head"/>
+    <BasicAngularVelocity type="yawLeft" min="20"/>
+  </AngularMovementRecognizer>
+  <AngularMovementRecognizer name="HeadRight" useFilteredData="true" visibility="hidden">
+    <Joint name="head"/>
+    <BasicAngularVelocity type="yawRight" min="20"/>
+  </AngularMovementRecognizer>
+  <CombinationRecognizer name="HeadShake">
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadLeft"/>
+    </State>
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadRight"/>
+    </State>
+    <State minDuration="0.05" maxDuration="0.8" timeForTransition="0.5">
+      <Recognizer name="HeadLeft"/>
+    </State>
+    <State minDuration="0.05" >
+      <Recognizer name="HeadRight"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- A Throwing recognizer-->
+  <JointRelationRecognizer name="rightHandUpBehindShoulder" visibility="hidden" measuringUnit="upperArmLength">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Relation type="inFrontOf" max="1"/>
+    <Relation type="below" max="0.5"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="rightHandInFrontOfShoulder" visibility="hidden" measuringUnit="upperArmLength">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Relation type="inFrontOf" min="1"/>
+  </JointRelationRecognizer>
+  <LinearMovementRecognizer name="rightHandToFront" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <BasicDirection type="forward"/>
+    <Speed min="1000"/>
+  </LinearMovementRecognizer>
+  <CombinationRecognizer name="ThrowingRight">
+    <State minDuration="0.3" timeForTransition="0.5">
+      <Recognizer name="rightHandUpBehindShoulder"/>
+    </State>
+    <State timeForTransition="0.5">
+      <Recognizer name="rightHandToFront"/>
+    </State>
+    <State>
+      <Recognizer name="rightHandInFrontOfShoulder"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Right hand waving with special posture -->
+  <JointRelationRecognizer name="leftHandOverShoulder" visibility="hidden">
+    <Joints main="leftHand" relative="leftShoulder"/>
+    <Relation type="above" min="0"/>
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="rightHandOverShoulder" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <MinValues y="0"/>
+  </JointRelationRecognizer>
+  <LinearMovementRecognizer name="rightHandMovesRight" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="1" y="0" z="0"/>
+    <Speed min="250"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="rightHandMovesLeft" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="-1" y="0" z="0"/>
+    <Speed min="250"/>
+  </LinearMovementRecognizer>
+  <!-- Special recognizer reference: NotRecognizers require that the referred recognizer is NOT fulfilled-->
+  <CombinationRecognizer name="RightHandWavingAboveTheShoulder">
+    <State minDuration="0.1" maxDuration="1.2" timeForTransition="0.3">
+      <Recognizer name="rightHandOverShoulder"/>
+      <Recognizer name="rightHandMovesLeft"/>
+      <NotRecognizer name="leftHandOverShoulder"/>
+    </State>
+    <State minDuration="0.1" maxDuration="1.2" timeForTransition="0.3">
+      <Recognizer name="rightHandOverShoulder"/>
+      <Recognizer name="rightHandMovesRight"/>
+      <NotRecognizer name="leftHandOverShoulder"/>
+    </State>
+    <State minDuration="0.1" maxDuration="1.2" timeForTransition="0.3">
+      <Recognizer name="rightHandOverShoulder"/>
+      <Recognizer name="rightHandMovesLeft"/>
+      <NotRecognizer name="leftHandOverShoulder"/>
+    </State>
+    <State minDuration="0.1">
+      <Recognizer name="rightHandOverShoulder"/>
+      <Recognizer name="rightHandMovesRight"/>
+      <NotRecognizer name="leftHandOverShoulder"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--SitDown-->
+  <JointOrientationRecognizer name="RightKneeBent" visibility="hidden" useLocalOrientations="false">
+    <Joint name="rightKnee"/>
+    <MinDegrees x="25"/>
+    <MaxDegrees x="120"/>
+  </JointOrientationRecognizer>
+  <JointOrientationRecognizer name="LeftKneeBent" visibility="hidden" useLocalOrientations="false">
+    <Joint name="leftKnee"/>
+    <MinDegrees x="25"/>
+    <MaxDegrees x="120"/>
+  </JointOrientationRecognizer>
+  <CombinationRecognizer name="SitDown">
+    <State minDuration="0.5" maxInterruptionTime="0.15">
+      <Recognizer name="RightKneeBent" minConfidence="0.75" ignoreOnTrackingError="true"/>
+      <Recognizer name="LeftKneeBent" minConfidence="0.75" ignoreOnTrackingError="true"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--StepForward-->
+  <LinearMovementRecognizer name="standingStill" visibility="hidden">
+    <Joints main="torso"/>
+    <Speed max="500"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="movingForward" visibility="hidden">
+    <Joints main="torso"/>
+    <Direction x="0" y="0" z="-1"/>
+    <Speed min="150"/>
+  </LinearMovementRecognizer>
+  <CombinationRecognizer name="StepForward">
+    <State minDuration="0.1" timeForTransition="0.7">
+      <Recognizer name="standingStill"/>
+    </State>
+    <State minDuration="0.5">
+      <Recognizer name="movingForward"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--Tip on Shoulder-->
+  <JointRelationRecognizer name="rightHandInUpperFrontOfShoulder" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <MinValues y="-200" x="-200"/>
+    <MaxValues y="300" z="-200" x="300"/>
+  </JointRelationRecognizer>
+  <LinearMovementRecognizer name="rightHandUp" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="0" y="1" z="0"/>
+    <Speed min="150"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="rightHandDown" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Direction x="0" y="-1" z="0"/>
+    <Speed min="150"/>
+  </LinearMovementRecognizer>
+  <CombinationRecognizer name="TipOnShoulder">
+    <State minDuration="0.1">
+      <Recognizer name="rightHandInUpperFrontOfShoulder"/>
+    </State>
+    <State maxDuration="1" timeForTransition="0.5" maxInterruptionTime="0.2">
+      <Recognizer name="rightHandInUpperFrontOfShoulder"/>
+      <Recognizer name="rightHandDown"/>
+    </State>
+    <State maxDuration="1" timeForTransition="0.5" maxInterruptionTime="0.2">
+      <Recognizer name="rightHandInUpperFrontOfShoulder"/>
+      <Recognizer name="rightHandUp"/>
+    </State>
+    <State maxDuration="1" timeForTransition="0.5" maxInterruptionTime="0.2">
+      <Recognizer name="rightHandInUpperFrontOfShoulder"/>
+      <Recognizer name="rightHandDown"/>
+    </State>
+    <State>
+      <Recognizer name="rightHandInUpperFrontOfShoulder"/>
+      <Recognizer name="rightHandUp"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--Treasure Chest-->
+  <!--Using linear movement with length restriction-->
+  <LinearMovementRecognizer name="rightHandRightTC" visibility="hidden">
+    <Joints main="rightWrist"/>
+    <BasicDirection type="right"/>
+    <Length min="1" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="rightHandDownTC" visibility="hidden">
+    <Joints main="rightWrist"/>
+    <BasicDirection type="down"/>
+    <Length min="0.5" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="rightHandLeftTC" visibility="hidden">
+    <Joints main="rightWrist"/>
+    <BasicDirection type="left"/>
+    <Length min="1" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="leftHandLeftTC" visibility="hidden">
+    <Joints main="leftWrist"/>
+    <BasicDirection type="left"/>
+    <Length min="1" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="leftHandDownTC" visibility="hidden">
+    <Joints main="leftWrist"/>
+    <BasicDirection type="down"/>
+    <Length min="0.5" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <LinearMovementRecognizer name="leftHandRightTC" visibility="hidden">
+    <Joints main="leftWrist"/>
+    <BasicDirection type="right"/>
+    <Length min="1" measuringUnit="upperArmLength"/>
+  </LinearMovementRecognizer>
+  <CombinationRecognizer name="TreasureChest">
+    <State maxDuration="2" minDuration="0.2" maxInterruptionTime="0.08" timeForTransition="1">
+      <Recognizer name="rightHandRightTC"/>
+      <Recognizer name="leftHandLeftTC"/>
+    </State>
+    <State maxDuration="2" minDuration="0.15" maxInterruptionTime="0.12" timeForTransition="1">
+      <Recognizer name="rightHandDownTC"/>
+      <Recognizer name="leftHandDownTC"/>
+    </State>
+    <State minDuration="0.15" maxInterruptionTime="0.12">
+      <Recognizer name="rightHandLeftTC"/>
+      <Recognizer name="leftHandRightTC"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--Special joint relation with additional middle joint for pointing-->
+  <JointRelationRecognizer name="pointingLeft" measuringUnit="armLength" visibility="hidden">
+    <Joints main="leftHand" relative="leftShoulder"/>
+    <Relation type="inFrontOf" min="0.25"/>
+    <Relation type="below" max="0.5"/>
+    <MiddleJoint>
+      <Joint name="leftElbow"/>
+      <Relation type="apartOf" max="0.25"/>
+    </MiddleJoint>
+  </JointRelationRecognizer>
+  <!-- Adding some duration for the left pointing -->
+  <CombinationRecognizer name="PointingLeftLong">
+    <State minDuration="1">
+      <Recognizer name="pointingLeft"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!--Some alternative Template recognizers with specific properties different to the Dollar $1 gestures --> 
+  <!-- <TemplateRecognizer name="TemplateHeadNod" maxDistance="0.22" distanceMeasure="euclidean" useOrientations="true">
+    <Joints main="head" />
+    <TrainingData file="trainingData/HeadNod.xml"/>
+    <IgnoreAxes y="true" z="true" />
+  </TemplateRecognizer>
+  <TemplateRecognizer name="TemplateTreasureChest" maxDistance="0.3" distanceMeasure="euclidean" aspectInvariant="false">
+    <Joints main="rightHand" />
+    <Joints main="leftHand" />
+    <TrainingData file="trainingData/TreasureChest.xml"/>
+  </TemplateRecognizer> -->
+</FubiRecognizers>

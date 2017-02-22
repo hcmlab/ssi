@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="microsoftkinect2"/>
+		<load name="graphic" />		
+		<load name="audio" />
+	</register>
+
+	<sensor create="MicrosoftKinect2">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<consumer create="SignalPainter:plot" title="AUDIO" type="2" size="10">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	
+	<consumer create="WavWriter" path="audio.wav">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+	</object>
+
+</pipeline>

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>		
+		<load name="ssisignal" />
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+	</register>
+	
+	<!-- set up windows -->	
+
+	<!-- Read ECG data (ecg.stream)-->
+	<sensor create="FileReader" path="ecg" block="0.2">
+		<output channel="file" pin="ecg"/>
+	</sensor>
+		
+	<!-- QRS -->	
+	<transformer create="QRSDetection" sendEvent="true" tuple="true">
+		<input pin="ecg" frame="0.75s"/>
+		<output pin="ecg_qrs"/>
+	</transformer>
+	
+	<!-- Heart Rate -->
+	<transformer create="QRSHeartRate">
+		<input pin="ecg_qrs" frame="0.25s"/>
+		<output pin="ecg_hr"/>
+	</transformer>	
+	
+	<!-- Spectogram -->
+	<transformer create="Spectrogram" nbanks="3" file="hrspect.banks">
+		<input pin="ecg_hr" frame="1" delta="29"/>
+		<output pin="ecg_spec" size="60.0s"/>
+	</transformer>
+	
+	<!-- Time Domain Features -->
+	<transformer create="QRSHRVtime" print="true">
+		<input pin="ecg_qrs" frame="1.0s" delta="6.5s"/>
+		<output pin="ecg_tdf" size="60.0s"/>
+	</transformer>
+	
+	<!-- Spectral Domain Features -->
+	<transformer create="QRSHRVspectral" print="true">
+		<input pin="ecg_spec" frame="1" delta="0"/>
+		<output pin="ecg_sdf" size="60.0s"/>
+	</transformer>	
+	
+	<!-- Pulse -->
+	<listener create="QRSPulseEventListener" tuple="true" span="60000">
+		<input listen="rspike@qrs" span="60000"/>
+	</listener>
+	
+	<!-- Event Monitor -->
+	<listener create="EventMonitor:monitor">
+		<input listen="@" span="5000" />
+	</listener>			
+	
+	<!-- Visualization -->	
+	<consumer create="SignalPainter:plot" title="ecg" size="5">
+		<input pin="ecg" frame="0.25s" delta="0"/>
+	</consumer>
+		<consumer create="SignalPainter:plot" title="ecg qrc" size="5">
+		<input pin="ecg_qrs" frame="1.0s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="ecg hr" size="60">
+		<input pin="ecg_hr" frame="1.0s" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

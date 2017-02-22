@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# gloox-config
+
+prefix="@prefix@"
+exec_prefix="@prefix@/bin"
+version="@VERSION@"
+
+include_dir="@prefix@/include"
+lib_dir="@prefix@/lib"
+
+usage()
+{
+  cat <<EOF
+Usage: gloox-config [OPTIONS]
+Options:
+    [--prefix]
+    [--libs]
+    [--cflags]
+    [--cxxflags]
+    [--data-dir]
+    [--version]
+EOF
+  exit $1
+}
+
+if test $# -eq 0; then
+  usage 1 1>&2
+fi
+
+while test $# -gt 0; do
+  case $1 in
+    --prefix)
+      echo_prefix=yes
+      ;;
+
+    --cflags)
+      echo_cflags=yes
+      ;;
+
+    --cxxflags)
+      echo_cxxflags=yes
+      ;;
+
+    --libs)
+      echo_libs=yes
+      ;;
+
+    --version)
+      echo_version=yes
+      ;;
+
+    *)
+      usage 1 1>&2
+      ;;
+    esac
+  shift
+done
+
+if test "$echo_prefix" = "yes"; then
+  echo $prefix
+fi
+
+cxxflags="-I$include_dir"
+cflags=$cxxflags
+
+if test "$lib_dir" != "/usr/lib"; then
+  libs="-L$lib_dir"
+else
+  libs=""
+fi
+
+libs="$libs @LIBS@ -lgloox"
+
+if test "$echo_cflags" = "yes"; then
+  echo $cflags
+fi
+
+if test "$echo_cxxflags" = "yes"; then
+  echo $cxxflags
+fi
+
+if test "$echo_libs" = "yes"; then
+  echo $libs
+fi
+
+if test "$echo_version" = "yes"; then
+  echo $version
+fi

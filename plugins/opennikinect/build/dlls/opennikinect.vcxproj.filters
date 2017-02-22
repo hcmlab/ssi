@@ -1,0 +1,511 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Fubi">
+      <UniqueIdentifier>{2d73477b-f5a0-483f-8590-2236b4484511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fubi\GestureRecognizer">
+      <UniqueIdentifier>{ff836b03-a947-4e28-a929-b3a3dea3ed53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\openni">
+      <UniqueIdentifier>{94111768-b856-40f1-9cc6-3ce4fefcc838}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandRightOfShoulderRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandUpRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightKneeUpRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsCrossedRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsDownTogetherRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsNearPocketsRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\HandsFrontTogetherRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\JointOrientationRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\JointRelationRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandCloseToArmRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandOutRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandOverHeadRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandUpRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftKneeUpRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LinearMovementRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandCloseToArmRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandLeftOfShoulderRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandOutRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandOverHeadRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandPointingRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\Fubi.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiCore.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiImageProcessing.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiRecognizerFactory.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiUser.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\OpenNIKinect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\OpenNIKinectSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\OpenNIKinectWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\JointTransfTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ExportOpenNI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\FingerCountRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\CombinationRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiOpenNI2Sensor.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiUtils.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiXMLParser.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\AngularMovementRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiHand.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiRecorder.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiPlayer.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\HMMRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\GestureRecognizer\TemplateRecognizer.cpp">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiGMR.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiKinectSDK2Sensor.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiKinectSDKSensor.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiLeapSensor.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\fubi\source\Fubi\FubiOpenNISensor.cpp">
+      <Filter>Fubi</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandRightOfShoulderRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandUpRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightKneeUpRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsCrossedRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsDownTogetherRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\ArmsNearPocketsRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\HandsFrontTogetherRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\IGestureRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\JointOrientationRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\JointRelationRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandCloseToArmRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandOutRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandOverHeadRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftHandUpRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LeftKneeUpRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\LinearMovementRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandCloseToArmRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandLeftOfShoulderRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandOutRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandOverHeadRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\RightHandPointingRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\Fubi.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiCore.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiImageProcessing.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiRecognizerFactory.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiUser.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiUtils.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\rapidxml.hpp">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\IXnNodeAllocator.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnAlgorithms.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnArray.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnBaseNode.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnBitSet.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnCallback.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnCodecIDs.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnContext.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnCppWrapper.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnDataTypes.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnDerivedCast.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnDump.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnDumpWriters.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnEnumerationErrors.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnEvent.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnFPSCalculator.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnGeneralBuffer.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnHash.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnInternalDefs.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnLicensing.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnList.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnLog.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnLogTypes.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnLogWriterBase.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnMacros.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnModuleCFunctions.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnModuleCppInterface.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnModuleCppRegistratration.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnModuleInterface.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnNode.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnNodeAllocator.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnOpenNI.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnOS.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnOSCpp.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnOSMemory.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnOSStrings.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnPlatform.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnPrdNode.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnPrdNodeInfo.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnPrdNodeInfoList.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnProfiling.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnPropNames.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnQueries.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnQueue.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnScheduler.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnStack.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnStatus.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnStatusCodes.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnStatusRegister.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnStringsHash.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnThreadSafeQueue.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnTypes.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnUSB.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnUSBDevice.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnUtils.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\openni\XnVersion.h">
+      <Filter>Header Files\openni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\JointTransfTrigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenNIKinect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenNIKinectSelector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenNIKinectWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ssiopennikinect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiISensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\FingerCountRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\CombinationRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiPredefinedGestures.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiConfig.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiOpenNI2Sensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiXMLParser.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\AngularMovementRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiIFingerSensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiMath.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiHand.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiPlayer.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiRecorder.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\rapidxml_print.hpp">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\HMMRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\GestureRecognizer\TemplateRecognizer.h">
+      <Filter>Fubi\GestureRecognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiGMR.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiGMRUtils.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiKinectSDK2Sensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiKinectSDKSensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiLeapSensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\fubi\source\Fubi\FubiOpenNISensor.h">
+      <Filter>Fubi</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\fubi\source\Fubi\Readme.txt">
+      <Filter>Fubi</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="..\..\..\fubi\source\Fubi\FubiRecognizers.xsd">
+      <Filter>Fubi</Filter>
+    </Xsd>
+  </ItemGroup>
+</Project>

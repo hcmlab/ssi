@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="medianFilter0" type="INT" num="1" value="0" help="Apply median filtering of candidates as the FIRST processing step; filter length is 'medianFilter0' if > 0." />
+    <item name="postSmoothing" type="INT" num="1" value="0" help="Apply post processing (median and spike remover) over 'postSmoothing' frames (0=no smoothing or use default set by postSmoothingMethod)." />
+    <item name="postSmoothingMethod" type="INT" num="1" value="1" help="Post processing method to use. One of the following: 0=disable post smoothing, 1=simple post smoothing using only 1 frame delay (will smooth out 1 frame octave spikes), 2='median' will apply a median filter to the output values (length = value of 'postSmoothing')." />
+    <item name="octaveCorrection" type="BOOL" num="1" value="false" help="Enable intelligent cross candidate octave correction." />
+    <item name="F0final" type="BOOL" num="1" value="true" help="Enable output of final (corrected and smoothed) F0." />
+    <item name="F0finalEnv" type="BOOL" num="1" value="false" help="Enable output of envelope of final smoothed F0 (i.e. there will be no 0 values (except for end and beginning))." />
+    <item name="voicingFinalClipped" type="BOOL" num="1" value="false" help="Enable output of final smoothed and clipped voicing (pseudo) probability. 'Clipped' means that the voicing probability is set to 0 for unvoiced regions, i.e. where the probability lies below the voicing threshold." />
+    <item name="voicingFinalUnclipped" type="BOOL" num="1" value="false" help="Enable output of final smoothed, raw voicing (pseudo) probability (UNclipped: not set to 0 during unvoiced regions).." />
+    <item name="F0raw" type="BOOL" num="1" value="false" help="Enable output of 'F0raw' copied from input." />
+    <item name="voicingC1" type="BOOL" num="1" value="false" help="Enable output of 'voicingC1' copied from input." />
+    <item name="voicingClip" type="BOOL" num="1" value="false" help="Enable output of 'voicingClip' copied from input." />
+</options>

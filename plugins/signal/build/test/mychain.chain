@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<chain ssi-v="1">
+	<filter size="2">
+		<item create="ssi_filter_Butfilt" option="butfilt"/>
+		<item create="ssi_filter_Derivative" option="derivative"/>					
+	</filter>
+	<feature size="2">
+		<item create="ssi_feature_Energy"/>
+		<item create="ssi_feature_Functionals" option="functs"/>		
+	</feature>
+</chain>

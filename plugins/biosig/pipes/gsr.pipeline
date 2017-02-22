@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>		
+		<load name="ssisignal" />
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+	</register>
+	
+	<!-- set up windows -->	
+
+	<!-- Read GSR data (gsr.stream)-->
+	<sensor create="FileReader" path="gsr" block="0.2">
+		<output channel="file" pin="gsr"/>
+	</sensor>
+	
+	<!-- Preprocessing -->
+	<transformer create="Butfilt" zero="true" type="0" low="0.01" order="3">
+		<input pin="gsr" frame="0.2s" delta="0"/>
+		<output pin="gsr_low"/>
+	</transformer>
+		
+	<!-- GSR Events -->
+	<consumer create="GSREventSender" peaknstd="0.5" peakmind="1.5" peakmaxd="6.0" slopenstd="2.0" slopemind="0.5" slopemaxd="3.0">
+		<input pin="gsr_low" frame="4.0s"/>	
+	</consumer>	
+	
+	<!-- Event Monitor -->
+	<listener create="EventMonitor:monitor">
+		<input listen="@" span="20000" />
+	</listener>		
+	
+	<!-- Visualization -->	
+	<consumer create="SignalPainter:plot" title="gsr" size="30">
+		<input pin="gsr" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" title="gsr (low)" size="30">
+		<input pin="gsr_low" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

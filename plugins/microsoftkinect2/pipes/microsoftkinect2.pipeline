@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="microsoftkinect2"/>
+		<load name="graphic" />
+		<load name="ioput" />
+	</register>
+
+	<sensor create="MicrosoftKinect2" sr="15.0" trackNearestPersons="6" showFaceTracking="true" showBodyTracking="true">
+		<output channel="rgb" pin="rgb"/>
+		<output channel="depth" pin="depth"/>
+		<output channel="ir" pin="ir"/>
+		<output channel="au" pin="au"/>
+		<output channel="head" pin="head"/>
+		<output channel="skeleton" pin="skel"/>
+		<output channel="face" pin="face"/>
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<consumer create="VideoPainter:plot" flip="False" mirror="False" title="rgb">
+		<input pin="rgb" frame="1"/>
+	</consumer>	
+	<consumer create="VideoPainter:plot" flip="False" mirror="False" title="depth">
+		<input pin="depth" frame="1"/>
+	</consumer>
+	<consumer create="VideoPainter:plot" flip="False" mirror="False" title="infrared">
+		<input pin="ir" frame="1"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="head" size="10">
+		<input pin="head" frame="0.1s"/>					
+	</consumer>
+	<consumer create="SignalPainter:plot" title="au" size="10">
+		<input pin="au" frame="0.1s"/>					
+	</consumer>
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.1s"/>					
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

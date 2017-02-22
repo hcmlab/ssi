@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="delim" type="CHAR" num="1" value=";" lock="false" help="delim" />
+    <item name="fselect" type="INT" num="1" value="0" lock="false" help="fselect" />
+    <item name="features_out" type="INT" num="1" value="0" lock="false" help="features_out" />
+    <item name="binary" type="INT" num="1" value="1" lock="false" help="binary" />
+    <item name="maj" type="INT" num="1" value="2" lock="false" help="major version number (1=1316 features, 2=1451)" />
+    <item name="min" type="INT" num="1" value="0" lock="false" help="minor version number" />
+    <item name="confidences" type="INT" num="1" value="0" lock="false" help="confidences" />
+    <item name="cl_file" type="CHAR" num="1024" value="" lock="false" help="cl_file" />
+    <item name="fselection_def" type="CHAR" num="1024" value="" lock="false" help="fselection_def" />
+    <item name="ffile" type="CHAR" num="1024" value="" lock="false" help="ffile" />
+    <item name="m_e_params" type="CHAR" num="1024" value="desklab" lock="false" help="m_e_params" />
+</options>

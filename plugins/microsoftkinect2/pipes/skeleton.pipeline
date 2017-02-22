@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssimicrosoftkinect2"/>
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssiskeleton" />
+	</register>
+
+	<sensor create="MicrosoftKinect2" sr="15.0" trackNearestPersons="6" showFaceTracking="true" showBodyTracking="true">
+		<output channel="skeleton" pin="skel"/>
+	</sensor>
+	
+	<transformer create="SkeletonConverter:skelconvert">
+		<input pin="skel" frame="1"/>
+		<output pin="skelconv"/>
+	</transformer>
+	
+	<transformer create="SkeletonPainter:skelpaint">
+		<input pin="skelconv" frame="1"/>
+		<output pin="skelpaint"/>
+	</transformer> 
+
+	<consumer create="VideoPainter:plot" title="SKELETON" flip="false">
+		<input pin="skelpaint" frame="1"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

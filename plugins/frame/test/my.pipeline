@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- will be executed before the pipeline is started 			
+		when = pre, post, [now]
+		wait = milliseconds to wait, if < 0 until job is finished [-1] 
+	-->
+	<job path="job.bat" args="pre 5" when="pre" wait="0"/>
+	<job path="mkdir.bat" args="$(date)" when="pre" wait="-1"/>
+	
+	<!-- will be executed after the pipeline is stopped -->
+	<job path="job.bat" args="post 3" when="post" wait="-1"/>
+
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+		<load name="model"/>
+		<load name="control"/>
+	</register>
+	
+	<!-- sensor + provider + filter -->
+	<!-- <option create="Mouse" option="mouse">
+		<set name="mask" value="2"/>
+	</option> -->
+	<sensor create="Mouse" option="mouse" mask="1">
+		<output channel="button" pin="button"/>
+		<output channel="cursor" pin="$(cursor_pin)" size="5000ms" watch="2.0s" sync="2.5s">
+			<transformer create="Selector"/>
+		</output>
+	</sensor>
+	
+	<!-- will be executed right after parsing -->
+	<job path="job.bat" args="now 5" when="now" wait="2000"/>
+	
+	<!-- transformer -->
+	<transformer create="Derivative" names="$(derivatives)">		
+		<input pin="$(cursor_pin)" frame="200ms" delta="0" trigger="button"/>			
+		<!-- 
+		<xinput size=2>
+			<input pin="button"/>			
+			<input pin="cursor"/>
+		</xinput>
+		-->
+		<output pin="cursor_d" size="5.0s"/>			
+	</transformer>
+	
+	<!-- consumer -->
+	<consumer create="SignalPainter:plot" title="$(caption)" size="10.0">
+		<input pin="$(cursor_pin);cursor_d" frame="0.2s"/>		
+	</consumer>
+		
+	<!-- triggered consumer -->	
+	<gate open="$(write:console)">
+		<consumer create="FileWriter" type="1">
+			<input pin="$(cursor_pin)" frame="0.2s" trigger="button"/>		
+		</consumer>
+	</gate>
+	<gate close="$(write:console)">
+		<consumer create="FileWriter" type="1" path="$(date)\cursor" stream="false">
+			<input pin="$(cursor_pin)" frame="0.2s" trigger="button"/>		
+		</consumer>
+	</gate>
+	
+	<!-- event -->	
+	<consumer create="ZeroEventSender" mindur="0.2" address="pressed@button" eager="true">
+		<input pin="button" frame="0.25s"/>		
+	</consumer>		
+	
+	<!-- consumer + event + transformer + xinput -->
+	<consumer create="SignalPainter:plot" title="CURSOR">
+		<input pin="$(cursor_pin)" address="pressed@button">						
+			<transformer create="Derivative" names="$(derivatives)"/>
+		</input>
+		<xinput>			
+			<input pin="$(cursor_pin)">
+				<transformer create="Derivative" names="$(derivatives)"/>
+			</input>
+		</xinput> 
+	</consumer>
+	
+	<!-- include -->
+	<include path="my_include" skip="$(include:skip)"/>
+		
+	<!-- event monitor -->
+	<object create="EventMonitor:monitor">
+		<listen address="$(monitor_address)" span="$(monitor_span)" state="ALL"/>
+	</object>
+	
+	<!-- set painter options -->
+	<object create="Decorator:decorator" origin="100,100" scale="1.0,1.5">	
+		<area pos="0,0,400,600">plot*</area>		
+		<area pos="400,0,400,600" nh="1">monitor,console</area>
+		<!--area pos="SCREEN">plot*,monitor,console</area-->
+	</object>
+
+	<!--runnable create="ControlGrid" pos="800,0,400,200" id="decorator"/-->
+	
+</pipeline>

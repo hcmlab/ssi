@@ -1,0 +1,28 @@
+
+usual installation
+------------------
+
+./configure
+make
+make install
+
+
+building from svn
+-----------------
+
+./autogen.sh
+./configure
+make
+make install
+
+
+relevant configure options
+--------------------------
+
+By default, GnuTLS will be used for stream encryption if it is found. If not,
+the system will be checked for OpenSSL. If you don't want to use GnuTLS even
+though you have it installed, use the --without-gnutls switch to configure.
+
+Also by default, unit tests and example programs will be built. To save some time,
+specify --without-examples and --without-tests to disable building the examples and
+tests, respectively.

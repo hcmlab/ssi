@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<register>
+		<load name="ssiaudio"/>
+		<load name="ssiemovoice"/>
+		<load name="ssiioput"/>		
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+		<load name="ssimodel"/>
+	</register>	
+
+	<!-- sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>		
+	</sensor>
+	
+	<!-- voice activity detection -->
+	<transformer create="AudioActivity" method="0" threshold="0.05">
+		<input pin="audio" frame="0.03s" delta="0.015s"/>
+		<output pin="audio_vad"/>
+	</transformer>
+	<consumer create="ZeroEventSender" mindur="1.0" hangin="3" hangout="10" ename="speech">
+		<input pin="audio_vad" frame="0.1s"/>		
+	</consumer>
+	
+	<!-- emo voice classifier -->
+	<consumer create="Classifier" trainer="emovoice">
+		<input pin="audio" listen="speech@">
+			<transformer create="EmoVoiceFeat" maj="1"/>
+		</input>
+	</consumer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="audio (tr)" type="2">
+		<input pin="audio" listen="speech@"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="audio" size="10.0" type="2">
+		<input pin="audio" frame="0.2s"/>
+	</consumer>
+	
+	<!-- listener -->
+	<listener create="EventMonitor:monitor">
+		<input listen="@" span="20000" />
+	</listener>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<pipeline>
+	<register>
+		<load name="ssiframe" />
+		<load name="ssievent" />
+		<load name="ssigraphic" />
+		<load name="ssiehealth" />
+		<load name="ssiioput" />
+		<load name="ssibiosig" />
+		
+	</register>
+	
+	<sensor create="FileReader" path="gsr_lowpass" loop="False">
+		<output channel="file" pin="gsr" sync="0" watch="0" />
+	</sensor>	
+	<consumer create="GSRResponseEventSender" tuple="True" sname="gsr_tuple" minAllowedRegression="0.05" minAmplitude="0.3" minRisingTime="0.05">
+		<input pin="gsr" frame="1" />
+	</consumer>
+	
+	<!-- Event Monitor
+	<listener create="EventMonitor:monitor">
+		<input listen="@gsr_tuple" span=30000/>
+	</listener>		-->
+	
+	<sensor create="GSREventListener" sr="1" statisticalFunction="0" window="0">
+		<output channel="rising time" pin="rising_time" />
+		<output channel="power" pin="pow" />
+		<output channel="numer of responses" pin="nr_resp" />
+		<output channel="energy" pin="energy" />
+		<output channel="amplitude" pin="amp" />
+		<listen address="@gsr_tuple" />	
+		
+	</sensor>>
+	
+	<consumer create="SignalPainter:plot" size="60" title="gsr">
+		<input pin="gsr" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" size="60" title="rising_time">
+		<input pin="rising_time" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" size="60" title="pow">
+		<input pin="pow" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" size="60" title="nr_resp">
+		<input pin="nr_resp" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" size="60" title="energy">
+		<input pin="energy" frame="1" />
+	</consumer>
+	
+	<consumer create="SignalPainter:plot" size="60" title="amp">
+		<input pin="amp" frame="1" />
+	</consumer>
+	
+	<!-- Write events to file -->
+	<object create="FileEventWriter">
+		<listen address="@gsr_tuple"/>	
+	</object>	
+	
+	
+	<!-- Paint signals -->
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

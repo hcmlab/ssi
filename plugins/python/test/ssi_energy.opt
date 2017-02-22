@@ -1,0 +1,4 @@
+# python option file
+
+global = false # calculate global energy?
+ignored=not a valid option # will be ignored

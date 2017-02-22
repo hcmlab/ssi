@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Header Files\GSR">
+      <UniqueIdentifier>{e708e607-8473-461e-b4d1-453229fdeba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BVPBeat">
+      <UniqueIdentifier>{bd3228ed-a7dc-41cf-a0f5-b55512953d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GSRResponse">
+      <UniqueIdentifier>{cd317ae1-a53a-441a-9d62-6b6cfdad2737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\QRS">
+      <UniqueIdentifier>{28de4868-548c-4078-a6b5-48902f95f7f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BVPBeat">
+      <UniqueIdentifier>{0b11c0a4-7f22-4e24-914c-75391b13109f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GSR">
+      <UniqueIdentifier>{51f6d8bf-0bbe-4abf-b99e-2ad971bab591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GSRResponse">
+      <UniqueIdentifier>{1267083c-1147-4afc-962c-f78020eedc7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\QRS">
+      <UniqueIdentifier>{7d31bed5-8508-4caf-9126-a5dac917f0fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EMG">
+      <UniqueIdentifier>{d5b4efd0-870d-46ce-b19b-49dfd864d734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EMG">
+      <UniqueIdentifier>{b170c862-c0ba-4cd6-b8a1-12ca42fc4b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RSP">
+      <UniqueIdentifier>{de8ce585-338a-44c0-aaee-faf77ac15ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSP">
+      <UniqueIdentifier>{6f2b0e6c-a83f-4fc1-a79d-ecc179821906}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\OverlapBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatDetection.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatEventListenerBase.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatEventRawListener.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatEventRMSSDListener.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatEventSender.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\BVPBeatEventStatisticalListener.cpp">
+      <Filter>Source Files\BVPBeat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRArousalCombination.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRArousalEstimation.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRArtifactFilter.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRBaselineMean.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSREventSender.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRFindBaseline.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRFindPeaks.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRFindSlopes.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRRemoveBaseline.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRResponseDetection.cpp">
+      <Filter>Source Files\GSRResponse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRResponseEventListener.cpp">
+      <Filter>Source Files\GSRResponse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRResponseEventSender.cpp">
+      <Filter>Source Files\GSRResponse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSDetect.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSDetection.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSHeartRate.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSHeartRateMean.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSHrvEventListener.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSHRVspectral.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSHRVtime.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSPreProcess.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QRSPulseEventListener.cpp">
+      <Filter>Source Files\QRS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\GSRFeatures.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\EMGRemoveBaseline.cpp">
+      <Filter>Source Files\EMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\EMGRectify.cpp">
+      <Filter>Source Files\EMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\EMGFeaturesTime.cpp">
+      <Filter>Source Files\EMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\EMGDetermineNoise.cpp">
+      <Filter>Source Files\EMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\EMGFeaturesSpectral.cpp">
+      <Filter>Source Files\EMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\RSPFeaturesSpectral.cpp">
+      <Filter>Source Files\RSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\RSPFeaturesTime.cpp">
+      <Filter>Source Files\RSP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ssibiosig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OverlapBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatDetection.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatEventListenerBase.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatEventRawListener.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatEventRMSSDListener.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatEventSender.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BVPBeatEventStatisticalListener.h">
+      <Filter>Header Files\BVPBeat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRBaselineMean.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSREventSender.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRFindBaseline.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRFindPeaks.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRFindSlopes.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRRemoveBaseline.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRArtifactFilter.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRArousalEstimation.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRArousalCombination.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRResponseDetection.h">
+      <Filter>Header Files\GSRResponse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRResponseEventListener.h">
+      <Filter>Header Files\GSRResponse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRResponseEventSender.h">
+      <Filter>Header Files\GSRResponse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSDetect.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSDetection.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSHeartRate.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSHeartRateMean.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSHrvEventListener.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSHRVspectral.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSHRVtime.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSPreProcess.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\QRSPulseEventListener.h">
+      <Filter>Header Files\QRS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRFeatures.h">
+      <Filter>Header Files\GSR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMGRemoveBaseline.h">
+      <Filter>Header Files\EMG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMGRectify.h">
+      <Filter>Header Files\EMG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMGFeaturesTime.h">
+      <Filter>Header Files\EMG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMGDetermineNoise.h">
+      <Filter>Header Files\EMG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMGFeaturesSpectral.h">
+      <Filter>Header Files\EMG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\RSPFeatures.h">
+      <Filter>Header Files\RSP</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

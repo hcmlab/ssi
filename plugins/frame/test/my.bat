@@ -1,0 +1,1 @@
+xmlpipe -debug my.log -config global;global2;global3 -save my

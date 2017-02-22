@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssiopensmilewrapper"/>
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="OSWrapper" configFile="my.conf">
+		<input pin="audio" frame="1.0s"/>
+		<output pin="feat"/>
+	</transformer>	
+	
+	<!-- write -->
+	<consumer create="FileWriter" path="my" type="1">
+		<input pin="feat" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- plot -->		
+	<consumer create="SignalPainter:plot" title="AUDIO" size="10" type="2">
+		<input pin="audio" frame="0.01s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="FEATURE#1" size="10" type="0">
+		<input pin="feat" frame="1" delta="0">
+			<transformer create="Selector" indices="0"/>
+		</input>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

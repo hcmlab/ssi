@@ -1,0 +1,24 @@
+------------------------------------------------------------
+	ARTK+ Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	ARToolKitPlus 2.1.1, library to calculate camera position and orientation relative to physical markers
+	http://studierstube.icg.tugraz.at/handheld_ar/artoolkitplus.php
+	see also LICENSE.ARTK+
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

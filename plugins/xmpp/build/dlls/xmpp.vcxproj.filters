@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\gloox">
+      <UniqueIdentifier>{682b5d99-9848-4bf4-bc71-74c176609233}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\XMPPclient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\XMPP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ssixmpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\adhoc.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\adhoccommandprovider.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\adhochandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\adhocplugin.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\amp.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\annotations.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\annotationshandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\atomicrefcount.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\attention.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\base64.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\bookmarkhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\bookmarkstorage.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\bytestream.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\bytestreamdatahandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\bytestreamhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\capabilities.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\carbons.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\chatstate.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\chatstatefilter.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\chatstatehandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\client.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\clientbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\component.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\compressionbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\compressiondatahandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\compressiondefault.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\compressionzlib.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\config.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionbosh.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiondatahandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionhttpproxy.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionlistener.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectionsocks5proxy.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiontcpbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiontcpclient.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiontcpserver.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiontls.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\connectiontlsserver.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dataform.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dataformfield.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dataformfieldcontainer.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dataformitem.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dataformreported.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\delayeddelivery.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\disco.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\discohandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\disconodehandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\dns.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\error.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\event.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\eventdispatcher.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\eventhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\featureneg.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\flexoff.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\flexoffhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\forward.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\gloox.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\glooxversion.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\gpgencrypted.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\gpgsigned.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\inbandbytestream.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\instantmucroom.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\iodata.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\iq.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\iqhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jid.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglecontent.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglefiletransfer.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jingleiceudp.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jingleplugin.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglepluginfactory.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglesession.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglesessionhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\jinglesessionmanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\lastactivity.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\lastactivityhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\linklocal.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\linklocalclient.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\linklocalhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\linklocalmanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\loghandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\logsink.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\macros.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\md5.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\message.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messageevent.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messageeventfilter.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messageeventhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messagefilter.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messagehandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messagesession.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\messagesessionhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mucinvitationhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mucmessagesession.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mucroom.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mucroomconfighandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mucroomhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mutex.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\mutexguard.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\nickname.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\nonsaslauth.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\oob.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\parser.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\prep.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\presence.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\presencehandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\privacyitem.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\privacylisthandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\privacymanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\privatexml.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\privatexmlhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\pubsub.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\pubsubevent.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\pubsubitem.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\pubsubmanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\pubsubresulthandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\receipt.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\registration.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\registrationhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\resource.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\rosteritem.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\rosteritemdata.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\rosterlistener.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\rostermanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\search.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\searchhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\sha.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\shim.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\sihandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\simanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\siprofileft.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\siprofilefthandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\siprofilehandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\socks5bytestream.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\socks5bytestreammanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\socks5bytestreamserver.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\softwareversion.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\stanza.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\stanzaextension.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\stanzaextensionfactory.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\statisticshandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\subscription.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\subscriptionhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tag.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\taghandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsdefault.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsclient.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsclientanon.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsgnutlsserveranon.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlshandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsopensslbase.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsopensslclient.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsopensslserver.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\tlsschannel.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\uniquemucroom.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\util.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\vcard.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\vcardhandler.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\vcardmanager.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\vcardupdate.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gloox\xhtmlim.h">
+      <Filter>Header Files\gloox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\XMPPclient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\XMPP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

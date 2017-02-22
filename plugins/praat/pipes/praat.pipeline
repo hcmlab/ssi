@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssipraat"/>
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" sr="16000">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- filtering -->
+	<transformer create="PraatVoiceReportT" option="praat" script="..\scripts\voicereport.praat" tmpwav="voicereport_t.wav" exe="..\build\bin\praatcon.exe">
+		<input pin="audio" frame="1.0s"/>
+		<output pin="praat_vr"/>
+	</transformer>
+	<consumer create="PraatVoiceReport" script="..\scripts\voicereport.praat" tmpwav="voicereport.wav" exe="..\build\bin\praatcon.exe" ename="vr" sname="praat">
+		<input pin="audio" frame="1.0s"/>		
+	</consumer>	
+	
+	<!-- plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="1" delta="0"/>
+	</consumer>
+	<object create="EventPainter:plot" type="1">
+		<listen address="vr@praat"/>
+	</object>
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="10000"/>
+	</object>
+
+	<consumer create="FileWriter" path="voicereport" type="1">
+		<input pin="praat_vr" frame="1"/>
+	</consumer>	
+	<object create="FileEventWriter" path="voicereport">
+		<listen address="vr@praat"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

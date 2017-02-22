@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="use_jni" type="BOOL" num="1" value="false" help="use jni to start java process" />
+    <item name="local_port" type="INT" num="1" value="11112" help="local socket port (to receive messages from weka)" />
+    <item name="server_port" type="INT" num="1" value="11111" help="server socket port (to send messages to weka)" />
+    <item name="n_classes" type="UINT" num="1" value="1" help="number of classes" />
+    <item name="n_features" type="UINT" num="1" value="36" help="number of features" />
+    <item name="model" type="CHAR" num="1024" value="..\models\mfcc-12{f160d160}_dd{f100d0}_mlp_intensity.weka" help="path to weka model" />
+    <item name="class_path" type="CHAR" num="1024" value="-Djava.class.path=.;C:\Program Files\Weka-3-6\weka.jar;..\java" help="path to weka model" />
+    <item name="lib_path" type="CHAR" num="1024" value="-Djava.library.path=C:\Program Files (x86)\Java\jre7\lib" help="path to weka model" />
+</options>

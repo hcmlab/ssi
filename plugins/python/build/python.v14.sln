@@ -1,0 +1,70 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dlls", "dlls", "{7E2B631D-0334-422B-83C3-4093B38D8145}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "dlls\python.v14.vcxproj", "{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ssipy", "dlls\ssipy.v14.vcxproj", "{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "test\python.v14.vcxproj", "{DBF54D98-E57B-4475-AD88-CD927258B75B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E} = {90D48C31-EB0F-4CBA-A05E-BD08385DB93E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ssipy", "test\ssipy.v14.vcxproj", "{68D759D6-85C3-484B-81C1-79E08AF9282C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Debug|Win32.Build.0 = Debug|Win32
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Debug|x64.ActiveCfg = Debug|x64
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Debug|x64.Build.0 = Debug|x64
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Release|Win32.ActiveCfg = Release|Win32
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Release|Win32.Build.0 = Release|Win32
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Release|x64.ActiveCfg = Release|x64
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}.Release|x64.Build.0 = Release|x64
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Debug|Win32.Build.0 = Debug|Win32
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Debug|x64.ActiveCfg = Debug|x64
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Debug|x64.Build.0 = Debug|x64
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Release|Win32.ActiveCfg = Release|Win32
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Release|Win32.Build.0 = Release|Win32
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Release|x64.ActiveCfg = Release|x64
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965}.Release|x64.Build.0 = Release|x64
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Debug|Win32.Build.0 = Debug|Win32
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Debug|x64.ActiveCfg = Debug|x64
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Debug|x64.Build.0 = Debug|x64
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Release|Win32.ActiveCfg = Release|Win32
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Release|Win32.Build.0 = Release|Win32
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Release|x64.ActiveCfg = Release|x64
+		{DBF54D98-E57B-4475-AD88-CD927258B75B}.Release|x64.Build.0 = Release|x64
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Debug|Win32.Build.0 = Debug|Win32
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Debug|x64.ActiveCfg = Debug|x64
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Debug|x64.Build.0 = Debug|x64
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Release|Win32.ActiveCfg = Release|Win32
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Release|Win32.Build.0 = Release|Win32
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Release|x64.ActiveCfg = Release|x64
+		{68D759D6-85C3-484B-81C1-79E08AF9282C}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90D48C31-EB0F-4CBA-A05E-BD08385DB93E} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+		{B99E9FA7-4165-49AE-B9E5-47DDD6D8C965} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+		{DBF54D98-E57B-4475-AD88-CD927258B75B} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+		{68D759D6-85C3-484B-81C1-79E08AF9282C} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+	EndGlobalSection
+EndGlobal

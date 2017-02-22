@@ -1,0 +1,70 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{1C38265A-7E94-46BE-8A02-8677DC696F73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dlls", "dlls", "{7E2B631D-0334-422B-83C3-4093B38D8145}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "torch_test", "test\torch_test.v14.vcxproj", "{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Torch31", "libs\Torch31.v14.vcxproj", "{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "torch", "dlls\torch.v14.vcxproj", "{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "torch_hmm", "test\torch_hmm.v14.vcxproj", "{E2293998-9875-474B-889A-FEC9E9FFA48C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|Win32.Build.0 = Debug|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.ActiveCfg = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.Build.0 = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|Win32.ActiveCfg = Release|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|Win32.Build.0 = Release|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.ActiveCfg = Release|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.Build.0 = Release|x64
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Debug|Win32.Build.0 = Debug|Win32
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Debug|x64.ActiveCfg = Debug|x64
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Debug|x64.Build.0 = Debug|x64
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Release|Win32.ActiveCfg = Release|Win32
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Release|Win32.Build.0 = Release|Win32
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Release|x64.ActiveCfg = Release|x64
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}.Release|x64.Build.0 = Release|x64
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Debug|Win32.Build.0 = Debug|Win32
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Debug|x64.ActiveCfg = Debug|x64
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Debug|x64.Build.0 = Debug|x64
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Release|Win32.ActiveCfg = Release|Win32
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Release|Win32.Build.0 = Release|Win32
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Release|x64.ActiveCfg = Release|x64
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B}.Release|x64.Build.0 = Release|x64
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Debug|Win32.Build.0 = Debug|Win32
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Debug|x64.ActiveCfg = Debug|x64
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Debug|x64.Build.0 = Debug|x64
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Release|Win32.ActiveCfg = Release|Win32
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Release|Win32.Build.0 = Release|Win32
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Release|x64.ActiveCfg = Release|x64
+		{E2293998-9875-474B-889A-FEC9E9FFA48C}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+		{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7} = {1C38265A-7E94-46BE-8A02-8677DC696F73}
+		{ED84FAFD-BBA5-48D7-8E46-2A7489CC725B} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+		{E2293998-9875-474B-889A-FEC9E9FFA48C} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+	EndGlobalSection
+EndGlobal

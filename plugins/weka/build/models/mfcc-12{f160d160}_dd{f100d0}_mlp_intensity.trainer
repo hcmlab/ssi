@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="4">
+    <classes size="1">
+        <item name="intensity" id="0" />
+    </classes>
+    <users size="1">
+        <item name="user" id="0" />
+    </users>
+    <streams size="1">
+        <item byte="4" dim="36" sr="100.000000" type="FLOAT" />
+    </streams>
+    <model name="WekaWrapper" info="Wrapper for the famous machine learning library Weka." stream="0" path="mfcc-12{f160d160}_dd{f100d0}_mlp_intensity.ssi_model_WekaWrapper.model" />
+</trainer>

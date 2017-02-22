@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="4">
+    <classes size="10">
+        <item name="0" id="0" />
+        <item name="1" id="1" />
+        <item name="2" id="2" />
+        <item name="3" id="3" />
+        <item name="4" id="4" />
+        <item name="5" id="5" />
+        <item name="6" id="6" />
+        <item name="7" id="7" />
+        <item name="8" id="8" />
+        <item name="9" id="9" />
+    </classes>
+    <users size="1">
+        <item name="user" id="0" />
+    </users>
+    <streams size="1">
+        <item byte="4" dim="2" sr="50.000000" type="FLOAT" />
+    </streams>
+    <model name="Dollar$1" info="Dollar$1 classifier." stream="0" path="mouse.ssi_model_Dollar$1.model" />
+</trainer>

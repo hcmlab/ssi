@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssisignal" />
+		<load name="ssiioput"/>
+		<load name="ssigeneric_serial" />
+	</register>
+
+<!-- serial connection to Arduino; 
+		 ascii output format of Arduino: "<value0>;<value1>;<value2>;<value3>";
+		 example: "500;501;502;503";
+		 the string data is converted to float values and split into one data stream with dimension 4;
+	-->
+	<sensor create="GenericSerial" baud="115200" dim="4" sr="4" separator=";" port="17">		
+		<output channel="serialrawdata" pin="pin_serial_raw_data" size="10.0s"/>
+	</sensor>
+	
+	<consumer create="SignalPainter:plot" title="raw data" size="10.0">
+		<input pin="pin_serial_raw_data" frame="1" />		
+	</consumer>
+	
+	
+	<consumer create="FileWriter" path="serial_raw_data" type="1">
+		<input pin="pin_serial_raw_data" frame="1" />
+	</consumer>
+	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

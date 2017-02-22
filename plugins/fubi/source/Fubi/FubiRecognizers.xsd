@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.hcm-lab.de" xmlns="http://www.hcm-lab.de">
+  <xs:annotation>
+    <xs:documentation xml:lang="EN">
+      Gesture Definiton Scheme for the Full Body Interaction Framework (FUBI)
+      http://hcm-lab.de/fubi.html
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- Simple type definitions-->
+  <xs:simpleType name="confidence">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="visibility">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="visible" />
+      <xs:enumeration value="hidden" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="joint">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="head" />
+      <xs:enumeration value="neck" />
+      <xs:enumeration value="torso" />
+      <xs:enumeration value="waist" />
+      <xs:enumeration value="leftShoulder" />
+      <xs:enumeration value="leftElbow" />
+      <xs:enumeration value="leftWrist" />
+      <xs:enumeration value="leftHand" />
+      <xs:enumeration value="rightShoulder" />
+      <xs:enumeration value="rightElbow" />
+      <xs:enumeration value="rightWrist" />
+      <xs:enumeration value="rightHand" />
+      <xs:enumeration value="leftHip" />
+      <xs:enumeration value="leftKnee" />
+      <xs:enumeration value="leftAnkle" />
+      <xs:enumeration value="leftFoot" />
+      <xs:enumeration value="rightHip" />
+      <xs:enumeration value="rightKnee" />
+      <xs:enumeration value="rightAnkle" />
+      <xs:enumeration value="rightFoot" />
+      <xs:enumeration value="faceNose" />
+      <xs:enumeration value="faceLeftEar" />
+      <xs:enumeration value="faceRightEar" />
+      <xs:enumeration value="faceForeHead" />
+      <xs:enumeration value="faceChin" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="measures">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="millimeter" />
+      <xs:enumeration value="bodyHeight" />
+      <xs:enumeration value="torsoHeight" />
+      <xs:enumeration value="shoulderWidth" />
+      <xs:enumeration value="hipWidth" />
+      <xs:enumeration value="armLength" />
+      <xs:enumeration value="upperArmLength" />
+      <xs:enumeration value="lowerArmLength" />
+      <xs:enumeration value="legLength" />
+      <xs:enumeration value="upperLegLength" />
+      <xs:enumeration value="lowerLegLength" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="handJoint">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="palm" />
+      <xs:enumeration value="fingerOne" />
+      <xs:enumeration value="fingerTwo" />
+      <xs:enumeration value="fingerThree" />
+      <xs:enumeration value="fingerFour" />
+      <xs:enumeration value="fingerFive" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="fingerCount">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="5"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--The base element-->
+  <xs:element name="FubiRecognizers">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="JointRelationRecognizer" />
+        <xs:element ref="JointOrientationRecognizer" />
+        <xs:element ref="LinearMovementRecognizer" />
+        <xs:element ref="AngularMovementRecognizer" />
+        <xs:element ref="LinearAccelerationRecognizer" />
+        <xs:element ref="FingerCountRecognizer" />
+        <xs:element ref="DTWRecognizer" />
+        <xs:element ref="CombinationRecognizer" />
+      </xs:choice>
+      <xs:attribute name="globalMinConfidence" type="confidence"/>
+      <xs:attribute default="false" name="globalUseFilteredData" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!--All child elements-->
+  <xs:element name="JointRelationRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="Joints" />
+							<xs:sequence>
+								<xs:element ref="Joint" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="HandJoints" />
+							</xs:sequence>
+            </xs:choice>
+            <xs:choice>
+              <xs:sequence>
+                <xs:element ref="MaxValues" />
+                <xs:element minOccurs="0" maxOccurs="1" ref="MinValues" />
+              </xs:sequence>
+              <xs:sequence>
+                <xs:element ref="MinValues" />
+                <xs:element minOccurs="0" maxOccurs="1" ref="MaxValues" />
+              </xs:sequence>
+              <xs:element minOccurs="1" maxOccurs="unbounded" ref="Relation" />
+            </xs:choice>
+            <xs:element minOccurs="0" maxOccurs="1" ref="MiddleJoint" />
+          </xs:sequence>
+          <xs:element ref="MiddleJoint" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute default="false" name="useLocalPositions" type="xs:boolean"/>
+      <xs:attribute name="minConfidence" type="confidence"/>
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+      <xs:attribute default="millimeter" name="measuringUnit" type="measures"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Joints">
+    <xs:complexType>
+      <xs:attribute name="main" use="required" type="joint"/>
+      <xs:attribute name="relative" type="joint"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="HandJoints">
+    <xs:complexType>
+      <xs:attribute name="main" use="required" type="handJoint"/>
+      <xs:attribute name="relative" type="handJoint"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxValues">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+      <xs:attribute name="dist" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MinValues">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+      <xs:attribute name="dist" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Relation">
+    <xs:complexType>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="inFrontOf" />
+            <xs:enumeration value="behind" />
+            <xs:enumeration value="leftOf" />
+            <xs:enumeration value="rightOf" />
+            <xs:enumeration value="above" />
+            <xs:enumeration value="below" />
+            <xs:enumeration value="apartOf" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="min" type="xs:float" />
+      <xs:attribute name="max" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MiddleJoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="Joint" />
+          <xs:element ref="HandJoint" />
+        </xs:choice>
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="MaxValues" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MinValues" />
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element ref="MinValues" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MaxValues" />
+          </xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" ref="Relation" />
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Joint">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="joint"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="HandJoint">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="handJoint"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JointOrientationRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element ref="Joint"/>
+						<xs:element ref="HandJoint" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+					<xs:element ref="HandJoint"/>
+				</xs:choice>
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="MaxDegrees" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MinDegrees" />
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element ref="MinDegrees" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MaxDegrees" />
+          </xs:sequence>
+          <xs:element ref="Orientation" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute default="true" name="useLocalOrientations" type="xs:boolean"/>
+      <xs:attribute name="minConfidence" type="confidence"/>
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxDegrees">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MinDegrees">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Orientation">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" use="required" />
+      <xs:attribute name="y" type="xs:float" use="required" />
+      <xs:attribute name="z" type="xs:float" use="required" />
+      <xs:attribute default="45.0" name="maxAngleDifference" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LinearMovementRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element ref="Joint"/>
+						<xs:element ref="HandJoint" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+					<xs:element ref="HandJoint"/>
+				</xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="Direction" />
+          <xs:element ref="BasicDirection" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="1" ref="Speed" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="Length" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute default="false" name="useLocalPositions" type="xs:boolean"/>
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+      <xs:attribute default="true" name="useOnlyCorrectDirectionComponent" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Direction">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" use="required" />
+      <xs:attribute name="y" type="xs:float" use="required" />
+      <xs:attribute name="z" type="xs:float" use="required" />
+      <xs:attribute default="45.0" name="maxAngleDifference" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BasicDirection">
+    <xs:complexType>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="left" />
+            <xs:enumeration value="right" />
+            <xs:enumeration value="up" />
+            <xs:enumeration value="down" />
+            <xs:enumeration value="forward" />
+            <xs:enumeration value="backward" />
+            <xs:enumeration value="anyDirection" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute default="45.0" name="maxAngleDifference" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Speed">
+    <xs:complexType>
+      <xs:attribute name="min" type="xs:float" />
+      <xs:attribute name="max" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Length">
+    <xs:complexType>
+      <xs:attribute name="min" type="xs:float" />
+      <xs:attribute name="max" type="xs:float" />
+      <xs:attribute default="millimeter" name="measuringUnit" type="measures"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AngularMovementRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element ref="Joint"/>
+						<xs:element ref="HandJoint" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+					<xs:element ref="HandJoint"/>
+				</xs:choice>
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="MaxAngularVelocity" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MinAngularVelocity" />
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element ref="MinAngularVelocity" />
+            <xs:element minOccurs="0" maxOccurs="1" ref="MaxAngularVelocity" />
+          </xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" ref="BasicAngularVelocity" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute name="minConfidence" type="xs:string" />
+      <xs:attribute default="true" name="useLocalOrientations" type="xs:boolean"/>
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxAngularVelocity">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MinAngularVelocity">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:float" />
+      <xs:attribute name="y" type="xs:float" />
+      <xs:attribute name="z" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BasicAngularVelocity">
+    <xs:complexType>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="rollLeft" />
+            <xs:enumeration value="rollRight" />
+            <xs:enumeration value="pitchUp" />
+            <xs:enumeration value="pitchDown" />
+            <xs:enumeration value="yawLeft" />
+            <xs:enumeration value="yawRight" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="min" type="xs:float" />
+      <xs:attribute name="max" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LinearAccelerationRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Joint" />
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="Direction" />
+          <xs:element ref="BasicDirection" />
+        </xs:choice>
+        <xs:element ref="Acceleration" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="true" name="useOnlyCorrectDirectionComponent" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Acceleration">
+    <xs:complexType>
+      <xs:attribute name="min" type="xs:float" />
+      <xs:attribute name="max" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FingerCountRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="Joint" />
+        <xs:element ref="FingerCount" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FingerCount">
+    <xs:complexType>
+      <xs:attribute default="0" name="min" type="fingerCount"/>
+      <xs:attribute default="5" name="max" type="fingerCount"/>
+      <xs:attribute default="false" name="useMedianCalculation" type="xs:boolean"/>
+      <xs:attribute default="10" name="medianWindowSize" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DTWRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Joints" />
+        <xs:element ref="TrainingData" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="visible" name="visibility" type="visibility"/>
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+      <xs:attribute name="maxDistance" type="xs:float" use="required"/>
+      <xs:attribute name="distanceMeasure" default="euclidian">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="euclidian" />
+            <xs:enumeration value="manhattan" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TrainingData">
+    <xs:complexType>
+      <xs:attribute name="file" type="xs:string"/>
+      <xs:attribute name="start" type="xs:int" default="0"/>
+      <xs:attribute name="count" type="xs:int" default="-1"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CombinationRecognizer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="State" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:ID" use="required" />
+      <xs:attribute default="false" name="waitUntilLastStateRecognizersStop" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="State">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element ref="Recognizer" />
+          <xs:element ref="NotRecognizer" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="1" ref="AlternativeRecognizers" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="METAINFO" />
+      </xs:sequence>
+      <xs:attribute default="0" name="minDuration" type="xs:float" />
+      <xs:attribute default="-1" name="maxDuration" type="xs:float" />
+      <xs:attribute default="1" name="timeForTransition" type="xs:float" />
+      <xs:attribute name="maxInterruptionTime" type="xs:float" />
+      <xs:attribute default="false" name="noInterruptionBeforeMinDuration" type="xs:boolean"/>
+      <xs:attribute default="restart" name="onFail">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="restart" />
+            <xs:enumeration value="goBack" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Recognizer">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+      <xs:attribute default="false" name="ignoreOnTrackingError" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NotRecognizer">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="minConfidence" type="confidence" />
+      <xs:attribute default="false" name="useFilteredData" type="xs:boolean"/>
+      <xs:attribute default="true" name="ignoreOnTrackingError" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AlternativeRecognizers">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Recognizer" />
+        <xs:element ref="NotRecognizer" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="METAINFO">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Property" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Property">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

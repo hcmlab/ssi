@@ -1,0 +1,11 @@
+{
+	"date": "<ISODATE>",
+	"value": <EVENTSTATE>,
+	"reliability": <RELIABILITY>,
+	"roomType": "livingroom",
+	"roomID": 0,
+	"sensorType": "userIRpresence",
+	"positionType": "wall",
+	"positionID": 0,
+	"adminSoftware" : "SSI_1"
+}

@@ -1,0 +1,451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C239E0AA-B7D4-4D3B-B6FB-1A845E7366B7}</ProjectGuid>
+    <RootNamespace>Esmeralda</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Torch31\source\Allocator.cpp" />
+    <ClCompile Include="Torch31\source\Bagging.cpp" />
+    <ClCompile Include="Torch31\source\BayesClassifier.cpp" />
+    <ClCompile Include="Torch31\source\BayesClassifierMachine.cpp" />
+    <ClCompile Include="Torch31\source\BeamSearchDecoder.cpp" />
+    <ClCompile Include="Torch31\source\Boosting.cpp" />
+    <ClCompile Include="Torch31\source\BoostingMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\ClassFormat.cpp" />
+    <ClCompile Include="Torch31\source\ClassFormatDataSet.cpp" />
+    <ClCompile Include="Torch31\source\ClassMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\ClassNLLCriterion.cpp" />
+    <ClCompile Include="Torch31\source\ClassNLLMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\CmdLine.cpp" />
+    <ClCompile Include="Torch31\source\CmdOption.cpp" />
+    <ClCompile Include="Torch31\source\ConnectedMachine.cpp" />
+    <ClCompile Include="Torch31\source\Criterion.cpp" />
+    <ClCompile Include="Torch31\source\DataSet.cpp" />
+    <ClCompile Include="Torch31\source\DecoderBatchTest.cpp" />
+    <ClCompile Include="Torch31\source\DecoderSingleTest.cpp" />
+    <ClCompile Include="Torch31\source\DecodingHMM.cpp" />
+    <ClCompile Include="Torch31\source\DecodingHypothesis.cpp" />
+    <ClCompile Include="Torch31\source\DiagonalGMM.cpp" />
+    <ClCompile Include="Torch31\source\DiskDataSet.cpp" />
+    <ClCompile Include="Torch31\source\DiskHTKDataSet.cpp" />
+    <ClCompile Include="Torch31\source\DiskMatDataSet.cpp" />
+    <ClCompile Include="Torch31\source\DiskXFile.cpp" />
+    <ClCompile Include="Torch31\source\Distribution.cpp" />
+    <ClCompile Include="Torch31\source\EditDistance.cpp" />
+    <ClCompile Include="Torch31\source\EditDistanceMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\EMTrainer.cpp" />
+    <ClCompile Include="Torch31\source\ExampleFrameSelectorDataSet.cpp" />
+    <ClCompile Include="Torch31\source\Exp.cpp" />
+    <ClCompile Include="Torch31\source\FileListCmdOption.cpp" />
+    <ClCompile Include="Torch31\source\FrameSeg.cpp" />
+    <ClCompile Include="Torch31\source\FrameSegMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\FrameSelectorDataSet.cpp" />
+    <ClCompile Include="Torch31\source\general.cpp" />
+    <ClCompile Include="Torch31\source\GradientMachine.cpp" />
+    <ClCompile Include="Torch31\source\Grammar.cpp" />
+    <ClCompile Include="Torch31\source\HMM.cpp" />
+    <ClCompile Include="Torch31\source\HTKDataSet.cpp" />
+    <ClCompile Include="Torch31\source\InputsSelect.cpp" />
+    <ClCompile Include="Torch31\source\IOAscii.cpp" />
+    <ClCompile Include="Torch31\source\IOBin.cpp" />
+    <ClCompile Include="Torch31\source\IOBufferize.cpp" />
+    <ClCompile Include="Torch31\source\IOHTK.cpp" />
+    <ClCompile Include="Torch31\source\IOHTKTarget.cpp" />
+    <ClCompile Include="Torch31\source\IOMulti.cpp" />
+    <ClCompile Include="Torch31\source\IOSequence.cpp" />
+    <ClCompile Include="Torch31\source\IOSequenceArray.cpp" />
+    <ClCompile Include="Torch31\source\IOSub.cpp" />
+    <ClCompile Include="Torch31\source\Kernel.cpp" />
+    <ClCompile Include="Torch31\source\KFold.cpp" />
+    <ClCompile Include="Torch31\source\KMeans.cpp" />
+    <ClCompile Include="Torch31\source\KNN.cpp" />
+    <ClCompile Include="Torch31\source\LanguageModel.cpp" />
+    <ClCompile Include="Torch31\source\LexiconInfo.cpp" />
+    <ClCompile Include="Torch31\source\Linear.cpp" />
+    <ClCompile Include="Torch31\source\LinearLexicon.cpp" />
+    <ClCompile Include="Torch31\source\LMCache.cpp" />
+    <ClCompile Include="Torch31\source\LMCacheEntry.cpp" />
+    <ClCompile Include="Torch31\source\LMInteriorLevelWordEntry.cpp" />
+    <ClCompile Include="Torch31\source\LMInteriorLevelWordList.cpp" />
+    <ClCompile Include="Torch31\source\LMNGram.cpp" />
+    <ClCompile Include="Torch31\source\log_add.cpp" />
+    <ClCompile Include="Torch31\source\LogMixer.cpp" />
+    <ClCompile Include="Torch31\source\LogRBF.cpp" />
+    <ClCompile Include="Torch31\source\LogSigmoid.cpp" />
+    <ClCompile Include="Torch31\source\LogSoftMax.cpp" />
+    <ClCompile Include="Torch31\source\Machine.cpp" />
+    <ClCompile Include="Torch31\source\MAPDiagonalGMM.cpp" />
+    <ClCompile Include="Torch31\source\MAPHMM.cpp" />
+    <ClCompile Include="Torch31\source\Mat.cpp" />
+    <ClCompile Include="Torch31\source\Mat_operations.cpp" />
+    <ClCompile Include="Torch31\source\MatDataSet.cpp" />
+    <ClCompile Include="Torch31\source\MeanVarNorm.cpp" />
+    <ClCompile Include="Torch31\source\Measurer.cpp" />
+    <ClCompile Include="Torch31\source\MemoryDataSet.cpp" />
+    <ClCompile Include="Torch31\source\MemoryXFile.cpp" />
+    <ClCompile Include="Torch31\source\Mixer.cpp" />
+    <ClCompile Include="Torch31\source\MLP.cpp" />
+    <ClCompile Include="Torch31\source\MSECriterion.cpp" />
+    <ClCompile Include="Torch31\source\MSEMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\MultiClassFormat.cpp" />
+    <ClCompile Include="Torch31\source\MultiCriterion.cpp" />
+    <ClCompile Include="Torch31\source\Multinomial.cpp" />
+    <ClCompile Include="Torch31\source\mx_givens.cpp" />
+    <ClCompile Include="Torch31\source\mx_hessenberg.cpp" />
+    <ClCompile Include="Torch31\source\mx_householder.cpp" />
+    <ClCompile Include="Torch31\source\mx_low_level.cpp" />
+    <ClCompile Include="Torch31\source\mx_lu_factor.cpp" />
+    <ClCompile Include="Torch31\source\mx_solve.cpp" />
+    <ClCompile Include="Torch31\source\mx_sym_eig.cpp" />
+    <ClCompile Include="Torch31\source\NLLCriterion.cpp" />
+    <ClCompile Include="Torch31\source\NLLMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\NPTrainer.cpp" />
+    <ClCompile Include="Torch31\source\NullXFile.cpp" />
+    <ClCompile Include="Torch31\source\Object.cpp" />
+    <ClCompile Include="Torch31\source\OneHotClassFormat.cpp" />
+    <ClCompile Include="Torch31\source\OutputMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\Parameters.cpp" />
+    <ClCompile Include="Torch31\source\ParzenDistribution.cpp" />
+    <ClCompile Include="Torch31\source\ParzenMachine.cpp" />
+    <ClCompile Include="Torch31\source\Perm.cpp" />
+    <ClCompile Include="Torch31\source\Perm_operations.cpp" />
+    <ClCompile Include="Torch31\source\PhoneInfo.cpp" />
+    <ClCompile Include="Torch31\source\PhoneModels.cpp" />
+    <ClCompile Include="Torch31\source\PipeXFile.cpp" />
+    <ClCompile Include="Torch31\source\PreProcessing.cpp" />
+    <ClCompile Include="Torch31\source\QCCache.cpp" />
+    <ClCompile Include="Torch31\source\QCMachine.cpp" />
+    <ClCompile Include="Torch31\source\QCTrainer.cpp" />
+    <ClCompile Include="Torch31\source\Random.cpp" />
+    <ClCompile Include="Torch31\source\SaturationMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\Sequence.cpp" />
+    <ClCompile Include="Torch31\source\Sigmoid.cpp" />
+    <ClCompile Include="Torch31\source\SimpleDecoderSpeechHMM.cpp" />
+    <ClCompile Include="Torch31\source\SoftMax.cpp" />
+    <ClCompile Include="Torch31\source\SoftPlus.cpp" />
+    <ClCompile Include="Torch31\source\SpatialConvolution.cpp" />
+    <ClCompile Include="Torch31\source\SpatialSubSampling.cpp" />
+    <ClCompile Include="Torch31\source\SpeechHMM.cpp" />
+    <ClCompile Include="Torch31\source\SpeechMLP.cpp" />
+    <ClCompile Include="Torch31\source\SpeechMLPDistr.cpp" />
+    <ClCompile Include="Torch31\source\Stack.cpp" />
+    <ClCompile Include="Torch31\source\StochasticGradient.cpp" />
+    <ClCompile Include="Torch31\source\string_stuff.cpp" />
+    <ClCompile Include="Torch31\source\string_utils.cpp" />
+    <ClCompile Include="Torch31\source\SumMachine.cpp" />
+    <ClCompile Include="Torch31\source\SVM.cpp" />
+    <ClCompile Include="Torch31\source\SVMCache.cpp" />
+    <ClCompile Include="Torch31\source\SVMClassification.cpp" />
+    <ClCompile Include="Torch31\source\SVMRegression.cpp" />
+    <ClCompile Include="Torch31\source\TableLookupDistribution.cpp" />
+    <ClCompile Include="Torch31\source\Tanh.cpp" />
+    <ClCompile Include="Torch31\source\TemporalConvolution.cpp" />
+    <ClCompile Include="Torch31\source\TemporalMean.cpp" />
+    <ClCompile Include="Torch31\source\TemporalSubSampling.cpp" />
+    <ClCompile Include="Torch31\source\TimeMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\Timer.cpp" />
+    <ClCompile Include="Torch31\source\Trainer.cpp" />
+    <ClCompile Include="Torch31\source\TwoClassFormat.cpp" />
+    <ClCompile Include="Torch31\source\Vec.cpp" />
+    <ClCompile Include="Torch31\source\Vocabulary.cpp" />
+    <ClCompile Include="Torch31\source\WeightedMSECriterion.cpp" />
+    <ClCompile Include="Torch31\source\WeightedSumMachine.cpp" />
+    <ClCompile Include="Torch31\source\WordChainElemPool.cpp" />
+    <ClCompile Include="Torch31\source\WordSeg.cpp" />
+    <ClCompile Include="Torch31\source\WordSegMeasurer.cpp" />
+    <ClCompile Include="Torch31\source\XFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Torch31\include\Allocator.h" />
+    <ClInclude Include="Torch31\include\Bagging.h" />
+    <ClInclude Include="Torch31\include\BayesClassifier.h" />
+    <ClInclude Include="Torch31\include\BayesClassifierMachine.h" />
+    <ClInclude Include="Torch31\include\BeamSearchDecoder.h" />
+    <ClInclude Include="Torch31\include\Boosting.h" />
+    <ClInclude Include="Torch31\include\BoostingMeasurer.h" />
+    <ClInclude Include="Torch31\include\ClassFormat.h" />
+    <ClInclude Include="Torch31\include\ClassFormatDataSet.h" />
+    <ClInclude Include="Torch31\include\ClassMeasurer.h" />
+    <ClInclude Include="Torch31\include\ClassNLLCriterion.h" />
+    <ClInclude Include="Torch31\include\ClassNLLMeasurer.h" />
+    <ClInclude Include="Torch31\include\CmdLine.h" />
+    <ClInclude Include="Torch31\include\CmdOption.h" />
+    <ClInclude Include="Torch31\include\ConnectedMachine.h" />
+    <ClInclude Include="Torch31\include\Criterion.h" />
+    <ClInclude Include="Torch31\include\DataSet.h" />
+    <ClInclude Include="Torch31\include\DecoderBatchTest.h" />
+    <ClInclude Include="Torch31\include\DecoderSingleTest.h" />
+    <ClInclude Include="Torch31\include\DecodingHMM.h" />
+    <ClInclude Include="Torch31\include\DecodingHypothesis.h" />
+    <ClInclude Include="Torch31\include\DiagonalGMM.h" />
+    <ClInclude Include="Torch31\include\DiskDataSet.h" />
+    <ClInclude Include="Torch31\include\DiskHTKDataSet.h" />
+    <ClInclude Include="Torch31\include\DiskMatDataSet.h" />
+    <ClInclude Include="Torch31\include\DiskXFile.h" />
+    <ClInclude Include="Torch31\include\Distribution.h" />
+    <ClInclude Include="Torch31\include\EditDistance.h" />
+    <ClInclude Include="Torch31\include\EditDistanceMeasurer.h" />
+    <ClInclude Include="Torch31\include\EMTrainer.h" />
+    <ClInclude Include="Torch31\include\ExampleFrameSelectorDataSet.h" />
+    <ClInclude Include="Torch31\include\Exp.h" />
+    <ClInclude Include="Torch31\include\FileListCmdOption.h" />
+    <ClInclude Include="Torch31\include\FrameSeg.h" />
+    <ClInclude Include="Torch31\include\FrameSegMeasurer.h" />
+    <ClInclude Include="Torch31\include\FrameSelectorDataSet.h" />
+    <ClInclude Include="Torch31\include\general.h" />
+    <ClInclude Include="Torch31\include\GradientMachine.h" />
+    <ClInclude Include="Torch31\include\Grammar.h" />
+    <ClInclude Include="Torch31\include\HMM.h" />
+    <ClInclude Include="Torch31\include\HTKDataSet.h" />
+    <ClInclude Include="Torch31\include\InputsSelect.h" />
+    <ClInclude Include="Torch31\include\IOAscii.h" />
+    <ClInclude Include="Torch31\include\IOBin.h" />
+    <ClInclude Include="Torch31\include\IOBufferize.h" />
+    <ClInclude Include="Torch31\include\IOHTK.h" />
+    <ClInclude Include="Torch31\include\IOHTKTarget.h" />
+    <ClInclude Include="Torch31\include\IOMulti.h" />
+    <ClInclude Include="Torch31\include\IOSequence.h" />
+    <ClInclude Include="Torch31\include\IOSequenceArray.h" />
+    <ClInclude Include="Torch31\include\IOSub.h" />
+    <ClInclude Include="Torch31\include\Kernel.h" />
+    <ClInclude Include="Torch31\include\KFold.h" />
+    <ClInclude Include="Torch31\include\KMeans.h" />
+    <ClInclude Include="Torch31\include\KNN.h" />
+    <ClInclude Include="Torch31\include\LanguageModel.h" />
+    <ClInclude Include="Torch31\include\LexiconInfo.h" />
+    <ClInclude Include="Torch31\include\Linear.h" />
+    <ClInclude Include="Torch31\include\LinearLexicon.h" />
+    <ClInclude Include="Torch31\include\List.h" />
+    <ClInclude Include="Torch31\include\LMCache.h" />
+    <ClInclude Include="Torch31\include\LMCacheEntry.h" />
+    <ClInclude Include="Torch31\include\LMInteriorLevelWordEntry.h" />
+    <ClInclude Include="Torch31\include\LMInteriorLevelWordList.h" />
+    <ClInclude Include="Torch31\include\LMNGram.h" />
+    <ClInclude Include="Torch31\include\log_add.h" />
+    <ClInclude Include="Torch31\include\LogMixer.h" />
+    <ClInclude Include="Torch31\include\LogRBF.h" />
+    <ClInclude Include="Torch31\include\LogSigmoid.h" />
+    <ClInclude Include="Torch31\include\LogSoftMax.h" />
+    <ClInclude Include="Torch31\include\Machine.h" />
+    <ClInclude Include="Torch31\include\MAPDiagonalGMM.h" />
+    <ClInclude Include="Torch31\include\MAPHMM.h" />
+    <ClInclude Include="Torch31\include\Mat.h" />
+    <ClInclude Include="Torch31\include\Mat_operations.h" />
+    <ClInclude Include="Torch31\include\MatDataSet.h" />
+    <ClInclude Include="Torch31\include\matrix.h" />
+    <ClInclude Include="Torch31\include\MeanVarNorm.h" />
+    <ClInclude Include="Torch31\include\Measurer.h" />
+    <ClInclude Include="Torch31\include\MemoryDataSet.h" />
+    <ClInclude Include="Torch31\include\MemoryXFile.h" />
+    <ClInclude Include="Torch31\include\Mixer.h" />
+    <ClInclude Include="Torch31\include\MLP.h" />
+    <ClInclude Include="Torch31\include\MSECriterion.h" />
+    <ClInclude Include="Torch31\include\MSEMeasurer.h" />
+    <ClInclude Include="Torch31\include\MultiClassFormat.h" />
+    <ClInclude Include="Torch31\include\MultiCriterion.h" />
+    <ClInclude Include="Torch31\include\Multinomial.h" />
+    <ClInclude Include="Torch31\include\mx_givens.h" />
+    <ClInclude Include="Torch31\include\mx_hessenberg.h" />
+    <ClInclude Include="Torch31\include\mx_householder.h" />
+    <ClInclude Include="Torch31\include\mx_low_level.h" />
+    <ClInclude Include="Torch31\include\mx_lu_factor.h" />
+    <ClInclude Include="Torch31\include\mx_solve.h" />
+    <ClInclude Include="Torch31\include\mx_sym_eig.h" />
+    <ClInclude Include="Torch31\include\NLLCriterion.h" />
+    <ClInclude Include="Torch31\include\NLLMeasurer.h" />
+    <ClInclude Include="Torch31\include\NPTrainer.h" />
+    <ClInclude Include="Torch31\include\NullXFile.h" />
+    <ClInclude Include="Torch31\include\Object.h" />
+    <ClInclude Include="Torch31\include\OneHotClassFormat.h" />
+    <ClInclude Include="Torch31\include\OutputMeasurer.h" />
+    <ClInclude Include="Torch31\include\Parameters.h" />
+    <ClInclude Include="Torch31\include\ParzenDistribution.h" />
+    <ClInclude Include="Torch31\include\ParzenMachine.h" />
+    <ClInclude Include="Torch31\include\Perm.h" />
+    <ClInclude Include="Torch31\include\Perm_operations.h" />
+    <ClInclude Include="Torch31\include\PhoneInfo.h" />
+    <ClInclude Include="Torch31\include\PhoneModels.h" />
+    <ClInclude Include="Torch31\include\PipeXFile.h" />
+    <ClInclude Include="Torch31\include\PreProcessing.h" />
+    <ClInclude Include="Torch31\include\QCCache.h" />
+    <ClInclude Include="Torch31\include\QCMachine.h" />
+    <ClInclude Include="Torch31\include\QCTrainer.h" />
+    <ClInclude Include="Torch31\include\Random.h" />
+    <ClInclude Include="Torch31\include\SaturationMeasurer.h" />
+    <ClInclude Include="Torch31\include\Sequence.h" />
+    <ClInclude Include="Torch31\include\Sigmoid.h" />
+    <ClInclude Include="Torch31\include\SimpleDecoderSpeechHMM.h" />
+    <ClInclude Include="Torch31\include\SoftMax.h" />
+    <ClInclude Include="Torch31\include\SoftPlus.h" />
+    <ClInclude Include="Torch31\include\SpatialConvolution.h" />
+    <ClInclude Include="Torch31\include\SpatialSubSampling.h" />
+    <ClInclude Include="Torch31\include\SpeechHMM.h" />
+    <ClInclude Include="Torch31\include\SpeechMLP.h" />
+    <ClInclude Include="Torch31\include\SpeechMLPDistr.h" />
+    <ClInclude Include="Torch31\include\Stack.h" />
+    <ClInclude Include="Torch31\include\StochasticGradient.h" />
+    <ClInclude Include="Torch31\include\string_stuff.h" />
+    <ClInclude Include="Torch31\include\string_utils.h" />
+    <ClInclude Include="Torch31\include\SumMachine.h" />
+    <ClInclude Include="Torch31\include\SVM.h" />
+    <ClInclude Include="Torch31\include\SVMCache.h" />
+    <ClInclude Include="Torch31\include\SVMClassification.h" />
+    <ClInclude Include="Torch31\include\SVMRegression.h" />
+    <ClInclude Include="Torch31\include\TableLookupDistribution.h" />
+    <ClInclude Include="Torch31\include\Tanh.h" />
+    <ClInclude Include="Torch31\include\TemporalConvolution.h" />
+    <ClInclude Include="Torch31\include\TemporalMean.h" />
+    <ClInclude Include="Torch31\include\TemporalSubSampling.h" />
+    <ClInclude Include="Torch31\include\TimeMeasurer.h" />
+    <ClInclude Include="Torch31\include\Timer.h" />
+    <ClInclude Include="Torch31\include\Trainer.h" />
+    <ClInclude Include="Torch31\include\TwoClassFormat.h" />
+    <ClInclude Include="Torch31\include\Vec.h" />
+    <ClInclude Include="Torch31\include\Vocabulary.h" />
+    <ClInclude Include="Torch31\include\WeightedMSECriterion.h" />
+    <ClInclude Include="Torch31\include\WeightedSumMachine.h" />
+    <ClInclude Include="Torch31\include\WordChainElemPool.h" />
+    <ClInclude Include="Torch31\include\WordSeg.h" />
+    <ClInclude Include="Torch31\include\WordSegMeasurer.h" />
+    <ClInclude Include="Torch31\include\XFile.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

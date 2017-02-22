@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="webrtc">
+      <UniqueIdentifier>{d82bdc87-4834-4008-b607-6b874e66c750}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\vad\webrtc_vad.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\vad\vad_core.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\vad\vad_filterbank.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\vad\vad_gmm.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\vad\vad_sp.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\splitting_filter.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\sqrt_of_one_minus_x_squared.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\vector_scaling_operations.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\auto_corr_to_refl_coef.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\auto_correlation.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\complex_bit_reverse.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\complex_fft.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\copy_set_operations.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\cross_correlation.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\division_operations.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\dot_product_with_scale.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\downsample_fast.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\energy.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\filter_ar.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\filter_ar_fast_q12.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\filter_ma_fast_q12.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\get_hanning_window.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\get_scaling_square.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\ilbc_specific_functions.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\levinson_durbin.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\lpc_to_refl_coef.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\min_max_operations.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\randomization_functions.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\real_fft.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\refl_coef_to_lpc.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\resample.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\resample_48khz.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\resample_by_2.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\resample_by_2_internal.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\resample_fractional.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\spl_init.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\spl_sqrt.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_audio\signal_processing\spl_sqrt_floor.c">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vad_webrtc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\webrtc\common_types.cc">
+      <Filter>webrtc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\webrtc\common_audio\vad\include\webrtc_vad.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\typedefs.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\vad\vad_core.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\signal_processing\include\signal_processing_library.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\vad\vad_filterbank.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\vad\vad_gmm.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\vad\vad_sp.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\signal_processing\include\spl_inl.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\signal_processing\include\real_fft.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\signal_processing\complex_fft_tables.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_audio\signal_processing\resample_by_2_internal.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vad_webrtc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ssivad_webrtc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\webrtc\common_types.h">
+      <Filter>webrtc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

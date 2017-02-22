@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\FubiGestures.h" />
+    <ClInclude Include="..\..\include\FubiLock.h" />
+    <ClInclude Include="..\..\include\FubiScene.h" />
+    <ClInclude Include="..\..\include\ssifubi.h" />
+    <ClInclude Include="..\..\source\Fubi\Fubi.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiConfig.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiCore.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiGMR.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiGMRUtils.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiHand.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiIFingerSensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiImageProcessing.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiISensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiKinectSDK2Sensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiKinectSDKSensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiLeapSensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiMath.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiOpenNISensor.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiPlayer.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiPredefinedGestures.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiRecognizerFactory.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiRecorder.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiUser.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiUtils.h" />
+    <ClInclude Include="..\..\source\Fubi\FubiXMLParser.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\AngularMovementRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\ArmsCrossedRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\ArmsDownTogetherRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\ArmsNearPocketsRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\CombinationRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\FingerCountRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\HandsFrontTogetherRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\HMMRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\IGestureRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\JointOrientationRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\JointRelationRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LeftHandCloseToArmRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LeftHandOutRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LeftHandOverHeadRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LeftHandUpRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LeftKneeUpRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\LinearMovementRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandCloseToArmRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandLeftOfShoulderRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandOutRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandOverHeadRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandPointingRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandRightOfShoulderRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightHandUpRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\RightKneeUpRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\GestureRecognizer\TemplateRecognizer.h" />
+    <ClInclude Include="..\..\source\Fubi\rapidxml.hpp" />
+    <ClInclude Include="..\..\source\Fubi\rapidxml_print.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp" />
+    <ClCompile Include="..\..\source\FubiGestures.cpp" />
+    <ClCompile Include="..\..\source\FubiLock.cpp" />
+    <ClCompile Include="..\..\source\FubiScene.cpp" />
+    <ClCompile Include="..\..\source\Fubi\Fubi.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiCore.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiGMR.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiHand.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiImageProcessing.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiKinectSDK2Sensor.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiKinectSDKSensor.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiLeapSensor.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiOpenNISensor.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiPlayer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiRecognizerFactory.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiRecorder.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiUser.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiUtils.cpp" />
+    <ClCompile Include="..\..\source\Fubi\FubiXMLParser.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\AngularMovementRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\ArmsCrossedRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\ArmsDownTogetherRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\ArmsNearPocketsRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\CombinationRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\FingerCountRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\HandsFrontTogetherRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\HMMRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\JointOrientationRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\JointRelationRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LeftHandCloseToArmRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LeftHandOutRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LeftHandOverHeadRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LeftHandUpRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LeftKneeUpRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\LinearMovementRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandCloseToArmRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandLeftOfShoulderRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandOutRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandOverHeadRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandPointingRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandRightOfShoulderRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightHandUpRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\RightKneeUpRecognizer.cpp" />
+    <ClCompile Include="..\..\source\Fubi\GestureRecognizer\TemplateRecognizer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\SampleRecognizers.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="..\..\source\Fubi\Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="..\..\source\Fubi\FubiRecognizers.xsd" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8EED075F-55C3-4FEA-A42B-517FDD847C38}</ProjectGuid>
+    <RootNamespace>Esmeralda</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>fubi</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ssi$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ssi$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\source\Fubi;..\..\..\..\libs\build\opencv\include;..\..\..\..\core\include;..\..\..\microsoftkinect\include;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\skeleton\include;%(AdditionalIncludeDirectories);..\..\..\microsoftkinect\include;..\..\..opennikinect\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories);..\..\..\opennikinect\build\bin\$(PlatformName)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.lib ..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\source\Fubi;..\..\..\..\libs\build\opencv\include;..\..\..\..\core\include;..\..\..\microsoftkinect\include;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\skeleton\include;%(AdditionalIncludeDirectories);..\..\..\microsoftkinect\include;..\..\..opennikinect\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories);..\..\..\opennikinect\build\bin\$(PlatformName)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.lib ..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\source\Fubi;..\..\..\..\libs\build\opencv\include;..\..\..opennikinect\include;..\..\..\..\core\include;..\..\..\microsoftkinect\include;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\skeleton\include;$(OCV243_INCLUDE)\;%(AdditionalIncludeDirectories);..\..\..\microsoftkinect\include;..\..\..opennikinect\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories);..\..\..\opennikinect\build\bin\$(PlatformName)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.lib ..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\source\Fubi;..\..\..\..\libs\build\opencv\include;..\..\..\..\core\include;..\..\..\microsoftkinect\include;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\skeleton\include;%(AdditionalIncludeDirectories);..\..\..\microsoftkinect\include;..\..\..opennikinect\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories);..\..\..\opennikinect\build\bin\$(PlatformName)</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.lib ..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

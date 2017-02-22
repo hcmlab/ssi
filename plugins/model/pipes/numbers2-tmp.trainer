@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="5">
+    <info trained="false"/>
+    <samples n_streams="1">
+		<item path="..\..\..\model\mouse\data\user\2011-12-23_14-14-14\cursor.button.dollar"/>
+    </samples>
+    <transform>
+        <item create="ssi_feature_Functionals" stream="0" option="functionals"/>
+    </transform>
+    <model create="ssi_model_SVM" stream="0" option="svm"/>
+</trainer>

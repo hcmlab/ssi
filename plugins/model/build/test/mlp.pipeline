@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="ssimlpxml"/>
+		<load name="ssimouse"/>
+		<load name="ssisignal"/>
+		<load name="ssimodel"/>
+		<load name="ssiioput"/>
+		<load name="ssigraphic"/>
+	</register>
+	
+	<!-- sensor + provider + filter -->	
+	<sensor create="Mouse" mask="2">
+		<output channel="button" pin="button"/>
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<consumer create="MlpXml">
+		<input pin="cursor" frame="0.2s" delta="0"/>
+		<xinput size="1">
+			<input pin="button"/>
+		</xinput>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

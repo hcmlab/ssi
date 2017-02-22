@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssisignal" />
+		<load name="ssiioput" />
+		<load name="ssigraphic" />
+		<load name="ssimicrosoftkinect"/>
+		<load name="ssiskeleton"/>
+		<load name="ssifubi"/>
+	</register>
+
+	<!-- sensor -->
+	<sensor create="MicrosoftKinect" trackNearestPerson="true" seatedSkeletonMode="false" simpleFaceTracking="true" showFaceTracking="true" showBodyTracking="true" nearTrackingMode="true">
+		<output channel="rgb" pin="rgb"/>		
+		<output channel="head" pin="head"/>		
+		<output channel="face3d" pin="face3d"/>		
+		<output channel="skeleton" pin="skel"/>		
+	</sensor>
+	
+	<!-- convert skeleton -->
+	<transformer create="SkeletonConverter">
+		<input pin="skel" frame="1"/>
+		<xinput size="2">
+			<input pin="head"/>
+			<input pin="face3d"/>			
+		</xinput>
+		<output pin="skelconv"/>
+	</transformer>
+	
+	<!-- fubi -->
+	<consumer create="FubiGestures" recognizer_xml="SampleRecognizers.xml" sname="fubi" ename="gesture">
+		<input pin="skelconv" frame="1"/>
+	</consumer>
+	
+	<!-- visualization -->
+	<consumer create="VideoPainter:plot" flip="False">
+		<input pin="rgb" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- event board -->
+	<listener create="EventMonitor:monitor">
+		<input listen="gesture@fubi" span="20000"/>
+	</listener>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name=".\ssiwiimote"/>
+		<load name=".\ssisignal"/>
+		<load name=".\ssigraphic"/>
+		<load name=".\ssimodel"/>
+		<load name=".\ssiprotractor"/>
+	</register>
+
+	<!-- wiimote sensor -->
+	<sensor create="WiiRemote">
+		<output channel="acceleration" pin="wiiacc"/>
+		<output channel="button" pin="wiibut"/>
+	</sensor>
+	
+	<!-- wiimote acc plot -->	
+	<consumer create="SignalPainter:plot" title="acceleration" size="10">
+		<input pin="wiiacc" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- wiimote acc plot -->	
+	<consumer create="SignalPainter:plot" title="buttons" size="10">
+		<input pin="wiibut" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

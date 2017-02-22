@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+		<load name="ssiaudio" />
+	</register>
+
+	<!-- read -->
+	<sensor create="FFMPEGReader" url="dummy.mp4" wait="true">		
+		<output channel="video" pin="video" size="2.0s"/>
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>
+	
+	<!-- write -->
+	<consumer create="FFMPEGWriter" url="copy.mp4">
+		<input pin="video;audio" frame="1"/>		
+	</consumer>	
+	
+	<!-- write -->
+	<consumer create="FFMPEGWriter" url="copy.mpg">
+		<input pin="video;audio" frame="1" />		
+	</consumer>		
+	
+	<!-- write -->
+	<consumer create="FFMPEGWriter" url="copy.mpeg">
+		<input pin="video" frame="1" />
+	</consumer>		
+
+	<!-- write -->
+	<consumer create="FFMPEGWriter" url="copy.avi">
+		<input pin="video;audio" frame="1" />		
+	</consumer>			
+	
+	<!-- visualize -->	
+	<consumer create="VideoPainter:plot" title="video">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- playback -->
+	<consumer create="AudioPlayer" option="aplayer">
+		<input pin="audio" frame="0.01s"/>
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

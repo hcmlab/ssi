@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+	<register>
+		<load name="ssixmpp" />		
+	</register>	
+	
+	
+	<!-- Send events via XMPP -->
+	<object create="XMPP" JID="recommender@caretablet1" password="123" msgFormat="1" sname="XMPP" ename="message" recipient="discrete_data_interpreter@caretablet1" subscribeToNode="true" subNodeName="presence" subNodeService="caretablet1">
+		<listen address="@"/>
+	</object>
+	
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="10000"/>
+	</object>
+		
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

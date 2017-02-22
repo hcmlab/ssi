@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE FubiRecognizers PUBLIC "-//Human Centered Multimedia Lab - Augsburg University//DTD FubiRecognizers V 0.5//EN" "http://hcm-lab.de/downloads/FubiRecognizers.dtd">
+<FubiRecognizers globalMinConfidence="0.51">
+
+<!--
+defined Postures
+- hands to face
+- look left
+- look right
+- arms crossed
+- arms open
+- arms behind head
+- lean back
+- lean front
+-->
+
+  <!-- A special linear movement: keeping the hand still -->
+  <LinearMovementRecognizer name="pRightHandStill" visibility="hidden">
+    <Joints main="rightHand" relative="rightShoulder"/>
+    <Speed min="0" max="300"/>
+  </LinearMovementRecognizer>
+
+  <!-- Pointing with right hand -->
+  <CombinationRecognizer name="pointRightHand" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.3" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pointingRight"/>
+      <Recognizer name="pRightHandStill"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Lean front -->
+  <!--
+  <JointOrientationRecognizer name="pLeanFront" visibility="hidden">
+    <Joint name="torso"/>
+    <MinDegrees x="15"/>
+  </JointOrientationRecognizer>
+  -->
+  <JointRelationRecognizer name="pLeanFront" visibility="hidden">
+    <Joints main="head" relative="waist"/>
+    <MaxValues z="-220"/>
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="LeanFront" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pLeanFront"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- Lean back -->
+  <!--
+  <JointOrientationRecognizer name="pLeanBack" visibility="hidden">
+    <Joint name="torso"/>
+    <MaxDegrees x="-15"/>
+  </JointOrientationRecognizer>
+  -->
+  <JointRelationRecognizer name="pLeanBack" visibility="hidden">
+    <Joints main="head" relative="waist"/>
+    <MinValues z="50"/>
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="LeanBack" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pLeanBack"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- Look left -->
+  <JointOrientationRecognizer name="pLookLeft" visibility="hidden" useLocalOrientations="false">
+    <Joint name="head"/>
+    <MinDegrees y="30"/>
+  </JointOrientationRecognizer>
+  <CombinationRecognizer name="LookLeft" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pLookLeft"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- Look right -->
+  <JointOrientationRecognizer name="pLookRight" visibility="hidden" useLocalOrientations="false">
+    <Joint name="head"/>
+    <MaxDegrees y="-30"/>
+  </JointOrientationRecognizer>
+  <CombinationRecognizer name="LookRight" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pLookRight"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- right hand to head -->
+  <JointRelationRecognizer name="pRightHandNearHead" visibility="hidden">
+    <Joints main="rightWrist" relative="head"/>
+    <MaxValues dist="270"/>
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="RightHandHeadTouch" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.1" maxInterruptionTime="0.2" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pRightHandNearHead"/>
+    </State>
+  </CombinationRecognizer>
+
+  <!-- left hand to head -->
+  <JointRelationRecognizer name="pLeftHandNearHead" visibility="hidden">
+    <Joints main="leftWrist" relative="head"/>
+    <MaxValues dist="270"/>
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="LeftHandHeadTouch" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.1" maxInterruptionTime="0.2" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pLeftHandNearHead"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- arms behind head -->
+  <JointRelationRecognizer name="rightHandBehindHead" visibility="hidden">
+    <Joints main="rightWrist" relative="head"/>
+    <Relation type="behind" min="-10" max="300"/>
+    <Relation type="apartOf" max="300"/> <!--distance-->
+  </JointRelationRecognizer>
+  <JointRelationRecognizer name="leftHandBehindHead" visibility="hidden">
+    <Joints main="leftWrist" relative="head"/>
+    <Relation type="behind" min="-10" max="300"/>
+    <Relation type="apartOf" max="300"/> <!--distance-->
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="HandsBehindHead" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.5" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="rightHandBehindHead"/>
+      <Recognizer name="leftHandBehindHead"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- arms crossed -->
+  <CombinationRecognizer name="ArmsCrossed" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="ArmsCrossed" minConfidence="0.3"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- arms open -->
+  <JointRelationRecognizer name="pArmsOpen" visibility="hidden">
+    <Joints main="rightHand" relative="leftHand"/>
+    <MinValues x="700"/>
+  </JointRelationRecognizer>
+  <CombinationRecognizer name="ArmsOpen" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="pArmsOpen"/>
+    </State>
+  </CombinationRecognizer>
+  
+  <!-- arms crossed -->
+  <CombinationRecognizer name="ArmsCrossed" waitUntilLastStateRecognizersStop="true">
+    <State minDuration="0.2" maxInterruptionTime="0.5" noInterrruptionBeforeMinDuration="true">
+      <Recognizer name="ArmsCrossed" minConfidence="0.3"/>
+    </State>
+  </CombinationRecognizer>  
+  
+</FubiRecognizers>

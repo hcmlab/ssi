@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 14.00
+# Visual Studio 2015
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gazetracker", "libs\gazetracker.v14.vcxproj", "{2900EF8D-70A5-44D2-AB28-21B37707648B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.v14.vcxproj", "{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2900EF8D-70A5-44D2-AB28-21B37707648B} = {2900EF8D-70A5-44D2-AB28-21B37707648B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Debug|Win32.Build.0 = Debug|Win32
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Debug|x64.ActiveCfg = Debug|x64
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Debug|x64.Build.0 = Debug|x64
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Release|Win32.ActiveCfg = Release|Win32
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Release|Win32.Build.0 = Release|Win32
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Release|x64.ActiveCfg = Release|x64
+		{2900EF8D-70A5-44D2-AB28-21B37707648B}.Release|x64.Build.0 = Release|x64
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Debug|Win32.Build.0 = Debug|Win32
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Debug|x64.ActiveCfg = Debug|x64
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Debug|x64.Build.0 = Debug|x64
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Release|Win32.ActiveCfg = Release|Win32
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Release|Win32.Build.0 = Release|Win32
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Release|x64.ActiveCfg = Release|x64
+		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

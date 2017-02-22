@@ -1,0 +1,1 @@
+sox noise.wav -n trim 0 1.5 noiseprof noise.noise-profile

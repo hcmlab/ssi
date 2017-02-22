@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="sox_global_buffer" type="UINT" num="1" value="2048" help='SoX doc "sox_globals.bufsiz": Default size (in bytes) used by libSoX for blocks of sample data. Plugins should use similarly-sized buffers to get best performance.' />
+    <item name="sox_signal_length" type="UINT" num="1" value="2048" help="in / out signal length (in samples) between SoX effects" />
+    <item name="sox_effect_chain_str" type="CHAR" num="4096" value="lowpass 2000" help="SoX effect chain arguments" />
+    <item name="ssi_sample_block_offset" type="UINT" num="1" value="0" help="the offset of sample blocks from ssi after which 1 input block results always in 1 output block" />
+</options>

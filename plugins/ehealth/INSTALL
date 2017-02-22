@@ -1,0 +1,10 @@
+1. Download and install Arduino environement
+   http://arduino.cc/en/Main/Software
+   
+2. Uncompress arduino/eHealth.zip and copy the eHealth and PinChange folders into your library folder. 
+   Under Windows, it will likely be called "My Documents\Arduino\libraries".
+   Depending on the version of your eHealt board, you may need a newer verision of the library:
+   http://www.cooking-hacks.com/documentation/tutorials/ehealth-biometric-sensor-platform-arduino-raspberry-pi-medical
+   
+3. Open ssihealth/ssiehealth.ino and select board port from 'Tools' menu. 
+   Now compile/upload sketch to board.

@@ -1,0 +1,129 @@
+/*
+  Copyright (c) 2009-2013 by Jakob Schroeter <js@camaya.net>
+  This file is part of the gloox library. http://camaya.net/gloox
+
+  This software is distributed under a license. The full license
+  agreement can be found in the file LICENSE in this distribution.
+  This software may not be copied, modified, sold or distributed
+  other than expressed in the named license agreement.
+
+  This software is distributed without any warranty.
+*/
+
+// using relative paths for source and userinclude directories
+
+
+target        gloox.dll
+targettype    dll
+uid           0x10004262 0x10004264
+vendorid      0x70000001
+
+sourcepath    .\src
+source        adhoc.cpp
+source        amp.cpp
+source        annotations.cpp
+source        attention.cpp
+source        atomicrefcount.cpp
+source        base64.cpp
+source        bookmarkstorage.cpp
+source        capabilities.cpp
+source        chatstate.cpp
+source        chatstatefilter.cpp
+source        clientbase.cpp
+source        client.cpp
+source        component.cpp
+source        compressiondefault.cpp
+source        compressionzlib.cpp
+source        connectionbosh.cpp
+source        connectionhttpproxy.cpp
+source        connectionsocks5proxy.cpp
+source        connectiontcpbase.cpp
+source        connectiontcpclient.cpp
+source        connectiontcpserver.cpp
+source        connectiontls.cpp
+source        connectiontlsserver.cpp
+source        dataform.cpp
+source        dataformfieldcontainer.cpp
+source        dataformfield.cpp
+source        dataformitem.cpp
+source        dataformreported.cpp
+source        delayeddelivery.cpp
+source        disco.cpp
+source        dns.cpp
+source        error.cpp
+source        eventdispatcher.cpp
+source        featureneg.cpp
+source        flexoff.cpp
+source        gloox.cpp
+source        gpgencrypted.cpp
+source        gpgsigned.cpp
+source        inbandbytestream.cpp
+source        instantmucroom.cpp
+source        iq.cpp
+source        jid.cpp
+source        lastactivity.cpp
+source        logsink.cpp
+source        md5.cpp
+source        message.cpp
+source        messageevent.cpp
+source        messageeventfilter.cpp
+source        messagefilter.cpp
+source        messagesession.cpp
+source        mucmessagesession.cpp
+source        mucroom.cpp
+source        mutex.cpp
+source        nickname.cpp
+source        nonsaslauth.cpp
+source        oob.cpp
+source        parser.cpp
+source        prep.cpp
+source        presence.cpp
+source        privacyitem.cpp
+source        privacymanager.cpp
+source        privatexml.cpp
+source        pubsubevent.cpp
+source        pubsubitem.cpp
+source        pubsubmanager.cpp
+source        receipt.cpp
+source        registration.cpp
+source        rosteritem.cpp
+source        rostermanager.cpp
+source        search.cpp
+source        sha.cpp
+source        shim.cpp
+source        simanager.cpp
+source        siprofileft.cpp
+source        socks5bytestream.cpp
+source        socks5bytestreammanager.cpp
+source        socks5bytestreamserver.cpp
+source        softwareversion.cpp
+source        stanza.cpp
+source        stanzaextensionfactory.cpp
+source        subscription.cpp
+source        tag.cpp
+source        tlsdefault.cpp
+source        tlsgnutlsbase.cpp
+source        tlsgnutlsclientanon.cpp
+source        tlsgnutlsclient.cpp
+source        tlsgnutlsserveranon.cpp
+source        tlsgnutlsserver.cpp
+source        tlsopensslbase.cpp
+source        tlsopensslclient.cpp
+source        tlsopensslserver.cpp
+source        tlsschannel.cpp
+source        uniquemucroom.cpp
+source        util.cpp
+source        vcard.cpp
+source        vcardmanager.cpp
+source        vcardupdate.cpp
+source        xhtmlim.cpp
+
+userinclude   .\src
+userinclude   .
+
+systeminclude \epoc32\include
+systeminclude \epoc32\include\stdapis
+systeminclude \epoc32\include\stdapis\openssl
+systeminclude \epoc32\include\stdapis\stlport
+
+library       euser.lib estlib.lib libstdcpp.lib libssl.lib libcrypto.lib libz.lib esock.lib libc.lib
