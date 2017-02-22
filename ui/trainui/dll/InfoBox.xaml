@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="ssi.InfoBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ssi"
+    Name="infoBox" Height="Auto" Width="Auto">
+    
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" Height="Auto">
+
+        <Grid.ColumnDefinitions>            
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+            
+        <TextBox Name="info_textbox" Grid.Column="0" Grid.Row="0" Margin="5" FontFamily="Courier New" AllowDrop="False" TextWrapping="Wrap" IsEnabled="True" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"></TextBox>            
+        <StackPanel Grid.Column="0" Grid.Row="1" FlowDirection="RightToLeft" Orientation="Horizontal" VerticalAlignment="Bottom" >                
+            <Button Name="info_saveButton" Margin="5" Click="info_saveButton_Click" >Save As</Button>
+            <Button Name="info_copyButton" Margin="5" Click="info_copyButton_Click" >Copy</Button>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>
+

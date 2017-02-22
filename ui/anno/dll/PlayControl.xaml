@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="ssi.PlayControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ssi"
+    Height="Auto" Width="Auto">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>        
+        </Grid.RowDefinitions>
+
+        <local:AnnoListControl x:Name="list" Grid.Column="0"></local:AnnoListControl>
+        <local:MediaControl x:Name="media" Grid.Column="1"></local:MediaControl>
+        <local:LabelControl x:Name="label" Grid.Column="2"></local:LabelControl>
+        
+
+    </Grid>
+</UserControl>

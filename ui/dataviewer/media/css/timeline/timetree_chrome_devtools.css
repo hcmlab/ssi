@@ -1,0 +1,47 @@
+.chrome-devtools-timetree, .chrome-devtools-timetree .label text {
+  font-family: Arial;
+  font-weight: normal;
+  font-size: 11px;
+}
+
+.chrome-devtools-timetree .scrubber line {
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.chrome-devtools-timetree .x.axis path {
+  visibility: hidden;
+}
+
+.chrome-devtools-timetree .tick text, .chrome-devtools-timetree .scrubber text {
+  fill: #999;
+}
+
+.chrome-devtools-timetree .rows .row.selected {
+  fill: rgb(51, 103, 186);
+  stroke: rgb(62, 117, 195);
+  stroke-width: 1;
+}
+
+.chrome-devtools-timetree .selected.label text {
+  font-weight: bold;
+}
+
+.chrome-devtools-timetree .row.hover, .chrome-devtools-timetree .selected.label text {
+  fill: #fff;
+}
+
+.chrome-devtools-timetree .row:nth-child(odd) {
+  fill: #f3f3f3;
+}
+
+.chrome-devtools-timetree .bar rect {
+  stroke: red;
+  stroke-width: 1;
+  width: 100;
+}
+
+.chrome-devtools-timetree .duration {
+  font-size: 10px;
+  font-weight: normal;
+}

@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="ssi.RecordControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ssi"  
+    Height="Auto" Width="Auto" Loaded="ControlLoaded">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>            
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Name="myGrid" Grid.Row="0">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />                
+            </Grid.RowDefinitions>
+            
+            <local:BrowserControl x:Name="browser" Grid.Column="0"  Margin="5"></local:BrowserControl>
+            
+            <GridSplitter ResizeDirection="Columns" Grid.Column="1" Width="3" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"/>
+            
+            <Expander Grid.Column="2" ExpandDirection="Left" IsExpanded="True" Expanded="Expander_Expanded" Collapsed="Expander_Collapsed">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0">Change Stimuli:</Label>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="stimuliComboBox" SelectionChanged="stimuliComboBox_SelectionChanged"></ComboBox>
+                    
+                    <UniformGrid Rows="2" Grid.Row="1" Grid.ColumnSpan="2">
+                        <local:StimuliControl x:Name="stimuli" Margin="5"></local:StimuliControl>
+                        <local:EventControl x:Name="events"  Margin="5"></local:EventControl>
+                    </UniformGrid>
+
+                </Grid>
+            </Expander>
+            
+        </Grid>     
+
+        <local:NavigatorControl x:Name="navigator" Grid.Row="1"></local:NavigatorControl>        
+    </Grid>
+</UserControl>

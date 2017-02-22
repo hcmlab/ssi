@@ -1,0 +1,85 @@
+﻿<Window x:Class="ssi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ssi"
+        Title="SSI/XmlPipeUi (http://openssi.net)" Height="Auto" Width="Auto" Icon="ui.ico">
+
+    <Grid>
+ 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+ 
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,0,5,5" HorizontalAlignment="Right">Exe:</Label>
+            <TextBox Name="pipeExePathTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,5,5" Text="{Binding Path=PipeExePath, Mode=TwoWay}"></TextBox>
+            <Button Name="pipeExePathButton" Grid.Row="0" Grid.Column="2" Margin="0,0,5,5" Background="Transparent">Pick</Button>
+   
+            <Label Grid.Row="1" Grid.Column="0" Margin="0,0,5,5" HorizontalAlignment="Right">Pipeline:</Label>
+            <TextBox Name="pipeSearchDirTextBox" Grid.Row="1" Grid.Column="1" Margin="0,0,5,5" Text="{Binding Path=PipeSearchDir, Mode=TwoWay}"></TextBox>
+            <Button Name="pipeSearchDirButton" Grid.Row="1" Grid.Column="2" Margin="0,0,5,5" Background="Transparent">Pick</Button>
+            <ComboBox Name="pipeComboBox"  Grid.Row="2" Grid.Column="1" Margin="0,0,5,5" Background="Transparent" FontWeight="Bold" Style="{StaticResource ComboBoxFlatStyle}"></ComboBox>
+            <Button Name="pipeEditButton" Grid.Row="2" Grid.Column="2" Margin="0,0,5,5" Background="Transparent">Edit</Button>
+
+            <Label Grid.Row="3" Grid.Column="0" Margin="0,0,5,5" HorizontalAlignment="Right">Config:</Label>
+            <TextBox Name="configSearchDirTextBox" Grid.Row="3" Grid.Column="1" Margin="0,0,5,5" Text="{Binding Path=ConfigSearchDir, Mode=TwoWay}"></TextBox>
+            <Button Name="configSearchDirButton" Grid.Row="3" Grid.Column="2" Margin="0,0,5,5" Background="Transparent">Pick</Button>
+            <ComboBox Name="configComboBox" Grid.Row="4" Grid.Column="1" Margin="0,0,5,5" Background="Transparent" FontWeight="Bold" Style="{StaticResource ComboBoxFlatStyle}"></ComboBox>
+            <Button Name="configEditButton" Grid.Row="4" Grid.Column="2" Margin="0,0,5,5" Background="Transparent">Edit</Button>
+
+        </Grid>
+
+        <local:ConfigControl x:Name="configControl" Grid.Row="1" Grid.Column="0" Margin="5"></local:ConfigControl>            
+
+        <Grid Grid.Row="2" Grid.Column="0"  Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>                
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <Button Name="addItemButton" Margin="0,0,5,5" Background="Transparent" Height="25">Add</Button>
+                <Button Name="remItemButton" Margin="0,0,5,5" Background="Transparent" Height="25">Rem</Button>
+                <Button Name="editItemButton" Margin="0,0,5,5" Background="Transparent" Height="25">Edit</Button>
+                <Button Name="parsePipeButton" Margin="0,0,5,5" Background="Transparent" Height="25">Parse From Pipeline</Button>
+            </StackPanel>
+            <CheckBox Name="lockCheckBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" Background="Transparent">Lock</CheckBox>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                <Button Name="newButton" Margin="0,0,5,0" Background="Transparent" Height="25">New</Button>
+                <Button Name="saveButton" Margin="0,0,5,0" Background="Transparent" Height="25" IsEnabled="false">Save</Button>
+                <Button Name="saveAsButton" Margin="0,0,5,0" Background="Transparent" Height="25">Save As</Button>
+                <Button Name="reloadButton" Margin="0,0,0,0" Background="Transparent" Height="25">Reload</Button>
+            </StackPanel> 
+            <Button Name="saveAndRunButton" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,0" FontWeight="Bold" Background="Transparent" Height="25" Width="85">Run</Button>
+                
+        </Grid>
+        
+    </Grid>    
+    
+</Window>

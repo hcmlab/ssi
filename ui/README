@@ -1,0 +1,37 @@
+------------------------------------------------------------
+	UI // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	WPF MediaKit -- For webcam, DVD and custom video support in WPF
+	Copyright (c) 2008, Jeremiah Morrill
+	http://wpfmediakit.codeplex.com
+	see also LICENSE.WPFMEDIAKIT		
+	
+	AvalonControlsLibrary, a set of WPF controls that can help WPF developers while developing applications.
+	http://avaloncontrolslib.codeplex.com/
+	see also LICENSE.AVALONCONTROLS	
+	
+	AvalonEdit, WPF-based text editor in SharpDevelop 4.x "Mirador"
+	by Daniel Grunwald, http://www.avalonedit.net
+	see also LICENSE.AVALONEDIT	
+	
+	C# FileAssociation Class
+	by Aidan Follestad, http://www.codeproject.com/Articles/43675/C-FileAssociation-Class
+	see also LICENSE.FILEASSOCIATIONS
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+

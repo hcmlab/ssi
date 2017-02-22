@@ -1,0 +1,74 @@
+﻿<Window x:Class="ssi.ProjectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ssi"
+    ResizeMode="CanResize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    Title="Create Project" Height="600" Width="600">
+    <Grid Margin="5">
+
+        <Grid.ColumnDefinitions>            
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />   
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <local:FolderControl x:Name="folder" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="5"></local:FolderControl>
+        
+        <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="5">Name:</Label>
+        <TextBox Name="nameText" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" TextChanged="nameText_TextChanged"></TextBox>
+
+        <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="5">Pipeline:</Label>
+        <TextBox Name="pipeText" Grid.Column="1" Grid.Row="2" Margin="5" TextChanged="pipeText_TextChanged"></TextBox>
+        <Button Grid.Column="2" Grid.Row="2" Margin="5" Click="LoadPipeClick">Browse</Button>
+
+        <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" Margin="5">Definition:</Label>
+        <TextBox Name="defText" Grid.Column="1" Grid.Row="3" Margin="5" TextChanged="defText_TextChanged"></TextBox>
+        <Button Grid.Column="2" Grid.Row="3" Margin="5" Click="LoadDefClick">Browse</Button>
+
+        <Label Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" Margin="5">Stimuli:</Label>
+        <TextBox Name="stimuliText" Grid.Column="1" Grid.Row="4" Margin="5" TextChanged="stimuliText_TextChanged"></TextBox>
+        <Button Grid.Column="2" Grid.Row="4" Margin="5" Click="LoadStimuliClick">Browse</Button>
+
+        <Grid Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Margin="5">Signal:</Label>
+            <TextBox Grid.Column="1" Name="signalText" Margin="5" TextChanged="signalText_TextChanged"></TextBox>
+            <Label Grid.Column="2" Margin="5">Type:</Label>
+            <ComboBox Grid.Column="3" Name="typeCombo" VerticalAlignment="Center" Margin="5" SelectionChanged="typeCombo_SelectionChanged"></ComboBox>
+            <Label Grid.Column="4" Margin="5">Anno:</Label>
+            <TextBox Grid.Column="5" Name="annoText" Margin="5" TextChanged="annoText_TextChanged"></TextBox>
+        </Grid>
+
+        <StackPanel Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="5">
+            <Button Name="createButton" Margin="5" Click="CreateClick">Create</Button>
+            <Button Name="importButton" Margin="5" Click="ImportClick">Import</Button>
+            <Button Margin="5" Click="CancelClick">Cancel</Button>
+        </StackPanel>
+
+        <Border Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="1" Margin="10,5,10,10">
+            <Expander IsExpanded="True" Header="Quick Help">
+                <TextBlock Name="quickHelp" Margin="25 5 5 5" FontSize="14" TextWrapping="Wrap" TextAlignment="Justify">...</TextBlock>
+            </Expander>
+        </Border>
+
+    </Grid>
+</Window>

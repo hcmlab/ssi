@@ -1,0 +1,83 @@
+﻿<Window x:Class="ssi.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="SSI/Setup (http://openssi.net)" Height="600" Width="800">
+    <Grid Margin="5">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Margin="5">Platform:</Label>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="5">
+            <ComboBox Name="ComboBoxPlatform" Grid.Row="0" VerticalAlignment="Center" SelectedIndex="0" Margin="5"></ComboBox>
+        </StackPanel>
+
+        <Label Grid.Row="1" Grid.Column="0" Margin="5">Compiler:</Label>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5">
+            <ComboBox Name="ComboBoxCompiler" Grid.Row="0" VerticalAlignment="Center" SelectedIndex="0" Margin="5"></ComboBox>
+        </StackPanel>
+        
+        <Label Grid.Row="2" Grid.Column="0" Margin="5">Variables:</Label>        
+        <Grid Grid.Row="2" Grid.Column="1" Margin="5">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>                                
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Name="CheckBoxPath" Grid.Row="0" Grid.Column="0" Margin="5">add to $(PATH) variable</CheckBox>
+            <CheckBox Name="CheckBoxInclude" Grid.Row="1" Grid.Column="0" Margin="5">create $(SSI__INCLUDE) variable</CheckBox>
+            <CheckBox Name="CheckBoxLibrary" Grid.Row="2" Grid.Column="0" Margin="5">create $(SSI__LIBS) variable</CheckBox>
+            <CheckBox Name="CheckBoxPython" Grid.Row="3" Grid.Column="0" Margin="5">create $(SSI__PYTHON) variable</CheckBox>
+       </Grid>
+
+        <Label Grid.Row="3" Grid.Column="0" Margin="5">Associations:</Label>
+        <Grid Grid.Row="3" Grid.Column="1" Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Name="CheckBoxPipeline" Grid.Row="0" Grid.Column="0" Margin="5">*.pipeline (run as administrator to enable this option)</CheckBox>
+            <CheckBox Name="CheckBoxStream" Grid.Row="1" Grid.Column="0" Margin="5">*.stream (run as administrator to enable this option)</CheckBox>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Name="ButtonApply" Grid.Row="0" Grid.Column="0" Margin="5" Padding="5">Apply</Button>
+            <Button Name="ButtonUndo" Grid.Row="0" Grid.Column="1" Margin="5" Padding="5">Undo</Button>
+            <Label Grid.Row="0" Grid.Column="3" Margin="5" Padding="5" >Note: operations may take up to a minute</Label>
+            <Button Name="ButtonCancel" Grid.Row="0" Grid.Column="3" Margin="5" Padding="5" HorizontalAlignment="Right">Done!</Button>
+        </Grid>
+
+        <Label Grid.Row="5" Grid.Column="0" Margin="5">Log:</Label>
+        <TextBox Name="TextBoxLog" FontFamily="Courier New" Grid.Row="5" Grid.Column="1" Margin="5" IsReadOnly="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"></TextBox>
+
+    </Grid>
+</Window>

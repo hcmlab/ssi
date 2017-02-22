@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Snippet>
+  <Shortcut>sensor</Shortcut>
+  <Declaration>
+    <ID>
+      <Name>name</Name>
+      <Value></Value>
+    </ID>
+  </Declaration>
+  <Code><![CDATA[<sensor create="$name$">
+		<provider channel="" pin="" />
+	</sensor>]]></Code>
+</Snippet>

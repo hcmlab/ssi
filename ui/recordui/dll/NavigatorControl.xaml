@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="ssi.NavigatorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="Auto" Width="Auto">
+    <StackPanel Orientation="Horizontal">
+        <Button Name="startButton" Margin="5">Start Recording</Button>
+        <Button Name="stopButton" Margin="5">Stop</Button>
+        <Button Name="nextButton" Margin="5">Next</Button>
+    </StackPanel>
+</UserControl>

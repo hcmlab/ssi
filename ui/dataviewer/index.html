@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<!-- 
+(c)2013 Andreas Seiderer
+
+sources:
+	http://www.html5rocks.com/en/tutorials/file/dndfiles/ 
+	http://datatables.net/api
+	http://crowdstrike.github.io/ember-timetree/
+	http://dygraphs.com/
+	
+notes:
+	events in the timeline start at the position "from" minus "dur";
+-->
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>SSI Dataviewer</title>
+		
+		<link rel="stylesheet" href="media/css/timeline/timetree_basic.css">
+		<link rel="stylesheet" href="media/css/timeline/timetree_chrome_devtools.css">
+		
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+		</style>
+		 
+		 
+		
+		<script src="media/js/jquery-2.0.3.min.js" type="text/javascript"></script>
+		<script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+		
+		
+	  	<script src="media/js/timeline/handlebars-1.0.0-rc.3.js" type="text/javascript"></script>
+	  	<script src="media/js/timeline/ember.min.js" type="text/javascript"></script>
+	  	<script src="media/js/timeline/d3.v3.min.js" type="text/javascript"></script>
+	  	<script src="media/js/timeline/ember-timetree.min.js" type="text/javascript"></script>
+	  	
+	  	<script type="text/javascript" src="media/js/dygraph/dygraph-combined.js"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+			(function($) {
+			/*
+			 * Function: fnGetColumnData
+			 * Purpose:  Return an array of table values from a particular column.
+			 * Returns:  array string: 1d data array 
+			 * Inputs:   object:oSettings - dataTable settings object. This is always the last argument past to the function
+			 *           int:iColumn - the id of the column to extract the data from
+			 *           bool:bUnique - optional - if set to false duplicated values are not filtered out
+			 *           bool:bFiltered - optional - if set to false all the table data is used (not only the filtered)
+			 *           bool:bIgnoreEmpty - optional - if set to false empty values are not filtered from the result array
+			 * Author:   Benedikt Forchhammer <b.forchhammer /AT\ mind2.de>
+			 */
+			$.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+				// check that we have a column id
+				if ( typeof iColumn == "undefined" ) return new Array();
+				
+				// by default we only want unique data
+				if ( typeof bUnique == "undefined" ) bUnique = true;
+				
+				// by default we do want to only look at filtered data
+				if ( typeof bFiltered == "undefined" ) bFiltered = true;
+				
+				// by default we do not want to include empty values
+				if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
+				
+				// list of rows which we're going to loop through
+				var aiRows;
+				
+				// use only filtered rows
+				if (bFiltered == true) aiRows = oSettings.aiDisplay; 
+				// use all rows
+				else aiRows = oSettings.aiDisplayMaster; // all row numbers
+			
+				// set up data array	
+				var asResultData = new Array();
+				
+				for (var i=0,c=aiRows.length; i<c; i++) {
+					iRow = aiRows[i];
+					var aData = this.fnGetData(iRow);
+					var sValue = aData[iColumn];
+					
+					// ignore empty values?
+					if (bIgnoreEmpty == true && sValue.length == 0) continue;
+			
+					// ignore unique values?
+					else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+					
+					// else push the value onto the result data array
+					else asResultData.push(sValue);
+				}
+				
+				return asResultData;
+			}}(jQuery));
+			
+			
+			function fnCreateSelect( aData )
+			{
+				var r='<select><option value=""></option>', i, iLen=aData.length;
+				for ( i=0 ; i<iLen ; i++ )
+				{
+					r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+				}
+				return r+'</select>';
+			}
+			
+			
+			$(document).ready(function() {
+				/* Initialise the DataTable */
+				var oTable = $('#dataTable').dataTable( {
+					"oLanguage": {
+						"sSearch": "Search all columns:"
+					}
+				} );
+				
+				/* Add a select menu for each TH element in the table footer */
+				$("tfoot th").each( function ( i ) {
+					this.innerHTML = fnCreateSelect( oTable.fnGetColumnData(i) );
+					$('select', this).change( function () {
+						oTable.fnFilter( $(this).val(), i );
+					} );
+				} );
+			} );
+			
+			
+			/*$(document).ready(function() {
+				$('#dataTable').dataTable();						
+			} );*/
+			
+			function fnClickAddRow(attrs) {
+				$('#dataTable').dataTable().fnAddData( [
+					attrs[0].value,
+					attrs[1].value,
+					attrs[2].value,
+					attrs[3].value,
+					attrs[4].value,
+					attrs[5].value,
+					attrs[6].value,
+					attrs[7].value ] );
+			}
+			
+			function handleChkbClick(cb, col) {
+			  fnShowHide(col, cb.checked );
+			}		
+			
+			function fnShowHide( iCol, visible ) {
+			    /* Get the DataTables object again - this is not a recreation, just a get of the object */
+			    var oTable = $('#dataTable').dataTable();
+			    oTable.fnSetColumnVis( iCol, visible );
+			}
+			
+		</script>
+	</head>
+	<body>	
+		
+		Event file:
+		<input type="file" id="files" name="fileName"/>
+		<output id="list"></output>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<output id="timeData"></output>
+		
+		<br>
+		
+		Stream file:
+		<input type="file" id="streams" name="streamFileName"/>
+		<output id="listStream"></output>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<output id="streamInfo"></output>
+		
+		<br>		
+		<hr>
+		
+		<div id="graphVisibility"></div>
+		<div id="graphdiv" style="width:auto;"></div>
+		
+		<hr>
+				
+		<div id="app"></div>
+		
+		<hr>
+		
+		<p>Columns:
+		<input type="checkbox" name="opt[]" value="sender" checked=true onclick='handleChkbClick(this,0);'> Sender
+		<input type="checkbox" name="opt[]" value="event" checked=true onclick='handleChkbClick(this,1);'> Event
+		<input type="checkbox" name="opt[]" value="from" checked=true onclick='handleChkbClick(this,2);'> From
+		<input type="checkbox" name="opt[]" value="dur" checked=true onclick='handleChkbClick(this,3);'> Dur
+		<input type="checkbox" name="opt[]" value="prob" checked=true onclick='handleChkbClick(this,4);'> Prob
+		<input type="checkbox" name="opt[]" value="type" checked=true onclick='handleChkbClick(this,5);'> Type
+		<input type="checkbox" name="opt[]" value="state" checked=true onclick='handleChkbClick(this,6);'> State
+		<input type="checkbox" name="opt[]" value="glue" checked=true onclick='handleChkbClick(this,7);'> Glue
+		</p>
+      
+		<table cellpadding="0" cellspacing="0" border="0" class="display"  id="dataTable">
+		  <thead>
+		    <tr>
+		      <th>sender</th>
+		      <th>event</th>
+		      <th>from</th>
+		      <th>dur</th>
+		      <th>prob</th>
+		      <th>type</th>
+		      <th>state</th>
+		      <th>glue</th>
+		    </tr>
+		  </thead>
+		  <tbody id="tableContent">
+			<!-- filled by javascript -->
+		  </tbody>
+		  	<tfoot>
+		<tr>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tfoot>
+		</table>
+
+
+		<script type="text/x-handlebars" data-template-name="index">
+			  {{view App.ChromeDevToolsTimetreeView contentBinding="App.data" classNames="chrome-devtools-timetree" selectionBinding="selectedEvents" rangeBinding="eventsRange_example2" resizeOnCollapse=true width="auto"}}
+      		  {{view Ember.Timetree.TimetreeBrushView contentBinding="App.data" brushRangeBinding="eventsRange_example2" width="auto"}}
+		</script>
+		<script>	
+		
+			function handleStreamSelect(evt) {
+		
+				var files = evt.target.files;
+				// FileList object
+
+				// files is a FileList of File objects. List some properties.
+				var output = [];
+				var f = files[0];
+				
+				if (f != undefined) {				
+				    var reader = new FileReader();
+				    
+				    output.push('<strong>loaded file: ', f.name, '</strong>, ', f.size, ' bytes, last modified: ', f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a');
+	
+					document.getElementById('listStream').innerHTML = output.join('');
+				
+				    waitForStreamTextReadComplete(reader);
+				    reader.readAsText(f);
+			   }
+			}
+		
+		
+			function parseStreamText(text) {
+				    var dataPointTime = 0;
+				    var csvSeparator = "\t";
+				    
+				    var cols = 1;
+				    for (var i = 0; i < text.length; i++) {
+				    	switch (text[i]) {
+				    		case  csvSeparator: cols++; break;
+				    		case "\n": i = text.length;
+				    	}
+				    }
+				    	
+				    
+				    var textArr = text.split("\n");
+				    var valcount = textArr.length;
+				    if (textArr[textArr.length-1] === "") valcount--;	//last line is empty!
+
+				    sr = 100;
+				    srConv = 100;
+				    
+				    
+				    var sr_input=prompt("Please enter the original sample rate of the streams (Hz)","100");
+					if (sr_input!=null && sr_input!="")
+					  {
+					  sr = sr_input;
+					  }
+					  
+					sr_input=prompt("Please enter a smaller sample rate to that the streams sample rate should be converted to (Hz)","100");
+					if (sr_input!=null && sr_input!="")
+					  {
+					  	if (parseInt(sr) > parseInt(sr_input)) srConv = sr_input;
+					  }
+				    
+				    //csv header
+				    var textOut = "time"+csvSeparator;
+				    
+				    for (var i = 0; i < cols; i++) {
+				    	textOut+="stream"+i;
+				    	if (i < cols-1) textOut+=csvSeparator;
+				    	else textOut+="\n";
+				    }
+				    
+				    var reducedPoints = Math.round((1/srConv)/(1/sr));	//use only every x point
+				    alert("In the graph a point is drawn for every "+reducedPoints+"th data point (reduction: "+Math.round(100-(100/valcount)*(valcount/reducedPoints))+"%).");
+				    
+				    document.getElementById('streamInfo').innerHTML = "streams: "+cols+"; values: "+valcount+"; manual set sample rate: "+sr+" Hz; converted to "+srConv+" Hz; values used for graph: "+ Math.round(valcount/reducedPoints)+" ("+Math.round((100/valcount)*(valcount/reducedPoints))+"%)";
+				    				    
+				    
+				    //add values to csv with time
+				    for (var line = 0; line < valcount; line++) {
+				    	if (line%reducedPoints === 0)
+				    	textOut += Math.round(line*(1/sr*1000))+csvSeparator+textArr[line]+"\n";
+				    }
+				    
+				    
+			     g = new Dygraph(
+				    document.getElementById("graphdiv"),
+				    textOut,
+				    {
+				    }
+				  );
+				  
+				  
+				  var checkboxTemplate = "<input type=checkbox id={0} onClick=\"graphchange(this)\" checked><label for=\"{0}\">{1}</label>";
+				  var checkboxes = "";
+				  for (var i = 0; i < cols; i++) 
+				  	checkboxes += checkboxTemplate.replace("{0}",i).replace("{1}","stream"+i);
+				  
+				  document.getElementById('graphVisibility').innerHTML = checkboxes;
+				  
+				  	/*g = new Dygraph(
+				    document.getElementById("graphdiv"),
+    					"0\t75\t90\n" +
+    					"10\t70\t100\n" +
+    					"20\t80\t120\n",
+				    {
+				    }
+				  );*/
+				  
+				  
+				}
+				
+				
+		 	function graphchange(el) {
+		    	g.setVisibility(el.id, el.checked);
+		  	}
+							
+		
+			function handleFileSelect(evt) {
+		
+				var files = evt.target.files;
+				// FileList object
+
+				// files is a FileList of File objects. List some properties.
+				var output = [];
+				var f = files[0];
+				
+				if (f != undefined) {
+					if (typeof App != "undefined") App.destroy(); //destroy Timeline
+					
+					$('#dataTable').dataTable().fnClearTable();
+					
+					output.push('<strong>loaded file: ', f.name, '</strong>, ', f.size, ' bytes, last modified: ', f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a');
+	
+					document.getElementById('list').innerHTML = output.join('');
+					
+					
+				    var reader = new FileReader();
+				
+				    waitForTextReadComplete(reader);
+				    reader.readAsText(f);
+			   }
+			}
+			
+			function parseTextAsXml(text) {
+			    var parser = new DOMParser(),
+			        xmlDom = parser.parseFromString(text, "text/xml");
+
+				var timeEventArr = new Array();	//timeline
+				
+				
+			    for ( var k = 0 ; k < xmlDom.firstChild.childNodes.length ; k++ ) {
+			    	var node = xmlDom.firstChild.childNodes[k];
+			    	
+			    	//time node
+			    	if (node.nodeName === "time") {
+			    		var output  = [];
+			    		output.push('<strong>time:\t</strong>');
+			    		var attrs = xmlDom.firstChild.childNodes[k].attributes;
+			    		
+			    		for (var l = 0; l < attrs.length; l++) {
+			    			output.push(attrs[l].name+": "+attrs[l].value +';\t');
+			    			
+			    			//console.log(attrs[l].name+": "+attrs[l].value);
+			    		}  
+			    		
+			    		document.getElementById('timeData').innerHTML = output.join('');
+			    	}
+			    	
+			    	else
+			    			    	
+			    	//event node
+			    	if (node.nodeName === "event") {
+			    		var attrs = xmlDom.firstChild.childNodes[k].attributes;
+			    		
+			    		var timeEvent = new Object();	//timeline
+			    		
+			    		fnClickAddRow(attrs);
+			    		
+			    		//event attributes
+			    		for (var l = 0; l < attrs.length; l++) {
+			    			//console.log(attrs[l].name+': '+attrs[l].value);	 
+			    			
+			    			switch(attrs[l].name) {
+			    				case "sender": 	timeEvent.className = attrs[l].value; break;
+			    				case "event": 	timeEvent.label = attrs[l].value; break;
+			    				case "from": 	timeEvent.start = parseInt(attrs[l].value); break;
+			    				case "dur": 	timeEvent.end = Math.max(parseInt(attrs[l].value),0.001); break;	//duration, not end time! min 1 ms
+			    				
+			    				case "state": 	timeEvent.state = attrs[l].value === "continued"; break;
+			    			}
+			    		} 
+			    		
+			    		var i;
+			    		timeEvent.parent = null;
+			    		for (i = 0; i < timeEventArr.length; i++) {
+			    			if (timeEventArr[i].className === timeEvent.className) {
+			    				timeEvent.parent = i; 
+			    				break;
+			    			}
+			    		}
+			    		
+			    		if (timeEvent.parent === null) {
+			    			var timeEventRoot = new Object();
+			    			timeEventRoot.className = timeEvent.className;
+			    			timeEventRoot.label = timeEventRoot.className;
+			    			timeEventRoot.start = timeEventRoot.end = 0;
+			    			timeEventArr.pushObject(timeEventRoot);
+			    			
+			    			for (i = 0; i < timeEventArr.length; i++) {
+				    			if (timeEventArr[i].className === timeEvent.className) {
+				    				timeEvent.parent = i; 
+				    				break;
+				    			}
+			    			}
+			    		}
+			    		
+			    		if (timeEvent.state) { 
+			    			timeEvent.label += " (continued)";
+			    			timeEvent.start = timeEvent.start-timeEvent.end;
+			    		}
+			    		else {
+			    			timeEvent.label += " (completed)";
+			    			timeEvent.start = timeEvent.start-timeEvent.end;
+			    		}
+			    		
+			    		timeEvent.end = timeEvent.start+timeEvent.end;
+			    		
+			    		//add to section instead of new element
+			    		var foundLabel = false;
+			    		for (i = 0; i < timeEventArr.length; i++) {
+			    			if (timeEventArr[i].label === timeEvent.label) {
+			    				if (timeEventArr[i].sections === undefined) { 
+			    					timeEventArr[i].sections = new Array();
+			    					timeEventArr[i].sections.push(
+			    					{
+		                            "start"     : timeEventArr[i].start,
+		                            "end"       : timeEventArr[i].end
+                          			}); 
+			    				}
+			    				timeEventArr[i].sections.push(
+			    					{
+		                            "start"     : timeEvent.start,
+		                            "end"       : timeEvent.end
+                          			}); 
+                          		timeEventArr[i].end = timeEvent.end;
+                          		foundLabel = true;
+			    				break;
+			    			}
+			    		}
+			    		
+			    		if (!foundLabel) timeEventArr.pushObject(timeEvent);
+			    		//alert(timeEvent.className+";"+timeEvent.label+";"+timeEvent.start+";"+timeEvent.end+";"+timeEvent.parent);	
+			    				    
+		    			//event attributes: tuple
+		    			if (node.childNodes.length > 0) {
+		    				var tupleNodes = node.childNodes;
+		    							
+		    				for (var m = 0; m < tupleNodes.length; m++) {
+		    					if (tupleNodes[m].nodeType === 1) {
+			    					//for (var n = 0; n < tupleNodes[m].attributes.length; n++)
+			    						//console.log("\t"+tupleNodes[m].attributes[n].name+": "+tupleNodes[m].attributes[n].value);
+		    					}
+		    				}
+		    			}		    			    			
+			    	}
+			    }
+			    
+			    var oTable = $('#dataTable').dataTable();
+			    /* Add a select menu for each TH element in the table footer */
+				$("tfoot th").each( function ( i ) {
+					this.innerHTML = fnCreateSelect( oTable.fnGetColumnData(i) );
+					$('select', this).change( function () {
+						oTable.fnFilter( $(this).val(), i );
+					} );
+				} );
+				
+				
+				//timeline ->
+				
+				App = Ember.Application.create({
+				  rootElement: '#app'
+				});
+				
+				//App.resizeBy($(window).width()-750,0);
+				
+				/*App.data = [
+				  {
+				    "label"             : "Network Requests",
+				    "start"             : 1347800918,
+				    "end"               : 1347801818,
+				    "className"         : "network"
+				  },
+				  {
+				    "label"             : "Layout",
+				    "start"             : 1347801100,
+				    "end"               : 1347801918,
+				    "className"         : "layout"
+				  }];*/
+				 App.data = timeEventArr;	
+				
+				App.ChromeDevToolsTimetreeView = Ember.Timetree.TimetreeView.extend({
+				  timeTickFormat: Ember.computed(function() {
+				    var minTime = this.get('xScale').domain()[0];
+				    var minTime = d3.min(this.content.mapProperty('start'));
+				    return function(d){ 
+				    	 if (typeof g != "undefined") g.setSelection(parseInt((d - minTime)/(1/srConv*1000)) );		//setSelection needs the row number not the time value!
+				    	 return parseInt(d - minTime) + 'ms'; 
+				    	 };
+				  }).property(),
+				
+				  durationFormatter: function(n) { 
+				  	var dur=n.end - n.start;
+				  	if (dur < 0.01) return "";		//show no label for events with zero duration (have been set to 0.001 to be visible as lines)
+				  	return dur + 'ms'; 
+				  	},
+				  
+				  
+				    _range: Ember.computed(function() {
+				    var range = this.get('range');
+				    if (range && range.length === 2) { if (typeof g != "undefined") g.updateOptions( {dateWindow: range } ); return range; }
+				
+				    // Some of this is a bit redundant with renderNodes
+				    var rootNode = this.get('rootNode');
+				    if (rootNode.children.length === 0) { return []; }
+				
+				    var tree = this.get('tree'),
+				        nodes = tree.nodes(rootNode).slice(1), // Skip root node
+				        min = d3.min(nodes, function(n) { return n.start; }),
+				        max = d3.max(nodes, function(n) { return n.lastEnd; });
+					
+					if (typeof g != "undefined") g.updateOptions( {dateWindow: [min,max] } );
+                  
+				    return [min, max];
+				  }).property('range', 'rootNode'),
+				  
+				  //width: $(window).width()-30
+				  
+				});
+				
+				
+				/*Ember.Timetree.TimetreeBrushView = Ember.Timetree.TimetreeBrushView.extend({
+					width: $(window).width()-30
+				});*/
+				
+				
+			}
+			
+			function waitForTextReadComplete(reader) {
+			    reader.onloadend = function(event) {
+			        var text = event.target.result;
+			
+			        parseTextAsXml(text);
+			    }
+			}
+			
+			function waitForStreamTextReadComplete(reader) {
+			    reader.onloadend = function(event) {
+			        var text = event.target.result;
+			
+			        parseStreamText(text);
+			    }
+			}
+
+			document.getElementById('files').addEventListener('change', handleFileSelect, false);
+			document.getElementById('streams').addEventListener('change', handleStreamSelect, false);
+			
+			window.onresize = function (evt) {
+				if (typeof oTable != "undefined") oTable.fnDraw();
+		  };
+						
+		 </script>
+	</body>
+
+</html>

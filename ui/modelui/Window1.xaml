@@ -1,0 +1,94 @@
+﻿<Window x:Class="ssi.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:select="clr-namespace:ssi;assembly=ssiselect"
+    xmlns:view="clr-namespace:ssi;assembly=ssiview"
+    xmlns:train="clr-namespace:ssi;assembly=ssitrain"
+    xmlns:record="clr-namespace:ssi;assembly=ssirecord"
+    xmlns:relabel="clr-namespace:ssi;assembly=ssirelabel"
+    Title="SSI/ModelUI v0.9.6 (http://openssi.net)" Height="Auto" Width="Auto" WindowStartupLocation="Manual" WindowState="Maximized" Closed="Window_Closed" Loaded="Window_Loaded">
+    <Grid Name="myGrid">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Expander Grid.Row="0" Header="Project" ExpandDirection="Down" IsExpanded="True"  Expanded="Expander_Expanded" Collapsed="Expander_Collapsed">
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="10,10,10,0">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <Button Name="reloadButton" Margin="5" Click="reloadButton_Click">Reload</Button>
+                        <CheckBox Name="useRecycleBin" Margin="5" VerticalAlignment="Center">Recycle Bin</CheckBox>
+                        <CheckBox Name="useMultiSelect" Margin="5" VerticalAlignment="Center">Multi Selection</CheckBox>
+                        <CheckBox Name="useSimpleInterface" Margin="5" VerticalAlignment="Center">Simple Interface</CheckBox>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="10,0,10,10">
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                    
+                        <select:SelectControl x:Name="select" Grid.Row="0" Grid.Column="0"></select:SelectControl>
+                        <Expander IsExpanded="True" Header="Quick Help" ExpandDirection="Down" Grid.Row="0" Grid.Column="1">
+                            <TextBlock Name="projectQuickHelp" Margin="25 5 5 5" FontSize="14" TextWrapping="Wrap" TextAlignment="Justify">...</TextBlock>
+                        </Expander>                        
+                    </Grid>
+                    
+                </Border>
+            </Grid>
+        </Expander>
+        
+        <GridSplitter ResizeDirection="Rows" Grid.Row="1" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"/>
+
+        <TabControl Name="tab" Grid.Row="2" SelectionChanged="tab_SelectionChanged">
+            <TabItem Header="Record" Name="tabRecord">
+                <record:RecordControl x:Name="record" Margin="5"></record:RecordControl>
+            </TabItem>
+            <TabItem Header="View" Name="tabView">
+                <view:ViewControl x:Name="view"></view:ViewControl>
+            </TabItem>
+            <TabItem Header="ReLabel" Name="tabReLabel">
+                <relabel:ReLabelControl x:Name="relabel"></relabel:ReLabelControl>
+            </TabItem>
+            <TabItem Header="Model" Name="tabTrain">                
+                <train:TrainControl x:Name="train" Grid.Row="0"></train:TrainControl>                    
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="10,10,10,0">
+            <Expander IsExpanded="True" Header="Quick Help">
+                <TextBlock Name="quickHelp" Margin="25 5 5 5" FontSize="14" TextWrapping="Wrap" TextAlignment="Justify">...</TextBlock>
+            </Expander>
+        </Border>
+
+        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="10,5,10,10">
+            <Expander IsExpanded="False" Header="Process Output">
+                <select:LogControl x:Name="log" Height="200"></select:LogControl>
+            </Expander>
+        </Border>
+
+    </Grid>
+</Window>

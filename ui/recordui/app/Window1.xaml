@@ -1,0 +1,22 @@
+﻿<Window x:Class="ssi.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:record="clr-namespace:ssi;assembly=ssirecord"
+    xmlns:select="clr-namespace:ssi;assembly=ssiselect"
+    Title="SSI/RecordUI" Height="600" Width="800">
+    <Grid Name="myGrid" Margin="5">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Expander Grid.Row="0" Header="Load Data" ExpandDirection="Down" IsExpanded="True"  Expanded="Expander_Expanded" Collapsed="Expander_Collapsed">
+            <select:SelectControl x:Name="select" Margin="5"></select:SelectControl>
+        </Expander>
+        <GridSplitter Grid.Row="1" Height="3" Width="Auto" HorizontalAlignment="Stretch"></GridSplitter>
+        
+        <record:RecordControl x:Name="record" Grid.Row="2" Margin="5"></record:RecordControl>
+    </Grid>
+</Window>
