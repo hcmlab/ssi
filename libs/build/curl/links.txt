@@ -1,0 +1,1 @@
+http://www.npcglib.org/~stathis/blog/precompiled-openssl/

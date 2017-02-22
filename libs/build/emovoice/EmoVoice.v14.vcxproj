@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BCFA6E8D-10CA-4A96-BD47-84D55208CBF7}</ProjectGuid>
+    <RootNamespace>Esmeralda</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>emovoice</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\ev___program.c" />
+    <ClCompile Include="source\ev_acf.c" />
+    <ClCompile Include="source\ev_basics.c" />
+    <ClCompile Include="source\ev_channel.c" />
+    <ClCompile Include="source\ev_class.c" />
+    <ClCompile Include="source\ev_csp.c" />
+    <ClCompile Include="source\ev_dct.c" />
+    <ClCompile Include="source\ev_delay.c" />
+    <ClCompile Include="source\ev_deriv.c" />
+    <ClCompile Include="source\ev_dft.c" />
+    <ClCompile Include="source\ev_durationFeatures.c" />
+    <ClCompile Include="source\ev_dwt.c" />
+    <ClCompile Include="source\ev_efeatures.c" />
+    <ClCompile Include="source\ev_eigen.c" />
+    <ClCompile Include="source\ev_energyFeatures.c" />
+    <ClCompile Include="source\ev_extract.c" />
+    <ClCompile Include="source\ev_extract_v1.c" />
+    <ClCompile Include="source\ev_fex.c" />
+    <ClCompile Include="source\ev_fextract.c" />
+    <ClCompile Include="source\ev_fft.c" />
+    <ClCompile Include="source\ev_filterbank.c" />
+    <ClCompile Include="source\ev_fselect.c" />
+    <ClCompile Include="source\ev_fw_masking.c" />
+    <ClCompile Include="source\ev_hashq.c" />
+    <ClCompile Include="source\ev_histogram.c" />
+    <ClCompile Include="source\ev_hnr.c" />
+    <ClCompile Include="source\ev_io.c" />
+    <ClCompile Include="source\ev_lpc.c" />
+    <ClCompile Include="source\ev_matrix.c" />
+    <ClCompile Include="source\ev_mel.c" />
+    <ClCompile Include="source\ev_memory.c" />
+    <ClCompile Include="source\ev_messages.c" />
+    <ClCompile Include="source\ev_mfcc.c" />
+    <ClCompile Include="source\ev_mfcc_1_3.c" />
+    <ClCompile Include="source\ev_mfcc_1_4.c" />
+    <ClCompile Include="source\ev_mfcc_1_6.c" />
+    <ClCompile Include="source\ev_mfccFeatures.c" />
+    <ClCompile Include="source\ev_naive_bayes.c" />
+    <ClCompile Include="source\ev_name.c" />
+    <ClCompile Include="source\ev_pitch.c" />
+    <ClCompile Include="source\ev_pitchFeatures.c" />
+    <ClCompile Include="source\ev_preemph.c" />
+    <ClCompile Include="source\ev_prob.c" />
+    <ClCompile Include="source\ev_queue.c" />
+    <ClCompile Include="source\ev_score.c" />
+    <ClCompile Include="source\ev_sdft.c" />
+    <ClCompile Include="source\ev_segment.c" />
+    <ClCompile Include="source\ev_select.c" />
+    <ClCompile Include="source\ev_serien.c" />
+    <ClCompile Include="source\ev_shift.c" />
+    <ClCompile Include="source\ev_spectralCoG.c" />
+    <ClCompile Include="source\ev_spectralFeatures.c" />
+    <ClCompile Include="source\ev_spectrum.c" />
+    <ClCompile Include="source\ev_sum.c" />
+    <ClCompile Include="source\ev_svm.cpp" />
+    <ClCompile Include="source\ev_svm_wrapper.c" />
+    <ClCompile Include="source\ev_tirol.c" />
+    <ClCompile Include="source\ev_vad.c" />
+    <ClCompile Include="source\ev_vector.c" />
+    <ClCompile Include="source\ev_voiceQualityFeatures.c" />
+    <ClCompile Include="source\ev_voicingFeatures.c" />
+    <ClCompile Include="source\ev_window.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ev_acf.h" />
+    <ClInclude Include="include\ev_basics.h" />
+    <ClInclude Include="include\ev_bitmask.h" />
+    <ClInclude Include="include\ev_channel.h" />
+    <ClInclude Include="include\ev_class.h" />
+    <ClInclude Include="include\ev_complex.h" />
+    <ClInclude Include="include\ev_csp.h" />
+    <ClInclude Include="include\ev_dct.h" />
+    <ClInclude Include="include\ev_delay.h" />
+    <ClInclude Include="include\ev_dsp.h" />
+    <ClInclude Include="include\ev_dwt.h" />
+    <ClInclude Include="include\ev_efeatures.h" />
+    <ClInclude Include="include\ev_eigen.h" />
+    <ClInclude Include="include\ev_emo.h" />
+    <ClInclude Include="include\ev_errors.h" />
+    <ClInclude Include="include\ev_extract.h" />
+    <ClInclude Include="include\ev_fextract.h" />
+    <ClInclude Include="include\ev_fselect.h" />
+    <ClInclude Include="include\ev_fw_masking.h" />
+    <ClInclude Include="include\ev_hashq.h" />
+    <ClInclude Include="include\ev_histogram.h" />
+    <ClInclude Include="include\ev_hnr.h" />
+    <ClInclude Include="include\ev_io.h" />
+    <ClInclude Include="include\ev_lpc.h" />
+    <ClInclude Include="include\ev_matrix.h" />
+    <ClInclude Include="include\ev_memory.h" />
+    <ClInclude Include="include\ev_messages.h" />
+    <ClInclude Include="include\ev_mfcc.h" />
+    <ClInclude Include="include\ev_mfcc_1_1.h" />
+    <ClInclude Include="include\ev_mfcc_1_2.h" />
+    <ClInclude Include="include\ev_mfcc_1_3.h" />
+    <ClInclude Include="include\ev_mfcc_1_4.h" />
+    <ClInclude Include="include\ev_mfcc_1_5.h" />
+    <ClInclude Include="include\ev_mfcc_1_6.h" />
+    <ClInclude Include="include\ev_name.h" />
+    <ClInclude Include="include\ev_pitch.h" />
+    <ClInclude Include="include\ev_prob.h" />
+    <ClInclude Include="include\ev_queue.h" />
+    <ClInclude Include="include\ev_real.h" />
+    <ClInclude Include="include\ev_score.h" />
+    <ClInclude Include="include\ev_sdft.h" />
+    <ClInclude Include="include\ev_segment.h" />
+    <ClInclude Include="include\ev_select.h" />
+    <ClInclude Include="include\ev_serien.h" />
+    <ClInclude Include="include\ev_shift.h" />
+    <ClInclude Include="include\ev_spectralCoG.h" />
+    <ClInclude Include="include\ev_spectrum.h" />
+    <ClInclude Include="include\ev_sum.h" />
+    <ClInclude Include="include\ev_svm.h" />
+    <ClInclude Include="include\ev_vad.h" />
+    <ClInclude Include="include\ev_vector.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

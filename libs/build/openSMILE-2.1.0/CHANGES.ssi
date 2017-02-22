@@ -1,0 +1,127 @@
+
+-------------------------------------------------
+-------------------------------------------------
+openSmileLib
+-------------------------------------------------
+-------------------------------------------------
+
+-------------------------------------------------
+
+* Modify ide\vs10\openSmileLib.vcxproj:
+
+replace 
+	<Import Project="gnuGpl.props" /> 
+with 
+	<!--Import Project="gnuGpl.props" /-->
+	
+replace
+	<Import Project="openSmileComponents.props" />
+with
+	<!--Import Project="openSmileComponents.props" /-->	
+	
+-------------------------------------------------
+
+* Create file ide\vs10\openSmileLib.vcxproj.filters
+
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+</Project>
+
+-------------------------------------------------
+
+* Remove all configurations except for Release and Debug
+
+-------------------------------------------------
+
+* Modify openSmileLib Proprocessor Definitions 
+
+remove anything but %(PreprocessorDefinitions)
+
+-------------------------------------------------
+
+* Remove References
+
+openSmileLibLibsvm
+openSmileLibPortaudio
+
+-------------------------------------------------
+
+* Create configuration for x64 (copy from Win32)
+
+-------------------------------------------------
+
+* Modify Configuration Properties -> General
+
+set Output Directory to
+
+	..\..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+
+set Intermediate Directory to 	
+	
+	$(PlatformName)\vc$(PlatformToolsetVersion)\
+	
+-------------------------------------------------
+
+* Modify Configuration Properties -> Linker -> General
+
+set Output File to
+
+	$(TargetPath)
+
+-------------------------------------------------
+
+* Modify Configuration Properties -> Linker -> Advanced
+
+set Import Library to
+
+	..\..\..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\$(TargetName).lib
+
+-------------------------------------------------
+
+
+-------------------------------------------------
+-------------------------------------------------
+SMILExtract
+-------------------------------------------------
+-------------------------------------------------
+
+-------------------------------------------------
+
+* Remove all configurations except for Release and Debug
+* Remove MixedPlatform
+
+-------------------------------------------------
+
+* Create configuration for x64 (copy from Win32)
+
+-------------------------------------------------
+
+* Modify Configuration Properties -> General
+
+set Output Directory to
+
+	..\..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+
+set Intermediate Directory to 	
+	
+	$(PlatformName)\vc$(PlatformToolsetVersion)\
+	
+-------------------------------------------------
+
+* Modify Configuration Properties -> Linker -> General
+
+set Output File to
+
+	$(TargetPath)
+
+-------------------------------------------------
