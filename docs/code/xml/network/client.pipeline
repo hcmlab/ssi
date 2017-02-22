@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+	
+	<!-- client
+	
+	We set up a client here, it will wait for a sync message on port 1111.
+	
+	-->
+	<framework sync="true" slisten="true" sport="1111"/>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="50.0" mask="1" event="true" address="click@button">		
+		<output channel="cursor" pin="cursor"/>		
+	</sensor>	
+	
+	<!-- socket sender 
+	
+	Streams cursor signal to a socket.
+	
+	-->
+	<consumer create="SocketWriter" port="2222" host="127.0.0.1">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	
+	<!-- socket event sender 
+	
+	Sends button events to a socket.
+	
+	-->
+	<object create="SocketEventWriter" port="3333" osc="true" host="127.0.0.1">
+		<listen address="click@button"/>
+	</object>		
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="CURSOR (CLIENT)" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<object create="EventMonitor:monitor" title="MONITOR (CLIENT)">
+		<listen address="@" span="10000"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline" origin="800,0">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*,monitor</area>		
+	</object>
+
+</pipeline>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssisignal"/>
+		<load name="ssiioput"/>
+		<load name="ssissjSensor">
+	</register>
+	
+	<sensor create="AndSensors" >
+		<output channel="accelerometer" pin="acc"/>
+	</sensor>
+
+	<sensor create="ssjSensor" >
+		<output channel="empatica" pin="emp"/>
+	</sensor>
+	
+	<consumer create="FileWriter" stream="true" path="./record/acc">
+		<input pin="acc" frame ="0.25s" />
+	</consumer>
+	
+</pipeline>

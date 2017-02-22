@@ -1,0 +1,1 @@
+xmlpipe -config global my

@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="50.0" mask="1" event="true" address="click@mouse">		
+		<output channel="cursor" pin="cursor"/>
+		<output channel="button" pin="button">
+			<transformer create="Cast" type="9"/>
+		</output>
+	</sensor>
+	
+	<!-- cursor events -->
+	<consumer create="FunctionalsEventSender" names="mean,min,max" address="features@mouse">
+		<input pin="cursor" address="click@mouse"/>
+	</consumer>
+	
+	<!-- xml -->
+	<consumer create="XMLEventSender:monitor" path="xmlsender" address="ssi@xml" monitor="true">
+		<input pin="cursor;button" frame="5"/>
+		<listen address="@mouse"/>
+	</consumer>		
+	
+	<!-- sender -->
+	<object create="SocketEventWriter" port="2222" type="0" xml="true">
+		<listen address="ssi@xml"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>		
+		<area pos="400,0,800,600">monitor*</area>
+	</object>
+
+</pipeline>

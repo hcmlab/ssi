@@ -1,0 +1,23 @@
+setup ndk from:
+https://developer.android.com/tools/sdk/ndk/index.html
+
+and sdk(for adb, emulators):
+https://developer.android.com/sdk/index.html
+
+we use toolchain from:
+https://github.com/taka-no-me/android-cmake
+
+in cmake gui select:
+make project
+
+add new entries (advanced):
+
+CMAKE_TOOLCHAIN_FILE=android.toolchain.cmake
+ANDROID_NDK=absolute/path/to/ndk
+CMAKE_MAKE_PROGRAM=filepath/to/make/binary (NDK/prebuilt/%PLATTFORM%/bin/make.exe)
+ANDROID_ABI=armeabi-v7a
+ANDROID_NATIVE_API_LEVEL=android-21 
+
+
+Execute from binaries folder:
+/path/to/make.exe -j6 install

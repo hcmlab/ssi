@@ -1,0 +1,740 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arsclassica Article
+% LaTeX Template
+% Version 1.1 (10/6/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Lorenzo Pantieri (http://www.lorenzopantieri.net) with extensive modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+10pt, % Main document font size
+a4paper, % Paper type, use 'letterpaper' for US Letter paper
+oneside, % One page layout (no page indentation)
+%twoside, % Two page layout (page indentation for binding and different headers)
+headinclude,footinclude, % Extra spacing for the header and footer
+BCOR5mm, % Binding correction
+]{scrartcl}
+
+\input{structure.tex} % Include the structure.tex file which specified the document structure and layout
+\usepackage{listings}
+\usepackage{color}
+\usepackage[utf8]{inputenc} 
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.2}
+
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+ % frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Octave,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\hyphenation{Fortran hy-phen-ation} % Specify custom hyphenation points in words with dashes where you would like hyphenation to occur, or alternatively, don't put any dashes in a word to stop hyphenation altogether
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND AUTHOR(S)
+%-----------------------------------------------------------------<WorkloadPage  config="Quantitaetstheorie.xml" rows="10" colums="1" stressLevel="2" isStressfull="true" pageTimeout="180" url="Quantitätstheorie.htm" />-----------------------
+
+\title{\normalfont\spacedallcaps{SSI Linux \&Android Port Log}} % The article title
+
+\author{\spacedlowsmallcaps{Simon Flutura}} % The article author(s) - author affiliations need to be specified in the AUTHOR AFFILIATIONS block
+
+\date{} % An optional date to appear under the author(s)
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\lstset{language=bash}  
+%----------------------------------------------------------------------------------------
+%	HEADERS
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} % The header for all pages (oneside) or for even pages (twoside)
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection~#1}} % Uncomment when using the twoside option - this modifies the header on odd pages
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} % The header style
+
+\pagestyle{scrheadings} % Enable the headers specified in this block
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
+%----------------------------------------------------------------------------------------
+
+\maketitle % Print the title/author/date block
+
+\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+
+\tableofcontents % Print the table of contents
+
+% \listoffigures % Print the list of figures
+
+% \listoftables % Print the list of tables
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+ % \section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
+
+ % Dummy text
+
+%----------------------------------------------------------------------------------------
+%	AUTHOR AFFILIATIONS
+%----------------------------------------------------------------------------------------
+
+
+
+%----------------------------------------------------------------------------------------
+
+\newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
+
+%----------------------------------------------------------------------------------------
+%	Mobile SSI
+%----------------------------------------------------------------------------------------
+
+
+\section{Ported Plugins and Notes}
+
+\subsection{ssiframe}
+
+\subsection{ssievent}
+
+\subsection{ssiioput}
+
+\subsection{ssimouse}
+This plugin uses libxinput2 on linux, thus depends on xorg.
+Not ported to Android!
+
+\subsection{ssiaudio}
+This plugin depends on portaudio on linux and
+
+OpenSE on android.
+\subsection{ssimodel}
+
+\subsection{ssisignal}
+
+\subsection{ssiemovoice}
+
+\subsection{ssiopensmile}
+not tested
+
+\subsection{ssiandroidsensors}
+
+Plugin only avaliable on Android.
+Enables messages via logcat.
+
+\verb|ssimsg=new ssi::AndroidMessage();|
+
+\subsection{ssiandroidjavasensors}
+Android only. Sends java events to ssi. E.g bluetooth or battery.
+\subsection{ssiwebsockets}
+
+
+\subsection{ssivectorfusion}
+
+\subsection{ssiffmpeg}
+not tested
+
+
+\section{SSJ integration}
+
+for ssj integration a ssj sensor plugin is added to ssi;
+int is wrapped on ssj side via sensorProviderSSI, that replaces ssj core with ssi.
+
+other posibilities include running both frameworks in parallel wher an ssj consumer is paired to the ssi ssj sensor.
+
+following JNI snipplets might be helpful:
+
+\section{APK Build Support}
+
+see android doc for build instructions.
+SSI uses android.apk.cmake to create an APK android package.
+ANT is used; todo switch to maven?
+
+
+At the moment the APK is build around \verb|android_xmlpipe| found in
+\verb|plugins/androidSensors/tools/xmlpipe|.
+The java code found in \verb|docs/apk| is used to extract native libraries then the android main activity in \verb|android_xmlpipe| is started.
+After extracting the pipeline using native assetmanager, xmlpipe is started as usual.
+
+\section{SSI Cmake Buildsystem}
+
+Old Visual Studio Buildsystem is untouched,
+but Visual Studio Projects can be generated from Cmake.
+
+Cmake generates CodeBlocks make projects, linux make projects.
+
+
+
+\subsection{Structure}
+
+Each project has to live in its own subdirectory for better cmake integration.
+Each subproject has its own CMakeLists.txt file.
+Every library or executeable is a subproject of its own to keep things simple.
+
+A directory containing CMake-projects has to contain a CMakeLists.txt mentioning subpojects.
+
+Variables for SSI install path, \verb|plattform/compiler| detection etc can be found in the \verb|trunk/CMakeLists.txt|
+
+
+\subsection{how to add plugin source}
+
+Add subdirectory to \verb|trunk/plugins/CMakeLists.txt|
+with \verb|add_subdirectory(dirname)|.
+
+Add a CMakeLists.txt:
+
+\label{subsec:how to add a plugin}
+\begin{lstlisting}[caption={cmake ssi plugin}]
+# add project
+project(ssimouse)
+
+#add subdirectory for text
+add_subdirectory(test)
+#add tests dependencies
+add_dependencies(ssimouse_test ssi ssimouse)
+
+
+#add include directories
+include_directories (
+	include
+	../../core/include
+	../../core/include/ioput/socket
+	../../core/include/ioput
+	
+	../event/include
+	
+	../frame/include
+	
+	../graphic/include
+	
+	../ioput/include
+	../ioput/include/ioput/socket
+	../ioput/include/ioput
+	../
+)
+
+#set source files
+set(COMMON_SRC_FILES
+
+ source/ExportMain.cpp
+ source/Mouse.cpp
+ source/CursorMover.cpp
+ 
+)
+
+#find librarys
+
+IF(MINGW)
+  find_library (MINGW_WSOCKET "wsock32" HINTS ${MINGWLIB} )
+  find_library (MINGW_WMM "winmm" HINTS ${MINGWLIB})
+  find_library (MINGW_WSOCKET2 "ws2_32" HINTS ${MINGWLIB} )
+  find_library (MINGW_PTHREAD "pthread" HINTS ${MINGWLIB} )
+  #set compiler flags for c++11 threading and debug
+  #todo create gcc/make debug target?
+  	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb" )
+  	
+  ELSEIF(UNIX)
+  SET(MINGW_WSOCKET "")
+  SET(MINGW_WSOCKET2 "")
+  SET(MINGW_WMM "")
+  
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb" )
+  
+  find_library (MINGW_PTHREAD "pthread" HINTS "/usr/lib" )
+  # x11 dependencies
+  find_library (X11 "X11" HINTS "/usr/X11R6/lib")
+  find_library (Xi "Xi" HINTS "/usr/X11R6/lib")
+
+ELSE(MINGW) # visual studio has its own ways for winsockets/threading eg #pragma
+  SET(MINGW_WSOCKET "")
+  SET(MINGW_WSOCKET2 "")
+  SET(MINGW_WMM "")
+   SET(MINGW_PTHREAD "")
+ENDIF(MINGW)
+
+
+set(SRC_FILES ${COMMON_SRC_FILES} )
+
+# add main target
+add_library(ssimouse SHARED ${SRC_FILES})
+
+# link against internal and external librarys
+IF(UNIX)
+target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD})
+ELSE(UNIX)
+target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} ${X11} ${Xi})
+ENDIF(UNIX)
+
+#add_executable(myapp main.c)
+
+#rename targets if debug
+set_target_properties(ssimouse PROPERTIES DEBUG_POSTFIX "d" PREFIX "")
+
+#install target to ssi install path set in base directory
+install(TARGETS ssimouse DESTINATION ${SSI_INSTALL}/${SSI_PLATFORM}/${SSI_COMPILER})
+\end{lstlisting}
+
+\subsection{how to add a plugin library}
+
+The library has to be added to the ssi directory tree in trunk/libs/shared/libname.
+Binarys have to be added into according plattform and compiler subdirs.
+The library should contain a macro for easier use in projects, if it contains multiple files.
+
+Thereafter the library can be added to the project:
+
+
+
+\label{subsec:how to add a plugin library}
+\begin{lstlisting}[caption={cmake ssi plugins library}]
+# add project
+project(ssishore)
+
+#add test
+add_subdirectory(test)
+add_dependencies(ssishore_test ssi ssishore)
+
+# add include dirs
+include_directories (
+	include
+	../../core/include
+	../../libs/shared/opencv/include/
+	../../plugins
+)
+
+# set source files
+set(COMMON_SRC_FILES
+
+source/ExportMain.cpp
+
+)
+
+
+set(SRC_FILES ${COMMON_SRC_FILES} )
+
+
+# set libraries libs path
+get_filename_component(OPENCV_PATH ../../libs/shared/opencv/libs/${SSI_PLATFORM}/${SSI_COMPILER} ABSOLUTE)
+# set libraries bin path
+get_filename_component(OPENCV_PATH_SHARED ../../libs/shared/opencv/bin/${SSI_PLATFORM}/${SSI_COMPILER} ABSOLUTE)
+
+
+# use macro to find precompiled opencv libs
+include(../../libs/shared/opencv/opencv_paths.cmake)
+
+opencvPaths(${OPENCV_PATH} ${OPENCV_PATH_SHARED} OPENCV_LIB_DEBUG OPENCV_LIB OPENCV_SHARED_DEBUG OPENCV_SHARED)
+
+					
+# find single file static library for linking
+find_library(
+			SHORE_LIB
+			
+			NAMES
+				
+				shore140.lib		 
+
+			HINTS
+				../../libs/shared/shore/libs/${SSI_PLATFORM}/${SSI_COMPILER}
+			
+			)
+
+# find single file dynamic library for copiing
+find_file(
+			SHORE_SHARED
+			
+			NAMES
+				
+				shore140.dll		 
+
+			HINTS
+				../../libs/shared/shore/bin/${SSI_PLATFORM}/${SSI_COMPILER}
+			
+			)
+
+# add main target
+
+add_library(ssishore SHARED ${SRC_FILES})
+
+
+# link for debug
+target_link_libraries(ssishore debug ssi
+													${OPENCV_LIB_DEBUG} ${SHORE_LIB}
+													)
+
+# link for release
+target_link_libraries(ssishore optimized ssi
+													${OPENCV_LIB} ${SHORE_LIB}
+													)
+#add_executable(myapp main.c)
+
+#rename targets if debug
+set_target_properties(ssishore PROPERTIES DEBUG_POSTFIX "d")
+
+#install target to ssi install path set in base directory
+install(TARGETS ssishore DESTINATION ${SSI_INSTALL}/${SSI_PLATFORM}/${SSI_COMPILER})
+
+#install dll files (copy)
+install(FILES ${SHORE_SHARED} ${OPENCV_SHARED} ${OPENCV_SHARED_DEBUG} DESTINATION ${SSI_INSTALL}/${SSI_PLATFORM}/${SSI_COMPILER})
+\end{lstlisting}
+
+Here follows the macro for adding multiple lib files:
+
+\label{subsec:how to add a plugin library}
+\begin{lstlisting}[caption={cmake library macro}]
+
+function( opencvPaths OPENCV_PATH OPENCV_PATH_SHARED OPENCV_LIB_DEBUG OPENCV_LIB OPENCV_SHARED_DEBUG OPENCV_SHARED) 
+
+	# add static debug libs
+	if(WIN32)			
+		set(${OPENCV_LIB_DEBUG}
+							
+								${OPENCV_PATH}/opencv_core2410d.lib
+								${OPENCV_PATH}/opencv_features2d2410d.lib	
+
+						PARENT_SCOPE)
+	endif(WIN32)
+
+	# add static release libs
+	if(WIN32)
+		set(${OPENCV_LIB}
+							
+								${OPENCV_PATH}/opencv_core2410.lib
+								${OPENCV_PATH}/opencv_features2d2410.lib
+
+								PARENT_SCOPE)
+	endif(WIN32)
+	
+	# add debug dlls
+	if(WIN32)			
+		set(${OPENCV_SHARED_DEBUG}
+							
+								${OPENCV_PATH_SHARED}/opencv_core2410d.dll
+								${OPENCV_PATH_SHARED}/opencv_features2d2410d.dll	
+	
+							
+								PARENT_SCOPE)
+	endif(WIN32)
+
+	# add release dlls
+	if(WIN32)
+		set(${OPENCV_SHARED}
+							
+								${OPENCV_PATH_SHARED}/opencv_core2410.dll
+								${OPENCV_PATH_SHARED}/opencv_features2d2410.dll
+
+								PARENT_SCOPE)
+	endif(WIN32)
+
+
+endfunction(opencvPaths)
+\end{lstlisting}
+
+
+
+\subsection{how to add a source file to Core}
+Simply add the file to the \verb|COMMON_SRC_FILES| list in trunk/core/CMakeList.txt.
+If the file contains code that is only used on one plattform, add it to \verb|P_SRC_FILES|
+in the according case.
+
+\label{subsec:how to add a source file to Core}
+\begin{lstlisting}[caption={add source file to core}]
+
+set(COMMON_SRC_FILES
+
+source/buffer/Buffer.cpp
+
+)
+ IF(WIN32)
+ set(P_SRC_FILES
+	source/ioput/socket/ip/win32/NetworkingUtils.cpp
+	)
+ ELSE(WIN32)
+ set(P_SRC_FILES
+	source/ioput/socket/ip/posix/NetworkingUtils.cpp
+
+	
+	)
+ ENDIF(WIN32)
+\end{lstlisting}
+
+\subsection{how to add a test or tool}
+
+Tests are a subproject of their own.
+They need to be added to the parent directory.
+
+
+\label{subsec:how to add a test or tool}
+\begin{lstlisting}[caption={cmake subproject}]
+# add project
+project(ssiframe_test)
+
+# add incluede dirs
+include_directories (
+	.
+	../../../core/include
+	../../../core/include/ioput/socket
+	../../../core/include/ioput
+	
+	../../../plugins/
+)
+
+# add source files
+set(COMMON_SRC_FILES
+
+ Main_.cpp
+)
+
+
+set(SRC_FILES ${COMMON_SRC_FILES} )
+
+#find librarys
+
+IF(MINGW)
+  find_library (MINGW_WSOCKET "wsock32" HINTS ${MINGWLIB} )
+  find_library (MINGW_WMM "winmm" HINTS ${MINGWLIB})
+  find_library (MINGW_WSOCKET2 "ws2_32" HINTS ${MINGWLIB} )
+  find_library (MINGW_PTHREAD "pthread" HINTS ${MINGWLIB} )
+  #set compiler flags for c++11 and debug
+  #todo debug target on gcc
+  	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb" )
+  	
+  ELSEIF(UNIX)
+  SET(MINGW_WSOCKET "")
+  SET(MINGW_WSOCKET2 "")
+  SET(MINGW_WMM "")
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb" )
+  find_library (MINGW_PTHREAD "pthread" HINTS "/usr/lib" )
+  find_library (X11 "X11" HINTS "/usr/X11R6/lib")
+  find_library (Xi "Xi" HINTS "/usr/X11R6/lib")
+  
+ELSE(MINGW)
+  SET(MINGW_WSOCKET "")
+  SET(MINGW_WSOCKET2 "")
+  SET(MINGW_WMM "")
+   SET(MINGW_PTHREAD "")
+ENDIF(MINGW)
+
+# add projects main target (library or binary)
+add_executable(ssiframe_test ${SRC_FILES})
+
+# add linking to other projects or external librarys
+target_link_libraries(ssiframe_test ssi ${MINGW_WSOCKET} ${MINGW_WMM} ${MINGW_WSOCKET2} ${MINGW_PTHREAD})
+
+
+#rename targets if debug
+set_target_properties(ssiframe_test PROPERTIES DEBUG_POSTFIX "d")
+
+#install target to ssi install path set in base directory
+install(TARGETS ssiframe_test DESTINATION ${SSI_INSTALL}/${SSI_PLATFORM}/${SSI_COMPILER})
+\end{lstlisting}
+
+\subsection{compiler parameters}
+for gcc c++11 threading
+
+\subsection{doxygen}
+\verb|http://majewsky.wordpress.com/2010/08/14/tip-of-the-day-cmake-and-doxygen/|
+\subsection{tests}
+
+\verb|http://mifrosu.blogspot.de/2013/02/cmake-and-google-test-framework.html|
+
+
+\section{Threading}
+Cx11 on Android.
+Just depends on version of gcc compiler(4.8+).
+
+\subsection{c++11}
+std::thread
+contains conditional variables
+
+problem: interruptable threads
+
+\subsection{windows}
+old ssi threading system is untouched
+
+\subsection{posix}
+are implemented via c++11
+interruptable threads can be implemented via pthread-cancle and pthread-kill
+
+
+\section{timer}
+Timers need a plattform independent abstraction.
+Windows has its own timers, linux uses Posix standard, android features its own challanges as suspend disturbs the timers.
+
+boost.timer?
+
+\verb|std::chrono::high resolution clock|?
+
+\verb|http://stackoverflow.com/questions/1487695/c-cross-platform-high-resolution-timer|
+
+linux monolitic raw
+
+\section{sockets}
+on linux udp sockets might only be able to send, when their data is recived due to icmp packages.
+
+\section{file tools}
+file tools for selecting all files in subdir and especially file dialogs have to be ported.
+
+\section{named pipes}
+named pipes are not yet ported.
+
+\section{decentralization \& syncronization?}
+
+already features for streaming ssi info ssi.
+
+synchronisation using ms since 1970?
+\verb|std::chrono::time_point::time_since_epoch|
+
+needs 64 bit:
+
+	\verb|uint32_t| ms overflow after 50 days
+	\verb|uint64_t| ms overflow after 584942417 years
+
+\section{GUI rewrite}
+
+The plotting part needs to be rewritten.
+\subsection{sdl2}
+multiwindow since 2.0.
+has support on many plattforms, win, linux, android, osx.
+
+no support for multithreaded rendering:
+use cairo for rendering, sdl2 to display
+
+sdl windowmanager runs its own thread, all sdl calls should happen there.
+\subsection{windowmanagment linux}
+multi window and (multi)console handling
+
+\subsection{qt}
+big dependency.
+
+\subsection{html5 \& websockets}
+
+\section{Building SSI for Android}
+
+Note: this needs Android-NDK set up on your system.
+follow instructions from /docs/ssi-port-cmake/intro-android(-from-win)
+
+\section{Crosscompilation}
+\begin{enumerate}
+\item crosscompile linux -> arm linux (android)
+see android and win-android documentation for an up to date tutorial.
+
+
+\item linux -> win32/64 mingw
+
+
+crosscompilation via mxe:
+\verb|cmake ../trunk/ -DCMAKE_TOOLCHAIN_FILE=~/mxe/usr/i686-w64-mingw32/share/cmake/mxe-conf.cmake|
+
+\item windows -> arm linux (android)?
+
+\end{enumerate}
+
+
+
+\section{Buildsystems overview}
+
+A main problem of making a project portable is choosing the right buildsystem.
+The SSI requirements would be integration into multiple IDEs as Visual Studio and Code::Blocks as well as crossplattform support with windows, android and Linux support and
+crosscompiling eg Linux to Android.
+
+\subsection{Cmake}
+biggest community.
+fullfills requirements.
+Module scripts necessary.
+Bad automatisation, needs to be adjusted per hand, hard to update cmake from visual studio.
+\subsection{Gyp}
+Googles Buildsystem might be an option
+
+\subsection{Waf}
+
+Written in python, adjustable.
+Fullfills all requirements but is not as widely used as cmake.
+Also suffers from bad integration into IDEs.
+
+\subsection{Jam and others}
+
+Projects such as Boost use jam for (cross plattform) building.
+Many different versions therefore fragmented community.
+
+Same goes for several other buildsystems.
+
+\section{Bugs worth mentioning}
+
+\subsection{Singleton reinitialization on Android}
+ssi factory does not get destroyed when backgroundservice is stopped.
+constructor is not called, structs have to be reinitialized manually!
+
+\subsection{Memory leak in Linux mouse-plugin}
+
+free memory allocated by x11 function XIQueryPointer() manually.
+\verb|free(buttons.mask);|
+
+\subsection{Memory corruption in Linux SignalPainter}
+
+included wrong header.
+memory got allocated using new compiled symbol but old struct was expected.
+
+\subsection{Mutex violation with c++11 condition variables}
+
+c++11 condition variables use std::locks instead of mutexes.
+creating locks on the fly leads to opening the mutex in the wrong place.
+
+use \verb|condition_variable_any| instead.
+
+
+\subsection{UDP Broadcast not working}
+
+setEnableBroadcast socket_opt was not set in send but only in send to
+
+\subsection{Memory corruption in Linux EventMonitor}
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
+
+\bibliographystyle{unsrt}
+
+\bibliography{sample.bib} % The file containing the bibliography
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

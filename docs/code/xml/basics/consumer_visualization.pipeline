@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins
+	
+	Register plug-ins.
+	
+	-->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+
+	<!-- Sensor 
+	
+	By setting mask to 1 we instruct the sensor to listen to the
+	left mouse buttons. As long as the left mouse buttons is
+	pressed the cursor stream will be set to 1, 0 otherwise.
+	
+	-->
+	<sensor create="Mouse:mouse" option="mouse" sr="50.0" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="pos" />
+	</sensor>
+
+	<!-- Visualization 	
+
+	This will create two graphs visualizing the button and cursor position.
+
+	-->
+	<consumer create="SignalPainter:plot" title="BUTTON;CURSOR" size="10.0">
+		<input pin="button;pos" frame="0.2s" />		
+	</consumer>		
+
+	<!-- Decoration 
+	
+	Set position of windows on the screen.
+	
+	-->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot</area>
+	</object>
+
+</pipeline>

@@ -1,0 +1,144 @@
+
+Built with Social Signal Interpretation (SSI)
+
+(c) 2007-16 University of Augsburg, Lab for Human Centered Multimedia
+Johannes Wagner, Florian Lingenfelser, Ionut Damian, Tobias Baur, Andreas Seiderer, Simon Flutura, Daniel Schork, Dominik Schiller
+
+website: http://openssi.net
+contact: support@openssi.net
+
+build version: v0.9.9
+
+[factory___] found 'Console'
+[factory___] create instance of 'Console'
+[factory___] store instance of 'Console' as 'console'
+[factory___] register 'ssiframe.dll'
+[factory___] found 'TheFramework'
+[factory___] found 'XMLPipeline'
+[factory___] found 'Asynchronous'
+[factory___] found 'EventConsumer'
+[factory___] found 'Clone'
+[factory___] found 'Chain'
+[factory___] found 'Cast'
+[factory___] found 'Selector'
+[factory___] found 'Merge'
+[factory___] found 'Inverter'
+[factory___] found 'Decorator'
+[factory___] register 'ssievent.dll'
+[factory___] found 'TheEventBoard'
+[factory___] found 'EventMonitor'
+[factory___] found 'FloatsEventSender'
+[factory___] found 'TupleEventSender'
+[factory___] found 'StringEventSender'
+[factory___] found 'ZeroEventSender'
+[factory___] found 'ThresEventSender'
+[factory___] found 'FixationEventSender'
+[factory___] found 'ThresClassEventSender'
+[factory___] found 'XMLEventSender'
+[factory___] found 'ClockEventSender'
+[factory___] found 'EventToStream'
+[factory___] create instance of 'XMLPipeline'
+[factory___] create instance of 'TheFramework'
+[factory___] create instance of 'TheEventBoard'
+[factory___] store instance of 'XMLPipeline' as 'noname002'
+[framexml__] load 'D:\openssi-sf\docs\code\xml\variables\my.pipeline' (local config=yes, global config=yes)
+[framexml__] apply config from 'D:\openssi-sf\docs\code\xml\variables\global.pipeline-config'
+             plot:title -> GLOBAL
+             decorator:icon -> true
+             mouse:sr -> 50.0
+[framexml__] apply config from 'D:\openssi-sf\docs\code\xml\variables\my.pipeline-config'
+             mouse:sr -> 50.0
+             plot:title -> TITLE
+             decorator:icon -> false
+             decorator:title -> Pipeline
+[factory___] register 'ssiioput.dll'
+[factory___] found 'FileReader'
+[factory___] found 'FileWriter'
+[factory___] found 'FileEventWriter'
+[factory___] found 'SocketReader'
+[factory___] found 'SocketWriter'
+[factory___] found 'SocketEventWriter'
+[factory___] found 'SocketEventReader'
+[factory___] found 'FileSampleWriter'
+[factory___] found 'FakeSignal'
+[factory___] register 'ssimouse.dll'
+[factory___] found 'Mouse'
+[factory___] found 'CursorMover'
+[factory___] register 'ssigraphic.dll'
+[factory___] found 'VideoPainter'
+[factory___] found 'SignalPainter'
+[factory___] found 'EventPainter'
+[factory___] found 'PointsPainter'
+[factory___] create instance of 'Mouse'
+[factory___] store instance of 'Mouse' as 'mouse'
+[provider__] init 'Provider:cursor'
+             id		= 0
+             rate	= 50.00
+             dim	= 2
+             bytes	= 4
+             type	= FLOAT
+             size	= 10.0s
+             watch	= 1.0s
+             sync	= 5.0s
+[factory___] create instance of 'FileWriter'
+[factory___] store instance of 'FileWriter' as 'noname004'
+[factory___] create instance of 'SignalPainter'
+[factory___] store instance of 'SignalPainter' as 'plot'
+[factory___] create instance of 'Decorator'
+[factory___] store instance of 'Decorator' as 'noname006'
+[pipeline__] start 0 threads
+[thread____] start 'cursor'
+[provider__] start 'Provider:cursor'
+[sensor____] connect 'Mouse'
+[sensor____] start 'Mouse'
+[thread____] start 'Mouse'
+[thread____] start 'FileWriter'
+[filewriter] open stream output > '2016-04-19_15-18-38_cursor'
+[consume___] start 'FileWriter:noname004'
+             frame	= 0.20
+             delta	= 0.00
+             stream#1
+             id	= 0
+             rate	= 50.00
+             dim	= 2
+             bytes	= 4
+             type	= FLOAT
+[thread____] start 'SignalPainter'
+[thread____] start 'GLOBAL' (single run)
+[consume___] start 'SignalPainter:plot'
+             frame	= 0.20
+             delta	= 0.00
+             stream#1
+             id	= 0
+             rate	= 50.00
+             dim	= 2
+             bytes	= 4
+             type	= FLOAT
+
+  seconds to start:   030201ok
+
+[pipeline__] start
+[thread____] start 'Pipeline' (single run)
+
+
+	press enter to stop
+
+[pipeline__] stop (runtime=1.42s)
+[thread____] terminate 'cursor'
+[provider__] stop 'Provider:cursor'
+[thread____] stop after 0:00:05:013 'cursor'
+[sensor____] stop 'Mouse'
+[thread____] terminate 'Mouse'
+[thread____] stop after 0:00:05:028 'Mouse'
+[sensor____] disconnect 'Mouse'
+[thread____] terminate 'FileWriter'
+[consume___] stop 'FileWriter:noname004'
+[filewriter] close stream output > '2016-04-19_15-18-38_cursor'
+[thread____] stop after 0:00:05:025 'FileWriter'
+[thread____] terminate 'SignalPainter'
+[consume___] stop 'SignalPainter:plot'
+[thread____] stop after 0:00:05:010 'SignalPainter'
+[pipeline__] framework shutdown
+[factory___] clear factory
+[factory___] clear objects
+[eboard____] release event board

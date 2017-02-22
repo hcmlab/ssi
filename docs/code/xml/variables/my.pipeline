@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse:mouse" sr="$(mouse:sr)">
+		<output channel="cursor" pin="pos" />
+	</sensor>
+
+	<!-- storage -->
+	<consumer create="FileWriter" path="$(date)_cursor" type="1" delim=";">
+		<input pin="pos" frame="0.2s" />
+	</consumer>
+
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="$(plot:title)" size="10.0">
+		<input pin="pos" frame="0.2s" />		
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="$(decorator:icon)" title="$(decorator:title)">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot</area>
+	</object>
+
+</pipeline>

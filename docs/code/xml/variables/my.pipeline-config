@@ -1,0 +1,4 @@
+mouse:sr = 50.0 # sample rate
+plot:title = TITLE # plot title
+decorator:icon = false # $(bool) show icon in system tray
+decorator:title = Pipeline # name displayed in system tray

@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+	</register>
+	
+	<!-- sensor + provider + filter -->		
+	<sensor create="Mouse" option="mouse" mask="1">
+		<output channel="button" pin="button"/>
+		<output channel="cursor" pin="cursor">
+			<transformer create="Selector" indices="1" option="select"/>
+		</output>
+	</sensor>
+	
+	<!-- transformer -->
+	<transformer create="Derivative" option="derivative">		
+		<input pin="cursor" frame="0.2s" delta="0"/>			
+		<output pin="cursor_d"/>			
+	</transformer>
+	
+	<!-- consumer -->
+	<consumer create="SignalPainter:plot" option="painter" size="10.0" title="CURSOR">
+		<input pin="cursor" frame="0.2s"/>		
+	</consumer>
+	
+	<!-- include -->
+	<include name="my2"/>
+	
+	<!-- event sender -->	
+	<consumer create="ZeroEventSender" option="zerotr" mindur="0.2" address="pressed@button">
+		<input pin="button" frame="0.25s"/>		
+	</consumer>		
+	
+	<!-- consumer + trigger + transformer -->	
+	<consumer create="SignalPainter:plot" option="painter_tr" title="CURSOR (TR)">
+		<input pin="cursor" address="pressed@button">						
+			<transformer create="Derivative" option="derivative"/>
+		</input>
+	</consumer>
+	
+	<!-- event monitor listener -->
+	<object create="EventMonitor:monitor">
+		<listen address="pressed@button"/>									
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+	
+</pipeline>

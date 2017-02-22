@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins
+	
+	Register plug-ins.
+	
+	-->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+
+	<!-- Sensor 
+	
+	By setting event to true we instruct the sensor to fire an
+	event each time the left mouse button was pressed and released again.
+	
+	-->
+	<sensor create="Mouse:mouse" sr="50.0" mask="1" event="true" address="click@mouse">		
+		<output channel="cursor" pin="pos" />
+	</sensor>
+	
+	<!-- Events
+	
+	Calculate mean cursor position
+	
+	-->
+	<consumer create="StringEventSender" address="mean@string">
+		<input pin="pos" address="click@mouse"/>
+	</consumer>
+	<consumer create="TupleEventSender" address="mean@tuple">
+		<input pin="pos" address="click@mouse"/>
+	</consumer>
+	<consumer create="MapEventSender" keys="x,y" address="mean@map">
+		<input pin="pos" address="click@mouse"/>
+	</consumer>
+
+	<!-- Visualization 	
+
+	Visualize cursor movement only when the left mouse button was pressed.
+
+	-->
+	<consumer create="SignalPainter:plot" title="CURSOR">
+		<input pin="pos" address="click@mouse" state="completed"/>		
+	</consumer>		
+
+	<!-- Event monitor
+	
+	Shows a list of all previous events in the last 10 seconds.
+		
+	-->	
+	<object create="EventMonitor:monitor" title="CLICKS">
+		<listen address="mean@" span="5s" />		
+	</object>		
+	
+	<!-- Decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,300">plot</area>
+		<area pos="400,300,400,300">monitor</area>
+	</object>
+
+</pipeline>

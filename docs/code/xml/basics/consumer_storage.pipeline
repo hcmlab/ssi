@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse:mouse" sr="50.0">
+		<output channel="cursor" pin="pos" />
+	</sensor>
+
+	<!-- storage 
+	
+	A 'FileWriter' generates two files:
+	"<path>.stream" a xml file containing meta information such as sample rate
+	"<path>.stream~" a file with sample values (here in ascii format since type is set to 1).
+	
+	-->
+	<consumer create="FileWriter" path="cursor_t" type="1" delim=";">
+		<input pin="pos" frame="0.2s" />
+	</consumer>
+	
+	<!-- 
+	
+	To save the cursor data in binary format we set "type=0".	
+	
+	-->
+	<consumer create="FileWriter" path="cursor_b" type="0">
+		<input pin="pos" frame="0.2s" />
+	</consumer>	
+
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="pos" frame="0.2s" />		
+	</consumer>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot</area>
+	</object>
+
+</pipeline>

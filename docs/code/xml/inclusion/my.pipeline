@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse:mouse" sr="50.0">
+		<output channel="cursor" pin="pos" />
+	</sensor>
+
+	<!-- inclusion
+	
+	we use a gate in combination with a variable to decide 
+	whether the cursor is visualized in a graph or print on the console
+		
+	-->	
+	<gate open="$(plot:show)">
+		<include path="plot"/>
+	</gate>	
+	<gate close="$(plot:show)">
+		<include path="print"/>
+	</gate>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot</area>
+	</object>
+
+</pipeline>

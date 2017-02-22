@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	<consumer create="SignalPainter:plot" option="painter" title="DERIVATIVE" size="10.0">
+		<input pin="cursor_d" frame="0.2s"/>
+	</consumer>	
+</pipeline>

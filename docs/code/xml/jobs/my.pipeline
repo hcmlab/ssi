@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- will be executed before the pipeline is started 			
+		when = pre, post, [now]
+		wait = milliseconds to wait, if < 0 until job is finished [-1] 
+	-->
+	<job path="job.cmd" args="pre 5" when="pre" wait="0"/>
+	
+	<!-- will be executed after the pipeline is stopped -->
+	<job path="job.cmd" args="post 3" when="post" wait="-1"/>
+
+	<!-- will be executed right after parsing -->
+	<job path="job.cmd" args="now 5" when="now" wait="2000"/>
+	
+</pipeline>

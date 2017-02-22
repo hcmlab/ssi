@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="mouse"/>
+		<load name="python" />		
+		<load name="graphic"/>
+	</register>	
+
+	<!-- sensor -->
+	<sensor create="Mouse" mask="1" event="true" address="click@mouse">		
+		<output channel="cursor" pin="cursor" />
+	</sensor>
+	
+	<!-- python 
+	
+		script  = script name (omit .py)
+		optsstr = override option provided in the script (getOptions() function)
+				  e.g. "global=false" will set option "global" to false (to overide several options separate by ;) 
+		syspath = string with directories that will be added to python's syspath (by default ., if several separate by ;)
+		
+	-->
+	
+	<!-- send events -->
+	<consumer create="PythonConsumer" script="events" syspath=".">
+		<input pin="cursor" address="click@mouse"/>				
+	</consumer>
+	
+	<!-- output events -->
+	<object create="PythonObject" script="events" syspath=".">		
+		<listen address="@python"/>
+	</object>	
+	
+	<!-- visualization 	 -->
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="cursor" frame="1" />		
+	</consumer>
+	<object create="EventMonitor:monitor" title="MONITOR">
+		<listen address="@python" span="10.0s"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,300">plot</area>
+		<area pos="400,300,400,300">monitor</area>
+	</object>
+
+</pipeline>

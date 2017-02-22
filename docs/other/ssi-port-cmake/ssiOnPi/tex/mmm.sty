@@ -1,0 +1,493 @@
+%----------------------------------------------------------------------------
+% mmm.sty
+% ----------------------------------------------------------------------------
+% ! to be continued !
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
+\typeout{<-<-<  MM.Macros2e (31-12-96)  >->-> }
+% ----------------------------------------------------------------------------
+
+% ----------------------------------------------------------------------------
+% *** FOREIGN FILE INPUTS ***
+% ----------------------------------------------------------------------------
+
+\usepackage[leqno]{amsmath}
+\usepackage{latexsym,amsfonts,amssymb}
+
+\usepackage{varioref}
+\usepackage{makeidx}
+
+\usepackage{url} 
+\usepackage{graphicx}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black]{hyperref}
+
+
+
+% ----------------------------------------------------------------------------
+% *** New commands for some frequently used symbols ***
+% ----------------------------------------------------------------------------
+
+% acronyms and system/product names ..........................................
+
+\newcommand{\acr}[1]{\textsc{#1}}   % mem: CIGOL
+\newcommand{\prt}[1]{\textsf{#1}}   % mem: CIGOL
+
+\newcommand{\htmltag}[1]{$\scriptstyle\langle$\textsc{\lowercase{#1}}$\scriptstyle\rangle$}
+
+\newcommand{\CIGOL}{\prt{Cigol}}   % mem: CIGOL
+\newcommand{\MOBAL}{\prt{Mobal}}   % mem: MOBAL
+\newcommand{\PROGOL}{\prt{ProGol}} % mem: PROGOL
+\newcommand{\SIRE}{\prt{ Sire}}     % mem: SIRE
+\newcommand{\IDT}{\prt{ Id3}}     % mem: SIRE
+
+\newcommand{\TIME}{\mbox{\textsl{\textbf{T}}}}
+\newcommand{\SPACE}{\mbox{\textsl{\textbf{S}}}}
+
+\newcommand{\DTIME}{\mbox{\textsc{dTime}}}
+\newcommand{\DSPACE}{\mbox{\textsc{dSpace}}}
+\newcommand{\DTAPE}{\mbox{\textsc{dSpace}}}
+\newcommand{\NTIME}{\mbox{\textsc{nTime}}}
+\newcommand{\NSPACE}{\mbox{\textsc{nSpace}}}
+\newcommand{\NTAPE}{\mbox{\textsc{nSpace}}}
+
+\newcommand{\POLY}{{\cal P}}
+\newcommand{\NPOLY}{{\cal NP}}
+\newcommand{\NDETPOLY}{{\cal NP}}
+\newcommand{\CONPOLY}{co{\cal NP}}
+
+\newcommand{\KCo}{{\cal K}}
+\newcommand{\VCd}{{\cal VC}}
+
+
+\newcommand{\3}{\ss}
+
+\newcommand{\ML}{\mbox{\sf ML}}
+\newcommand{\UM}{\mbox{\sf UM}}
+\newcommand{\WWW}{\mbox{\sf WWW}}
+\newcommand{\AI}{\mbox{\sf AI}}
+
+% ----------------------------------------------------------------------------
+% Ivo's symbols
+
+\renewcommand{\iff}{\longleftrightarrow}
+\def\Iff{\Longleftrightarrow}
+\def\df{\stackrel {\rm def} {=}}
+\def\Iffdf{\stackrel {\rm def} {\Longleftrightarrow}}
+\def\iffdf{\stackrel {\rm def} {\longleftrightarrow}}
+\def\newpar{\par\medskip}
+\def\Implies{\Rightarrow}
+\def\implies{\rightarrow}
+\def\forces{\Vdash}
+\def\restrict{\upharpoonright}
+\def\onto{\twoheadrightarrow}
+\def\into{\hookrightarrow}
+\def\pfend{\quad\mbox{\large$\Box$}}
+\def\I{[0,1]}
+
+
+\newcommand{\stack}[2]{\scriptsize \begin{array}{c} #1 \\ #2 \end{array}}
+
+\newcommand{\derivrule}[3]
+{\mbox{$\frac{\displaystyle #1}{\displaystyle #2} \quad #3$}} % for (mem)
+
+
+% some environment delimiters (like ivo's \pfend):
+
+\def\defend{\quad\mbox{\large$\lhd$}}                    %requires ams :- ok.
+\def\envend{\quad\mbox{\large$\diamond$}}
+
+% ----------------------------------------------------------------------------
+% *** aliases for some frequently used commands and new complex commands ***
+% ----------------------------------------------------------------------------
+
+% ------------------------------------------------------------------ functions
+
+% function symbols are set \sf in mboxes for use in- and outside $$'s
+
+\newcommand{\cls}{\mathsf{cls}}                 % cls
+\newcommand{\cod}{\mbox{\sf cod}}               % cod
+\newcommand{\dep}{\mbox{\sf dep}}               % dep 
+\newcommand{\dom}{\mbox{\sf dom}}               % dom
+\newcommand{\domain}{\mbox{\sf domain}}         % domain 
+\newcommand{\freq}{\mbox{\sf frq}}              % frq frequency
+\newcommand{\id}{\mbox{\sf id}}                 % id
+\newcommand{\prob}{{\Bbb P}}             % P probability
+
+% --------------------------------------------------------------- greek letters
+
+\newcommand{\io}{\imath}                        % iota (-operator)
+\renewcommand{\phi}{\varphi}                    % phi is now varphi !!
+\newcommand{\eps}{\varepsilon}                  % eps is now varepsilon !!
+\renewcommand{\epsilon}{\eps}                   % epsilon is now varepsilon !!
+% ------------------------------------------------------------- logical symbols
+
+% logical connectives
+
+\newcommand{\A}{\wedge}                         % AND
+\newcommand{\V}{\vee}                           % OR
+\newcommand{\imp}{\rightarrow}                  % ->,  \implies
+\newcommand{\pmi}{\leftarrow}                   % <-
+\newcommand{\equ}{\iff}                         % <->,  \iff
+
+% Prolog
+
+\newcommand{\pif}{\mbox{\tt :-}}                % :-
+\newcommand{\por}{\mbox{\tt ;}}                 % ;
+\newcommand{\pcut}{\mbox{\tt !}}                % !
+\newcommand{\pfail}{\mbox{\tt fail}}            % fail
+\newcommand{\ptrue}{\mbox{\tt true}}            % true
+\newcommand{\pgoal}{\mbox{\tt ?-\ }}            % ?-
+
+% Negation
+
+\newcommand{\non}{\neg}                         % logical not, \neg
+\newcommand{\neglit}{\sim}                      % negative literal
+
+% logical operators
+
+\newcommand{\Imp}{\Rightarrow}                  % =>
+\newcommand{\Equ}{\Iff}                         % <=>,  \Iff
+\newcommand{\nimp}{\mbox{\bf $\prec$}}          % neccess. implication
+                                                % <
+% constants
+
+\newcommand{\euler}{\mathrm{e}}                % I
+
+\newcommand{\true}{\mbox{\texttt{1}}}                % I
+\newcommand{\false}{\mbox{\texttt{0}}}               % 0
+
+\newcommand{\TRUE}{\true}
+\newcommand{\FALSE}{\false}
+
+\newcommand{\VarX}{\mbox{\sf X}}              % X
+
+% model theory
+
+\newcommand{\entails}{\:\mbox{$|\!\!\!\approx$}\:}      % entailment
+\newcommand{\nentails}{\:\mbox{$|\!\!\!\not\approx$}\:} % not entailment
+
+% ------------------------------------------------- special relations
+
+% Relational stuff
+
+\newcommand{\reln}{\mbox{\sf reln}}
+%\newcommand{\compl}[1]{\overline{#1}}
+\newcommand{\compl}[1]{^-#1}
+%\newcommand{\relprod}{|}
+\newcommand{\relprod}{\otimes}
+%\newcommand{\converse}[1]{#1^\smile}
+\newcommand{\converse}[1]{#1^\leftarrow}
+
+\newcommand{\univ}{\mbox{\sf all}}
+
+
+% RESOLUTION STUFF
+
+\newcommand{\resolves}{\sqcap_{{\sf RES}}}           % resolves
+\newcommand{\res}{\resolves}           % resolves
+\newcommand{\mgu}{\mbox{\sf mgu}}               % mgu
+\newcommand{\unif}{\mbox{\sf unif}}             % unifies
+
+% LATTICES
+
+\newcommand{\lub}{\mbox{\sf lub}}               % lub
+\newcommand{\glb}{\mbox{\sf glb}}               % glb
+\renewcommand{\inf}{\mbox{\sf inf}}             % inf
+\renewcommand{\sup}{\mbox{\sf sup}}             % sup
+\newcommand{\join}{\sqcup}                      % JOIN
+\newcommand{\meet}{\sqcap}                      % MEET
+\newcommand{\subsumes}{\,\mbox{$|\!\!\!\leqslant$}\,}            % |<
+\newcommand{\ssubsumes}{\,\mbox{$|\!\!\!\preccurlyeq$}\,}   % |{
+\newcommand{\nsubsumes}{\,\mbox{$|\!\!\!\not\leqslant$}\,}            % |<
+\newcommand{\nssubsumes}{\,\mbox{$|\!\!\!\not\preccurlyeq$}\,}   % |{
+
+% ROUGH SET THEORY
+
+\newcommand{\ind}{\mbox{\sf ind}}               % ind
+\newcommand{\kernel}{\mbox{\sf ker}}            % ker
+\newcommand{\reduct}{\mbox{\sf red}}               % red
+\newcommand{\lgg}{\mbox{\sf lgg}}               % lgg
+
+% ----------------------------------------------------------------------- 
+% BRACES
+% ----------------------------------------------------------------------- 
+
+
+\newcommand{\interpretationleftbrace}{[ \hspace{-0.15em} [}
+\newcommand{\interpretationrightbrace}{] \hspace{-0.15em} ]}
+
+\newcommand{\mean}[1]{\interpretationleftbrace \: #1 \:
+                      \interpretationrightbrace} % [[ p ]] 
+
+\newcommand{\tupl}[1]{\left\langle #1 \right\rangle}    % Tuple <x,y,...>
+\newcommand{\tuple}[1]{\left\langle #1 \right\rangle}   % Tuple <x,y,...>
+
+\newcommand{\set}[1]{\{ #1 \}}                   % Set { ... } Do NOT use.
+
+\newcommand{\unkunk}{\blacklozenge}              % Black Diamond
+\newcommand{\unk}{\lozenge}                      % White Diamond
+
+\newcommand{\ext}[1]{\| #1 \|}                   % ``extension'':
+                                                 % ||U||
+
+\newcommand{\wext}[1]{\interpretationleftbrace \,#1\, 
+  \interpretationrightbrace}                     % ``extension'': 
+                                                 % ]]U[[
+
+\newcommand{\rext}[1]{\,\interpretationrightbrace #1
+  \interpretationleftbrace\,}                    % ``extension'': 
+                                                 % [[U]]
+
+% ----------------------------------------------------------------------- 
+% Sort Stuff
+% ----------------------------------------------------------------------- 
+
+\newcommand{\sort}{\$}                      % $ (used as sort-symbol)
+\newcommand{\sterm}[2]{{#1\mathbf{::}#2}}        % sorted term macro (\sf\$$...$)
+                                            % arg 1: sort
+\newcommand{\pred}[1]{\textit{#1}}          % predicate name macro (\tt)
+\newcommand{\prol}[1]{\texttt{#1}}          % predicate name macro (\tt)
+\newcommand{\dop}[2]{\bullet(#1, #2)}       % dotted-pairs
+
+
+% ----------------------------------------------------------------------- 
+% Equivalences and Definitions
+% ----------------------------------------------------------------------- 
+
+\newcommand{\defequ}{\:\stackrel{%              %  Def
+    \mbox{\scriptsize \sf Def}}{%               % <===>
+    \Longleftrightarrow} \:}                    %
+
+\newcommand{\defeql}{\:\stackrel{%              %  Def
+    \mbox{\scriptsize \sf Def}}{%               %  ===
+    =\!\!=} \:}                    %
+
+% \newcommand{\tgdw}{{\mbox{\ gdw.\ }}}           % [mem] gdw (german iff)
+
+\newcommand{\tiff}{{\mbox{\ iff.\ }}}           % [mem] iff
+
+% ---------------------------------------------------------------------
+
+\newcommand{\showps}[3]
+{\begin{figure}[hbt]
+\caption{\sc #3}
+\centering
+\mbox{\psfig{figure=#1.eps,height=#2cm}}
+\end{figure}}
+
+% ---------------------------------------------------------------------
+% Special Funtions
+% ---------------------------------------------------------------------
+
+\newcommand{\inject}{\rightarrowtail}
+\newcommand{\surject}{\onto}
+
+% ---------------------------------------------------------------------
+% Symbols
+% ---------------------------------------------------------------------
+
+
+\newcommand{\Alp}{{\cal A}}                     % Alphabet        A
+\newcommand{\Alg}{\mathbf{A}}                   % Algorithm       A
+\newcommand{\Algebra}{{\cal A}}                 % Algebra         A
+\newcommand{\Algebras}{{\mathfrak{A}}}              % Algebras        A
+
+\newcommand{\Context}{{\cal C}}                 % Context         C
+
+\newcommand{\Domain}{{\cal D}}                  % Domain          D
+
+\newcommand{\FS}{{\mathfrak{F}}}                    % Formal system   F
+\newcommand{\Features}{{\mathfrak{F}}}              % Features        F
+
+\newcommand{\Grammar}{{\mathfrak{G}}}               % Grammar         G
+
+\newcommand{\IS}{{\mathfrak{I}}}                    % information system   I
+\newcommand{\Lang}{{\cal L}}                    % Language        L
+\newcommand{\Logic}{{\mathfrak L}}                  % Logic           L
+\newcommand{\Model}{\mathfrak M}                   % Model           M
+\newcommand{\Models}{{\sf Mod}}                % Class of models   Mod
+
+\newcommand{\Theory}{{\cal T}\hspace*{-0.4ex}h} % Theory          T
+\newcommand{\Universe}{{\mathfrak{U}}}              % Universe        U
+\newcommand{\World}{{\cal W}}                   % Worlds          W 
+\newcommand{\Worlds}{{\mathfrak W}}                 % possible Worlds W
+
+\newcommand{\Pos}{{\cal{P}}}
+\newcommand{\Neg}{{\cal{N}}}
+
+\newcommand{\EPos}{E^+}
+\newcommand{\ENeg}{E^-}
+\newcommand{\RelPos}{E^+_K}
+\newcommand{\RelNeg}{E^-_K}
+\newcommand{\NoPos}{|\Pos|}
+\newcommand{\NoNeg}{|\Neg|}
+\newcommand{\NoRelPos}{|\Pos_K|}
+\newcommand{\NoRelNeg}{|\Neg_K|}
+
+\newcommand{\dist}{\Delta}
+\newcommand{\meas}{\Delta}
+\newcommand{\umeas}{\Upsilon}
+\newcommand{\target}{\mathbf{t}}
+\newcommand{\sample}{\mathrm{\mathbf{s}}}
+\newcommand{\data}{\mathrm{\mathbf{d}}}
+\newcommand{\err}{\mathsf{err}}
+\newcommand{\thres}{\vartheta}
+\newcommand{\bias}{\beta}
+\newcommand{\Hype}{{\cal H}}
+
+\newcommand{\ini}{\mathtt{i}}
+\newcommand{\outi}{\mathtt{o}}
+\newcommand{\hidi}{\mathtt{h}}
+
+\newcommand{\act}{\mathsf{act}}
+
+% ----------------------------------------------------------- Formal Languages
+
+%\newcommand{\Alph}{\Sigma}                       % Alphabet: SIGMA
+%\newcommand{\AlphS}{\Sigma^\star}                % Alphabet: SIGMA*
+\newcommand{\VarS}{V^\star}                     % Nonterminals: V
+\newcommand{\TerS}{T^\star}                     % Terminals   : T
+
+% ----------------------------------------------------------- Logical systems
+% CAUTION!
+%
+% UPPERCASE commands for use in text mode only. Cmd produces an mbox.
+%           Therefore: type eg. "So, \PL\ is semi--decidable" and
+%                      "For a \PL --system"
+% lowercase commands for use in math mode only. Cmd use mathsf. Therefore,
+%           we get automatic size-conversion:
+%           "Let $\phi$ a $\PL$ formula" or "\phi \in \FORM_\PL"
+% Capitalized commands use \sffamily and should be used with care (eg in
+%             sectionheaders only (formatting as UPPERCASE cmds!)
+
+\newcommand{\PROP}{\mbox{{\sf PROP}}}                 % prop. logic (text)
+\newcommand{\Prop}{{\mbox{\sffamily PROP}}}
+\newcommand{\prop}{{\mathsf{PROP}}}                   % prop. logic (math)
+%
+\newcommand{\PL}{{\mbox{\sf PL--1}}}                     % pred. logic (text)
+\newcommand{\Pl}{{\mbox{\sffamily PL--1}}}
+\newcommand{\pl}{{\mathsf{PL-1}}}                       % pred. logic (math)
+%
+%\newcommand{\PL1}{{\mbox{\sf PL--1}}}                    % synonyms
+%\newcommand{\Pl1}{{\mbox{\sffamily PL--1}}}              %
+%\newcommand{\pl1}{{\mathsf{PL-1}}}                      % synonyms
+%
+\newcommand{\PLII}{{\mbox{\sf PL--2}}}                     % pred. logic (text)
+\newcommand{\Plii}{{\mbox{\sffamily PL--2}}}
+\newcommand{\plii}{{\mathsf{PL-2}}}                       % pred. logic (math)
+%
+% --------------------------------------------------------------------- Sets
+
+%\newcommand{\FORM}{{\mbox{\sf wff}}}        % well formed formulas
+\newcommand{\FORM}{{\mbox{\sf Fml}}}        % well formed formulas, Ivo's way
+\newcommand{\Fml}{\FORM}                    % IVO comp. mode ...
+\newcommand{\fml}{\FORM}                    % IVO comp. mode ...
+\newcommand{\PRED}{{\mbox{\sf Prd}}}        % predicates
+\newcommand{\TER}{{\mbox{\sf Ter}}}         % terms
+\newcommand{\sTER}{{\mbox{\sf sTer}}}       % sorted terms
+\newcommand{\CONST}{{\mbox{\sf Con}}}         % constants
+\newcommand{\FUNC}{{\mbox{\sf Fnc}}}         % Functions
+\newcommand{\sCON}{{\mbox{\sf sCon}}}       % sorted constants
+\newcommand{\SOR}{{\mbox{\sf Sor}}}         % Sorts
+\newcommand{\VAR}{{\mbox{\sf Var}}}         % variables
+\newcommand{\sVAR}{{\mbox{\sf sVar}}}       % sorted vars
+\newcommand{\VARCON}{{\mbox{\sf Bas}}}      % basic terms
+\newcommand{\sVARCON}{{\mbox{\sf sBas}}}    % sorted ones
+\newcommand{\PROPVAR}{{\mbox{\sf Prp}}}     % sorted ones
+
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
+
+\newcommand{\figsep}{\rule{\textwidth}{1pt}}
+\newcommand{\capsep}{\rule{\textwidth}{0.5pt}}
+
+% ----------------------------------------------------------------------------
+% \comment{COMMENT}
+% ----------------------------------------------------------------------------
+% remark on margin (twoside-sensitive)
+% ----------------------------------------------------------------------------
+
+
+\newcommand{\comment}[1]{{\marginpar[\hfill {\parbox{2cm}{ \centering {\tiny #1}
+\rule{0pt}{2ex}}}]{{\parbox{2cm}{ \centering #1 \rule{0pt}{2ex}}}}}}
+
+\newcommand{\authorremark}[2]{\comment{#1:\\ #2}}
+
+% ---------------------------------------------------------------------------
+% \paritem{PARNAME}{PARTEXT}
+% instead of using the itemize-environment for only one item better use this:
+% ---------------------------------------------------------------------------
+
+\newcommand{\paritem}[2]{$\bullet\;$\partop{#1}\begin{quote} #2 \end{quote} }
+
+% ---------------------------------------------------------------------------
+% \hide{...}
+% hides the argument tex, but prints an empty box instead of it.
+% ---------------------------------------------------------------------------
+
+\newsavebox{\emptyframe}
+\newcommand{\hide}[1]{\sbox{\emptyframe}{\parbox{\textwidth}{#1}}
+                      \fbox{\phantom{\usebox{\emptyframe}}}}
+                      
+% ---------------------------------------------------------------------------
+% \todo
+% inserts a Todo--Mark
+% ---------------------------------------------------------------------------
+
+\newcommand{\todo}{\fbox{\parbox{\textwidth}{\vspace*{1cm} \centerline{\sc ToDo} \vspace*{1cm}}}}
+
+
+% ----------------------------------------------------------------------------
+
+% ---------------------------------------------------------------------------
+% environment: chapdesc, partdesc.
+% ---------------------------------------------------------------------------
+% is a nice goodie for introductory remarks at the beginning of parts or
+% chapters. Good for Overview, contents, etc.
+% ---------------------------------------------------------------------------
+
+
+%\newenvironment{chapdesc}{
+%                         \begin{flushright}
+%                         \begin{minipage}{9cm}
+%                         \small
+%                         \rule{9cm}{1pt}\ \\ }%
+%                         {\par\rule{9cm}{1pt}%
+%                          \end{minipage}
+%                          \end{flushright}
+%                          }
+
+%\newenvironment{partdesc}{\begin{center}
+%                         \begin{minipage}{9cm}
+%                         \sf
+%                         \rule{9cm}{1pt}\ \\ }%
+%                         {\rule{9cm}{1pt}
+%                          \end{minipage}
+%                          \end{center}
+%                          \vfil\newpage}
+
+%\newcommand{\console}[1]{\begin{minipage}{textwidth}
+%                          \hspace*{2cm}
+%                          \fbox{
+%                          \begin{minipage}{9cm}
+%                          \small \tt  #1
+%                          \end{minipage}
+%                          }
+%                          \end{minipage}
+%                         }
+
+%% Hyphenation
+%\hyphenation{
+%quan-ti-fier
+%quan-ti-fi-ers
+%}
+
+
+% ----------------------------------------------------------------------------
+% Disable Paragraph indentation
+% ----------------------------------------------------------------------------
+
+\setlength{\parindent}{0em}
+
+%\setlength{\textheight}{18cm}
+

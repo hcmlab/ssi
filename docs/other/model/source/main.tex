@@ -1,0 +1,123 @@
+\documentclass[12pt, a4, german]{report}
+
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{longtable}
+
+%\setlength{\parindent}{0em}
+\setlength{\textwidth}{17cm}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{xcolor}
+\usepackage{url}
+\definecolor{darkblue}{rgb}{0,0,.5}
+\definecolor{white}{rgb}{1,1,1}
+\usepackage{graphicx}
+\graphicspath{pics}
+
+\definecolor{BLUE}{rgb}{0.,0.,1.}
+\definecolor{RED}{rgb} {1.,0.,0.}
+\definecolor{GREEN}{rgb} {0.,.7,0.}
+
+\newcommand{\red}[1]{\textcolor{RED}{#1}}
+\newcommand{\blue}[1]{\textcolor{BLUE}{#1}}
+\newcommand{\green}[1]{\textcolor{GREEN}{#1}}
+
+\def\eg{{\it e.g.\,}}
+\def\Eg{{\it E.g.\,}}
+\def\ie{{\it i.e.\,}}
+\def\Ie{{\it I.e.\,}}
+\def\ssi{{\bf SSI}\ }
+\def\ssidot{{\bf SSI}.\ }
+
+\headheight0.0cm
+\topmargin-2.0cm
+\oddsidemargin0.0cm
+\textwidth15.92cm
+\textheight25cm
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  showstringspaces=false,
+  commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  stringstyle=\color{black},
+  identifierstyle=\color{darkblue},
+  keywordstyle=\color{cyan},
+  morekeywords={xmlns,version,type}% list your attributes here
+}
+
+\begin{document}
+
+\lstset{numbers=right, language=c++, breaklines=true, frame=shadowbox}
+
+\begin{center}
+\begin{tabular}[t]{rcl}
+\begin{minipage}{3cm}
+\includegraphics[width=3cm]{pics/ssi-logo}
+\end{minipage}
+
+&
+\begin{minipage}{8.92cm}
+\begin{center}
+{\LARGE {\bf{SSI/ModelUI Tutorial}}} v.0.9
+\\
+\footnotesize{compiled: \today
+\\
+\copyright \,University of Augsburg, 2007-13}
+\\
+Multimedia Concepts and their Applications
+\end{center}
+\end{minipage}
+&
+\begin{minipage}{5cm}
+%\usefont{T1}{uhv}{b}{n}\selectfont
+Johannes Wagner
+\footnotesize {}
+\end{minipage}
+\end{tabular}\\
+\end{center}
+\begin{center}
+\url{http://openssi.net}\\
+wagner@openssi.net
+\end{center}
+\rule{\textwidth}{2.5pt}
+\bigskip
+
+SSI/ModelUI is a graphical interface that allows users to record, evaluate and train own recognition models. Trained models are ready to be used in real-time in a SSI pipeline. The interface covers five main tasks:
+
+\begin{enumerate}
+\item Organize multiple projects.
+\item Add new recordings to a project.
+\item View recordings and create/adjust according annotations.
+\item Automatic feature extraction and model training.
+\item Test a trained model in real-time.
+\end{enumerate}
+
+\tableofcontents
+
+\include{project}
+\include{record}
+\include{view}
+\include{model}
+
+\listoffigures
+\listoftables
+
+\end{document}
+
+

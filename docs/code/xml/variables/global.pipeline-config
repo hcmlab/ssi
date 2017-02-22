@@ -1,0 +1,3 @@
+plot:title = GLOBAL # plot title
+decorator:icon = true # $(bool) show icon
+mouse:sr = 50.0 # $(select{20.0,50.0,100.0}) sample rate

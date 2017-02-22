@@ -1,0 +1,231 @@
+\documentclass[12pt, a4, german]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[ngerman]{babel}	 %use german spellings
+
+\usepackage{../mmm}
+
+\usepackage{color}
+\definecolor{grau}{rgb}{0.4,0.4,0.4} 
+\definecolor{schwarz}{rgb}{0,0,0} 
+\definecolor{BLUE}{rgb}{0.,0.,1.}
+\definecolor{RED}{rgb} {1.,0.,0.}
+\definecolor{GREEN}{rgb} {0.,.7,0.}
+
+\def\xcolorcmd{\colorlet{black}{gray!150}}
+\usepackage{xcolor}
+
+\usepackage{url}
+\usepackage{graphicx}
+\graphicspath{pics}
+
+\setlength{\parindent}{0em}
+\setlength{\textwidth}{17cm}
+
+\newcommand{\red}[1]{\textcolor{RED}{#1}}
+\newcommand{\blue}[1]{\textcolor{BLUE}{#1}}
+\newcommand{\green}[1]{\textcolor{GREEN}{#1}}
+
+\newcounter{problem}
+\newcounter{pointsa}
+\newcounter{pointsb}
+\newcounter{blatt}
+
+\setcounter{blatt}{1}
+
+\newenvironment{problem}[3]{
+  \addtocounter{problem}{1}
+  \addtocounter{pointsa}{#1}
+  \addtocounter{pointsb}{#2}
+  \bigskip 
+  {    \textbf{Task \theproblem}: #3 \hrulefill 
+%\textsc{Inf}: (\rule{6mm}{0pt} / \textbf{}) - \textsc{Kom}: (\rule{6mm}{0pt} 
+ \textbf{}
+  }\begin{quote}
+  }{  
+  \end{quote}}
+
+%http://www.math.tu-dresden.de/~rudl/latex/fonts.pdf
+
+\headheight0.0cm
+\topmargin-2.5cm
+\oddsidemargin0.0cm
+\textwidth15.92cm
+\textheight25cm
+
+\usepackage{watermark}
+\usepackage{tikz}
+
+\newcommand{\changefont}[3]{
+\fontfamily{#1} \fontseries{#2} \fontshape{#3} \selectfont}
+
+\begin{document}
+
+\thiswatermark{
+%\centering
+%\put(320,-160){\begin{tikzpicture}%
+ %           \node (0,0) [opacity=0.05]{%
+  %           \includegraphics[width=4.5cm]{../unilogo.png}};%
+   %      \end{tikzpicture}}
+\put(120,-145){\begin{tikzpicture}%
+            \node (0,0) [opacity=0.5]{%
+             \includegraphics[width=4.5cm]{../uni-siegel.png}};%
+         \end{tikzpicture}}
+\put(355,-145){\begin{tikzpicture}%
+            \node (0,0) [opacity=0.5]{%
+             \includegraphics[width=2.9cm]{../unilogo.pdf}};%
+         \end{tikzpicture}}
+%\put(115,-145){\includegraphics[width=5cm]{../uni-siegel.png}}
+}
+
+\begin{center}
+\begin{tabular}[t]{rcl}
+\begin{minipage}{3cm}
+\vspace*{0.1cm}
+\hspace*{-1.8cm}
+\includegraphics[width=4.5cm]{../hcm-logo.pdf}
+\end{minipage}
+&
+\begin{minipage}{10cm}
+\vspace*{0.5cm}
+%\usefont{T1}{phv}{c}{n}\selectfont
+\usefont{T1}{phv}{m}{n}\selectfont
+{%\normalsize{Universität Augsburg}\\
+\textcolor{schwarz}{
+\normalsize{Institut für Informatik\\
+Lehrstuhl Human Centered Multimedia\\
+\\
+\textbf{Prof. Dr. Elisabeth Andr\'e}\\
+Simon Flutura
+}
+}
+}
+\end{minipage}
+\end{tabular}\\
+\end{center}
+\vspace*{-0.5cm}
+\textcolor{schwarz}{\rule{\textwidth}{0.3pt}}
+\begin{center}
+\usefont{T1}{phv}{b}{n}\selectfont
+%\usefont{T1}{uhv}{b}{n}\selectfont
+{\Large {\bf{
+\usefont{T1}{phv}{b}{n}\selectfont
+\vspace*{0.5cm}
+\textcolor{schwarz}{SSI on Linux, SS 2015}}}}          
+\end{center}
+\vspace{0.2cm}
+%
+%
+% =====================================================================
+%
+\shorthandoff{"} % Use Gaensefuesschen within the text without quoting them
+\begin{center}
+\usefont{T1}{phv}{b}{n}\selectfont{\large
+%\usefont{T1}{uhv}{b}{n}\selectfont{\large
+\theblatt. Introduction}
+\end{center}
+\vspace{0.2cm}
+%\changefont{ppl}{m}{n}
+%\changefont{ptm}{m}{n}
+%\changefont{phv}{m}{n}
+
+%\changefont{cmr}{m}{n}
+
+\changefont{phv}{m}{n}
+\normalsize
+
+SSI - Social Signal Iterpretation Framework has been portet to Linux with an Android-port in the works.
+Devices like the Raspberry PI, as well as several mobile devices can now be used. This guide shows you how to set up SSI on Linux\\\\
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{problem}{0}{0}{Prepare the setup}
+Some requirements have to be met to be able to use SSI on Linux.
+On any reasonable Distribution you should simply be able to install the dependencies via package manager.
+
+
+\begin{enumerate}
+\item GCC and G++ 4.8 or later have to be installed, because SSI relies on C++11 standard.
+\item CMake is needed as build-system.
+\item For graphics output SDL2 development packages are needed as well as cairo development packages.
+\item Portaudio development library is needed for audio.
+\end{enumerate}
+\end{problem}
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{problem}{0}{0}{Get SSI}
+SSI can be found here:
+\begin{enumerate}
+	\item from git \verb|https://hcm-lab.de/git/groups/ssi|
+\item from subversion \verb|https://hcm-lab.de/svn/Johannes/openssi/trunk/|
+\item from \verb|cleanport.tar.gz| archive
+
+\end{enumerate}
+\end{problem}
+
+
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{problem}{0}{0}{Prepare Raspberrian}
+
+
+\begin{enumerate}
+	\item install correct version of gcc:
+	\verb|sudo ap gcc-4.8|
+	\item set it as default:
+	\verb|sudo ln -s /usr/bin/gcc-4.8 /usr/bin/gcc|
+	\item install correct version of portaudio:
+	\verb|sudo apt-get install portaudio19-dev|
+	\item install cairo:
+	\verb|sudo apt-get install libcairo-dev|
+	\item installt prebuild sdl-2 packages(in \verb|packages/raspberrian/sdl2/|):
+	\verb|sudo dpkg -i *.deb|
+
+\end{enumerate}
+
+\end{problem}
+
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{problem}{0}{0}{Now you are ready to build SSI}
+
+
+\begin{enumerate}
+	\item create a build directory next to the ssi root directory:
+	
+	\verb|mkdir ./trunk/../build|
+	\item run cmake from the build directory to create the build environment:
+	
+	\verb|cmake ../trunk|
+	\item run make to build and install ssi(with 6 threads):
+	
+	\verb|make -j6 install|
+\end{enumerate}
+
+\end{problem}
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{problem}{0}{0}{Run tests}
+Your freshly build binarys are located in ssi roots \verb|bin_cmake| directory:
+
+\verb|trunk/cmake_bin/Linux|
+\begin{enumerate}
+	\item To test an audio pipeline prepare and test your microphone.
+	then run \verb|./ssiemovoice_test| from \verb|trunk/cmake_bin/Linux|.
+	The correct working directory is needed, so the shared plugins can be found.
+	\item Apart from c++ code one can as well run xml pipelines via:
+	
+	\verb|./xmlpipe test.pipeline|
+
+
+\end{enumerate}
+\end{problem}
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{problem}{0}{0}{Choose IDE}
+To further develop SSI on linux QtCreator is recommended.
+Do not forget to install the GNU debugger GDB.
+
+Have fun.
+
+\end{problem}
+
+\end{document}
+
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android_XMLpipe</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="local_service_started">SSI running ...</string>
+    <string name="local_service_label">SensorCollector</string>
+    <string name="chk_overwrite">overwrite pipe with apk\'s</string>
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins -->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- Sensor 
+	
+	We can a filter to the output of a sensor
+	to manipulate the output stream in-place.
+	
+	-->
+	<sensor create="Mouse:mouse" option="mouse" sr="50.0" mask="1">		
+		<output channel="cursor" pin="pos">
+			<transformer create="Selector" indices="0"/>
+		</output>
+	</sensor>
+	
+	<!-- Visualization 
+
+	Likewise we can add in-place manipulation to a consumer.	
+	
+	-->	
+	<consumer create="SignalPainter:plot" title="RAW" size="10.0">
+		<input pin="pos" frame="0.2s"/>		
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="AVG" size="10.0">
+		<input pin="pos" frame="0.2s">
+			<transformer create="MvgAvgVar" win="5.0" format="1"/>
+		</input>		
+	</consumer>	
+
+	<!-- Decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+	</object>
+
+</pipeline>

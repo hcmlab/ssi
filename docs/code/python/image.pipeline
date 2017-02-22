@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="graphic" />
+		<load name="camera" />
+		<load name="python" />
+		<load name="ioput" />
+	</register>
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	
+	<!-- calculate average pixel value -->
+	<transformer create="PythonImageFilter" script="image_filter" syspath=".">
+		<input pin="video" frame="1"/>
+		<output pin="gray"/>
+	</transformer>
+	<transformer create="PythonImageFeature" script="image_feature" syspath=".">
+		<input pin="video" frame="1"/>
+		<output pin="average"/>
+	</transformer>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:vplot" title="RGB">
+		<input pin="video" frame="1"/>
+	</consumer>
+	<consumer create="PythonImageConsumer" script="image_consumer" syspath="." optsstr="x=420;y=320;title=GRAY">
+		<input pin="gray" frame="1"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="AVERAGE PIXEL VALUES" size="10.0">
+		<input pin="average" frame="1" />		
+	</consumer>		
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,300">vplot</area>	
+		<area pos="800,0,400,600">plot</area>	
+	</object>	
+	
+</pipeline>

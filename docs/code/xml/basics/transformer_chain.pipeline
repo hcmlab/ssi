@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" sr="50.0">
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- extend range -->
+	<transformer create="Chain" path="transformer_chain">
+		<input pin="cursor" frame="0.2s" delta="0.8s"/>
+		<output pin="chain"/>
+	</transformer>	
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="X (MIN,MEAN,MAX,ENERGY)" size="10.0" autoscale="false" fix="0,1">
+		<input pin="chain" frame="1" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

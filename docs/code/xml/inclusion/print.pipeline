@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- print
+
+	if no file path is given FileWriter will print on the console
+	
+	-->
+	<consumer create="FileWriter" type="1">
+		<input pin="pos" frame="0.2s" />
+	</consumer>
+
+</pipeline>

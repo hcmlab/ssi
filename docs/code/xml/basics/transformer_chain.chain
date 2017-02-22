@@ -1,0 +1,9 @@
+<chain>
+	<filter>
+		<item create="Selector" indices="0"/>
+	</filter>
+	<feature>		
+		<item create="Functionals" names="min,mean,max"/>
+		<item create="Energy"/>
+	</feature>
+</chain>

@@ -1,0 +1,47 @@
+ssi on android:
+
+in trunk/cmakelists.txt:
+SET(SSI_GUI none)
+
+in core/cmakelists.txt:
+
+remove tcpsocket
+======
+#source/ioput/socket/ip/TcpSocket.cpp
+#source/ioput/socket/SocketTcp.cpp
+
+
+in 
+core/cmakelists.txt
+plugins/event/cmakelists.txt
+plugins/frame/cmakelists.txt
+plugins/ioput/cmakelists.txt:
+======
+
+  #find_library (MINGW_PTHREAD "pthread" HINTS "/usr/lib" )
+  SET(MINGW_PTHREAD "")
+
+
+in plugins/cmakelists.txt:
+======
+only enable event frame ioput
+
+
+generate toolchainfile-archive:
+======
+./make-standalone-toolchain.sh --toolchain=arm-linux-androideabi-4.9 --ndk-dir=/opt/android-ndk/
+
+use contained .cmake file
+======
+/android-cmake-7e4cd91276af/toolchain/android.toolchain.cmake
+
+
+configure cmake:
+======
+export ANDROID_ABI=x86
+
+cmake ../trunk/ -DCMAKE_TOOLCHAIN_FILE=../android-cross/android.toolchain.cmake
+
+build:
+======
+make -j6 install

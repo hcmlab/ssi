@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="indx" type="INT" num="1" value="0" lock="true" help="dimension of x coordinate (0)" />
+    <item name="indy" type="INT" num="1" value="1" lock="true" help="dimension of y coordinate (1)" />
+    <item name="norm" type="BOOL" num="1" value="false" lock="true" help="recognition probabilities to sum up to 1" />
+</options>

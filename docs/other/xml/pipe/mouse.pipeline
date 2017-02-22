@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssimodel" />
+		<load name="ssievent" />
+		<load name="ssiioput" />
+		<load name="ssigraphic" />
+		<load name="ssisignal" />
+		<load name="ssimouse" />
+	</register>
+	
+	<sensor create="Mouse" size="0.1" mask="1">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="pos" />
+	</sensor>
+	
+	<transformer create="MvgAvgVar" win="2" format="1">
+		<input pin="pos" frame="0.2s" />
+		<output pin="pos_avg" />
+	</transformer>	
+	
+	<consumer create="SignalPainter:plot" size="10">
+		<input pin="pos" frame="0.2s" />
+	</consumer>	
+	
+	<consumer create="SignalPainter:plot" size="10">
+		<input pin="pos_avg" frame="0.2s" />
+	</consumer>	
+	
+	<consumer create="FileWriter" path="cursor" type="1">
+		<input pin="pos" frame="10" />
+	</consumer>	
+	
+	<consumer create="ZeroEventSender" mindur="0.3" address="gesture@cursor">
+		<input pin="button" frame="0.2s" />
+	</consumer>	
+	
+	<consumer create="Classifier" trainer="mouse" console="True">
+		<input pin="pos" listen="gesture@cursor" />
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+	
+</pipeline>

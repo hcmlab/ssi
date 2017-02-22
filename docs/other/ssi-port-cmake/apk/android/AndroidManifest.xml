@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="${ANDROID_APK_PACKAGE}"
+          android:versionCode="1"
+          android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="${ANDROID_APK_API_LEVEL}" />
+    
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.BODY_SENSORS"/>
+
+    <application android:label="@string/app_name"
+                 android:icon="@drawable/icon"
+                 android:hasCode="true"
+                 android:debuggable="${ANDROID_APK_DEBUGGABLE}"
+                 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+                 
+		<activity android:name="de.hcmlab.ssi.android_xmlpipe.DummyActivity"
+				android:label="@string/app_name"
+				android:configChanges="orientation|keyboardHidden">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		
+        <activity android:name="android.app.NativeActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="landscape"
+                  android:configChanges="orientation|keyboardHidden">
+
+            <meta-data android:name="android.app.lib_name" android:value="${ANDROID_NAME}" />
+
+        </activity>
+        <service android:enabled="true" android:name=".SensorCollectorService" />
+    </application>
+</manifest>

@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="ioput"/>
+	</register>
+	
+	<!-- server
+	
+	We set up a server here, it will send a sync message on port 1111 to all 
+	machines in the network.
+	
+	-->
+	<framework sync="true" slisten="false" sport="1111" sdialog="true"/>
+
+	<!-- socket receiver 
+	
+	Reads from a socket port and feeds the received signal into the
+	pipeline. Use this component to receive signals from external applications.
+	Make sure to adjust the options to fit the incoming signal.
+	
+	-->
+	<sensor create="SocketReader" port="2222" ssr="50.0" sdim="2" sbyte="4" stype="9">		
+		<output channel="socket" pin="cursor"/>
+	</sensor>
+	
+	<!-- socket event receiver 
+	
+	Reads events from a socket port and puts them on the event board.
+	Use this component to receive events from external applications.
+	Make sure to adjust the options to fit the incoming event stream.
+	
+	-->
+	<object create="SocketEventReader" port="3333" osc="true" address="event@button"/>	
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="CURSOR (SERVER)" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>	
+	<object create="EventMonitor:monitor" title="MONITOR (SERVER)">
+		<listen address="@" span="10000"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*,monitor</area>		
+	</object>
+
+</pipeline>

@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DummyActivity" >
+
+    <TextView
+        android:id="@+id/text_view_header"
+		android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+  		android:gravity="center_horizontal"
+  		android:textColor="#30D9FF"
+        android:textSize="20sp"
+        android:text="mobileSSI" />
+
+     <Button
+         android:id="@+id/start_service"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/text_view_header"
+         android:layout_marginLeft="50dp"
+         android:layout_marginTop="17dp"
+         android:onClick="onClickStartServie"
+         android:text="Start SSI" />
+
+     <Button
+         android:id="@+id/stop_service"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignRight="@+id/start_service"
+         android:layout_below="@+id/start_service"
+         android:gravity="center"
+         android:onClick="onClickStopService"
+         android:text="Stop SSI" />
+     <CheckBox
+        android:id="@+id/chkOverwrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stop_service"
+        android:checked="false"
+        android:onClick="onClickOverwrite"
+        android:text="@string/chk_overwrite" />
+
+</RelativeLayout>

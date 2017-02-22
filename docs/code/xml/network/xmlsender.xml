@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<mouse>    
+	<cursor>$(0)</cursor>	
+	<cursor x="$(0{select=0;functional=mean})" y="$(0{select=1;functional=mean})"/>
+	<latest>$(0{functional=first})</latest>
+	<oldest>$(0{functional=last})</oldest>
+	<button>$(1{functional=max;precision=0})</button>
+	<features>$(features@mouse)</features>	
+	<feature name="$(features@mouse{select=1;field=name})">		
+		<event>$(features@mouse{field=event})</event>
+		<sender>$(features@mouse{field=sender})</sender>
+		<time_ms>$(features@mouse{field=time})</time_ms> 
+		<system_ms>$(features@mouse{field=time_system})</system_ms> 
+		<relative_ms>$(features@mouse{field=time_relative})</relative_ms> 
+		<duration_ms>$(features@mouse{field=duration})</duration_ms> 
+		<state>$(features@mouse{field=state})</state>
+		<values>$(features@mouse{select*2=1;span=3000;precision=2})</values>
+	</feature>
+</mouse>
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins -->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- Sensor -->
+	<sensor create="Mouse:mouse" option="mouse" sr="50.0" mask="1">		
+		<output channel="cursor" pin="pos"/>
+	</sensor>
+	
+	<!-- Down sampling 
+	
+		Keeps only every n'th sample in the input stream.
+	
+	-->
+	<transformer create="DownSample" keep="3">
+		<input pin="pos" frame="9"/>
+		<output pin="pos-down"/>
+	</transformer>
+	
+	<!-- Energy (Feature)
+	
+		For each dimension in the input stream calculate energy within a moving window ( = frame + delta).
+	
+	-->
+	<transformer create="Energy">
+		<input pin="pos" frame="0.1s" delta="400ms"/>
+		<output pin="pos-energy"/>
+	</transformer>
+
+	<!-- Moving Average (Filter)
+
+	Calculates the moving average for a window of 5 seconds.
+
+	-->
+	<transformer create="MvgAvgVar" win="5.0" format="1">
+		<input pin="pos" frame="0.1s"/>
+		<output pin="pos-avg"/>
+	</transformer>
+	
+	<!-- Visualization 	-->
+	<consumer create="SignalPainter:plot" title="RAW" size="10.0">
+		<input pin="pos" frame="0.2s" />		
+	</consumer>		
+	<consumer create="SignalPainter:plot-ex" title="DOWN" size="10.0">
+		<input pin="pos-down" frame="0.2s" />		
+	</consumer>		
+	<consumer create="SignalPainter:plot-ex" title="ENERGY" size="10.0">
+		<input pin="pos-energy" frame="0.2s" />		
+	</consumer>		
+	<consumer create="SignalPainter:plot-ex" title="AVG" size="10.0">
+		<input pin="pos-avg" frame="0.2s" />		
+	</consumer>		
+
+	<!-- Decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,300">plot</area>
+		<area pos="400,300,400,300" nv="1" nh="3">plot-ex*</area>
+	</object>
+
+</pipeline>
