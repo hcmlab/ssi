@@ -1,6 +1,6 @@
 # SSI: Social Signal Interpretation Framework 
 
-<img align="right" height="260" src="http://hcm-lab.de/projects/ssi/wp-content/uploads/2017/02/ssi-logo.png">
+<img align="right" width="260" src="http://hcm-lab.de/projects/ssi/wp-content/uploads/2017/02/ssi-logo.png">
 
 
 ### Documentation
