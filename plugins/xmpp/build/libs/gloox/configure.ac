@@ -2,7 +2,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.50)
-AC_INIT([gloox], [1.0.14], [js@camaya.net])
+AC_INIT([gloox], [1.0.17], [js@camaya.net])
 AC_CONFIG_SRCDIR(src/gloox.cpp)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -95,7 +95,7 @@ AC_MSG_RESULT($libidn)
 dnl extra win32 libs
 case "$host_os" in
   *mingw*|*cygwin*)
-      LIBS="${LIBS} -lwsock32 -lgdi32 -ldnsapi";;
+      LIBS="${LIBS} -lws_32 -lgdi32 -ldnsapi";;
   *)
       CXXFLAGS="$CXXFLAGS -ansi";;
 esac

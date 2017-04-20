@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssisignal"/>
+		<load name="ssiaudio"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- Mel frequency ceptral coeffcients-->
+	<transformer create="MFCC" n_first="0" n_last="13" n_ffts="1024">
+		<input pin="audio" frame="0.01s" delta="0.015s"/>
+		<output pin="mfcc"/>
+	</transformer>
+	
+	<!-- moving average/variance 
+	
+	Calculates average and variance over a window of variable size.
+	Two methods	are available: a moving or sliding window.
+	Set format to 1 or 2 in order to calculate average or variance only.
+	
+	-->
+	
+	<transformer create="MvgAvgVar" method="1" win="0.1" format="1">
+		<input pin="mfcc" frame="0.1s"/>
+		<output pin="mvgmfcc_0.1"/>
+	</transformer>	
+	
+	<transformer create="MvgAvgVar" method="1" win="0.5" format="1">
+		<input pin="mfcc" frame="0.1s"/>
+		<output pin="mvgmfcc_0.5"/>
+	</transformer>	
+	
+	<transformer create="MvgAvgVar" method="1" win="1.0" format="1">
+		<input pin="mfcc" frame="0.1s"/>
+		<output pin="mvgmfcc_1.0"/>
+	</transformer>	
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="AUDIO" size="10" type="2">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="MFCCs (raw)" size="10" type="1">
+		<input pin="mfcc" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" title="MFCCs (0.1s)" size="10" type="1">
+		<input pin="mvgmfcc_0.1" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" title="MFCCs (0.5s)" size="10" type="1">
+		<input pin="mvgmfcc_0.5" frame="0.02s" />
+	</consumer>
+	<consumer create="SignalPainter:plot" title="MFCCs (1.0s)" size="10" type="1">
+		<input pin="mvgmfcc_1.0" frame="0.02s" />
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600" nh=1>plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

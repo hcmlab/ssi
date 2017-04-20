@@ -71,20 +71,20 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>vc$(PlatformToolsetVersion)\$(Platform)\</OutDir>
+    <OutDir>..\..\..\..\$(Platform)\vc$(PlatformToolsetVersion)\</OutDir>
     <IntDir>vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>vc$(PlatformToolsetVersion)\$(Platform)\</OutDir>
+    <OutDir>..\..\..\..\$(Platform)\vc$(PlatformToolsetVersion)\</OutDir>
     <IntDir>vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>vc$(PlatformToolsetVersion)\$(Platform)\</OutDir>
+    <OutDir>..\..\..\..\$(Platform)\vc$(PlatformToolsetVersion)\</OutDir>
     <IntDir>vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>vc$(PlatformToolsetVersion)\$(Platform)\</OutDir>
+    <OutDir>..\..\..\..\$(Platform)\vc$(PlatformToolsetVersion)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
     <IntDir>vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>

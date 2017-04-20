@@ -30,6 +30,7 @@
 #include "graphic/Painter.h"
 #include "base/ICanvas.h"
 #include "thread/Lock.h"
+#include "base/Random.h"
 
 namespace ssi {
 
@@ -38,8 +39,8 @@ class PaintBackground : public ICanvasClient {
 public:
 	
 	PaintBackground() {
-
-		_back_brush = new Painter::Brush(ssi_rgb (ssi_random(255u), ssi_random(255u), ssi_random(255u)));					
+		Randomi random(0, 255);
+		_back_brush = new Painter::Brush(ssi_rgb (random.next(), random.next(), random.next()));
 	}
 
 	~PaintBackground() {

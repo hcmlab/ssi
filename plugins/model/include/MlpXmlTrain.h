@@ -29,12 +29,11 @@
 #define SSI_MLPXMLTRAIN_H
 
 #include "base/IObject.h"
-#include "Trainer.h"
+#include "ssiml/include/Trainer.h"
 #include "ioput/option/OptionList.h"
 #include "MlpXmlDef.h"
-#include "model/Annotation.h"
+#include "ssiml/include/Annotation.h"
 
-#include <vector>
 
 namespace ssi {
 
@@ -128,7 +127,7 @@ protected:
 	ITransformer *_transf;
 		
 	std::vector<ssi_stream_t *> _streams;
-	std::vector<Annotation *> _annos;
+        std::vector<old::Annotation *> _annos;
 };
 
 }

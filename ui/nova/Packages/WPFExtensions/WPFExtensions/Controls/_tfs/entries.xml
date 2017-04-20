@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/Controls/" id="532840" changeset="21158" shadow="a294ea178caf4baba34bc346d116db0e" />
+  <entry name="ContentSizeChangedDelegate.cs" kind="file" id="604984" changeset="24543" />
+  <entry name="ZoomContentPresenter.cs" kind="file" id="532837" changeset="24543" />
+  <entry name="ZoomControl.cs" kind="file" id="529506" changeset="24543" />
+  <entry name="ZoomControlModes.cs" kind="file" id="529507" changeset="21158" />
+  <entry name="ZoomViewModifierMode.cs" kind="file" id="529508" changeset="21158" />
+</entries>

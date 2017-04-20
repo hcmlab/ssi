@@ -29,7 +29,9 @@
 #ifndef SSI_ML_H
 #define	SSI_ML_H
 
-#include "model/SampleList.h"
+#include "ModelTools.h"
+#include "Annotation.h"
+#include "SampleList.h"
 #include "Trainer.h"
 #include "Evaluation.h"
 #include "Evaluation2Latex.h"
@@ -41,11 +43,12 @@
 #include "ISSelectSample.h"
 #include "ISSelectClass.h"
 #include "ISSelectUser.h"
+#include "ISMergeSample.h"
 #include "ISMergeStrms.h"
-#include "ISAlignStrms.h"
+#include "ISMergeDim.h"
+#include "ISFlatSample.h"
 #include "ISMissingData.h"
 #include "ISSplitStream.h"
-#include "ISMergeSample.h"
 #include "ISOverSample.h"
 #include "ISUnderSample.h"
 #include "ISNorm.h"
@@ -55,5 +58,11 @@
 #include "ElanDocument.h"
 #include "ElanTools.h"
 #include "Machine.h"
+
+#ifdef _DEBUG
+#	pragma comment(lib, "ssimld.lib")
+#else
+#	pragma comment(lib, "ssiml.lib")
+#endif
 
 #endif

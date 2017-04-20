@@ -33,6 +33,11 @@ class Delay : public IFilter {
 
 public:
 
+	Delay()
+	{
+		_random500.init(0, 500);
+	}
+
 	IOptions *getOptions () { return 0; };
 	const ssi_char_t *getName () { return "delay"; };
 	const ssi_char_t *getInfo () { return "delay filter"; };
@@ -57,8 +62,10 @@ public:
 
 		memcpy (stream_out.ptr, stream_in.ptr, stream_in.tot);
 
-		Sleep (ssi_cast (DWORD, ssi_random () * 500));
+		ssi_sleep (_random500.next());
 	}
+
+	Randomi _random500;
 
 };
 

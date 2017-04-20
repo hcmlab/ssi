@@ -487,7 +487,7 @@ bool VectorFusionGravity::transformEventToVector(ssi_event_t *Event){
 
 		}else{
 
-			ssi_size_t time = Event->time;
+			ssi_size_t time = _framework_time;// ->time;
 			EVector *v = new EVector( dim, 1.0f, _event_speed, _decay_type, _gradient, time, true);
 			ssi_event_map_t *tuples = ssi_pcast (ssi_event_map_t, Event->ptr);
 			v->set_values(dim, tuples);

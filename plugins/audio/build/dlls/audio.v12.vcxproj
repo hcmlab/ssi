@@ -237,6 +237,7 @@
     <ClInclude Include="..\..\include\AudioLpc.h" />
     <ClInclude Include="..\..\include\AudioMixer.h" />
     <ClInclude Include="..\..\include\AudioMono.h" />
+    <ClInclude Include="..\..\include\AudioNoiseGate.h" />
     <ClInclude Include="..\..\include\AudioOut.h" />
     <ClInclude Include="..\..\include\AudioPlayer.h" />
     <ClInclude Include="..\..\include\fftXg.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="..\..\source\AudioLpc.cpp" />
     <ClCompile Include="..\..\source\AudioMixer.cpp" />
     <ClCompile Include="..\..\source\AudioMono.cpp" />
+    <ClCompile Include="..\..\source\AudioNoiseGate.cpp" />
     <ClCompile Include="..\..\source\AudioOut.cpp" />
     <ClCompile Include="..\..\source\AudioPlayer.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />

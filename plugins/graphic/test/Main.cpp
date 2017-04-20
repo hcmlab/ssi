@@ -75,7 +75,9 @@ int main () {
 	Factory::RegisterDLL ("ssimouse");
 	Factory::RegisterDLL ("ssigraphic");
 
+#if SSI_RANDOM_LEGACY_FLAG	
 	ssi_random_seed();
+#endif
 
 	Exsemble ex;	
 	ex.console(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT);
@@ -127,7 +129,8 @@ bool ex_window(void *arg) {
 		window[i].show();
 	}
 		
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 		
 	for (int i = 0; i < 4; i++)
@@ -172,7 +175,8 @@ bool ex_canvas(void *arg) {
 		window[i].show();
 	}
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
     for (ssi_size_t i = 0; i < 5; i++) {
@@ -239,7 +243,8 @@ bool ex_canvas2(void *arg) {
 		window[i].show();
 	}
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	for (ssi_size_t i = 0; i < 5; i++) {
@@ -307,7 +312,8 @@ bool ex_stream (void *arg) {
 		rect.top += rect.height;
 	}
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	for (ssi_size_t i = 0; i < 4; i++) {
@@ -362,7 +368,7 @@ bool ex_pipeline_1 (void *arg) {
 	selector = ssi_create(Selector, 0, true);
 	ssi_size_t n_select = 16;
 	ssi_size_t select[] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 };
-	ssi_random_shuffle(n_select, select);
+	Random::Shuffle(n_select, select);
 	selector->getOptions()->set(n_select, select);
 	ITransformable *select_t = frame->AddTransformer(cursor_p, selector, "1");
 
@@ -419,8 +425,8 @@ bool ex_pipeline_1 (void *arg) {
 
 	plot = ssi_create_id(SignalPainter, 0, "plot");
 	plot->getOptions()->setTitle("BARS(fix)");
-	plot->getOptions()->type = PaintSignalType::BAR_POS;		
-	plot->getOptions()->fix[0] = 1.0f;
+	plot->getOptions()->type = PaintSignalType::BAR;		
+	plot->getOptions()->fix[0] = 1.0f;	
 	plot->getOptions()->autoscale = false;
 	frame->AddConsumer(select_multiples_t, plot, "1");
 
@@ -563,7 +569,8 @@ bool ex_monitor(void *arg) {
 	monitor.print("Hello World!\r\nNew Line");
 	monitor.update();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	monitor.clear();
@@ -571,7 +578,9 @@ bool ex_monitor(void *arg) {
 
 	monitor.print("Good bye!");
 	monitor.update();
-	ssi_print("\n\n\tpress enter to continue\n");
+
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -600,13 +609,15 @@ bool ex_slider(void *arg) {
 	window.create();
 	window.show();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	slider.set(10.0f);
 	printf("mew slider value: %.2f\n", slider.get());
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -642,13 +653,15 @@ bool ex_combobox(void *arg) {
 	window.create();
 	window.show();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	combo.set(1);
 	printf("new combobox value: %s\n", combo.get());
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -675,13 +688,15 @@ bool ex_checkbox(void *arg) {
 	window.create();
 	window.show();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	check.set(!check.get());
 	printf("new combobox value: %s\n", check.get() ? "true" : "false");
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();	
@@ -708,13 +723,15 @@ bool ex_textbox(void *arg) {
 	window.create();
 	window.show();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	text.set("some new text");
 	printf("new text: %s\n", text.get());
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -741,7 +758,8 @@ bool ex_button(void *arg) {
 	window.create();
 	window.show();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -792,7 +810,8 @@ bool ex_grid(void *arg) {
 	grid.setCheckBox(1, 3, true);
 	grid.setCheckBox(2, 3, true, false);
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -842,7 +861,8 @@ bool ex_tab(void *arg) {
 	grid.setEditable(true);
 	grid.setGridDim(2, 2);
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();
@@ -894,7 +914,8 @@ bool ex_tray(void *arg) {
 	window.setCallback(&callback);
 	window.create();
 
-	ssi_print("\n\n\tpress enter to continue\n");
+	ssi_print("\n\n");
+	ssi_print_off("press enter to continue\n\n");
 	getchar();
 
 	window.close();

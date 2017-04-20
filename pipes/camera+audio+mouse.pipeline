@@ -12,8 +12,8 @@
 	<include name="mouse_write"/>
 	
 	<!-- event detection -->
-	<consumer create="ZeroEventSender" mindur="0.5" maxdur="2.0" sname="button" ename="pressed" eager="true">
-		<input pin="button" frame="0.1s"/>		
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0" sendStartEvent="true">
+		<input pin="button" frame="0.1s" />		
 	</consumer>		
 	
 	<!-- visualization -->

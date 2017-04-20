@@ -254,7 +254,7 @@ ssi_size_t FileBinaryLZ4::write (const void *ptr, ssi_size_t size, ssi_size_t co
 		return 0;
 	}
 
-	ssi_size_t old_pos = tell();
+	int64_t old_pos = tell();
 
 	int32_t outSize = 0;
 	ssi_size_t res = 0;
@@ -298,9 +298,9 @@ ssi_size_t FileBinaryLZ4::write (const void *ptr, ssi_size_t size, ssi_size_t co
 		return 0;
 	}
 
-	ssi_size_t new_pos = tell();
+	int64_t new_pos = tell();
 
-	return new_pos - old_pos;
+	return ssi_size_t(new_pos - old_pos);
 }
 
 ssi_size_t FileBinaryLZ4::writeLine (const ssi_char_t *string) {

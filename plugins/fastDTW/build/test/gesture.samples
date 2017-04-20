@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<samples ssi-v="3">
+	<time ms="25946025" local="2016/10/16 08:15:29:303" system="2016/10/16 06:15:29:303"/>
+    <info ftype="ASCII" size="15" missing="false" garbage="0" />
+    <streams>
+        <item path="gesture.samples.#0" />
+    </streams>
+    <classes>
+        <item name="triangle" size="3" />
+        <item name="rectangle" size="3" />
+        <item name="circle" size="3" />
+        <item name="w" size="3" />
+        <item name="z" size="3" />
+    </classes>
+    <users>
+        <item name="user" size="15" />
+    </users>
+</samples>

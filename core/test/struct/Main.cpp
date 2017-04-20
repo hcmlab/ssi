@@ -62,7 +62,9 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
+#if SSI_RANDOM_LEGACY_FLAG	
 	ssi_random_seed();
+#endif
 
 	Exsemble ex;
 	ex.add(&ex_queue, 0, "QUEUE", "How to use queue.");
@@ -81,8 +83,9 @@ bool ex_queue (void *arg) {
 
 	ssi_size_t n_numbers = 20;
 	ssi_size_t *numbers = new ssi_size_t[n_numbers];
+	Randomi random100(0, 100);
 	for (ssi_size_t i = 0; i < n_numbers; i++) {
-		numbers[i] = ssi_random(100);
+		numbers[i] = random100.next();
 	}
 
 	Queue q(5);
@@ -125,23 +128,25 @@ bool ex_bintree(void *arg) {
 
 	ssi_size_t n_numbers = 20;
 	ssi_size_t *numbers = new ssi_size_t[n_numbers];
+	Randomi random100(0, 100);
 	for (ssi_size_t i = 0; i < n_numbers; i++) {
-		numbers[i] = ssi_random(100);
+		numbers[i] = random100.next();
 	}
 
 	BinTree tree(4);
 	tree.print(toString, true);
 
 	BinTree::Node *root = tree.root();
-	root->ptr = numbers + ssi_random(n_numbers - 1);
-	root->left->ptr = numbers + ssi_random(n_numbers - 1);
-	root->left->right->ptr = numbers + ssi_random(n_numbers - 1);
-	root->left->ptr = numbers + ssi_random(n_numbers - 1);
-	tree.get(1, 1)->ptr = numbers + ssi_random(n_numbers-1);
-	tree.get(2, 3)->ptr = numbers + ssi_random(n_numbers - 1);	
+	Randomi random(0, n_numbers - 1);
+	root->ptr = numbers + random.next();
+	root->left->ptr = numbers + random.next();
+	root->left->right->ptr = numbers + random.next();
+	root->left->ptr = numbers + random.next();
+	tree.get(1, 1)->ptr = numbers + random.next();
+	tree.get(2, 3)->ptr = numbers + random.next();
 	BinTree::Node *node = tree.get(2, 3);
-	node->left->ptr = numbers + ssi_random(n_numbers - 1);
-	node->right->ptr = numbers + ssi_random(n_numbers - 1);
+	node->left->ptr = numbers + random.next();
+	node->right->ptr = numbers + random.next();
 	tree.print(toString);
 
 	tree.save("tree", toFile);

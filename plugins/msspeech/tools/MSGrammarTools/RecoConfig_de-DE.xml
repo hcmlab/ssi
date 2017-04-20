@@ -1,0 +1,14 @@
+<Configuration>
+
+  <!-- Indicates that the recognizer is installed locally -->
+  <Provider type="local" />  
+   
+  <!-- Only the 'enginerequiredattributes' values are required; all others are optional -->
+  <Properties
+      completetimeout="0.25s" incompletetimeout="3s"
+      maxnbest="4" requesttimeout="15s" enginerequiredattributes="Language=407;Vendor=Microsoft"
+      engineoptionalattributes="CommandAndControl">
+  </Properties>
+   
+</Configuration>
+

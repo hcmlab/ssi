@@ -41,12 +41,15 @@ FakeSignal::FakeSignal(const ssi_char_t *file)
 		_file = ssi_strcpy(file);
 	}
 
-	ssi_random_seed();
+	Randomf random(0,1.0);
 
-	_image_origin[0] = ssi_random(200u);
-	_image_origin[1] = ssi_random(80u);
-	_image_step[0] = ssi_random(5u);
-	_image_step[1] = ssi_random(5u);
+	_image_origin[0] = ssi_size_t(random.next() * 201);
+	_image_origin[1] = ssi_size_t(random.next() * 81);
+	_image_step[0] = ssi_size_t(random.next() * 6);
+	_image_step[1] = ssi_size_t(random.next() * 6);
+
+	_random255.init(0, 255);
+	_random.init(0, 1);
 }
 
 FakeSignal::~FakeSignal() {
@@ -126,7 +129,7 @@ void FakeSignal::clock() {
 	{
 		ssi_uchar_t *ptr = _video_image;
 		for (ssi_size_t i = 0; i < ssi_video_size(_video_params); i++) {
-			*ptr++ = (ssi_uchar_t) ssi_random(255u);
+			*ptr++ = (ssi_uchar_t) _random255.next();
 		}
 
 		_provider->provide(ssi_pcast(ssi_byte_t, _video_image), 1);
@@ -137,7 +140,7 @@ void FakeSignal::clock() {
 		ssi_real_t y = 0;
 
 		if (_options.type == SIGNAL::RANDOM) {
-			y = ssi_cast(ssi_real_t, ssi_random());
+			y = ssi_cast(ssi_real_t, _random.next());
 		}
 		else {
 			y = (ssi_real_t) sin(2.0*3.1416*_time);			

@@ -28,6 +28,7 @@
 #include "ISSelectClass.h"
 #include "KMeans.h"
 #include "base/Factory.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -44,6 +45,8 @@ ISUnderSample::ISUnderSample (ISamples *samples)
 	: _samples (*samples),
 	_n_under (0),
 	_under (0) {
+
+	_seed = Random::Seed();
 
 	_n_classes = _samples.getClassSize ();
 	_n_samples = _samples.getSize ();
@@ -140,6 +143,11 @@ bool ISUnderSample::setUnder (ssi_size_t n_classes, ssi_size_t *n_reduce, Strate
 	return true;
 }
 
+void ISUnderSample::setSeed(ssi_size_t seed)
+{
+	_seed = seed;
+}
+
 ssi_sample_t *ISUnderSample::get (ssi_size_t index) {
 	
 	return &_under[index];	
@@ -154,19 +162,32 @@ ssi_sample_t *ISUnderSample::next () {
 	}
 }
 
+void ISUnderSample::Shuffle(Randomf *random, ssi_size_t n, ssi_size_t *arr, ssi_size_t seed)
+{	
+	for (ssi_size_t i = 0; i < n; i++) {
+		ssi_int_t r = ssi_size_t(random->next() * n);
+		ssi_size_t tmp = arr[i];
+		arr[i] = arr[r];
+		arr[r] = tmp;
+	}
+}
+
 bool ISUnderSample::doRandom () {
 
 	ssi_size_t count = 0;
 	ssi_size_t index = 0;
 	ISSelectClass select (&_samples);
+
+	Randomf random(0, 1, _seed);
+
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		select.setSelection (i);
 		ssi_size_t n = select.getSize ();
 		ssi_size_t *inds = new ssi_size_t[n];
 		for (ssi_size_t j = 0; j < n; j++) {
 			inds[j] = j;
-		}
-		ssi_random_shuffle (n, inds);
+		}		
+		Shuffle(&random, n, inds, _seed);
 		for (ssi_size_t j = 0; j < _n_under_per_class[i]; j++) {
 			index = inds[j];
 			ssi_sample_clone (*select.get (index), _under[count]);

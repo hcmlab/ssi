@@ -30,7 +30,7 @@
 #define SSI_IOPUT_FILETOOLS_H
 
 #include "ioput/file/File.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 
 /*
 
@@ -114,13 +114,14 @@ public:
 	static void WriteStreamData (File &file,
 		ssi_stream_t &data,
 		File::VERSION  version,		
-		bool add_header = true); // deprecated since V2 
+		bool add_header = true);
 	static void WriteStreamFile (File &file,
 		ssi_stream_t &data,
 		File::VERSION  version = File::DEFAULT_VERSION);
 	static bool WriteStreamFile (File::TYPE type,
 		const ssi_char_t *path,
 		ssi_stream_t &data,
+		const ssi_char_t *delim = SSI_FILE_DEFAULT_DELIM,
 		File::VERSION version = File::DEFAULT_VERSION);
 
 	static void ConvertStreamV0toV1Binary (const ssi_char_t *filename,

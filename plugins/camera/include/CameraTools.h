@@ -32,7 +32,7 @@
 #include "SSI_Cons.h"
 #include "CameraCons.h"
 #include "CameraTools.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 #include "graphic/DialogLibGateway.h"
 
 #include <AtlBase.h>

@@ -1,0 +1,828 @@
+<?xml version="1.0" ?>
+<HTML>
+    <HEAD>
+        <TITLE>ssiopenface.dll  - Social Signal Interpretation (SSI) API [v0.9.9]
+        </TITLE>
+    </HEAD>
+    <BODY>
+        <!---->
+        <!--========== SOURCE ===========-->
+        <!---->
+        <P>
+            <DL>
+                <DT>
+                    <FONT SIZE="+2">
+                        <B>SOURCE</B>
+                    </FONT>
+                </DT>
+                <DD>
+                    <FONT SIZE="+2">
+                        <CODE>
+                            <A NAME="ssiopenface.dll">ssiopenface.dll</A>
+                        </CODE>
+                    </FONT>
+                </DD>
+            </DL>
+        </P>
+        <!---->
+        <!--========== SUMMARY ===========-->
+        <!---->
+        <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
+            <TR>
+                <TH BGCOLOR="#CCCCFF" ALIGN="left" COLSPAN="2">
+                    <FONT SIZE="+2">
+                        <B>SUMMARY</B>
+                    </FONT>
+                </TH>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>OpenfaceSelector</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#OpenfaceSelector">OpenfaceSelector</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>OpenfacePainter</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#OpenfacePainter">OpenfacePainter</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>Openface</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#Openface">Openface</A>
+                    </CODE>
+                </TD>
+            </TR>
+        </TABLE>
+        <P />
+        <!---->
+        <!--========== DETAILS ===========-->
+        <!---->
+        <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
+            <TR>
+                <TH BGCOLOR="#CCCCFF" ALIGN="left" COLSPAN="2">
+                    <FONT SIZE="+2">
+                        <B>DETAILS</B>
+                    </FONT>
+                </TH>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="OpenfaceSelector">OpenfaceSelector</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>OpenfaceSelector</B>&nbsp;
+                                <CODE>FILTER</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Select feature groups.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;success&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select detection success (1 value)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;confidence&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select detection confidence (1 value)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;poscam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select camera position (x,y,z,rot_x,rot_y,rot_z)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;posworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select world position (x,y,z,rot_x,rot_y,rot_z)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposcam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select corrected camera position (x,y,z,rot_x,rot_y,rot_z)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select correted world position (x,y,z,rot_x,rot_y,rot_z)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;landmarks&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select landmarks (x_1,y_1,...,x_68,y_68)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;gaze&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select gaze direction (x_left,y_left,_z_left,y_right,y_right,_z_right)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;pupil&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate pupil position (x_left,y_left,z_left,y_right,y_right,z_right)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;auclass_success&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select action units success (classification)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;auclass&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select action units (classification -> AU01=InnerBrowRaiser,AU02=OuterBrowRaiser,AU04=BrowLowerer,AU05=UpperLidRaiser,AU06=CheekRaiser,AU09=NoseWrinkler,AU10=UpperLipRaiser,AU12=LipCornerPuller,AU14=Dimpler,AU15=LipCornerDepressor,AU17=ChinRaiser,AU20=LipStretcher,AU25=LipsPart,AU26=JawDrop)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;aureg_success&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select action units success (regression)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;aureg&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Select action units (regression -> AU04=BrowLowerer,AU12=LipCornerPuller,AU15=LipCornerDepressor,AU23=LipTightener,AU28=LipSuck,AU45=Blink)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="OpenfacePainter">OpenfacePainter</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>OpenfacePainter</B>&nbsp;
+                                <CODE>FILTER</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">This is just a sample object.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;poscam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option poscam&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;posworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option posworld&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposcam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option corrposcam&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option corrposworld&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;detectedlandmarks&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option detectedlandmarks&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;gazedirections&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;option gazedirections&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="Openface">Openface</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>Openface</B>&nbsp;
+                                <CODE>FILTER</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Facial landmark detection, head pose estimation, facial action unit recognition, and eye-gaze estimation.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;modelPath&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'.\'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Path to model&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;auPath&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'.\'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Path to action units&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;triPath&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'.\'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Path to triangulation&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;poscam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate camera position&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;posworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate world position&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposcam&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate corrected camera position&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;corrposworld&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate correted world position&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;landmarks&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate landmarks&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;gaze&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate gaze direction and pupil position&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;actionunits&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Calculate action units&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+        </TABLE>
+        <HR />
+        <FONT SIZE="-1">
+            <P>Built with Social Signal Interpretation (SSI) [v0.9.9]
+                <BR />(c) University of Augsburg
+                <BR />
+                <A HREF="http://openssi.net" TARGET="new">http://openssi.net</A>
+            </P>
+        </FONT>
+    </BODY>
+</HTML>

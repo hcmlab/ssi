@@ -31,7 +31,7 @@
 
 #include "base/IConsumer.h"
 #include "ioput/option/OptionList.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 #include "CameraCons.h"
 
 struct IGraphBuilder;

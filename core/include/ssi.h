@@ -33,6 +33,9 @@
 
 #include "base/Factory.h"
 #include "base/Array1D.h"
+#include "base/String.h"
+#include "base/StringList.h"
+#include "base/Random.h"
 
 #include "struct/BinTree.h"
 #include "struct/Queue.h"
@@ -57,13 +60,14 @@
 #include "ioput/file/FileBinary.h"
 #include "ioput/file/FileTools.h"
 #include "ioput/file/FilePath.h"
-#include "ioput/file/StringList.h"
 #include "ioput/file/FileAnnotationWriter.h"
 #include "ioput/file/FileProvider.h"
 #include "ioput/file/FileStreamIn.h"
 #include "ioput/file/FileStreamOut.h"
 #include "ioput/file/FileSamplesIn.h"
 #include "ioput/file/FileSamplesOut.h"
+#include "ioput/file/FileAnnotationIn.h"
+#include "ioput/file/FileAnnotationOut.h"
 #include "ioput/file/FileEventsIn.h"
 #include "ioput/file/FileEventsOut.h"
 #include "ioput/file/FileMessage.h"
@@ -80,13 +84,10 @@
 #include "ioput/wav/WavTools.h"
 #include "ioput/example/Example.h"
 #include "ioput/example/Exsemble.h"
+#include "ioput/web/WebTools.h"
 
 #include "buffer/Buffer.h"
 #include "buffer/TimeBuffer.h"
-
-#include "model/SampleList.h"
-#include "model/ModelTools.h"
-#include "model/Annotation.h"
 
 #include "signal/SignalTools.h"
 
@@ -137,4 +138,11 @@
 #include "graphic/Button.h"
 #include "control/include/ssicontrol.h"
 #endif
+
+#ifdef _DEBUG
+#	pragma comment(lib, "ssid.lib")
+#else
+#	pragma comment(lib, "ssi.lib")
+#endif
+
 #endif

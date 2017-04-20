@@ -114,9 +114,9 @@ ssi_size_t Selection::selByScore (ssi_real_t score) {
 		return 0;
 	}
 
-	_n_selected = 0;
-	for (ssi_size_t i = 0; i < _n_scores; i++) {
-		if (_scores[i].value < score) {
+	_n_selected = 1; //return at least one
+	for (ssi_size_t i = 1; i < _n_scores; i++) {
+		if (_scores[i].value > score) {
 			break;
 		}
 		++_n_selected;

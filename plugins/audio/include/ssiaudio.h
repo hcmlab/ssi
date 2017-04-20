@@ -52,6 +52,7 @@
 #include "WavReader.h"
 #include "WavWriter.h"
 #include "AudioMono.h"
+#include "AudioNoiseGate.h"
 
 #endif
 

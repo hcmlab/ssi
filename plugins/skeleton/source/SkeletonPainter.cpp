@@ -31,9 +31,9 @@ namespace ssi {
 
 ssi_char_t *SkeletonPainter::ssi_log_name = "skeletonp_";
 
-SkeletonPainter::SkeletonPainter (const ssi_char_t *file) 
-	: _file (0),
-	_image (0),
+SkeletonPainter::SkeletonPainter(const ssi_char_t *file)
+	: _file(0),
+	_image(0),
 	_min_value_y (0),
 	_max_value_y (0),
 	_min_value_x (0),
@@ -156,16 +156,16 @@ void SkeletonPainter::paintSkeleton (IplImage *image,
 	CvPoint points[SSI_SKELETON_JOINT::NUM];
 
 	for (int i = 0; i < SSI_SKELETON_JOINT::NUM; i++) {
-		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] != SSI_SKELETON_INVALID_JOINT_VALUE && _min_value_x[index] > skel[i][SSI_SKELETON_JOINT_VALUE::POS_X]) {
+		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] != SSI_SKELETON_INVALID_JOINT_VALUE && _min_value_x[index] > skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] && skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] > MIN_ALLOWED_VALUE) {
 			_min_value_x[index] = skel[i][SSI_SKELETON_JOINT_VALUE::POS_X];
 		}
-		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] != SSI_SKELETON_INVALID_JOINT_VALUE && _max_value_x[index] < skel[i][SSI_SKELETON_JOINT_VALUE::POS_X]) {
+		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] != SSI_SKELETON_INVALID_JOINT_VALUE && _max_value_x[index] < skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] && skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] < MAX_ALLOWED_VALUE) {
 			_max_value_x[index] = skel[i][SSI_SKELETON_JOINT_VALUE::POS_X];
 		}
-		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] != SSI_SKELETON_INVALID_JOINT_VALUE && _min_value_y[index] > skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y]) {
+		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] != SSI_SKELETON_INVALID_JOINT_VALUE && _min_value_y[index] > skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] && skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] > MIN_ALLOWED_VALUE) {
 			_min_value_y[index] = skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y];
 		}
-		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] != SSI_SKELETON_INVALID_JOINT_VALUE && _max_value_y[index] < skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y]) {
+		if (skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] != SSI_SKELETON_INVALID_JOINT_VALUE && _max_value_y[index] < skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y] && skel[i][SSI_SKELETON_JOINT_VALUE::POS_X] < MAX_ALLOWED_VALUE) {
 			_max_value_y[index] = skel[i][SSI_SKELETON_JOINT_VALUE::POS_Y];
 		}
 	}
@@ -174,6 +174,7 @@ void SkeletonPainter::paintSkeleton (IplImage *image,
 		_min_value_y[index] == SSI_SKELETON_INVALID_JOINT_VALUE || _max_value_y[index] == SSI_SKELETON_INVALID_JOINT_VALUE || _min_value_y[index] == _max_value_y[index]) {
 		return;
 	}
+
 
 	int width = _format.widthInPixels;
 	int height = _format.heightInPixels;

@@ -28,7 +28,7 @@
 #include "ISMissingData.h"
 #include "ISSelectSample.h"
 #include "Evaluation.h"
-#include "ISAlignStrms.h"
+#include "ISMergeDim.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -199,7 +199,7 @@ bool OvRSpecialist::train (ssi_size_t n_models,
 
 #ifdef HYBRID
 
-		ISAlignStrms ffusionSamples (&samples);
+		ISMergeDim ffusionSamples (&samples);
 		ISMissingData ffusionSamples_h (&ffusionSamples);
 		ffusionSamples_h.setStream(0);
 		if (!models[_n_models - 1]->isTrained ()) { models[_n_models - 1]->train (ffusionSamples_h, 0); }
@@ -286,7 +286,7 @@ bool OvRSpecialist::train (ssi_size_t n_models,
 
 #ifdef HYBRID
 
-		ISAlignStrms ffusionSamples (&samples);
+		ISMergeDim ffusionSamples (&samples);
 
 		if (!models[_n_models - 1]->isTrained ()){
 			models[_n_models - 1]->train (ffusionSamples, 0);

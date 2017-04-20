@@ -26,7 +26,7 @@
 
 #include "Classifier.h"
 #include "base/Factory.h"
-#include "Trainer.h"
+#include "ssiml/include/Trainer.h"
 #include "thread/RunAsThread.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -187,7 +187,13 @@ bool Classifier::callTrainer(ssi_time_t time,
 	bool result = false;
 
 	if (n_streams == 1) {
-		result = _trainer->forward_probs(stream_in[0], _n_classes, _probs);
+		ssi_stream_t stream = stream_in[0];
+		if (_options.flat)
+		{			
+			stream.dim = stream.num * stream.dim;
+			stream.num = 1;
+		}
+		result = _trainer->forward_probs(stream, _n_classes, _probs);		
 	} else {
 		ssi_stream_t **streams = new ssi_stream_t *[n_streams];
 		for (ssi_size_t i = 0; i < n_streams; i++) {
@@ -223,8 +229,14 @@ bool Classifier::callTrainer(ssi_time_t time,
 			has_meta = _trainer->getMetaData(_n_metas, _metas);
 		}
 
-		ssi_msg(SSI_LOG_LEVEL_DETAIL, "recognized class %s", _trainer->getClassName(max_ind));
-
+		if (_n_classes == 1)
+		{
+			ssi_msg(SSI_LOG_LEVEL_DETAIL, "recognized score %g", _probs[0]);
+		}
+		else
+		{
+			ssi_msg(SSI_LOG_LEVEL_DETAIL, "recognized class %s", _trainer->getClassName(max_ind));
+		}	
 
 		if (_handler)
 		{
@@ -427,7 +439,7 @@ void Classifier::EventHandler::handle (ssi_time_t time,
 				if (_select[i] < 0) {
 					ssi_wrn_static("index '%d' is negative and will be replaced by 0", _select[i]);
 					_select[i] = 0;
-				} else if (_select[i] >= n_classes) {
+				} else if (_select[i] >= (int) n_classes) {
 					ssi_wrn_static("index '%d' out of range and will be replaced by 0", _select[i]);
 					_select[i] = 0;
 				}

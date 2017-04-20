@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2006-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -1128,6 +1128,7 @@ namespace gloox
       case SetOwner:
       case CreateInstantRoom:
       case CancelRoomCreation:
+      case SendRoomConfig:
       case DestroyRoom:
       case StoreVoiceList:
       case StoreBanList:
@@ -1181,6 +1182,7 @@ namespace gloox
       case CreateInstantRoom:
       case CancelRoomCreation:
       case RequestRoomConfig:
+      case SendRoomConfig:
       case DestroyRoom:
       case RequestVoiceList:
       case StoreVoiceList:

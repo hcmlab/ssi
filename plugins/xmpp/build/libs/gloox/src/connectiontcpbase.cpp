@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2004-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2004-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -22,7 +22,8 @@
 #include "util.h"
 
 #ifdef __MINGW32__
-# include <winsock.h>
+# include <winsock2.h>
+# include <ws2tcpip.h>
 #endif
 
 #if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __SYMBIAN32__ )
@@ -34,8 +35,10 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+# include <netdb.h>
 #elif ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __SYMBIAN32__ )
-# include <winsock.h>
+# include <winsock2.h>
+# include <ws2tcpip.h>
 typedef int socklen_t;
 #endif
 
@@ -199,15 +202,19 @@ namespace gloox
 
   const std::string ConnectionTCPBase::localInterface() const
   {
-    struct sockaddr_in local;
+    struct sockaddr_storage local;
     socklen_t len = (socklen_t)sizeof( local );
     if( getsockname ( m_socket, (reinterpret_cast<struct sockaddr*>( &local )), &len ) < 0 )
       return EmptyString;
     else
     {
-//       char addr[INET_ADDRSTRLEN];
-//       return inet_ntop( AF_INET, &(local.sin_addr), addr, sizeof( addr ) ); //FIXME is this portable?
-      return inet_ntoa( local.sin_addr );
+      char buffer[INET6_ADDRSTRLEN];
+      int err = getnameinfo( (struct sockaddr*)&local, len, buffer, sizeof( buffer ),
+                             0, 0, NI_NUMERICHOST );
+      if( !err )
+        return buffer;
+      else
+        return EmptyString;
     }
   }
 

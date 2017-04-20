@@ -41,7 +41,9 @@ namespace ssi
         static string SSI_PIPELINE_EXTENSION = ".pipeline";
         static string SSI_PIPELINE_EXECUTABLE = "xmlpipe.exe";
         static string SSI_STREAM_EXTENSION = ".stream";
-        static string SSI_STREAM_EXECUTABLE = "viewui.exe";
+        static string SSI_ANNOTATION_EXTENSION = ".annotation";
+        static string SSI_NOVA_EXTENSION = ".nova";
+        static string SSI_STREAM_EXECUTABLE = "nova.exe";
         static string SSI_PYTHON_VARIABLE = "SSI_PYTHON";
         static string SSI_PYTHON_DIRECTORY = @"C:\Program Files\Python35";
 
@@ -181,7 +183,17 @@ namespace ssi
                 if (ApplyFileAssociation(undo, SSI_STREAM_EXTENSION, "ssiview", "SSI Viewer Association", icon, exe, "SSI Viewer"))
                 {
                     Log(">> " + flag + " associate " + SSI_STREAM_EXTENSION + " with " + exe);
-                }         
+                }
+                
+                if (ApplyFileAssociation(undo, SSI_ANNOTATION_EXTENSION, "ssiview", "SSI Viewer Association", icon, exe, "SSI Viewer"))
+                {
+                    Log(">> " + flag + " associate " + SSI_ANNOTATION_EXTENSION + " with " + exe);
+                }
+
+                if (ApplyFileAssociation(undo, SSI_NOVA_EXTENSION, "ssiview", "SSI Viewer Association", icon, exe, "SSI Viewer"))
+                {
+                    Log(">> " + flag + " associate " + SSI_NOVA_EXTENSION + " with " + exe);
+                }
             }
         }
 

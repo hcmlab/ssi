@@ -109,7 +109,6 @@ void EMGFeaturesSpectral::transform(ITransformer::info info, ssi_stream_t &strea
 	ptr_out++;
 
 	delete sf_ar_coeffs;
-	
 
 }
 

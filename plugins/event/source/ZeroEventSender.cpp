@@ -102,6 +102,8 @@ void ZeroEventSender::readOptions() {
 void ZeroEventSender::consume_enter (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
+	ssi_wrn("deprecated, use 'TriggerEventSender' instead");
+
 	_sample_rate = stream_in[0].sr;
 	_trigger_on = false;
 

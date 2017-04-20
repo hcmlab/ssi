@@ -109,7 +109,7 @@ static int CALLBACK BrowseForFolderCallback(HWND hwnd, UINT uMsg, LPARAM lParam,
 
 bool FileTools::CountLines (File &file, ssi_size_t &n_lines) {
 
-	ssi_size_t pos = file.tell ();
+	int64_t pos = file.tell ();
 
 	FILE *fp = file.getFile ();
 	char c = getc (fp);
@@ -158,9 +158,9 @@ bool FileTools::ReadRawFile (File &file,
 		}
 		case File::BINARY: {
 
-			ssi_size_t pos = file.tell ();
+			int64_t pos = file.tell ();
 			
-			ssi_size_t n_samples = pos / (data.dim * data.byte);
+			ssi_size_t n_samples = ssi_size_t(pos / (data.dim * data.byte));
 			ssi_stream_adjust (data, n_samples);
 
 			fread (data.ptr, data.tot, 1, file.getFile ());
@@ -196,7 +196,7 @@ bool FileTools::ReadStreamHeader (File &file,
 
 		case File::ASCII: {
 			ssi_char_t string[256];
-			ssi_size_t pos = file.tell ();
+			int64_t pos = file.tell ();
 			if (!file.readLine (256, string)) {
 				ssi_err ("could not read <id>");
 			}
@@ -327,7 +327,7 @@ bool FileTools::ReadStreamHeader (File &file,
 ssi_size_t FileTools::CountStreamHeader (File &file) {
 
 	// store position
-	ssi_size_t offset = file.tell ();
+	int64_t offset = file.tell ();
 
 	// read until end of file is reached
 	ssi_stream_t data;
@@ -389,7 +389,7 @@ ssi_size_t FileTools::CountStreamHeader (File &file) {
 ssi_size_t FileTools::CountDataHeader (File &file, ssi_size_t &tot_sample_number) {
 
 	// store position
-	ssi_size_t offset = file.tell ();	
+	int64_t offset = file.tell ();
 
 	// read until end of file is reached
 	ssi_stream_t data;
@@ -571,7 +571,7 @@ bool FileTools::RepairStreamFile (File::TYPE type,
 		ssi_size_t sample_number = 0;
 		ssi_stream_adjust (data, 1);
 
-		ssi_size_t pos = file->tell ();
+		int64_t pos = file->tell ();
 
 		file->setType (data.type);
 		while (file->read (data.ptr, data.byte, 1 * data.dim)) {
@@ -607,7 +607,7 @@ bool FileTools::RepairStreamFileV2 (File::TYPE type,
 	ssi_size_t sample_number = 0;
 	ssi_stream_adjust (data, 1);
 
-	ssi_size_t pos = file->tell ();
+	int64_t pos = file->tell ();
 
 	file->setType (data.type);
 	while (file->read (data.ptr, data.byte, 1 * data.dim)) {
@@ -796,6 +796,7 @@ void FileTools::WriteStreamFile (File &file,
 bool FileTools::WriteStreamFile (File::TYPE type,
 	const ssi_char_t *path,
 	ssi_stream_t &data,
+	const ssi_char_t *delim,
 	File::VERSION version) {
 
 	if (version <= File::V1) {
@@ -807,6 +808,7 @@ bool FileTools::WriteStreamFile (File::TYPE type,
 
 	} else {
 		FileStreamOut out;
+		out.setDelim(delim);
 		bool result = true;
 		result = result && out.open (data, path, type, version);
 		result = result &&out.write (data, false);

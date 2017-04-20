@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/AttachedBehaviours/" id="126461" changeset="1744" shadow="cfac71fd9e664bbaa20276004f54ba08" />
+  <entry name="AnimatedScrollBehaviour.cs" kind="file" id="294694" changeset="15935" />
+  <entry name="DragBehaviour.cs" kind="file" id="65863" changeset="21158" />
+  <entry name="FrameworkElementAttachedBehaviourBase.cs" kind="file" id="293949" changeset="15935" />
+  <entry name="TextBoxCommandBehaviour.cs" kind="file" id="293948" changeset="9985" />
+  <entry name="TreeViewSelectionBehaviour.cs" kind="file" id="292629" changeset="15935" />
+  <entry name="WindowSettings.cs" kind="file" id="292562" changeset="9547" />
+</entries>

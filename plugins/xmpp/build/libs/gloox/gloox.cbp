@@ -23,7 +23,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="-s" />
-			<Add library="wsock32" />
+			<Add library="ws_32" />
 			<Add library="dnsapi" />
 			<Add library="gdi32" />
 			<Add library="crypt32" />

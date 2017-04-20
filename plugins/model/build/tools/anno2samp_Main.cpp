@@ -29,7 +29,7 @@
 // --run -trainer mlp D:\wagner\openssi\core\build\tools\xmltrain\mlp\mlp
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -91,7 +91,7 @@ int main (int argc, char **argv) {
 			ssi_log_file_begin (log);
 		}
 
-		Annotation anno;
+		old::Annotation anno;
 		ssi_print("READ ANNOTATION\t\t'%s'\n", annopath);		
 		ModelTools::LoadAnnotation(anno, annopath, tier);
 
@@ -112,7 +112,7 @@ int main (int argc, char **argv) {
 		
 		SampleList samples;
 		if (frame > 0) {
-			Annotation anno_c;
+			old::Annotation anno_c;
 
 			if (strlen(label) == 0){				
 				ssi_wrn("dropping samples with empty annotation")

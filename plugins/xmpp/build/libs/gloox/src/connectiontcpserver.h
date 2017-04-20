@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2007-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2007-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -68,6 +68,9 @@ namespace gloox
     private:
       ConnectionTCPServer &operator=( const ConnectionTCPServer & );
 
+      // remove for 1.1
+      static int getSocket( int af, int socktype, int proto, const LogSink& logInstance );
+      
       ConnectionHandler* m_connectionHandler;
 
   };

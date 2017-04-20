@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2015 by Jakob Schröter <js@camaya.net>
+ *  Copyright (c) 2004-2016 by Jakob Schröter <js@camaya.net>
  *  This file is part of the gloox library. http://camaya.net/gloox
  *
  *  This software is distributed under a license. The full license
@@ -79,9 +79,7 @@ int main( int /*argc*/, char** /*argv*/ )
     fprintf( stderr, "test '%s' failed\n", name.c_str() );
   }
   delete d;
-  delete t;
   d = 0;
-  t = 0;
 
   // -------
   name = "from Tag/tag()";

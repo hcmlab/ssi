@@ -25,9 +25,9 @@
 //*************************************************************************************************
 
 #include "Rank.h"
-#include "Trainer.h"
-#include "Evaluation.h"
-#include "ISSelectDim.h"
+#include "ssiml/include/Trainer.h"
+#include "ssiml/include/Evaluation.h"
+#include "ssiml/include/ISSelectDim.h"
 
 namespace ssi {
 

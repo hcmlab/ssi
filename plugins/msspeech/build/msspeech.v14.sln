@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{DEB5B760-41A7-4188-87E5-0D83767AA8AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4D8F9B58-9F08-4FCD-86E1-8F5001C5871E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msspeech", "libs\msspeech.v14.vcxproj", "{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msspeech_test", "test\msspeech_test.v14.vcxproj", "{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Debug|Win32.Build.0 = Debug|Win32
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Debug|x64.ActiveCfg = Debug|x64
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Debug|x64.Build.0 = Debug|x64
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Release|Win32.ActiveCfg = Release|Win32
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Release|Win32.Build.0 = Release|Win32
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Release|x64.ActiveCfg = Release|x64
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C}.Release|x64.Build.0 = Release|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|Win32.Build.0 = Debug|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.ActiveCfg = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.Build.0 = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|Win32.ActiveCfg = Release|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|Win32.Build.0 = Release|Win32
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.ActiveCfg = Release|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F0DCD06A-4C1D-4F8F-9B48-62DF310ABB6C} = {DEB5B760-41A7-4188-87E5-0D83767AA8AD}
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889} = {4D8F9B58-9F08-4FCD-86E1-8F5001C5871E}
+	EndGlobalSection
+EndGlobal

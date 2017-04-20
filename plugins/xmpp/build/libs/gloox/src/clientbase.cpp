@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2005-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2005-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -1663,7 +1663,7 @@ namespace gloox
     if( m_mucInvitationHandler )
     {
       const MUCRoom::MUCUser* mu = msg.findExtension<MUCRoom::MUCUser>( ExtMUCUser );
-      if( mu && mu->operation() != MUCRoom::OpInviteFrom )
+      if( mu && mu->operation() == MUCRoom::OpInviteFrom )
       {
 
         m_mucInvitationHandler->handleMUCInvitation( msg.from(),

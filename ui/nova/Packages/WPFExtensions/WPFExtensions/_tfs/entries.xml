@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/" id="35359" changeset="1416" shadow="704e17b425984324a42af0bfd610349c" />
+  <entry name="AttachedBehaviours" kind="folder" id="126461" changeset="1744" shadow="cfac71fd9e664bbaa20276004f54ba08" />
+  <entry name="AttachedBehaviours.cd" kind="file" id="440431" changeset="15935" />
+  <entry name="Collections" kind="folder" id="440440" changeset="15935" shadow="8d70a3de9bf945a7bba7648e1b9a2e0b" />
+  <entry name="Controls" kind="folder" id="532840" changeset="21158" shadow="a294ea178caf4baba34bc346d116db0e" />
+  <entry name="Converters" kind="folder" id="126462" changeset="1744" shadow="544c0c95d2964872ab27305aac9dfdef" />
+  <entry name="Helpers" kind="folder" id="35444" changeset="1422" shadow="212336ab4a414f0ea06af539db4e23ca" />
+  <entry name="Properties" kind="folder" id="35360" changeset="1416" shadow="0e752d5226d64f3e9b4cbf9e969b286f" />
+  <entry name="Themes" kind="folder" id="532841" changeset="21158" shadow="a48c577811e84863a5f9b4f7d5bb1366" />
+  <entry name="ViewModel" kind="folder" id="218466" changeset="5607" shadow="36fc2437d49a46458641aea551216147" />
+  <entry name="WPFExtensions.csproj" kind="file" id="35357" changeset="24543" />
+  <entry name="WPFExtensions.csproj.vspscc" kind="file" id="35362" changeset="1422" />
+</entries>

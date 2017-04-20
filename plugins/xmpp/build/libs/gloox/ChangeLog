@@ -1,3 +1,33 @@
+v1.0.17 -- 23 Aug 2016
+----------------------
+Note: This release is not binary compatible with previous releases. It is source compatible.
+
+- MingW compile fixes (thanks to Florian Niebel)
+- properly use winsock2 (thanks to Kau)
+- a few fixes for uclibc++ compatibility (thanks to Erik Horemans)
+- Message: removed bogus hard-coded namespace to fix component use
+
+
+
+v1.0.16 -- 16 Jul 2016
+----------------------
+- PubSubManager: properly include publish options (thanks to Iban Ulov)
+- PubSubManager: properly parse subscriptions in ctor (thanks to Joe Best)
+- Resource: fixed high memory usage when receiving presence stanzas (#259) (thanks to Manuel)
+
+
+
+v1.0.15 -- 25 Apr 2016
+----------------------
+- Error: fix copy ctor (thanks to Olivier Tchilinguirian)
+- ClientBase: properly fix handling of MUC invitation declines (wrong in 1.0.14) (thanks to Martin Hillmeier and Matias Snellingen) (#248)
+- MUCRoom: handle SendRoomConfig (thanks to Matias Snellingen) (#253)
+- soversion bump, missed that for 1.0.14 (thanks to Vincent Cheng)
+- TLSGNUTLSClient: fixed off-by-one error in certificate verification
+- IPv6 fixes
+
+
+
 v1.0.14 -- 11 Aug 2015
 ----------------------
 Note: This release is not binary compatible with previous releases. It is source compatible.

@@ -262,7 +262,7 @@ bool OptionList::SetOptionValueInPlace (const ssi_char_t *filepath,
 	if (file) {
 		
 		TiXmlDocument doc;
-		doc.LoadFile (file);
+		doc.LoadFile (file, false);
 
 		TiXmlElement *body = doc.FirstChildElement();	
 		if (body && strcmp (body->Value (), "options") == 0) {
@@ -292,7 +292,7 @@ bool OptionList::SetOptionValueInPlace (const ssi_char_t *filepath,
 bool OptionList::LoadXML (FILE *file, IOptions &list) {
 
 	TiXmlDocument doc;
-	doc.LoadFile (file);
+	doc.LoadFile (file, false);
 
 	TiXmlElement *body = doc.FirstChildElement();	
 	if (!body || strcmp (body->Value (), "options") != 0) {
@@ -506,11 +506,6 @@ bool OptionList::FromString (const ssi_char_t *str, ssi_option_t &option) {
 		}
 
 		++token_end;
-
-		if ((token_end == '\0' && i != option.num) || (i == option.num && token_end != '\0'))  {
-			ssi_wrn ("number of tokens does not match");
-			return false;
-		}
 	}
 
 	return true;

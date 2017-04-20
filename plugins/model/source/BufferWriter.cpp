@@ -109,7 +109,7 @@ bool BufferWriter::get (ssi_stream_t &stream, IConsumer::info consume_info) {
 		status = _buffer->get (&stream.ptr, stream.num_real, num_out, consume_info.time, consume_info.dur);
 	}
 	if (status != TimeBuffer::SUCCESS) {
-		ssi_wrn ("could not get requested (%.2lf@.2lf) '%s'", consume_info.dur, consume_info.time, TimeBuffer::STATUS_NAMES[status]);
+		ssi_wrn ("could not get requested (%.2lf@%.2lf) '%s'", consume_info.dur, consume_info.time, TimeBuffer::STATUS_NAMES[status]);
 		return false;
 	}
 

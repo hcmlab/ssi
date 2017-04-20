@@ -36,9 +36,9 @@
     <ClInclude Include="include\Evaluation2Latex.h" />
     <ClInclude Include="include\EvaluationCont.h" />
     <ClInclude Include="include\FindNN.h" />
-    <ClInclude Include="include\ISAlignStrms.h" />
     <ClInclude Include="include\ISDuplStrms.h" />
     <ClInclude Include="include\ISHotClass.h" />
+    <ClInclude Include="include\ISMergeDim.h" />
     <ClInclude Include="include\ISMergeSample.h" />
     <ClInclude Include="include\ISMergeStrms.h" />
     <ClInclude Include="include\ISMissingData.h" />
@@ -61,6 +61,9 @@
     <ClInclude Include="include\Selection.h" />
     <ClInclude Include="include\ssiml.h" />
     <ClInclude Include="include\Trainer.h" />
+    <ClInclude Include="include\Annotation.h" />
+    <ClInclude Include="include\ModelTools.h" />
+    <ClInclude Include="include\SampleList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\arff_attr.cpp" />
@@ -79,9 +82,9 @@
     <ClCompile Include="source\Evaluation2Latex.cpp" />
     <ClCompile Include="source\EvaluationCont.cpp" />
     <ClCompile Include="source\FindNN.cpp" />
-    <ClCompile Include="source\ISAlignStrms.cpp" />
     <ClCompile Include="source\ISDuplStrms.cpp" />
     <ClCompile Include="source\ISHotClass.cpp" />
+    <ClCompile Include="source\ISMergeDim.cpp" />
     <ClCompile Include="source\ISMergeSample.cpp" />
     <ClCompile Include="source\ISMergeStrms.cpp" />
     <ClCompile Include="source\ISMissingData.cpp" />
@@ -103,6 +106,9 @@
     <ClCompile Include="source\SampleArff.cpp" />
     <ClCompile Include="source\Selection.cpp" />
     <ClCompile Include="source\Trainer.cpp" />
+    <ClCompile Include="source\Annotation.cpp" />
+    <ClCompile Include="source\ModelTools.cpp" />
+    <ClCompile Include="source\SampleList.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F256A6B4-8E7E-47E2-B447-E62D2E2E51EF}</ProjectGuid>

@@ -45,21 +45,24 @@ public:
 		font = new IPainter::ITool *[n_font];
 		pen = new IPainter::ITool *[n_font];
 		brush = new IPainter::ITool *[n_font];
+		Randomi random255(0, 255);
+		Randomi random20(0, 20);
+		Randomf random(0, 0.5f);
 		for (ssi_size_t i = 0; i < n_font; i++) {
-			ssi_rgb_t fore_color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
-			ssi_rgb_t back_color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
-			ssi_int_t size = 10 + ssi_random(20);
+			ssi_rgb_t fore_color = ssi_rgb(random255.next(), random255.next(), random255.next());
+			ssi_rgb_t back_color = ssi_rgb(random255.next(), random255.next(), random255.next());
+			ssi_int_t size = 10 + random20.next();
 			ssi_int_t style = Painter::Tool::FONT_STYLES::NORMAL;
-			if (ssi_random() > 0.5) {
+			if (random.next() > 0.5f) {
 				style |= Painter::Tool::FONT_STYLES::UNDERLINE;
 			}
-			if (ssi_random() > 0.5) {
+			if (random.next() > 0.5f) {
 				style |= Painter::Tool::FONT_STYLES::STRIKEOUT;
 			}
-			if (ssi_random() > 0.5) {
+			if (random.next() > 0.5f) {
 				style |= Painter::Tool::FONT_STYLES::ITALIC;
 			}
-			if (ssi_random() > 0.5) {
+			if (random.next() > 0.5f) {
 				style |= Painter::Tool::FONT_STYLES::BOLD;
 			}			
 			font[i] = new Painter::Font(f, size, style);
@@ -96,10 +99,12 @@ public:
 		Lock lock(mutex);
 
 		painter.begin(hdc, rect);
+		Randomi randomw(0, rect.width + 1);
+		Randomi randomh(0, rect.height + 1);
 		for (ssi_size_t i = 0; i < n_font; i++) {	
 			ssi_point_t position;
-			position.x = ssi_random(rect.width + 1u);
-			position.y = ssi_random(rect.height + 1u);
+			position.x = randomw.next();
+			position.y = randomh.next();
 			painter.text(*font[i], *pen[i], *brush[i], position, text);
 		}
 		painter.end();

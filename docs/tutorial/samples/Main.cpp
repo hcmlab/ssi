@@ -31,9 +31,8 @@
 #include "image\include\ssiimage.h"
 #include "camera\include\ssicamera.h"
 #include "model\include\ssimodel.h"
-#include "ssiml.h"
+#include "ssiml\include\ssiml.h"
 #include "emovoice\include\ssiev.h"
-#include "torch\include\ssitorch.h"
 using namespace ssi;
 
 #define CONSOLE_WIDTH 650
@@ -187,7 +186,7 @@ bool ex_feature(void *args) {
 	SignalPainter *sigpaint = 0;
 
 	sigpaint = ssi_create_id (SignalPainter, 0, "plot");
-	sigpaint->getOptions()->setTitle("cursor");
+	sigpaint->getOptions()->setTitle("movement");
 	sigpaint->getOptions()->size = 10.0;
 	frame->AddConsumer(selector_t, sigpaint, "0.1s");
 
@@ -286,11 +285,13 @@ bool ex_audio_tr(void *args) {
 	activity->getOptions()->threshold = 0.15f;
 	ITransformable *activity_t = frame->AddTransformer(audio_p, activity, "0.02s", "0.18s");
 
-	ZeroEventSender *ezero = ssi_create (ZeroEventSender, 0, true);
-	ezero->getOptions()->hangin = 5;
-	ezero->getOptions()->hangin = 20;
-	frame->AddConsumer(activity_t, ezero, "0.2s");
-	board->RegisterSender(*ezero);
+	TriggerEventSender *threshold = ssi_create (TriggerEventSender, 0, true);
+	threshold->getOptions()->setAddress("activity@audio");
+	threshold->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	threshold->getOptions()->hangInSamples = 5;
+	threshold->getOptions()->hangOutSamples = 20;
+	frame->AddConsumer(activity_t, threshold, "0.2s");
+	board->RegisterSender(*threshold);
 
 	SignalPainter *sigpaint = 0;	
 
@@ -298,7 +299,7 @@ bool ex_audio_tr(void *args) {
 	sigpaint->getOptions()->setTitle("audio(tr)");
 	sigpaint->getOptions()->size = 0;	
 	sigpaint->getOptions()->type = PaintSignalType::AUDIO;
-	frame->AddEventConsumer(audio_p, sigpaint, board, ezero->getEventAddress());
+	frame->AddEventConsumer(audio_p, sigpaint, board, threshold->getEventAddress());
 
 	sigpaint = ssi_create_id (SignalPainter, 0, "plot");
 	sigpaint->getOptions()->setTitle("audio");
@@ -428,14 +429,15 @@ bool ex_gestrec_online(void *args) {
 	frame->AddSensor(mouse);
 
 	// trigger
-	ZeroEventSender *ezero = ssi_create (ZeroEventSender, 0, true);
-	ezero->getOptions()->mindur = 0.2;
-	ezero->getOptions()->setAddress("click@mouse");
-	frame->AddConsumer(button_p, ezero, "0.25s");
-	board->RegisterSender(*ezero);
+	TriggerEventSender *threshold = ssi_create (TriggerEventSender, 0, true);
+	threshold->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	threshold->getOptions()->minDuration = 0.2;
+	threshold->getOptions()->setAddress("click@mouse");
+	frame->AddConsumer(button_p, threshold, "0.25s");
+	board->RegisterSender(*threshold);
 
 	EventConsumer *trigger = ssi_create (EventConsumer, 0, true);
-	board->RegisterListener(*trigger, ezero->getEventAddress());
+	board->RegisterListener(*trigger, trigger->getEventAddress());
 
 	// plot
 	SignalPainter *plot = ssi_create_id (SignalPainter, 0, "plot");
@@ -522,15 +524,12 @@ bool ex_gestrec_offline(void *args) {
 
 	// create and save sample list
 	{
-		ssi_char_t *movementpath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\cursor";
-		ssi_char_t *annopath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\button.anno";
-
 		ssi_stream_t movement;
-		FileTools::ReadStreamFile (movementpath, movement);
-		Annotation anno;
-		ModelTools::LoadAnnotation (anno, annopath);
+		FileTools::ReadStreamFile ("movement", movement);
+		Annotation anno;		
+		anno.load("movement");
 		SampleList samples;
-		ModelTools::LoadSampleList (samples, movement, anno, "user");		
+		anno.extractSamples(movement, &samples, "user");
 		ModelTools::SaveSampleList (samples, "gestrec", File::BINARY);
 
 		ssi_stream_destroy (movement);
@@ -561,20 +560,13 @@ bool ex_gestrec_offline(void *args) {
 
 bool ex_gestrec_fusion(void *args) {
 
-	ssi_char_t *movementpath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\cursor";
-	ssi_char_t *annopath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\button.anno";
-
 	ssi_stream_t movement;
-	FileTools::ReadStreamFile (movementpath, movement);
-
+	FileTools::ReadStreamFile("movement", movement);
 	Annotation anno;
-	ModelTools::LoadAnnotation (anno, annopath);
-
-	SampleList samples1;
-	ModelTools::LoadSampleList (samples1, movement, anno, "user");
-
-	SampleList samples2;
-	ModelTools::LoadSampleList (samples2, movement, anno, "user");
+	anno.load("movement");
+	SampleList samples1, samples2;
+	anno.extractSamples(movement, &samples1, "user");
+	anno.extractSamples(movement, &samples2, "user");
 
 	ISamples *slist[] = { &samples1, &samples2 };
 	ISMergeStrms samples (2, slist);
@@ -626,20 +618,13 @@ bool ex_gestrec_fusion(void *args) {
 
 bool ex_gestrec(void *args) {
 
-	ssi_char_t *movementpath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\cursor";
-	ssi_char_t *annopath = "..\\..\\..\\model\\mouse\\data\\user\\2011-12-23_14-14-14\\button.anno";
-
 	ssi_stream_t movement;
-	FileTools::ReadStreamFile (movementpath, movement);
-
+	FileTools::ReadStreamFile("movement", movement);
 	Annotation anno;
-	ModelTools::LoadAnnotation (anno, annopath);
-
-	SampleList samples1;
-	ModelTools::LoadSampleList (samples1, movement, anno, "user");
-
-	SampleList samples2;
-	ModelTools::LoadSampleList (samples2, movement, anno, "user");
+	anno.load("movement");
+	SampleList samples1, samples2;
+	anno.extractSamples(movement, &samples1, "user");
+	anno.extractSamples(movement, &samples2, "user");
 
 	ISamples *slist[] = { &samples1, &samples2 };
 	ISMergeStrms samples (2, slist);
@@ -692,51 +677,24 @@ bool ex_gestrec(void *args) {
 
 bool ex_emorec(void *args) {
 
-	ssi_char_t *wavpath = "..\\..\\..\\model\\emovoice\\data\\user\\2013-10-16_07-35-48\\audio.wav";
-	ssi_char_t *annopath = "..\\..\\..\\model\\emovoice\\data\\user\\2013-10-16_07-35-48\\turns.anno";
-
 	ssi_stream_t audio;
-	WavTools::ReadWavFile (wavpath, audio, true);
-
+	WavTools::ReadWavFile ("speech", audio, true);	
 	Annotation anno;
-	ModelTools::LoadAnnotation (anno, annopath);
-
-	SampleList samples1;
-	ModelTools::LoadSampleList (samples1, audio, anno, "user");
-
-	SampleList samples2;
-	ModelTools::LoadSampleList (samples2, audio, anno, "user");
-
-	ISamples *slist[] = { &samples1, &samples2 };
-	ISMergeStrms samples (2, slist);
+	anno.load("speech");
+	SampleList samples;
+	anno.extractSamples(audio, &samples, "user");	
 		
 	ModelTools::SaveSampleList (samples, "emorec", File::BINARY);
 
-	if (!ssi_exists ("emorec.trainer")) {
-
+	if (!ssi_exists ("emorec.trainer")) 
+	{
 		SVM *svm = ssi_create (SVM, 0, true);
-		TorchHMM *hmm = ssi_create (TorchHMM, 0, true);
-		IModel *mlist[] = { svm, hmm };
-
-		SimpleFusion *fusion = ssi_create (SimpleFusion, 0, true);
-		fusion->getOptions()->method = SimpleFusion::PRODUCT;
-			
 		EmoVoiceFeat *ev = ssi_create (EmoVoiceFeat, 0, true);
-		MFCC *mfccs = ssi_create (MFCC, 0, true);
-		ITransformer *tlist[] = { ev, mfccs };
-		ssi_size_t flist[] = { 0, ssi_cast (ssi_size_t, 0.01 * audio.sr + 0.5) };
-		ssi_size_t dlist[] = { 0, ssi_cast (ssi_size_t, 0.015 * audio.sr + 0.5) };
 
-		ssi_size_t nslist[] = { 10, 0 };
-		ssi_size_t slist1[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-		ssi_size_t *slist[] = { slist1, 0 };
-
-		Trainer trainer (2, mlist, fusion);		
-		trainer.setTransformer (2, tlist, flist, dlist);
-		trainer.setSelection (2, nslist, slist);
+		Trainer trainer (svm);		
+		trainer.setTransformer(ev);
 		trainer.train (samples);
 		trainer.save ("emorec");
-
 	}
 
 	Trainer trainer;

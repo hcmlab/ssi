@@ -56,7 +56,9 @@ int main (int argc, char *argv[]) {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed ();
+#endif
 
 	Factory::RegisterDLL ("ssievent");
 	Factory::RegisterDLL ("ssivectorfusion");
@@ -101,6 +103,8 @@ void ex_Simulation () {
 	ssi_size_t time_ms = 0;
 	ssi_size_t delta_ms = 500;
 	
+	Randomf random(0,1);
+
 	vf->listen_enter();
 	for (int i = 0; i < 100; i++) {
 
@@ -109,7 +113,7 @@ void ex_Simulation () {
 		ssi_event_t *e = list.get (0);
 		e->time = time_ms;
 		ssi_event_map_t *e_tuple = ssi_pcast (ssi_event_map_t, e->ptr);
-		e_tuple->value =(float) ssi_random(0, 1);
+		e_tuple->value = random.next();
 
 		time_ms += delta_ms;
 		frame->SetElapsedTimeMs(time_ms);

@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "Evaluation2Latex.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "ioput/file/File.h"
 #include "ISSelectUser.h"
 #include "ISSelectSample.h"

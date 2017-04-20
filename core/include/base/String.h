@@ -41,18 +41,41 @@ public:
 	String (const ssi_char_t *string);
 	~String ();
 	String (const String &string);
+
+	bool empty();
+
+	char& operator[](ssi_size_t index);
+	const char& operator[](ssi_size_t index) const;
+
 	String & operator=(const String &other);
 	String & operator=(const ssi_char_t *string);
+	String & operator=(const ssi_int_t value);
+	String & operator=(const ssi_size_t value);
+	String & operator=(const float value);
+	String & operator=(const double value);
+
 	bool operator==(const String &other) const;
-	bool operator==(const char *string) const;
+	bool operator==(const ssi_char_t *string) const;
+
 	bool operator!=(const String &other) const;
-	bool operator!=(const char *string) const;
+	bool operator!=(const ssi_char_t *string) const;
+
 	bool operator<(const String &other) const;
-	bool operator<(const char *string) const;
+	bool operator<(const ssi_char_t *string) const;
+
 	String & operator+=(const String &other);
-	String & operator+=(const char *string);
+	String & operator+=(const ssi_char_t *string);
+	String & operator+=(const ssi_int_t value);
+	String & operator+=(const ssi_size_t value);
+	String & operator+=(const float value);
+	String & operator+=(const double value);
+
 	const String operator+(const String &other) const;
-	const String operator+(const char *other) const;
+	const String operator+(const ssi_char_t *other) const;
+	const String operator+(const ssi_int_t value) const;
+	const String operator+(const ssi_size_t value) const;
+	const String operator+(const float value) const;
+	const String operator+(const double value) const;
 
 	ssi_char_t *str () const { return _string; };
 

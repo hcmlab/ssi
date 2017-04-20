@@ -28,6 +28,7 @@
 #include "FilterTools.h"
 #include "signal/MatrixOps.h"
 #include "FFT.h"
+#include <string>
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -114,6 +115,9 @@ void Spectrogram::readFilterbank (const ssi_char_t *file, ssi_time_t sr, bool fr
 
 	}
 	else{
+    #if __ANDROID__
+        ssi_wrn("Filterbank from string not supported on Android");
+    #else
 		std::string strBanks(file);
 		n_banks = std::count(strBanks.begin(), strBanks.end(), ' ');
 
@@ -136,7 +140,9 @@ void Spectrogram::readFilterbank (const ssi_char_t *file, ssi_time_t sr, bool fr
 
 			current_bank++;
 			strBanks = strBanks.substr(delim2 + 1, strBanks.size() - delim2);
+
 		}
+      #endif
 	}
 	
 

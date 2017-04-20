@@ -25,10 +25,10 @@
 //*************************************************************************************************
 
 #include "HierarchicalModel.h"
-#include "ISHotClass.h"
-#include "ISSelectClass.h"
-#include "ISSelectDim.h"
-#include "Trainer.h"
+#include "ssiml/include/ISHotClass.h"
+#include "ssiml/include/ISSelectClass.h"
+#include "ssiml/include/ISSelectDim.h"
+#include "ssiml/include/Trainer.h"
 
 namespace ssi {
 

@@ -41,6 +41,7 @@ bool ex_audio(void *arg);
 bool ex_audioplay(void *arg);
 bool ex_mixer(void *arg);
 bool ex_vad(void *arg);
+bool ex_gate(void *arg);
 
 int main () {
 
@@ -61,6 +62,7 @@ int main () {
 	ex.add(&ex_audioplay, 0, "AUDIOPLAY", "How to replay an audio file.");
 	ex.add(&ex_mixer, 0, "MIXER", "How to mix two audio streams.");
 	ex.add(&ex_vad, 0, "VAD", "How to use voice activity detection.");
+	ex.add(&ex_gate, 0, "GATE", "How to use a noise gate.");
 	ex.show();
 
 	ssi_print ("\n\n\tpress enter to quit\n");
@@ -295,6 +297,58 @@ bool ex_vad(void *arg) {
 	frame->AddConsumer(lpc_t, sigplot, "0.1s");
 
 	EventMonitor *monitor = ssi_create_id (EventMonitor, 0, "monitor");
+	const ssi_char_t *address = "@";
+	board->RegisterListener(*monitor, address, 10000);
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 650, 0, 400, 400);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_gate(void *arg) {
+
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard *board = Factory::GetEventBoard();
+
+	Audio *audio = ssi_create(Audio, "audio", true);
+	audio->getOptions()->scale = true;
+	audio->getOptions()->sr = 16000.0;
+	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIO_PROVIDER_NAME);
+	frame->AddSensor(audio);
+
+	AudioNoiseGate *gate = ssi_create(AudioNoiseGate, 0, true);
+	gate->getOptions()->threshold = -35;
+	gate->getOptions()->attack = 250;
+	gate->getOptions()->decay = 250;
+	ITransformable *gate_t = frame->AddTransformer(audio_p, gate, "0.01s");
+
+	SignalPainter *sigplot = ssi_create_id(SignalPainter, 0, "plot");
+	sigplot->getOptions()->setTitle("AUDIO");
+	sigplot->getOptions()->size = 10.0;
+	sigplot->getOptions()->type = PaintSignalType::AUDIO;
+	frame->AddConsumer(audio_p, sigplot, "0.1s");
+
+	sigplot = ssi_create_id(SignalPainter, 0, "plot");
+	sigplot->getOptions()->setTitle("GATE");
+	sigplot->getOptions()->size = 10.0;
+	sigplot->getOptions()->type = PaintSignalType::AUDIO;
+	frame->AddConsumer(gate_t, sigplot, "0.1s");
+
+	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	const ssi_char_t *address = "@";
 	board->RegisterListener(*monitor, address, 10000);
 

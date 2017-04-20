@@ -58,5 +58,7 @@
 #include "Bundle.h"
 #include "Statistics.h"
 #include "Sum.h"
+#include "Relative.h"
+#include "Mean.h"
 
 #endif

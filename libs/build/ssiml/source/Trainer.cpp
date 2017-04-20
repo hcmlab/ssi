@@ -25,14 +25,17 @@
 //*************************************************************************************************
 
 #include "Trainer.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "base/Factory.h"
 #include "ISMissingData.h"
 #include "ISSelectDim.h"
+#include "ISUnderSample.h"
+#include "ISOverSample.h"
 #include "ISTransform.h"
 #include "Selection.h"
 #include "signal/SignalTools.h"
 #include "ioput/option/OptionList.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -78,7 +81,10 @@ Trainer::Trainer ()
 	_is_trained (false),
 	_preproc_mode (false),
 	_n_samplepaths (0),
-	_samplepaths (0) {
+	_samplepaths (0),
+	_balance(BALANCE::NONE) 
+{
+	_seed = Random::Seed();
 }
 
 Trainer::Trainer (IModel *model,
@@ -110,10 +116,13 @@ Trainer::Trainer (IModel *model,
 	_is_trained (false),
 	_preproc_mode (false),
 	_n_samplepaths (0),
-	_samplepaths (0) {
+	_samplepaths (0),
+	_balance(BALANCE::NONE) {
 
 	_models = new IModel*[1];
 	_models[0] = model;
+
+	_seed = Random::Seed();
 };
 
 Trainer::Trainer (ssi_size_t n_models,
@@ -146,23 +155,26 @@ Trainer::Trainer (ssi_size_t n_models,
 	_is_trained (false),
 	_preproc_mode (false),
 	_n_samplepaths (0),
-	_samplepaths (0) {
+	_samplepaths (0),
+	_balance(BALANCE::NONE) {
 
 	_models = new IModel*[_n_models];
 	for (ssi_size_t n_model = 0; n_model < n_models; n_model++) {
 		_models[n_model] = models[n_model];
 	}
 
+	_seed = Random::Seed();
 }
 
 Trainer::~Trainer () {
-
-	release ();	
+	
 	release_transformer ();
 	release_activity();
 	release_selection ();
 	release_normalization ();
 	release_samples ();
+
+	release();
 
 	delete[] _models;
 	delete[] _stream_refs;
@@ -297,10 +309,20 @@ void Trainer::free_user_names () {
 	}	
 }
 
+void Trainer::setSeed(ssi_size_t seed)
+{
+	_seed = seed;
+}
+
+void Trainer::setBalance(BALANCE::Value balance)
+{
+	_balance = balance;
+}
+
 bool Trainer::setSelection(ssi_size_t n_select,
 	ssi_size_t *stream_select) {
 
-	return setSelection(0, &n_select, &stream_select);
+	return setSelection(1, &n_select, &stream_select);
 }
 
 bool Trainer::setSelection (ssi_size_t n_streams, 
@@ -315,7 +337,7 @@ bool Trainer::setSelection (ssi_size_t n_streams,
 	release_selection ();
 
 	if (_n_streams > 0 && n_streams != _n_streams) {
-		ssi_wrn("#streams do not match (%u != %u)", _n_streams, _n_streams);
+		ssi_wrn("#streams do not match (%u != %u)", n_streams, _n_streams);
 	} else {
 		_n_streams = n_streams;
 	}
@@ -783,6 +805,8 @@ bool Trainer::train (ISamples &samples) {
 		samples_ptr = samples_norm;
 	}
 
+	//ModelTools::SaveSampleList(*samples_ptr, "check", File::BINARY);
+
 	bool result = train_h (*samples_ptr);
 		
 	delete samples_transf;
@@ -800,40 +824,76 @@ void Trainer::eval(ISamples &strain, ISamples &sdevel, FILE *file, Evaluation::P
 
 void Trainer::eval(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
 	Evaluation eval;
-	eval.eval(this, samples);
+	eval.eval(this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalSplit(ISamples &samples, ssi_real_t split, FILE *file, Evaluation::PRINT::List format) {
 
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
 	Evaluation eval;
-	eval.evalSplit (this, samples, split);
+	eval.evalSplit (this, samples, split, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalKFold(ISamples &samples, ssi_size_t k, FILE *file, Evaluation::PRINT::List format) {
 
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
 	Evaluation eval;
-	eval.evalKFold (this, samples, k);
+	eval.evalKFold (this, samples, k, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalLOO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
 	Evaluation eval;
-	eval.evalLOO (this, samples);
+	eval.evalLOO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalLOUO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
 	Evaluation eval;
-	eval.evalLOUO (this, samples);
+	eval.evalLOUO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalSplit(ssi_real_t split, FILE *file, Evaluation::PRINT::List format) {
+
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
 
 	SampleList samples;
 	for (ssi_size_t i = 0; i < _n_samplepaths; i++) {
@@ -878,41 +938,105 @@ void Trainer::evalLOUO(FILE *file, Evaluation::PRINT::List format) {
 	evalLOUO(samples, file, format);
 }
 
-bool Trainer::train_h (ISamples &samples) {	
+bool Trainer::train_h (ISamples &samples_raw) {	
 
 	bool result = false;
 
+	ISamples *samples = &samples_raw;
+	if (_balance != BALANCE::NONE)
+	{
+
+#if SSI_RANDOM_LEGACY_FLAG	
+		ssi_random_seed(_seed);
+#endif
+
+		switch (_balance)
+		{
+		case BALANCE::UNDER:
+		{			
+			ISUnderSample *under = new ISUnderSample(&samples_raw);
+			under->setSeed(_seed);
+			under->setUnder(ISUnderSample::Strategy::RANDOM);			
+			samples = under;
+			ssi_msg(SSI_LOG_LEVEL_BASIC, "apply under sampling (%u->%u)", samples_raw.getSize(), samples->getSize());
+			break;
+		}
+		case BALANCE::OVER:
+		{
+			ssi_msg(SSI_LOG_LEVEL_BASIC, "apply over sampling (%u->%u)", samples_raw.getSize(), samples->getSize());
+			ISOverSample *over = new ISOverSample(&samples_raw);
+			over->setSeed(_seed);
+			over->setOver(ISOverSample::Strategy::RANDOM);
+			samples = over;
+			break;
+		}
+		}
+	}
+
 	if (_fusion) {
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "train '%s' using %u streams", _fusion->getName (), samples.getStreamSize ());
-		if (ssi_log_level >= SSI_LOG_LEVEL_DETAIL) {
-			for (ssi_size_t nstream = 0; nstream < samples.getStreamSize (); nstream++) {				 
-				ssi_print ("             stream#%02u %ux%u %s\n", nstream, samples.getSize (), samples.getStream (nstream).dim, SSI_TYPE_NAMES[samples.getStream (nstream).type]);
+		ssi_msg (SSI_LOG_LEVEL_BASIC, "train '%s' using %u streams", _fusion->getName (), samples->getStreamSize ());
+		if (ssi_log_level >= SSI_LOG_LEVEL_BASIC) {
+			for (ssi_size_t nstream = 0; nstream < samples->getStreamSize (); nstream++) {				 
+				ssi_print ("             stream#%02u %ux%u %s\n", nstream, samples->getSize (), samples->getStream (nstream).dim, SSI_TYPE_NAMES[samples->getStream (nstream).type]);
 			}	
 			for (ssi_size_t nmodel = 0; nmodel < _n_models; nmodel++) {				 
 				ssi_print ("             model#%02u '%s'\n", nmodel, _models[nmodel]->getName ());
 			}			
 		}
-		result = _fusion->train(_n_models, _models, samples);
+		result = _fusion->train(_n_models, _models, *samples);
 	} else {
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "train '%s' using stream#%02u %ux%u %s", _models[0]->getName (), _stream_index, samples.getSize (), samples.getStream (_stream_index).dim, SSI_TYPE_NAMES[samples.getStream (_stream_index).type]);
-		if (samples.hasMissingData ()) {
-			ISMissingData samples_md (&samples);
+		ssi_msg (SSI_LOG_LEVEL_BASIC, "train '%s' using stream#%02u %ux%u %s", _models[0]->getName (), _stream_index, samples->getSize (), samples->getStream (_stream_index).dim, SSI_TYPE_NAMES[samples->getStream (_stream_index).type]);
+		if (samples->hasMissingData ()) {
+			ISMissingData samples_md (samples);
 			samples_md.setStream (_stream_index);
 			result = _models[0]->train(samples_md, _stream_index);
 		} else {
-			result = _models[0]->train(samples, _stream_index);
+			result = _models[0]->train(*samples, _stream_index);
 		}
 	}
 	
-	init_class_names (samples);	
-	init_user_names (samples);
+	init_class_names (*samples);	
+	init_user_names (*samples);
 	_is_trained = result;
+
+	if (samples != &samples_raw)
+	{
+		delete samples;
+	}
 
 	return result;
 }
 
 // test sample
-bool Trainer::forward (ssi_stream_t &stream, ssi_size_t &class_index) {	
+bool Trainer::forward(ssi_stream_t &stream,
+	ssi_size_t &class_index,
+	ssi_real_t &class_prob)
+{
+	ssi_real_t *probs = new ssi_real_t[_n_classes];
+	if (!forward_probs(stream, _n_classes, probs))
+	{
+		return false;
+	}
+
+	ssi_size_t max_ind = 0;
+	ssi_real_t max_val = probs[0];
+	for (ssi_size_t i = 1; i < _n_classes; i++) {
+		if (probs[i] > max_val) {
+			max_val = probs[i];
+			max_ind = i;
+		}
+	}
+
+	class_index = max_ind;
+	class_prob = probs[max_ind];
+
+	delete[] probs;
+
+	return true;
+}
+
+bool Trainer::forward (ssi_stream_t &stream, 
+	ssi_size_t &class_index) {	
 
 	ssi_stream_t *s = &stream;
 	return forward (1, &s, class_index);
@@ -990,7 +1114,7 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 	ssi_stream_t **streams_n = new ssi_stream_t *[n_streams];
 	for (ssi_size_t i = 0; i < n_streams; i++) {
 		streams_o[i] = new ssi_stream_t;
-		ssi_stream_clone(*streams[i], *streams_o[i]);
+		ssi_stream_copy(*streams[i], *streams_o[i], 0, streams[i]->num);
 		streams_ptr[i] = streams_o[i];
 		streams_s[i] = 0;
 		streams_t[i] = 0;
@@ -1150,7 +1274,11 @@ bool Trainer::Load (Trainer &trainer,
 			trainer._is_trained = result;
 			break;
 		case V5:
-			result = Load_V5 (trainer, fp, body);
+			result = Load_V5 (trainer, fp, body);	
+			if (!result)
+			{
+				trainer._is_trained = false;
+			}
 			break;
 		default:
 			ssi_wrn ("unkown version %d", version);
@@ -1216,14 +1344,21 @@ bool Trainer::Load_V5 (Trainer &trainer,
 		return false;
 	}
 	const ssi_char_t *trained = element->Attribute ("trained");
+	bool is_trained;
 	if (!trained) {
 		ssi_wrn ("attribute <trained> missing in <info>");
 		return false;
 	} else {
-		trainer._is_trained = ssi_strcmp (trained, "true", false);
+		is_trained = ssi_strcmp (trained, "true", false);
+	}
+	trainer._is_trained = is_trained;		
+	int seed = 0;
+	if (element->Attribute("seed", &seed))
+	{
+		trainer.setSeed(ssi_size_t(seed));
 	}
 
-	if (!trainer._is_trained) {
+	if (!is_trained) {
 
 		element = body->FirstChildElement ("samples");
 		int n_streams;
@@ -1231,7 +1366,23 @@ bool Trainer::Load_V5 (Trainer &trainer,
 			ssi_wrn("attribute <n_streams> missig in <samples>");
 			return false;
 		}
-		trainer._n_streams = ssi_cast (ssi_size_t, n_streams);
+		trainer._n_streams = ssi_cast(ssi_size_t, n_streams);
+
+		const ssi_char_t *balance = element->Attribute("balance");		
+		if (balance && !ssi_strcmp(balance, "none", false)) {
+			if (ssi_strcmp(balance, "over", false))
+			{
+				trainer.setBalance(BALANCE::OVER);
+			}
+			else if (ssi_strcmp(balance, "under", false))
+			{
+				trainer.setBalance(BALANCE::UNDER);
+			}
+			else
+			{
+				ssi_wrn("unkown balance value '%s'", balance);
+			}
+		}		
 
 		ssi_size_t n_samples = 0;	
 		if (!GetChildSize (element, "item", n_samples)) {		
@@ -1252,6 +1403,7 @@ bool Trainer::Load_V5 (Trainer &trainer,
 			samples[n_sample] = path;
 			item = item->NextSiblingElement("item");
 		}
+		
 		trainer.setSamples (n_samples, samples);
 		delete[] samples;
 
@@ -1555,7 +1707,13 @@ bool Trainer::Load_V5 (Trainer &trainer,
 					if (ssi_strcmp(method, ISNorm::METHOD_NAMES[i])) {
 						trainer._normalization[stream_id] = new ISNorm::Params;
 						ISNorm::ZeroParams(*trainer._normalization[stream_id], ISNorm::METHOD::List(i));
+						const ssi_char_t *limits = item->Attribute("limits");
+						if (limits)
+						{
+							ssi_string2array(2, trainer._normalization[stream_id]->limits, limits, ',');						
+						}
 						found_method = true;
+	
 						break;
 					}
 				}
@@ -1563,7 +1721,7 @@ bool Trainer::Load_V5 (Trainer &trainer,
 					ssi_wrn("unkown normalization method '%s'", method);
 					return false;
 				}
-				if (trainer._is_trained) {
+				if (is_trained) {
 					const ssi_char_t *path = item->Attribute("path");
 					if (!path) {
 						ssi_wrn("attribute <path> missing in <item>");
@@ -1572,6 +1730,22 @@ bool Trainer::Load_V5 (Trainer &trainer,
 					ssi_sprint(string, "%s%s", fp.getDir(), path);
 					ISNorm::LoadParams(string, *trainer._normalization[stream_id]);
 				}
+
+				if (trainer._normalization[stream_id]->method == ISNorm::METHOD::SCALE)
+				{
+					ssi_msg(SSI_LOG_LEVEL_BASIC, "apply normalization '%s[%.g,%.g]' on stream #%u",
+						ISNorm::METHOD_NAMES[trainer._normalization[stream_id]->method],
+						trainer._normalization[stream_id]->limits[0],
+						trainer._normalization[stream_id]->limits[1],
+						stream_id);
+				}
+				else
+				{
+					ssi_msg(SSI_LOG_LEVEL_BASIC, "apply normalization '%s' on stream #%u",
+						ISNorm::METHOD_NAMES[trainer._normalization[stream_id]->method],
+						stream_id);
+				}
+
 			} while (item = item->NextSiblingElement("item"));
 		}
 	}
@@ -2855,20 +3029,30 @@ bool Trainer::cluster (ISamples &samples) {
 		return false;
 	}
 
-	if (samples.getClassSize () != _models[0]->getClassSize ()) {
+	ssi_size_t n_classes = _models[0]->getClassSize();
+	if (samples.getClassSize () != n_classes) {
 		ssi_wrn ("#classes differs from #cluster");
 		return false;
 	}
 
 	ssi_sample_t *sample;
 	samples.reset ();
-	ssi_size_t index;
-	while (sample = samples.next ()) {
-		forward (sample->num, sample->streams, index);
-		sample->class_id = index;
+	while (sample = samples.next ()) {		
+		if (n_classes == 1) // REGRESSION
+		{			
+			forward_probs(sample->num, sample->streams, 1, &sample->score);
+		}
+		else // MULTICLASS
+		{
+			forward(sample->num, sample->streams, sample->class_id);			 
+		}
 	}
 
 	return true;
+}
+
+ssi_size_t Trainer::getModelSize() {
+	return _n_models;
 }
 
 IModel *Trainer::getModel (ssi_size_t index) {
@@ -2878,6 +3062,10 @@ IModel *Trainer::getModel (ssi_size_t index) {
 	}
 	ssi_wrn ("invalid index");
 	return 0;
+}
+
+IFusion *Trainer::getFusion() {
+	return _fusion;
 }
 
 const ssi_char_t *Trainer::getName () {

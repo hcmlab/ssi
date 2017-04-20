@@ -16,9 +16,9 @@
 	</sensor>
 	
 	<!-- trigger -->
-	<consumer create="ZeroEventSender" address="pressed@button" mindur="0.2s">
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0">
 		<input pin="button" frame="0.1s" />		
-	</consumer>		
+	</consumer>	
 	
 	<!-- cursor mean -->
 	<consumer create="MapEventSender" address="position@cursor" keys="x,y">

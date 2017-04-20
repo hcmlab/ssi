@@ -28,7 +28,7 @@
 // see Torch 3.1 (http://www.torch.ch/)
 
 #include "FindNN.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"

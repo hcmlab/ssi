@@ -1,0 +1,54 @@
+﻿<Window x:Class="ssi.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ssi"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        Title="Settings" SizeToContent="WidthAndHeight">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TabControl>
+            <TabItem Grid.Row="0" Header="General">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Default annotator name:" HorizontalAlignment="left" />
+                    <TextBox Name="Annotator" Margin="5,0,0,5" Width="90" HorizontalAlignment="left" />
+                    <Label Content="Default zoom in seconds (0 for max. duration):"  HorizontalAlignment="left" />
+                    <TextBox Name="DefaultZoom" Margin="5,0,0,5" Width="90" HorizontalAlignment="left"  PreviewTextInput="NumberValidationTextBox" />
+                    <Label Content="Correction certainty level:"   HorizontalAlignment="left" />
+                    <TextBox Name="Certainty" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left" PreviewTextInput="NumberValidationTextBox" />
+                    <Label Content="Segment min duration in seconds:"  HorizontalAlignment="left"  />
+                    <TextBox Name="Segmentmindur" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left" PreviewTextInput="NumberValidationTextBox" />
+                    <Label Content="Discrete sample rate in Hz (0 for none):"   HorizontalAlignment="left"  />
+                    <TextBox Name="Samplerate" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left" PreviewTextInput="IntNumberValidationTextBox" />
+                    <Label Content="Check for updates on startup:" HorizontalAlignment="left"  />
+                    <CheckBox Name="UpdatesCheckbox" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Database">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Database server:" HorizontalAlignment="Left"/>
+                    <TextBox Name="DBServer" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left"/>
+                    <Label Content="Database user:" HorizontalAlignment="left"/>
+                    <TextBox Name="DBUser" Margin="5,0,0,5" HorizontalAlignment="left" Width="90"/>
+                    <Label Content="Database password:" HorizontalAlignment="left"  />
+                    <PasswordBox Name="DBPassword" Margin="5,0,0,5" HorizontalAlignment="left" Width="90"/>
+                    <Label Content="Ask before overwriting existing annotation" HorizontalAlignment="left" />
+                    <CheckBox Name="OverwriteAnnotation" Margin="5,0,0,5" Width="90" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Click="Button_Click">Apply</Button>
+        </StackPanel>
+    </Grid>
+</Window>

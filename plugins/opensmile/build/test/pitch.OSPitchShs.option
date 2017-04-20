@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <options>
-    <item name="baseSr" type="DOUBLE" num="1" value="4.800000e+004" lock="false" help="Samplerate of original wave input in Hz." />
-    <item name="fsSec" type="DOUBLE" num="1" value="4.410000e+004" lock="false" help="Frame size in seconds (if -1.0 calculated from sample rate of input stream)." />
-    <item name="minPitch" type="DOUBLE" num="1" value="5.200000e+001" lock="false" help="Minimum detectable pitch in Hz." />
-    <item name="maxPitch" type="DOUBLE" num="1" value="6.200000e+002" lock="false" help="Maximum detectable pitch in Hz." />
+    <item name="baseSr" type="DOUBLE" num="1" value="4.800000e+04" lock="false" help="Samplerate of original wave input in Hz." />
+    <item name="fsSec" type="DOUBLE" num="1" value="4.410000e+04" lock="false" help="Frame size in seconds (if -1.0 calculated from sample rate of input stream)." />
+    <item name="minPitch" type="DOUBLE" num="1" value="5.200000e+01" lock="false" help="Minimum detectable pitch in Hz." />
+    <item name="maxPitch" type="DOUBLE" num="1" value="6.200000e+02" lock="false" help="Maximum detectable pitch in Hz." />
     <item name="nCandidates" type="INT" num="1" value="6" lock="false" help="The number of F0 candidates to output [1-20] (0 disables ouput of candidates AND their voicing probs)." />
     <item name="scores" type="BOOL" num="1" value="true" lock="false" help="Output of F0 candidates scores, if available." />
     <item name="voicing" type="BOOL" num="1" value="true" lock="false" help="Output of voicing probability for F0 candidates." />
@@ -11,9 +11,9 @@
     <item name="voicingC1" type="BOOL" num="1" value="false" lock="false" help="Output of output voicing (pseudo) probability for best candidate." />
     <item name="F0raw" type="BOOL" num="1" value="false" lock="false" help="Output of raw F0 (best candidate), > 0 only for voiced segments (using voicingCutoff threshold)." />
     <item name="voicingClip" type="BOOL" num="1" value="false" lock="false" help="Output of voicing of raw F0 (best candidate), > 0 only for voiced segments (using voicingCutoff threshold)." />
-    <item name="voicingCutoff" type="FLOAT" num="1" value="7.000000e-001" lock="false" help="This sets the voicing (pseudo) probability threshold for pitch detection. Frames with voicing probability values above this threshold will be considered as voiced." />
+    <item name="voicingCutoff" type="FLOAT" num="1" value="7.000000e-01" lock="false" help="This sets the voicing (pseudo) probability threshold for pitch detection. Frames with voicing probability values above this threshold will be considered as voiced." />
     <item name="octaveCorrection" type="BOOL" num="1" value="false" lock="false" help="If this pitch detector algorithm offers algorithm specific low-level octave correction, enable it." />
     <item name="nHarmonics" type="INT" num="1" value="15" lock="false" help="Number of harmonics to consider for subharmonic sampling (feasible values: 5-15)." />
-    <item name="compressionFactor" type="FLOAT" num="1" value="8.500000e-001" lock="false" help="The factor for successive compression of sub-harmonics." />
+    <item name="compressionFactor" type="FLOAT" num="1" value="8.500000e-01" lock="false" help="The factor for successive compression of sub-harmonics." />
     <item name="greedyPeakAlgo" type="BOOL" num="1" value="false" lock="false" help="use new algorithm to return all maximum score candidates regardless of their order. The old algorithm added new candidates only if they were higher scored as the first one. Enabling this seems to require different viterbi parameters for smoothing though, so use with caution! Default behaviour is 'off' so we remain backwards compatibility." />
 </options>

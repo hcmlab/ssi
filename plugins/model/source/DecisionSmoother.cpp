@@ -287,9 +287,13 @@ bool DecisionSmoother::update (IEvents &events, ssi_size_t n_new_events, ssi_siz
 			}
 		}
 
+		if (!_thread) {
+			_event.dur = time_ms - _last_decision_time;
+		}
+
 		_last_decision_time = time_ms;
 
-		if (!_thread) {
+		if (!_thread) {			
 			send(this);
 		}
 	}

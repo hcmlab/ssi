@@ -54,8 +54,8 @@ source/ioput/lz4/lz4frame.c
 source/ioput/lz4/lz4hc.c
 source/ioput/lz4/xxhash.c
 source/ioput/socket/SocketImage.cpp
-source/model/Annotation.cpp
-source/model/ModelTools.cpp
+#source/model/Annotation.cpp
+#source/model/ModelTools.cpp
 source/r250.c
 source/SSI_Global.cpp
 source/thread/ClockThread.cpp
@@ -76,6 +76,8 @@ source/ioput/example/Exsemble.cpp
 
 source/ioput/file/File.cpp
 source/ioput/file/FileAnnotationWriter.cpp
+source/ioput/file/FileAnnotationIn.cpp
+source/ioput/file/FileAnnotationOut.cpp
 source/ioput/file/FileAscii.cpp
 source/ioput/file/FileBinary.cpp
 source/ioput/file/FileBinaryLZ4.cpp
@@ -89,7 +91,6 @@ source/ioput/file/FileSamplesOut.cpp
 source/ioput/file/FileStreamIn.cpp
 source/ioput/file/FileStreamOut.cpp
 source/ioput/file/FileTools.cpp
-source/ioput/file/StringList.cpp
 source/ioput/option/CmdArgOption.cpp
 source/ioput/option/CmdArgParser.cpp
 source/ioput/option/OptionList.cpp
@@ -114,8 +115,9 @@ source/ioput/option/CmdArgParser.cpp
 source/ioput/option/CmdArgOption.cpp
 
 source/base/String.cpp
+source/base/StringList.cpp
 source/event/EventAddress.cpp
-source/model/SampleList.cpp
+#source/model/SampleList.cpp
 
 source/base/Factory.cpp
 
@@ -181,10 +183,10 @@ endif(ANDROID)
  ENDIF(WIN32)
 
  set_source_files_properties(source/r250.c
-								source/ioput/lz4/lz4.c
-								source/ioput/lz4/lz4frame.c
-								source/ioput/lz4/lz4hc.c
-								source/ioput/lz4/xxhash.c
+                            source/ioput/lz4/lz4.c
+                            source/ioput/lz4/lz4frame.c
+                            source/ioput/lz4/lz4hc.c
+                            source/ioput/lz4/xxhash.c
 
  PROPERTIES LANGUAGE CXX )
 

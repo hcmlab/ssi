@@ -29,7 +29,7 @@
 
 #include "base/IProvider.h"
 #include "thread/Lock.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 #include "WavProvider.h"
 
 #include <sstream>

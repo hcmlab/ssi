@@ -26,8 +26,8 @@
 
 #pragma once
 
-#ifndef SSI_ENTERFACE12_SENSINGTEXSENSOR_H
-#define	SSI_ENTERFACE12_SENSINGTEXSENSOR_H
+#ifndef SSI_SENSINGTEXSENSOR_H
+#define	SSI_SENSINGTEXSENSOR_H
 
 #include "base/ISensor.h"
 #include "base/IProvider.h"
@@ -35,9 +35,23 @@
 #include "thread/Timer.h"
 #include "ioput/option/OptionList.h"
 
-#include <Windows.h>
+#include <serial/serial.h>
 
-class Serial;
+#include <iostream>
+
+
+#ifdef _WIN32
+#include <Windows.h>
+//#include <vld.h>
+#else
+#include <sys/time.h>
+#include <ctime>
+#endif
+
+/* Remove if already defined */
+typedef long long int64; typedef unsigned long long uint64;
+
+
 
 #define SSI_SENSINGTEX_PROVIDER_NAME "pressurematrix"
 
@@ -83,21 +97,35 @@ public:
 	public:
 
 		Options ()
-			: port(1), size(0.1), scale (true), cols(1), rows(1), sr(5.0) {
+                        : size(0.1), scale (true), cols(1), rows(1), sr(5.0), fps(false) {
 
-			addOption ("sr", &sr, 1, SSI_DOUBLE, "sample rate in Hz [1,21]");
-			addOption ("port", &port, 1, SSI_SIZE, "port number");
+                    #ifdef _WIN32
+                        setSerialDev("COM1");
+                    #else
+                        setSerialDev("/dev/ttyUSB0");
+                    #endif
+
+                        addOption ("sr",   &sr, 1, SSI_DOUBLE, "sample rate in Hz [1,21]");
+                        addOption ("port", &port, SSI_MAX_CHAR, SSI_CHAR, "windows e.g. COM1; linux e.g. /dev/ttyUSB0; on linux check your permissions!");
 			addOption ("cols", &cols, 1, SSI_SIZE, "columns [1,16]");
 			addOption ("rows", &rows, 1, SSI_SIZE, "rows [1,16]");
 			addOption ("size", &size, 1, SSI_DOUBLE, "block size in seconds");
-			addOption ("scale", &scale, 1, SSI_BOOL, "scale cursor to interval [0.0,1.0]");
-		};		
+                        addOption ("scale",&scale, 1, SSI_BOOL, "scale cursor to interval [0.0,1.0]");
+                        addOption ("fps",  &fps, 1, SSI_BOOL, "print fps to console");
+                };
 
-		ssi_size_t port;
+                void setSerialDev(const ssi_char_t *dev) {
+                        if (dev) {
+                                ssi_strcpy(this->port, dev);
+                        }
+                }
+
+                ssi_char_t port[SSI_MAX_CHAR];
 		char cols, rows;
 		double sr;
 		ssi_time_t size;
 		bool scale;
+		bool fps;
 	};
 
 public:
@@ -128,7 +156,7 @@ public:
 
 protected:
 
-	SensingTex(const ssi_char_t *file = 0);
+	SensingTex(const ssi_char_t *file = nullptr);
 	SensingTex::Options _options;
 	ssi_char_t *_file;
 
@@ -138,7 +166,7 @@ protected:
 	void setPressureMatrixProvider(IProvider *provider);
 	IProvider *_pressurematrix_provider;
 	ssi_size_t _n_serial_buffer;
-	unsigned char *_serial_buffer;
+	uint8_t *_serial_buffer;
 
 	ssi_size_t _frame_size;
 	ssi_size_t _counter;
@@ -146,14 +174,13 @@ protected:
 	ssi_real_t *_pressurematrix_buffer;
 	bool *_received_cols;
 
-	Serial *_serial;
+	serial::Serial *_serial;
 	bool _is_connected;
-	ssi_char_t _port_s[16];
 
 	Timer *_timer;
 
-	_int64 lastCall;
-	_int64 fpsValuecount;
+	uint64 lastCall;
+	uint64 fpsValuecount;
 	double avgFps;
 
 };

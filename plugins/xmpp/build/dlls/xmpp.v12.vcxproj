@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{682E784C-BD4B-4EA1-BEF3-5B7297DCE20E}</ProjectGuid>
+    <ProjectGuid>{88A85A11-BB33-4D61-89D1-FF310AA6EB42}</ProjectGuid>
     <RootNamespace>ssi</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>xmpp</ProjectName>

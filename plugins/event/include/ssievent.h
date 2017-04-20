@@ -34,6 +34,7 @@
 #include "StringEventSender.h"
 #include "ZeroEventSender.h"
 #include "ThresEventSender.h"
+#include "TriggerEventSender.h"
 #include "FixationEventSender.h"
 #include "ThresClassEventSender.h"
 #include "ClockEventSender.h"

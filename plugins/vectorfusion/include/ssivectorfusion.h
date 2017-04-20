@@ -40,6 +40,7 @@
 #include "VectorFusionVA.h"
 
 #include "VectorFusionWriter.h"
+#include "CombinerVA.h"
 
 
 

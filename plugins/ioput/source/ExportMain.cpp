@@ -56,6 +56,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::SocketEventWriter::GetCreateName (),ssi::SocketEventWriter::Create) && result;
 	result = ssi::Factory::Register (ssi::SocketEventReader::GetCreateName (),ssi::SocketEventReader::Create) && result;	
 	result = ssi::Factory::Register (ssi::FileSampleWriter::GetCreateName(), ssi::FileSampleWriter::Create) && result;
+	result = ssi::Factory::Register (ssi::FileAnnotationWriter::GetCreateName(), ssi::FileAnnotationWriter::Create) && result;
 	result = ssi::Factory::Register (ssi::FakeSignal::GetCreateName(), ssi::FakeSignal::Create) && result;
 	
 	return result;

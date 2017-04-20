@@ -1,4 +1,4 @@
-	*** Version 0.1.0 ***
+*** Version 0.1.0 ***
 - 09.09.09 NEW : tools/[ev,torch], added emovoice and torch library : Johannes Wagner
 - 09.09.09 NEW : core/sensor/wii/WiiOptions, class to wrap options of wiimote : Johannes Wagner
 - 09.09.09 BUG : core/dialog/PinAndMediaSelectionDialog.cpp, pins of selected camera were not correctly passed to dialog : Johannes Wagner
@@ -1661,4 +1661,66 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 14.07.16 CHG : ssiml/Evaluation : sample-wise regression results for correctly displayed : Johannes
 - 15.07.16 BUG : plugins/opensmilewrapper : ssi writer plugin adds 'pcm' prefix instead of 'ssi' : Johannes
 - 15.07.16 CHG : plugins/opensmilewrapper : new option to continuously extract features : Johannes
-- 27.07.16 BUG : graphic/Window : using long pointer in create function to prevents crash on 64-bit systems (thanks to Jonathan Rosca): Johannes
+- 27.07.16 BUG : graphic/Window : using long pointer in create function to prevents crash on 64-bit systems (thanks to Jonathan Rosca) : Johannes
+- 26.09.16 CHG : FileTools : WriteStreamFile() now supports delim character : Johannes
+- 26.09.16 CHG : plugins/opensmilewrapper/OSWrapper : ssi sink and source have been moved from a plugin to the library : Johannes
+- 27.09.16 CHG : graphic/Console : move cursor to beginning of line after console was moved : Johannes
+- 28.09.16 CHG : model/ModelTools : added functions to create and plot samples for regression tasks : Johannes
+- 28.09.16 ADD : plugins/liblinear : wrapper for "LIBLINEAR -- A Library for Large Linear Classification" : Johannes
+- 28.09.16 CHG : plugins/libsvm : added support for regression : Johannes
+- 05.10.16 CHG : graphic/Monitor : removed border from edit control : Johannes
+- 06.10.16 CHG : plugins/python/PythonHelper : options and variables passed to model functions : Johannes
+- 13.10.16 CHG : model/Trainer : added limits parameter to trainer normalize method : Johannes
+- 18.10.16 CHG : core/model/[Annotation,SampleList,ModelTools] : moved to ssiml library : Johannes
+- 18.10.16 CHG : libs/build/ssimongo : mongo db library : Johannes
+- 19.10.16 ADD : ssiml/Annotation : new Annotation class (added namespace old to old implementation): Johannes
+- 19.10.16 CHG : ssiml/Annotation : added functions to read from csv and stream files : Johannes
+- 20.10.16 CHG : ssiml/Annotation : added functions to read from mongo db : Johannes
+- 25.10.16 CHG : ioput/file/StringList : moved to base/StringList : Johannes
+- 25.10.16 CHG : remove Win32 configurations in core and plugins : Johannes
+- 26.10.16 CHG : SSI_Cons : new types 'ssi_scheme_t' and 'ssi_label_t' : Johannes
+- 26.10.16 CHG : ioput/file : added FileAnnotationIn and FileAnnotationOut classes : Johannes
+- 26.10.16 CHG : ssiml/Annotation : added save and load function : Johannes
+- 31.10.16 ADD : libs/ssicml : library that implements cooperative learning with mongodb : Johannes
+- 02.11.16 ADD : plugins/audio/AudioNoiseGate : gate to reduce background noise : Johannes
+- 07.11.16 CHG : file/ioput/FileAnnotationWriter : moved to namespace old : Johannes
+- 07.11.16 ADD : plugins/ioput/FileAnnotationWriter : new annotation writer (supports all annotation schemes) : Johannes
+- 08.11.16 CHG : libs/ssimongo : added support for Date datatype : Johannes
+- 08.11.16 CHG : libs/ssimongo : workaround to read/write unicode characters to database : Johannes
+- 08.11.16 CHG : model/tools/cmltrain : upload annotations to database : Johannes
+- 15.11.16 ADD : plugins/event/TriggerEventSender : replaces 'ZeroEventSender' and 'ThresEventSender' : Johannes
+- 15.11.16 CHG : libs/ssiml/Annotation : replaced setScheme() with more meaningful method names (e.g. setDiscreteScheme()) : Johannes
+- 15.11.16 CHG : libs/ssiml/Annotation : implement sort() function : Johannes
+- 15.11.16 CHG : SSI_Cons.h : 'discrete.id' in ssi_label_t is now a int32 to allow negative indices (=garbage) : Johannes
+- 22.11.16 BUG : plugins/libinear : fixed weird 'scanf'-bug when reading a model (after last w number has been read we do not wait for a new line) : Johannes
+- 22.11.16 BUG : plugins/model/ClassfierT : set number of classes when trainer is set through setTrainer() : Johannes
+- 22.11.16 BUG : ssiml/Trainer : when trainer could not be loaded from file isTrainer() returns false : Johannes
+- 28.11.16 CHG : ssiml/ISAlignStreams : renamed to ISMergeDim : Johannes
+- 28.11.16 ADD : ssiml/ISFlatSample : streams with multiple samples are reduced to a single sample by concatenating the samples in a single sample : Johannes
+- 30.11.16 BUG : ioput/file/tinyxml : properly reads xml from non binary file pointer : Johannes
+- 30.11.16 BUG : plugins/liblinear/Liblinear : forward method returns probabilities : Johannes
+- 30.11.16 BUG : SSI_Tools/norm() : avoids nan if min==max : Johannes
+- 30.11.16 CHG : plugins/ioput/FileAnnotationWriter : new option 'addUnkownLabel' to automatically add new labels : Johannes
+- 05.12.16 CHG : base/StringList : added parse method : Johannes
+- 05.12.16 CHG : plugins/model/tools/cmltrain : added modes for cooperative learning : Johannes
+- 09.01.17 CHG : plugins/frane/XMLPipeline : instead of config files options can also be passed inline, i.e. option=value : Johannes
+- 06.02.17 CHG : ioput/file/FileAnnnotationOut : removes new lines in free annotation labels : Johannes
+- 14.02.17 CHG : ssi.h : links to ssi[d].lib : Johannes
+- 14.02.17 CHG : plugin/libsvm/LibSVM.h : set parameters by single option string : Johannes
+- 15.02.17 CHG : plugin/liblinear/LibLinear.h : correctly predicts binary problems : Johannes
+- 27.02.17 CHG : base/String : added empty() method and [] operators : Johannes
+- 27.02.17 CHG : plugins/libinear/LibLinear : now calling ssi_random_seed() instead of srand() : Johannnes
+- 27.02.17 CHG : plugins/libsvm/LibSVM : now calling ssi_random_seed() instead of srand() : Johannnes
+- 15.02.17 CHG : plugin/liblinear/LibLinear.h : refined probability output : Johannes
+- 07.03.17 CHG : file/File.h : seek()/tell() now support large files : Johannes
+- 16.03.17 CHG : removed mlpxml from plugins : Johannes
+- 22.03.17 CHG : ioput/FileEventWriter : remove time stamp : Johannes
+- 03.04.17 CHG : ssiml/Trainer : setBalance() to balance training samples : Johannes
+- 06.04.17 CHG : ssiml/Trainer : init seed if samples are balanced : Johannes
+- 06.04.17 ADD : base/Random : new Random class to replace random functions in SSI_Tools : Johannes
+- 11.04.17 REM : bin/x64/vc120 : vc12 is no longer officially supported : Johannes
+- 11.04.17 REM : libs/x64/* : library files are no longer pre-built : Johannes
+- 12.04.17 CHG : plugins/ioput/FileWriter : set meta fields via options : Johannes
+- 12.04.17 CHG : ssiml/Annotation : extrect sample list from continuous scheme : Johannes
+- 20.04.17 CHG : SSI_Tools : added ssi_remove() to delete files : Johannes
+- 20.04.17 ADD : ioput/web/WebTools : helper functions to download files from the web : Johannes

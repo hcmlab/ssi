@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ISNorm.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "ioput/xml/tinyxml.h"
 #include "ioput/file/FilePath.h"
 
@@ -59,9 +59,20 @@ ISNorm::ISNorm (ISamples *samples)
 
 ISNorm::~ISNorm () {
 	
+	if (_params)
+	{
+		for (ssi_size_t i = 0; i < _n_streams; i++) {
+			if (_params[i])
+			{
+				//ReleaseParams(*_params[i]);
+			}
+		}
+	}
+
 	delete[] _params;
 	delete[] _n_features;
 	ssi_sample_destroy (_sample);
+	_n_streams = 0;
 }	
 
 void ISNorm::ZeroParams(Params &params, METHOD::List method) {
@@ -308,6 +319,9 @@ bool ISNorm::LoadParams(const ssi_char_t *path, Params &params) {
 		}
 	}
 
+	delete[] path_xml;
+	delete[] path_data;
+
 	return true;
 }
 
@@ -344,7 +358,7 @@ bool ISNorm::setNorm (ssi_size_t index,
 				for (ssi_size_t j = 0; j < params.n_features; j++) {
 					*bptr -= *aptr++;
 					if (*bptr == 0.0f) {
-						ssi_wrn("found zero interval, set to 1");
+						ssi_wrn("zero interval '%u'", j);
 						*bptr = 1.0f;
 					}
 					bptr++;
@@ -359,7 +373,7 @@ bool ISNorm::setNorm (ssi_size_t index,
 				for (ssi_size_t j = 0; j < params.n_features; j++) {
 					*bptr = sqrt(*bptr);
 					if (*bptr == 0.0f) {
-						ssi_wrn("found zero stdv, set to 1");
+						ssi_wrn("zero stdv '%u'", j);
 						*bptr = 1.0f;
 					}
 					bptr++;

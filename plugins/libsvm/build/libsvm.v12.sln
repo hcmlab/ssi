@@ -9,10 +9,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{1D244250-10E7-4EC6-8E39-0157EC94FB9D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsvm", "dlls\libsvm.v12.vcxproj", "{DF622141-2650-41B4-88F4-E91DCE3E51CE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13085793-F6F7-41C5-B6CD-BE9DADDF9C7D} = {13085793-F6F7-41C5-B6CD-BE9DADDF9C7D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsvm-3.20", "libs\libsvm-3.20\libsvm-3.20.v12.vcxproj", "{13085793-F6F7-41C5-B6CD-BE9DADDF9C7D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.v12.vcxproj", "{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF622141-2650-41B4-88F4-E91DCE3E51CE} = {DF622141-2650-41B4-88F4-E91DCE3E51CE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

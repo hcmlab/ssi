@@ -78,6 +78,8 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::Bundle::GetCreateName(), ssi::Bundle::Create) && result;
 	result = ssi::Factory::Register (ssi::Statistics::GetCreateName(), ssi::Statistics::Create) && result;
 	result = ssi::Factory::Register (ssi::Sum::GetCreateName(), ssi::Sum::Create) && result;
+	result = ssi::Factory::Register (ssi::Relative::GetCreateName(), ssi::Relative::Create) && result;
+	result = ssi::Factory::Register (ssi::Mean::GetCreateName(), ssi::Mean::Create) && result;
 
 	return result;
 }

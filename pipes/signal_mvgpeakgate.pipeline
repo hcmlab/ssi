@@ -35,15 +35,15 @@
 	movements pass the threshold, which is continuously updated.
 	
 	-->
-	<transformer create="MvgPeakGate:plot4" method="1" win="10.0" format="3" thres="2" mstd="4.0" monitor="true">
+	<transformer create="MvgPeakGate:plot4" method="1" win="10.0" thres="2" mstd="4.0" monitor="true">
 		<input pin="speedenergy" frame="0.2s"/>
 		<output pin="mvgpeakgate"/>
 	</transformer>
 	
 	<!-- detect quick movments -->
-	<consumer create="ZeroEventSender" mindur="0.0" maxdur="2.0" address="move@cursor">
+	<consumer create="TriggerEventSender" triggerType="5" minDuration="0.0" maxDuration="2.0" address="move@cursor">
 		<input pin="mvgpeakgate" frame="0.5s" />		
-	</consumer>		
+	</consumer>			
 	
 	<!-- visualization -->
 	<consumer create="SignalPainter:plot" title="cursor" size="10.0">

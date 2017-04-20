@@ -26,7 +26,7 @@
 
 #include "ssi.h"
 #include "ssimodel.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -41,6 +41,7 @@ using namespace ssi;
 bool ex_gesture (void *args); 
 bool ex_smooth(void *args);
 bool ex_events(void *args);
+bool ex_pipeline(void *args);
 
 int main () {
 
@@ -50,22 +51,25 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe.dll");
-	Factory::RegisterDLL ("ssievent.dll");
-	Factory::RegisterDLL ("ssiioput.dll");
-	Factory::RegisterDLL ("ssimouse.dll");
-	Factory::RegisterDLL ("ssimodel.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssisignal.dll");
-	Factory::RegisterDLL ("ssicontrol.dll");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("ioput");
+	Factory::RegisterDLL ("mouse");
+	Factory::RegisterDLL ("model");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("signal");
+	Factory::RegisterDLL ("control");
 
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed();
+#endif
 
 	Exsemble exsemble;
 	exsemble.console(0, 0, 650, 800);
 	exsemble.add(&ex_gesture, 0, "GESTURE", "Online gesture recognizer");
 	exsemble.add(&ex_smooth, 0, "SMOOTH", "Online decision smoothing");
 	exsemble.add(&ex_events, 0, "EVENT", "Online recognition from events");
+	exsemble.add(&ex_pipeline, 0, "PIPELINE", "Create annotations from a pipeline.");
 	exsemble.show();
 
 	Factory::Clear ();
@@ -203,8 +207,9 @@ struct fake_tuple_sender_arg {
 void fake_tuple_sender(void *ptr) {
 	fake_tuple_sender_arg *arg = ssi_pcast(fake_tuple_sender_arg, ptr);
 	ssi_event_map_t *tuple = ssi_pcast(ssi_event_map_t, arg->e->ptr);
+	Randomf random(0,1);
 	for (ssi_size_t i = 0; i < arg->n; i++) {
-		tuple[i].value = ssi_cast (ssi_real_t, ssi_random());
+		tuple[i].value = random.next();
 	}
 	arg->b->update(*arg->e);
 	ssi_sleep(arg->ms);
@@ -311,8 +316,9 @@ struct fake_floats_sender_arg {
 void fake_floats_sender(void *ptr) {
 	fake_floats_sender_arg *arg = ssi_pcast(fake_floats_sender_arg, ptr);
 	ssi_real_t *floats = ssi_pcast(ssi_real_t, arg->e->ptr);
+	Randomf random(0, 1);
 	for (ssi_size_t i = 0; i < arg->n; i++) {
-		floats[i] = ssi_cast(ssi_real_t, ssi_random());
+		floats[i] = random.next();
 	}
 	arg->b->update(*arg->e);
 	ssi_sleep(arg->ms);
@@ -367,6 +373,68 @@ bool ex_events(void *args) {
 	board->Stop();
 	frame->Clear();
 	board->Clear();
+
+	return true;
+}
+
+
+bool ex_pipeline(void *args)
+{
+	ITheFramework *frame = Factory::GetFramework();
+	ITheEventBoard *board = Factory::GetEventBoard();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	Mouse *mouse = ssi_create(Mouse, 0, true);
+	mouse->getOptions()->mask = Mouse::LEFT;
+	mouse->getOptions()->sendEvent = true;
+	mouse->getOptions()->setAddress("click@mouse");
+	ITransformable *cursor_t = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+	ITransformable *button_t = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
+	frame->AddSensor(mouse);
+	board->RegisterSender(*mouse);
+
+	FileAnnotationWriter *writer = 0;
+
+	Annotation annod;	
+	annod.setDiscreteScheme("discrete");
+	writer = ssi_create(FileAnnotationWriter, 0, true);
+	writer->setAnnotation(&annod);	
+	writer->getOptions()->addUnkownLabel = true;
+	writer->getOptions()->setDefaultLabel("click");
+	writer->getOptions()->forceDefaultLabel = true;
+	board->RegisterListener(*writer, mouse->getEventAddress());
+
+	Annotation annoc;
+	annoc.setContinuousScheme("continuous", cursor_t->getSampleRate(), 0, 1);
+	writer = ssi_create(FileAnnotationWriter, 0, true);
+	writer->setAnnotation(&annoc);		
+	writer->getOptions()->streamConfidenceIndex = 1;
+	writer->getOptions()->streamScoreIndex = 0;
+	frame->AddConsumer(cursor_t, writer, "1.0s");
+
+	SignalPainter *painter = ssi_create_id(SignalPainter, 0, "plot");
+	painter->getOptions()->setTitle("CURSOR");
+	frame->AddConsumer(cursor_t, painter, "1.0s");
+
+	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	board->RegisterListener(*monitor);
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 650, 0, 400, 400);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	annod.save("discrete", File::ASCII);
+	annoc.save("continuous", File::ASCII);
 
 	return true;
 }

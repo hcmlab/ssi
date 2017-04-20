@@ -25,13 +25,13 @@
 //*************************************************************************************************
 
 #include "MlpXmlTrain.h"
-#include "model/ModelTools.h"
-#include "Evaluation.h"
-#include "EvaluationCont.h"
+#include "ssiml/include/ModelTools.h"
+#include "ssiml/include/Evaluation.h"
+#include "ssiml/include/EvaluationCont.h"
 #include "ioput/wav/WavTools.h"
 #include "ioput/xml/tinyxml.h"
 #include "base/Factory.h"
-#include "ISTransform.h"
+#include "ssiml/include/ISTransform.h"
 #include "signal/SignalTools.h"
 
 namespace ssi {
@@ -88,7 +88,7 @@ void MlpXmlTrain::release () {
 		*i = 0;
 		i = _streams.erase(i);
 	} 
-	std::vector<Annotation*>::iterator j = _annos.begin();
+	std::vector<old::Annotation*>::iterator j = _annos.begin();
 	while(j != _annos.end())
 	{
 		delete *j;
@@ -258,7 +258,7 @@ bool MlpXmlTrain::extract (const ssi_char_t *dir,
 		ssi_wrn ("annotation not found '%s'", anno_path);
 		return false;
 	}
-	Annotation *anno = new Annotation();
+	old::Annotation *anno = new old::Annotation();
 	ModelTools::LoadAnnotation (*anno, anno_path);
 	if (ssi_log_level > SSI_LOG_LEVEL_DEFAULT) {
 		anno->print (stdout);
@@ -308,7 +308,7 @@ bool MlpXmlTrain::extract (const ssi_char_t *dir,
 			ssi_stream_t* stream_proc = new ssi_stream_t;
 
 			ITransformer* t = (*(_trainer->_transformer));
-            SignalTools::Transform(*stream, *stream_proc, *t, (ssi_size_t)0 );
+			SignalTools::Transform(*stream, *stream_proc, *t, 0u );
 			
 			_streams.push_back(stream_proc);
 
@@ -662,7 +662,7 @@ Trainer *MlpXmlTrain::parseTrainer (const ssi_char_t *filepath, const ssi_char_t
 			trainer = parseTrainerItem (item);
 			if (!trainer) {
 				ssi_wrn ("failed loading traindef '%s' from '%s'", defname, filepath_with_ext);
-				return false;
+                return NULL;
 			}
 			found = true;
 		}
@@ -741,6 +741,17 @@ IObject *MlpXmlTrain::parseObject (TiXmlElement *element, bool auto_free) {
 	if (!object) {
 		ssi_wrn ("%s: could not create object '%s'", element->Value (), create);
 		return 0;
+	}
+
+	TiXmlAttribute *attribute = element->FirstAttribute();
+	while (attribute)
+	{
+		if (strcmp(attribute->Name(), "create") != 0 && strcmp(attribute->Name(), "option") != 0) {
+			if (object->getOptions()->setOptionValueFromString(attribute->Name(), attribute->Value())) {
+				SSI_DBG(SSI_LOG_LEVEL_DEBUG, "%s: set option <'%s'='%s'>", element->Value(), attribute->Name(), attribute->Value());
+			}
+		}
+		attribute = attribute->Next();
 	}
 
 	return object;	

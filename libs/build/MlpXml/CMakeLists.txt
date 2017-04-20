@@ -38,6 +38,7 @@ include_directories(include
 					../../../plugins/
 					../../../plugins/model/include
 					../ssiml/include
+                                        ..
 					
 					${CAIRO_INCLUDE_DIRS}
 					

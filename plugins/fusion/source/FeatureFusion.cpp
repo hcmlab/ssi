@@ -26,7 +26,7 @@
 
 #include "FeatureFusion.h"
 #include "ISMissingData.h"
-#include "ISAlignStrms.h"
+#include "ISMergeDim.h"
 #include "Evaluation.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -104,7 +104,7 @@ bool FeatureFusion::train (ssi_size_t n_models,
 		}
 		
 		//models[0] is featfuse_model, followed by singlechannel_models
-		ISAlignStrms ffusionSamples (&samples);
+		ISMergeDim ffusionSamples (&samples);
 		ISMissingData ffusionSamples_h (&ffusionSamples);
 		ffusionSamples_h.setStream(0);
 		if (!models[0]->isTrained ()) { models[0]->train (ffusionSamples_h, 0); }
@@ -166,7 +166,7 @@ bool FeatureFusion::train (ssi_size_t n_models,
 		if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
 			ssi_print("\nNo missing data detected.\n");
 		}
-		ISAlignStrms ffusionSamples (&samples);
+		ISMergeDim ffusionSamples (&samples);
 		if (!models[0]->isTrained ()) { models[0]->train (ffusionSamples, 0); }
 		//dummy
 		_filler = new ssi_size_t[_n_streams];

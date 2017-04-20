@@ -47,7 +47,7 @@ include_directories(
 			../../core/include
 			../../core/include/frame
 			../
-			../../libs/shared/emovoice/include
+                        ../../libs/build/emovoice/include
 			${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS}
 			)
 

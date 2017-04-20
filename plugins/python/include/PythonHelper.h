@@ -154,6 +154,8 @@ protected:
 	PyObject *stream_to_imageobject(ssi_stream_t *stream, ssi_video_params_t params);
 	PyObject *samplelist_to_object(ISamples &samples, ssi_size_t stream_index);
 	PyObject *labels_to_object(ISamples &samples, ssi_size_t stream_index);
+	PyObject *score_to_object(ISamples &samples, ssi_size_t stream_index);
+
 
 	bool transform_get_help(function_t function, ssi_size_t in, ssi_size_t &out);
 	bool transform_help(function_t function, ssi_stream_t &stream_in, ssi_stream_t &stream_out, ssi_size_t xtra_stream_in_num, ssi_stream_t xtra_stream_in[], ITransformer::info *info = 0);

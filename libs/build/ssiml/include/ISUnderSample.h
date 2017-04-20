@@ -33,6 +33,8 @@
 
 namespace ssi {
 
+class Randomf;
+
 class ISUnderSample : public ISamples {
 
 public:
@@ -46,6 +48,8 @@ public:
 
 	ISUnderSample (ISamples *samples);
 	~ISUnderSample ();	
+
+	void setSeed(ssi_size_t seed);
 
 	bool setUnder (Strategy strategy);
 	bool setUnder (ssi_size_t class_id, ssi_size_t reduce_by_n_samples, Strategy strategy);
@@ -84,6 +88,9 @@ protected:
 
 	bool doRandom ();
 	bool doKMeans ();
+	
+	static void Shuffle(Randomf *random, ssi_size_t n, ssi_size_t *arr, ssi_size_t seed);
+	ssi_size_t _seed;
 
 };
 

@@ -48,7 +48,16 @@ public:
 		enum List {
 			OFF,
 			UNDER,
-			OVER
+			OVER,
+		};
+	};
+
+	struct TYPE {
+		enum List {
+			C_SVC = 0,       // multi-class
+			NU_SVC = 1,      // multi-class
+			EPSILON_SVR = 3, // regression
+			NU_SVR = 4,      // regression
 		};
 	};
 
@@ -57,7 +66,7 @@ public:
 			LINEAR,
 			POLYNOMIAL,
 			RADIAL,
-			SIGMOID
+			SIGMOID,
 		};
 	};
 
@@ -91,7 +100,7 @@ public:
 		Options ()
 			: balance(BALANCE::OFF), seed(0), silent(false) {
 
-			params.svm_type = 0; // C - SVC
+			params.svm_type = TYPE::C_SVC;
 			params.kernel_type = KERNEL::RADIAL;
 			params.degree = 3;
 			params.gamma = 0;
@@ -107,7 +116,10 @@ public:
 			params.weight_label = NULL;
 			params.weight = NULL;
 
-			addOption ("svm", &params.svm_type, 1, SSI_INT, "SVM type ( C-SVC=0, nu-SVC=1)"); // , one-class SVM=2, epsilon-SVR=3, nu-SVR=4)");
+			params_str[0] = '\0';
+			addOption("params", params_str, SSI_MAX_CHAR, SSI_CHAR, "libsvm parameters (see documentation, overwrites options)");
+
+			addOption ("svm", &params.svm_type, 1, SSI_INT, "SVM type (multi-class: 0=C-SVC 1=nu-SVC, regression: 3=epsilon-SVR 4=nu-SVR)"); // , one-class SVM=2)");
 			addOption ("kernel", &params.kernel_type, 1, SSI_INT, "Kernel type ( 0=linear: u'*v, 1=polynomial: (gamma*u'*v + coef0)^degree), 2=radial basis function: exp(-gamma*|u-v|^2), 3=sigmoid: tanh(gamma*u'*v + coef0)");
 			addOption ("degree", &params.degree, 1, SSI_INT, "degree");
 			addOption ("gamma", &params.gamma, 1, SSI_DOUBLE, "gamma");
@@ -123,6 +135,11 @@ public:
 			addOption("silent", &silent, 1, SSI_BOOL, "suppress libsvm messages");
 		};
 
+		void setParams(const ssi_char_t *params_str) {
+			ssi_strcpy(this->params_str, params_str);
+		}
+
+		ssi_char_t params_str[SSI_MAX_CHAR];
 		unsigned int seed;
 		BALANCE::List balance;
 		parameter params;
@@ -154,12 +171,18 @@ public:
 	ssi_size_t getStreamByte () { return sizeof (ssi_real_t); };
 	ssi_type_t getStreamType () { return SSI_REAL; };
 
+	void setLogLevel(int level)
+	{
+		ssi_log_level = level;
+	}
+
 protected:	
 
 	LibSVM (const ssi_char_t *file = 0);
 	Options _options;
 	ssi_char_t *_file;
 	static ssi_char_t *ssi_log_name;
+	int ssi_log_level;
 
 	ssi_size_t _n_classes;
 	ssi_size_t _n_features;
@@ -170,6 +193,8 @@ protected:
 
 	static void silent(const char *s) {}
 
+	void exit_with_help();
+	bool parseParams(void *params, const ssi_char_t *string);
 };
 
 }

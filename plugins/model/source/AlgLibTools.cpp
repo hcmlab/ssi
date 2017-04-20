@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "AlgLibTools.h"
-#include "ISSelectClass.h"
+#include "ssiml/include/ISSelectClass.h"
 using namespace alglib_impl;
 
 #ifdef USE_SSI_LEAK_DETECTOR

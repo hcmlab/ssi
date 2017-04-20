@@ -25,10 +25,10 @@
 //*************************************************************************************************
 
 #include "FloatingSearch.h"
-#include "Trainer.h"
-#include "Evaluation.h"
-#include "ISSelectDim.h"
-#include "model/ModelTools.h"
+#include "ssiml/include/Trainer.h"
+#include "ssiml/include/Evaluation.h"
+#include "ssiml/include/ISSelectDim.h"
+#include "ssiml/include/ModelTools.h"
 #include "thread/ThreadPool.h"
 
 namespace ssi {
@@ -40,7 +40,9 @@ FloatingSearch::FloatingSearch (const ssi_char_t *file) :
 	_n_dims (0),
 	_n_scores (0),
 	_scores (0),
-	_samples (0) {
+	_samples (0),
+	_best_score_per_k(0),
+	_last_inclusion_index(-1){
 
 
 	ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
@@ -113,6 +115,8 @@ void FloatingSearch::release () {
 	delete[] _scores; _scores = 0;
 	_n_scores = 0;
 	_samples = 0;
+
+	if (_best_score_per_k) delete[] _best_score_per_k;
 }
 
 
@@ -469,14 +473,19 @@ void FloatingSearch::exclusion (ssi_size_t n_keep, ssi_size_t k, ssi_size_t l, s
 	}
 }
 
+
+
 bool FloatingSearch::sffs (ssi_size_t n_keep) {
+	//http://www.cse.msu.edu/~cse802/Feature_selection.pdf
 
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "sffs: k=%u", n_keep);
 	
 	if (n_keep > _n_dims) {		
 		ssi_wrn ("#dimension to select exceeds #dimensions");
 		return false;
-	}	
+	}
+
+	_best_score_per_k = new float[n_keep+1]();
 
 	ssi_size_t k = 0;
 
@@ -494,7 +503,7 @@ void FloatingSearch::sffs_inclusion (ssi_size_t n_keep, ssi_size_t k) {
 
 	bool exists;
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "inclusion: k=%u\n", k);
+	ssi_msg (SSI_LOG_LEVEL_DETAIL, "inclusion: k=%u p = %.2f\n", k, _best_score_per_k[k]);
 	if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
 		ssi_print ("selected: [");
 		for (ssi_size_t c = 0; c < k; c++) {
@@ -518,21 +527,23 @@ void FloatingSearch::sffs_inclusion (ssi_size_t n_keep, ssi_size_t k) {
 		
 		if (!exists) {
 			ssi_size_t *sel = new ssi_size_t[k+1];
-			for (ssi_size_t i = 0; i < k+1; i++)
+			for (ssi_size_t i = 0; i < k; i++) {
 				sel[i] = _scores[i].index;
+			}
 
 			sel[k] = ndim;
 			ISSelectDim samples_s (_samples);
-			bool b = samples_s.setSelection (_stream_index, k + 1, sel);
+			samples_s.setSelection (_stream_index, k + 1, sel);
 			probs[ndim] = eval_h (&eval, &trainer, samples_s);
 
 			if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
-				ssi_print ("+%u=%.2f\n", ndim, probs[ndim]);
+				ssi_print ("+%u=%.2f ", ndim, probs[ndim]);
 			}
 
 			delete[] sel;
 		}
 	}
+	ssi_print("\n");
 
 	// Wähle das beste Feature
 	ssi_real_t max_val = probs[0];
@@ -545,90 +556,128 @@ void FloatingSearch::sffs_inclusion (ssi_size_t n_keep, ssi_size_t k) {
 	}
 	_scores[k].index = max_ind;
 	_scores[k].value = max_val;
-	probs[max_ind] = 0;
+
+	_last_inclusion_index = max_ind;
 
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "add: %u=%.2f", max_ind, max_val);
 
 	k++;
 
+	if(max_val > _best_score_per_k[k]) _best_score_per_k[k] = max_val;
+
 	delete[] probs;	
 
-	if (k != n_keep)
-		sffs_exclusion (n_keep, k, max_val);
+	if (k != n_keep) {
+		if (k < 2) {
+			sffs_inclusion(n_keep, k); //need at least 2 features in subset before exclusion
+		}
+		else {
+			sffs_exclusion(n_keep, k, false);
+		}
+	}
 }
 
-void FloatingSearch::sffs_exclusion (ssi_size_t n_keep, ssi_size_t k, ssi_real_t prev_eval) {
+void FloatingSearch::sffs_exclusion (ssi_size_t n_keep, ssi_size_t k, bool continuation) {
 	
-	ssi_real_t *probs = new ssi_real_t[_n_dims];
-	Evaluation eval;
-	Trainer trainer (_model, _stream_index);
+	if (k > 2) {
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "exclusion: k=%u p=%.2f\n", k, prev_eval);
-	if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
-		ssi_print ("selected: [");
-		for (ssi_size_t c = 0; c < k; c++) {
-			ssi_print (" %u", _scores[c].index);
-		}
-		ssi_print (" ]\n");
-	}
+		ssi_real_t *probs = new ssi_real_t[_n_dims];
+		Evaluation eval;
+		Trainer trainer(_model, _stream_index);
 
-	// jeweils ein Feature entfernen
-	for (ssi_size_t ndim = 0; ndim < k; ndim++) { 
-		ssi_size_t *sel = new ssi_size_t[k-1]; 
-
-		// entfernt ein Feature 
-		ssi_size_t src = 0;
-		ssi_size_t des = 0;
-		for (ssi_size_t j = 0; j < k; j++) {
-			if (j != ndim) 
-				sel[des++] = _scores[src++].index;
-			else {
-				src++;
-			}
-		}
-
-		ISSelectDim samples_s (_samples);
-		samples_s.setSelection (_stream_index, k-1, sel);
-		probs[ndim] = eval_h (&eval, &trainer, samples_s);
-
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "exclusion: k=%u p=%.2f\n", k, _best_score_per_k[k]);
 		if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
-			ssi_print ("-%u=%.2f\n", _scores[ndim].index, probs[ndim]);
+			ssi_print("selected: [");
+			for (ssi_size_t c = 0; c < k; c++) {
+				ssi_print(" %u", _scores[c].index);
+			}
+			ssi_print(" ]\n");
 		}
 
-		delete[] sel;
-	}
+		// jeweils ein Feature entfernen
+		for (ssi_size_t ndim = 0; ndim < k; ndim++) {
+			ssi_size_t *sel = new ssi_size_t[k - 1];
 
-	// Wähle das schlechteste Feature
-	ssi_real_t max_val = probs[0];
-	ssi_size_t max_ind = 0;
-	for (ssi_size_t ndim = 1; ndim < k; ndim++) {
-		if (probs[ndim] > max_val) {
-			max_val = probs[ndim];
-			max_ind = ndim;
+			// entfernt ein Feature 
+			ssi_size_t src = 0;
+			ssi_size_t des = 0;
+			for (ssi_size_t j = 0; j < k; j++) {
+				if (j != ndim)
+					sel[des++] = _scores[src++].index;
+				else {
+					src++;
+				}
+			}
+
+			ISSelectDim samples_s(_samples);
+			samples_s.setSelection(_stream_index, k - 1, sel);
+			probs[ndim] = eval_h(&eval, &trainer, samples_s);
+
+			if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
+				ssi_print("-%u=%.2f ", _scores[ndim].index, probs[ndim]);
+			}
+
+			delete[] sel;
 		}
-	}
+		ssi_print("\n");
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "remove: %u=%.2f %s", _scores[max_ind].index, max_val, max_val > prev_eval ? "" : "SKIP");
-
-	delete[] probs;
-
-	if (max_val > prev_eval) {
-		// Feature entfernen und normalisieren
-		ssi_size_t src = 0;
-		ssi_size_t des = 0;
-		for (ssi_size_t f = 0; f < k; f++) {
-			if (f != max_ind) 
-				_scores[des++] = _scores[src++];
-			else {
-				src++;
+		// Wähle das schlechteste Feature
+		ssi_real_t max_val = probs[0];
+		ssi_size_t max_ind = 0;
+		for (ssi_size_t ndim = 1; ndim < k; ndim++) {
+			if (probs[ndim] > max_val) {
+				max_val = probs[ndim];
+				max_ind = ndim;
 			}
 		}
-		k--;
-		sffs_exclusion (n_keep, k, max_val);
+
+		delete[] probs;
+
+		bool remove = false;
+		std::string reason = "";
+
+		if (!continuation) {
+			if (_scores[max_ind].index != _last_inclusion_index) remove = true;
+			else reason = "SKIP because feature was just included";
+		}
+		else {
+			if (max_val > _best_score_per_k[k]) remove = true;
+			else reason = "SKIP because current score lower than best score for this k";
+		}
+
+
+		int remove_ind = _scores[max_ind].index;
+
+		if (remove) {
+			//Feature entfernen und normalisieren
+			ssi_size_t src = 0;
+			ssi_size_t des = 0;
+			for (ssi_size_t f = 0; f < k; f++) {
+				if (f != max_ind) {
+					_scores[des++] = _scores[src++];
+				}
+				else {
+					src++;
+				}
+			}
+
+			k--;
+			if (max_val > _best_score_per_k[k]) _best_score_per_k[k] = max_val;
+
+			ssi_msg(SSI_LOG_LEVEL_DETAIL, "remove: %u=%.2f", remove_ind, max_val);
+			sffs_exclusion(n_keep, k, true);
+		}
+		else {
+			ssi_msg(SSI_LOG_LEVEL_DETAIL, "remove: %u=%.2f %s", remove_ind, max_val, reason.c_str());
+			sffs_inclusion(n_keep, k);
+		}
+
 	}
 	else {
-		sffs_inclusion (n_keep, k);
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "remove: SKIP because k=%i", k);
+		sffs_inclusion(n_keep, k);
 	}
+
 }
 
 SSI_INLINE ssi_real_t FloatingSearch::eval_h (Evaluation *eval, Trainer *trainer, ISamples &samples) {

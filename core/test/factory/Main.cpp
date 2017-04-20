@@ -33,6 +33,7 @@ bool ex_array(void *arg);
 bool ex_object(void *arg);
 bool ex_dll(void *arg);
 bool ex_notify(void *arg);
+bool ex_random(void *arg);
 
 int main () {
 
@@ -43,8 +44,9 @@ int main () {
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
 	Exsemble ex;
-	ex.add(&ex_string, 0, "STRING", "How to use 'String' class.");
-	ex.add(&ex_array, 0, "ARRAY", "How to use 'EventBoard'.");
+	ex.add(&ex_string, 0, "STRING", "How to use the 'String' class.");
+	ex.add(&ex_array, 0, "ARRAY", "How to use the 'Array' class.");
+	ex.add(&ex_random, 0, "RANDOM", "How to use the 'Random' class.");
 	ex.add(&ex_object, 0, "OBJECT", "How to create an object using 'Factory'.");
 	ex.add(&ex_dll, 0, "DLL", "How create objects from a dll.");
 	ex.add(&ex_notify, 0, "NOTIFY", "How to exchange information with other objects.");
@@ -86,12 +88,13 @@ bool ex_string (void *arg) {
 
 bool ex_array (void *arg) {
 
-	ssi_random_seed ();
+	Randomf rndf;
+	rndf.init(0.0, 1.0);
 
 	Array1D<float> a;
 	a.init (5);	
 	for (float *ptr = a.ptr (); ptr < a.end (); ptr++) {	
-		*ptr = ssi_cast (float, ssi_random ());
+		*ptr = ssi_cast (float, rndf.next());
 	}
 	a[0] = 0;
 	a.print (&Array1D<float>::ToString, ssiout);
@@ -99,6 +102,35 @@ bool ex_array (void *arg) {
 	a.print (&Array1D<float>::ToString, ssiout, 2, 3);
 	a.release ();
 	a.print (&Array1D<float>::ToString);
+
+	return true;
+}
+
+bool ex_random (void *arg)
+{
+	ssi_size_t seed = 1234;
+
+#if SSI_RANDOM_LEGACY_FLAG
+	ssi_random_seed(seed);
+#endif
+
+	Randomi rndi(-10, 10, seed);
+	Randomf rndf(-1.0, 1.0, seed);
+	Randomf rndfn(0, 1.0, seed, Randomf::DISTRIBUTION::NORMAL);
+
+	ssi_print("uni\tuni\tnorm\n");
+	for (int i = 0; i < 10; i++)
+	{
+		ssi_print("%3d\t%.2f\t%.2f\n", rndi.next(), rndf.next(), rndfn.next());
+	}
+
+	ssi_size_t arr[10] = { 0,1,2,3,4,5,6,7,8,9 };
+	Random::Shuffle(10, arr);
+	for (int i = 0; i < 10; i++)
+	{
+		ssi_print("%u ", arr[i]);
+	}
+	ssi_print("\n");
 
 	return true;
 }

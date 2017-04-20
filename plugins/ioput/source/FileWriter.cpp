@@ -67,8 +67,9 @@ FileWriter::~FileWriter () {
 		delete[] _file;
 	}
 
-	delete[] _meta; _meta = 0;
+	delete[] _meta; _meta = 0;	
 	_n_meta = 0;
+	_keys_values.clear();
 }
 
 void FileWriter::consume_enter (ssi_size_t stream_in_num,
@@ -106,7 +107,31 @@ void FileWriter::consume_enter (ssi_size_t stream_in_num,
 		if (_options.type == File::ASCII) {
 			_out.setDelim(_options.delim);
 		}
-		_out.open (stream_in[0], _n_meta, _meta, _options.path, _options.type, _options.version);
+
+		if (_options.meta[0] != '\0')
+		{
+			parse_meta(_options.meta, ';');
+		}
+
+		ssi_size_t n_keys = 0;
+		ssi_char_t **keys = 0;
+		ssi_char_t **values = 0;
+		if (_keys_values.size() > 0)
+		{
+			n_keys = ssi_size_t(_keys_values.size());
+			keys = new ssi_char_t *[n_keys];
+			values = new ssi_char_t *[n_keys];	
+			for (ssi_size_t i = 0; i < n_keys; i++)
+			{
+				keys[i] = _keys_values[i].key.str();
+				values[i] = _keys_values[i].value.str();
+			}
+		}
+
+		_out.open (stream_in[0], _options.path, _n_meta, _meta, n_keys, keys, values, _options.type, _options.version);
+
+		delete[] keys;
+		delete[] values;
 	}
 
 	_first_call = true;
@@ -163,6 +188,32 @@ void FileWriter::consume_flush (ssi_size_t stream_in_num,
 
 	} else {
 		_out.close ();	
+	}
+}
+
+void FileWriter::parse_meta(const ssi_char_t *string, char delim)
+{
+	ssi_size_t n_split = ssi_split_string_count(string, delim);
+	if (n_split > 0)
+	{
+		ssi_char_t **split = new ssi_char_t *[n_split];
+		ssi_split_string(n_split, split, string, delim);
+		for (ssi_size_t n = 0; n < n_split; n++)
+		{
+			ssi_char_t *key = 0;
+			ssi_char_t *value = 0;
+			if (ssi_parse_option(split[n], &key, &value))
+			{
+				key_value_t key_value;
+				key_value.key = key;
+				key_value.value = value;
+				_keys_values.push_back(key_value);
+			}
+			delete[] key;
+			delete[] value;
+			delete[] split[n];
+		}
+		delete[] split;
 	}
 }
 

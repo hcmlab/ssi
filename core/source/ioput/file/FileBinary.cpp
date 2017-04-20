@@ -49,7 +49,7 @@ ssi_size_t FileBinary::read (void *ptr, ssi_size_t size, ssi_size_t count) {
 		return 0;
 	}
 
-	ssi_size_t old_pos = tell();
+	int64_t old_pos = tell();
 
 	size_t res = fread (ptr, size, count, _file);
 	if (res != count) {
@@ -57,9 +57,9 @@ ssi_size_t FileBinary::read (void *ptr, ssi_size_t size, ssi_size_t count) {
 		return 0;
 	}
 
-	ssi_size_t new_pos = tell();
+	int64_t new_pos = tell();
 
-	return new_pos - old_pos;
+	return ssi_size_t(new_pos - old_pos);
 }
 
 ssi_size_t FileBinary::write (const void *ptr, ssi_size_t size, ssi_size_t count) {
@@ -74,7 +74,7 @@ ssi_size_t FileBinary::write (const void *ptr, ssi_size_t size, ssi_size_t count
 		return 0;
 	}
 
-	ssi_size_t old_pos = tell();
+	int64_t old_pos = tell();
 
 	ssi_size_t res = ssi_cast (ssi_size_t, fwrite (ptr, size, count, _file));
 	if (res != count) {
@@ -82,9 +82,9 @@ ssi_size_t FileBinary::write (const void *ptr, ssi_size_t size, ssi_size_t count
 		return 0;
 	}
 
-	ssi_size_t new_pos = tell();
+	int64_t new_pos = tell();
 
-	return new_pos - old_pos;
+	return ssi_size_t(new_pos - old_pos);
 }
 
 ssi_size_t FileBinary::writeLine (const ssi_char_t *string) {

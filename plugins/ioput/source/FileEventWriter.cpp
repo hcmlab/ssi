@@ -43,7 +43,6 @@ ssi_char_t *FileEventWriter::ssi_log_name = "efilewrite";
 
 FileEventWriter::FileEventWriter (const ssi_char_t *file)
 	: _file (0),
-	_first_call (false),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
@@ -65,24 +64,9 @@ FileEventWriter::~FileEventWriter () {
 void FileEventWriter::listen_enter () {
 
 	_eout.open (_options.path, File::BINARY);
-	_first_call = true;
 }
 
 bool FileEventWriter::update (ssi_event_t &e) {
-
-	if (_first_call) {
-		ITheFramework *frame = Factory::GetFramework ();
-		ssi_size_t lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond;
-		frame->GetStartTimeLocal (lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond);
-		ssi_size_t syear, smonth, sday, shour, sminute, ssecond, smsecond;
-		frame->GetStartTimeSystem (syear, smonth, sday, shour, sminute, ssecond, smsecond);
-		ssi_size_t time = frame->GetStartTimeMs ();			
-		/*ssi_char_t time_s[100];			
-		ssi_time_sprint (time, time_s);*/
-		ssi_sprint (_string, "\t<time ms=\"%u\" local=\"%02u/%02u/%02u %02u:%02u:%02u:%u\" system=\"%02u/%02u/%02u %02u:%02u:%02u:%u\"/>", time, lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond, syear, smonth, sday, shour, sminute, ssecond, smsecond);
-		_eout.getFile ()->writeLine (_string);
-		_first_call = false;
-	}
 
 	_eout.write (e);
 
@@ -90,20 +74,6 @@ bool FileEventWriter::update (ssi_event_t &e) {
 }
 
 bool FileEventWriter::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
-
-	if (_first_call) {
-		ITheFramework *frame = Factory::GetFramework ();
-		ssi_size_t lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond;
-		frame->GetStartTimeLocal (lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond);
-		ssi_size_t syear, smonth, sday, shour, sminute, ssecond, smsecond;
-		frame->GetStartTimeSystem (syear, smonth, sday, shour, sminute, ssecond, smsecond);
-		ssi_size_t time = frame->GetStartTimeMs ();			
-		/*ssi_char_t time_s[100];			
-		ssi_time_sprint (time, time_s);*/
-		ssi_sprint (_string, "\t<time ms=\"%u\" local=\"%02u/%02u/%02u %02u:%02u:%02u:%u\" system=\"%02u/%02u/%02u %02u:%02u:%02u:%u\"/>", time, lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond, syear, smonth, sday, shour, sminute, ssecond, smsecond);
-		_eout.getFile ()->writeLine (_string);
-		_first_call = false;
-	}
 
 	if (n_new_events > 0) {
 		ssi_event_t **es = new ssi_event_t *[n_new_events];

@@ -109,14 +109,12 @@ bool PCA::build (ISamples &samples, ssi_size_t stream_index, ssi_size_t &n_dimen
 
 		// restricting the number of digits after the point to be 5 digits 
 		for(i=0 ; i<dim ;i++){
-			_variance->ptr.p_double[i]= ceill((_variance->ptr.p_double[i]*100000))/100000;
-		
+			_variance->ptr.p_double[i]= ceill((_variance->ptr.p_double[i]*100000))/100000;		
 		}
 
 		// summing the variances 
 		for(i=0; i<dim ;i++){
-			totalVar += _variance->ptr.p_double[i];
-		  
+			totalVar += _variance->ptr.p_double[i];		  
 		}
   
 		reqVar = ssi_cast(ssi_real_t, (_options.percentage/100)) * totalVar;
@@ -144,7 +142,6 @@ bool PCA::transform (ssi_stream_t &stream, ssi_stream_t &stream_t) {
 	ae_vector feature_v;
 	ae_vector_init (&feature_v, 0, DT_REAL, &state, ae_true);
 	AlgLibTools::Stream2vector (stream, &feature_v, &state);
-
 
 	ae_vector reduced_v;
 	ae_vector_init (&reduced_v, _basis->rows, DT_REAL, &state, ae_true);	

@@ -962,7 +962,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 
 	if ( file )
 	{
-		bool result = LoadFile( file, encoding );
+		bool result = LoadFile( file, true, encoding );
 		fclose( file );
 		return result;
 	}
@@ -973,7 +973,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	}
 }
 
-bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile( FILE* file, bool binary_file_pointer, TiXmlEncoding encoding )
 {
 	if ( !file ) 
 	{
@@ -985,54 +985,77 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	Clear();
 	location.Clear();
 
-	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
-    int32_t length = 0;
-	fseek( file, 0, SEEK_END );
-	length = ftell( file );
-	fseek( file, 0, SEEK_SET );
+	int32_t length = 0;
+	char* buf = 0;
 
-	// Strange case, but good to handle up front.
-	if ( length <= 0 )
+	if (binary_file_pointer)
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
-		return false;
+		// Get the file size, so we can pre-allocate the string. HUGE speed impact.
+		fseek(file, 0, SEEK_END);
+		length = ftell(file);
+		fseek(file, 0, SEEK_SET);
+
+		// Strange case, but good to handle up front.
+		if (length <= 0)
+		{
+			SetError(TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN);
+			return false;
+		}
+
+		// Subtle bug here. TinyXml did use fgets. But from the XML spec:
+		// 2.11 End-of-Line Handling
+		// <snip>
+		// <quote>
+		// ...the XML processor MUST behave as if it normalized all line breaks in external 
+		// parsed entities (including the document entity) on input, before parsing, by translating 
+		// both the two-character sequence #xD #xA and any #xD that is not followed by #xA to 
+		// a single #xA character.
+		// </quote>
+		//
+		// It is not clear fgets does that, and certainly isn't clear it works cross platform. 
+		// Generally, you expect fgets to translate from the convention of the OS to the c/unix
+		// convention, and not work generally.
+
+		/*
+		while( fgets( buf, sizeof(buf), file ) )
+		{
+			data += buf;
+		}
+		*/
+
+		buf = new char[length + 1];
+		buf[0] = 0;
+
+		size_t result = fread( buf, 1, length, file );
+		if ( result <= 0) {
+			delete [] buf;
+			SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
+			return false;
+		}
+
+	}
+	else
+	{
+		int c;
+		while (c = getc(file) != EOF) {
+			length++;
+		}
+
+		buf = new char[length + 1];
+		buf[0] = 0;
+
+		fseek(file, 0, 0);
+
+		for (int32_t i = 0; i < length; i++) {
+			buf[i] = getc(file);
+		}
+		buf[length] = '\0';
 	}
 
 	// If we have a file, assume it is all one big XML file, and read it in.
 	// The document parser may decide the document ends sooner than the entire file, however.
 	TIXML_STRING data;
-	data.reserve( length );
-
-	// Subtle bug here. TinyXml did use fgets. But from the XML spec:
-	// 2.11 End-of-Line Handling
-	// <snip>
-	// <quote>
-	// ...the XML processor MUST behave as if it normalized all line breaks in external 
-	// parsed entities (including the document entity) on input, before parsing, by translating 
-	// both the two-character sequence #xD #xA and any #xD that is not followed by #xA to 
-	// a single #xA character.
-	// </quote>
-	//
-	// It is not clear fgets does that, and certainly isn't clear it works cross platform. 
-	// Generally, you expect fgets to translate from the convention of the OS to the c/unix
-	// convention, and not work generally.
-
-	/*
-	while( fgets( buf, sizeof(buf), file ) )
-	{
-		data += buf;
-	}
-	*/
-
-	char* buf = new char[ length+1 ];
-	buf[0] = 0;
-
-	size_t result = fread( buf, 1, length, file );
-	if ( result <= 0) {
-		delete [] buf;
-		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
-		return false;
-	}
+	data.reserve(length);
 
 	const char* lastPos = buf;
 	const char* p = buf;
@@ -1073,6 +1096,7 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 			++p;
 		}
 	}
+
 	// Handle any left over characters.
 	if ( p-lastPos ) {
 		data.append( lastPos, p-lastPos );

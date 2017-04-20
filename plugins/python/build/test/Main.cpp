@@ -26,6 +26,7 @@
 
 #include "ssi.h"
 #include "ssipython.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -68,7 +69,9 @@ int main ()
 
 	ssi_type_t type = SSI_INT;
 
-	ssi_random_seed(1234);
+#if SSI_RANDOM_LEGACY_FLAG	
+	ssi_random_seed();
+#endif
 
 	Exsemble ex;
 	ex.console(0, 0, 650, 600);		

@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "KNearestNeighbors.h"
-#include "FindNN.h"
+#include "ssiml/include/FindNN.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"

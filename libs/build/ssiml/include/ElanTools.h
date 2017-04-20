@@ -29,11 +29,11 @@
 #ifndef SSI_MODEL_ELANTOOLS_H
 #define SSI_MODEL_ELANTOOLS_H
 
-#include "model/SampleList.h"
+#include "SampleList.h"
 #include "ElanTier.h"
 #include "ElanDocument.h"
-#include "model/Annotation.h"
-#include "model/ModelTools.h"
+#include "Annotation.h"
+#include "ModelTools.h"
 
 
 namespace ssi {
@@ -81,7 +81,7 @@ public:
 
         //convert elan annotation to ssi annotation
         static void Elan2ssi(ElanDocument* elanDoc,
-                             Annotation *ssiAnno);
+                             old::Annotation *ssiAnno);
 
 
 protected:

@@ -28,10 +28,7 @@
 #include "base/Factory.h"
 #include "ioput/include/FileWriter.h"
 #include "audio/include/WavWriter.h"
-#if (defined(ANDROID))
-#else
 #include "graphic/include/SignalPainter.h"
-#endif
 #include "event/include/ZeroEventSender.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -153,7 +150,7 @@ void MlpXml::consume_enter (ssi_size_t stream_in_num,
 	if (_options.anno[0] != '\0') {
 		ssi_sprint (string, "%s\\%s\\%s\\%s", _options.base, DATA_DIR, _options.user, now);
 		ssi_sprint (path, "%s\\%s%s", string, _options.anno, SSI_FILE_TYPE_ANNOTATION);
-		_annowrite = new FileAnnotationWriter (path);
+		_annowrite = new old::FileAnnotationWriter (path);
 	}
 
 	_stream = stream_in[0];	

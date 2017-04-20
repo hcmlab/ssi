@@ -60,6 +60,7 @@ bool ex_VectorFusionModality(void *args);
 bool ex_VectorFusionGravity(void *args);
 bool ex_VectorFusionVA(void *args);
 bool ex_VectorFusionWriter(void *args);
+bool ex_CombinerVA(void *args);
 
 #define CONSOLE_WIDTH 650
 #define CONSOLE_HEIGHT 600
@@ -138,6 +139,8 @@ int main (int argc, char *argv[]) {
 	ex.add(ex_VectorFusionVA, &params, "VA", "");	
 	
 	ex.add(ex_VectorFusionWriter, 0, "FUSION WRITER", "");
+
+	ex.add(ex_CombinerVA, 0, "COMBINER VA", "");
 
 	ex.show();
 	
@@ -411,7 +414,7 @@ bool ex_VectorFusionGravity(void *args){
 	FunctionalsEventSender *mean = ssi_create(FunctionalsEventSender, 0, true);
 	ssi_strcpy(mean->getOptions()->names, "mean");
 	mean->getOptions()->setSenderName("mouse");
-	mean->getOptions()->setEventName("baseline");
+	mean->getOptions()->setEventName("tuple");
 	frame->AddConsumer(select_y_t, mean, "0.5s");
 	board->RegisterSender(*mean);
 		
@@ -444,7 +447,7 @@ bool ex_VectorFusionGravity(void *args){
 	vec_send->getOptions()->dimension = 1;
 	vec_send->getOptions()->mapped = true;
 	vec_send->getOptions()->setSenderName("mouse");
-	vec_send->getOptions()->setEventName("tuple");
+	vec_send->getOptions()->setEventName("baseline");
 	ssi_strcpy (vec_send->getOptions()->mapping, "1.0");
 	board->RegisterListener(*vec_send, converter->getEventAddress());
 	board->RegisterSender(*vec_send);
@@ -458,7 +461,7 @@ bool ex_VectorFusionGravity(void *args){
 	fusion->getOptions()->gradient = 0.5f;
 	fusion->getOptions()->fusionspeed = params->FusionSpeed;
 	fusion->getOptions()->threshold = 0.05f;
-	fusion->getOptions()->print = false;
+	fusion->getOptions()->print = true;
 	fusion->getOptions()->paint = true;
 	fusion->getOptions()->accelerate = params->Accel;
 	fusion->getOptions()->update_ms = 500;
@@ -762,7 +765,7 @@ bool ex_VectorFusionSimple_Baseline_1D(void *args){
 	fusion->getOptions()->fusionspeed = params->FusionSpeed;
 	fusion->getOptions()->eventspeed = params->EventSpeed;
 	fusion->getOptions()->threshold = .05f;
-	fusion->getOptions()->print = false;
+	fusion->getOptions()->print = true;
 	fusion->getOptions()->paint = true;
 	fusion->getOptions()->accelerate = params->Accel;
 	fusion->getOptions()->decay_weights = params->DecayWeights;
@@ -982,7 +985,7 @@ bool ex_VectorFusionSimple(void *args){
 	fusion->getOptions()->fusionspeed = params->FusionSpeed;
 	fusion->getOptions()->eventspeed = params->EventSpeed;
 	fusion->getOptions()->threshold = .05f;
-	fusion->getOptions()->print = false;
+	fusion->getOptions()->print = true;
 	fusion->getOptions()->paint = true;
 	fusion->getOptions()->accelerate = params->Accel;
 	fusion->getOptions()->decay_weights = params->DecayWeights;
@@ -1069,6 +1072,127 @@ bool ex_VectorFusionWriter(void *args){
 
 	decorator->add("plot*", CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
 	decorator->add("fusion,monitor", CONSOLE_WIDTH + 400, 0, 400, CONSOLE_HEIGHT);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_CombinerVA(void *args){
+
+	params_s *params = ssi_pcast(params_s, args);
+
+	TheFramework *frame = ssi_pcast(TheFramework, Factory::GetFramework());
+	ITheEventBoard *board = Factory::GetEventBoard();
+	ssi_pcast(TheEventBoard, board)->getOptions()->update = 100;
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	Mouse *mouse = ssi_create(Mouse, "mouse", true);
+	mouse->getOptions()->mask = Mouse::LEFT;
+	mouse->getOptions()->flip = true;
+	mouse->getOptions()->scale = false;
+	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
+	frame->AddSensor(mouse);
+
+	Normalize *norm = ssi_create(Normalize, 0, true);
+	norm->getOptions()->maxval = 1.0f;
+	norm->getOptions()->minval = -1.0f;
+	ITransformable *norm_t = frame->AddTransformer(cursor_p, norm, "0.5s");
+
+	Selector *select_x = ssi_create(Selector, 0, true);
+	select_x->getOptions()->set(0);
+	ITransformable *select_x_t = frame->AddTransformer(norm_t, select_x, "0.5s");
+
+	Selector *select_y = ssi_create(Selector, 0, true);
+	select_y->getOptions()->set(1);
+	ITransformable *select_y_t = frame->AddTransformer(norm_t, select_y, "0.5s");
+
+	FunctionalsEventSender *meanx = ssi_create(FunctionalsEventSender, 0, true);
+	ssi_strcpy(meanx->getOptions()->names, "mean");
+	meanx->getOptions()->setSenderName("mouse");
+	meanx->getOptions()->setEventName("valence");
+	frame->AddConsumer(select_x_t, meanx, "0.5s");
+	board->RegisterSender(*meanx);
+
+	FunctionalsEventSender *meany = ssi_create(FunctionalsEventSender, 0, true);
+	ssi_strcpy(meany->getOptions()->names, "mean");
+	meany->getOptions()->setSenderName("mouse");
+	meany->getOptions()->setEventName("arousal");
+	frame->AddConsumer(select_y_t, meany, "0.5s");
+	board->RegisterSender(*meany);
+
+	SignalPainter *plot = 0;
+	ssi_real_t p_size = 10.0f;
+	//raw
+	plot = ssi_create_id(SignalPainter, 0, "plot");
+	plot->getOptions()->setTitle("mouse");
+	plot->getOptions()->size = p_size;
+	frame->AddConsumer(cursor_p, plot, "0.1s");
+	//norm
+	plot = ssi_create_id(SignalPainter, 0, "plot");
+	plot->getOptions()->setTitle("norm");
+	plot->getOptions()->size = p_size;
+	frame->AddConsumer(norm_t, plot, "0.1s");
+
+	EventAddress fusion_x_adress;
+	fusion_x_adress.setAddress(meanx->getEventAddress());
+	VectorFusionGravity *fusion_x = ssi_create_id(VectorFusionGravity, 0, "fusion_x");
+	fusion_x->getOptions()->dimension = 1;
+	fusion_x->getOptions()->decay_type = EVector::DECAY_TYPE_LIN;
+	fusion_x->getOptions()->gradient = 0.5f;
+	fusion_x->getOptions()->fusionspeed = 1.0f;
+	fusion_x->getOptions()->threshold = 0.05f;
+	fusion_x->getOptions()->print = false;
+	fusion_x->getOptions()->paint = true;
+	fusion_x->getOptions()->accelerate = false;
+	fusion_x->getOptions()->update_ms = 100;
+	fusion_x->getOptions()->eventspeed = 0.5f;
+	fusion_x->getOptions()->setEventName("valence");
+	fusion_x->getOptions()->setAxisCaption("Valence");
+	board->RegisterListener(*fusion_x, fusion_x_adress.getAddress());
+	board->RegisterSender(*fusion_x);
+
+	EventAddress fusion_y_adress;
+	fusion_y_adress.setAddress(meany->getEventAddress());
+	VectorFusionGravity *fusion_y = ssi_create_id(VectorFusionGravity, 0, "fusion_y");
+	fusion_y->getOptions()->dimension = 1;
+	fusion_y->getOptions()->decay_type = EVector::DECAY_TYPE_LIN;
+	fusion_y->getOptions()->gradient = 0.5f;
+	fusion_y->getOptions()->fusionspeed = 1.0f;
+	fusion_y->getOptions()->threshold = 0.05f;
+	fusion_y->getOptions()->print = false;
+	fusion_y->getOptions()->paint = true;
+	fusion_y->getOptions()->accelerate = false;
+	fusion_y->getOptions()->update_ms = 100;
+	fusion_y->getOptions()->eventspeed = 0.5f;
+	fusion_y->getOptions()->setEventName("arousal");
+	fusion_y->getOptions()->setAxisCaption("Arousal");
+	board->RegisterListener(*fusion_y, fusion_y_adress.getAddress());
+	board->RegisterSender(*fusion_y);
+
+	EventAddress comb_adress;
+	comb_adress.setAddress(fusion_x->getEventAddress());
+	comb_adress.setAddress(fusion_y->getEventAddress());
+	CombinerVA *comb = ssi_create_id(CombinerVA, 0, "comb");
+	comb->getOptions()->paint = true;
+	board->RegisterListener(*comb, comb_adress.getAddress());
+	board->RegisterSender(*comb);
+
+	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->all = true;
+	board->RegisterListener(*monitor, comb->getEventAddress(), 10000);
+
+	decorator->add("plot*", CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
+	decorator->add("fusion_x,fusion_y,comb,monitor", CONSOLE_WIDTH + 400, 0, 400, CONSOLE_HEIGHT);
 
 	board->Start();
 	frame->Start();

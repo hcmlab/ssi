@@ -37,7 +37,7 @@
 #include "thread/Event.h"
 #include "thread/Lock.h"
 #include "ioput/option/OptionList.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 
 namespace ssi {
 

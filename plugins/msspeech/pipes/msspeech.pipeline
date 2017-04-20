@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssimsspeech" />
+		<load name="ssigraphic" />		
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="false" channels="1" sr="16000" bytes="2">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- audio plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- speech recognition -->
+	<consumer create="MSSpeechRecognizer" 
+		grammar="sampleGrammar.xml"
+		language="407" outputFormat="structure"
+		sname="speech" ename="utterance">
+		<input pin="audio" frame="0.02s" delta="0"/>
+	</consumer>
+	
+	<!-- event monitor -->
+	<listener create="EventMonitor:monitor">
+		<input listen="utterance@speech" span="20000"/>
+	</listener>
+	<listener create="SocketEventWriter" port="1001" host="127.0.0.1" 
+		type="0" osc="false" xml="true" reltime="true">
+		<input listen="@" span="0" />		
+	</listener>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

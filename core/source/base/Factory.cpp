@@ -155,11 +155,16 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 			}
 			#if __ANDROID__
 				//add lib prefix
-				filepath_x = ssi_strcat ("lib", filepath_x);
+                 char* tmp = ssi_strcat ("lib", filepath_x);
+                
 				//add apps lib path
-				filepath_x = ssi_strcat (android->getLibDir(),filepath_x);
+                filepath_x = ssi_strcat (android->getLibDir(), tmp);
+
 			#else
-				filepath_x = ssi_strcat ("./",filepath_x);
+                
+                 char* tmp = ssi_strcat ("",filepath_x);
+                filepath_x=tmp;
+
 			#endif
 		#endif
 	#endif

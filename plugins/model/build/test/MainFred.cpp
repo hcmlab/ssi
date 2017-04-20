@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 using namespace ssi;
 
@@ -70,7 +70,9 @@ int main () {
 	Factory::RegisterDLL ("ssigraphic.dll");
 	Factory::RegisterDLL ("ssimodel.dll");
 
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed ();
+#endif
 
 	Console *console = ssi_create(Console, 0, true);
 	console->setPosition(ssi_rect(0, 0, 650, 800));
@@ -101,15 +103,18 @@ void BuildSamples (SampleList &samples) {
 		ssi_size_t n = 50;
 		ssi_real_t data1[50][4];
 		ssi_real_t data2[50][4];
+
+		Randomf random(0, 1);
+
 		for (ssi_size_t i = 0; i < n; i++) {
-			data1[i][0] = (float) ssi_random (0.1, 0.3);			
-			data1[i][1] = (float) ssi_random (0, 1.0);
-			data1[i][2] = (float) ssi_random (0, 1.0);
-			data1[i][3] = (float) ssi_random (0.1, 0.3);
-			data2[i][0] = (float) ssi_random (0, 1.0);			
-			data2[i][1] = (float) ssi_random (0.7, 0.9);
-			data2[i][2] = (float) ssi_random (0.7, 0.9);
-			data2[i][3] = (float) ssi_random (0, 1.0);
+			data1[i][0] = 0.1f + random.next() * 0.2f;			
+			data1[i][1] = random.next();
+			data1[i][2] = random.next();
+			data1[i][3] = 0.1f + random.next() * 0.2f;
+			data2[i][0] = random.next();
+			data2[i][1] = 0.7f + random.next() * 0.2f;
+			data2[i][2] = 0.7f + random.next() * 0.2f;
+			data2[i][3] = random.next();
 		}				
 
 		ssi_size_t index1=samples.addClassName ("X1");

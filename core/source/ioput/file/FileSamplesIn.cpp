@@ -27,7 +27,6 @@
 #include "ioput/file/FileSamplesIn.h"
 #include "ioput/xml/tinyxml.h"
 #include "ioput/file/FilePath.h"
-#include "model/SampleList.h"
 
 namespace ssi {
 
@@ -91,7 +90,7 @@ bool FileSamplesIn::open (const ssi_char_t *path) {
 	}
 
 	TiXmlDocument doc;
-	if (!doc.LoadFile (_file_info->getFile ())) {
+	if (!doc.LoadFile (_file_info->getFile (), false)) {
 		ssi_wrn ("failed loading samples from file '%s'", path_info);
 		return 0;
 	}
@@ -550,7 +549,11 @@ ssi_sample_t *FileSamplesIn::next () {
 			}
 
 			for (ssi_size_t i = 0; i < _sample.num; i++) {
-				_file_streams[i].read (*_sample.streams[i], _sample_count-1);
+				if (_file_streams[i].read(*_sample.streams[i], _sample_count - 1) == FileStreamIn::READ_ERROR)
+				{
+					ssi_wrn("could not read sample #%u", i);
+					return 0;
+				}
 			}
 
 			break;

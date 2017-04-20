@@ -25,13 +25,13 @@
 //*************************************************************************************************
 
 #include "MlpXmlTrain.h"
-#include "model/ModelTools.h"
-#include "Evaluation.h"
-#include "EvaluationCont.h"
+#include "ssiml/include/ModelTools.h"
+#include "ssiml/include/Evaluation.h"
+#include "ssiml/include/EvaluationCont.h"
 #include "ioput/wav/WavTools.h"
 #include "ioput/xml/tinyxml.h"
 #include "base/Factory.h"
-#include "ISTransform.h"
+#include "ssiml/include/ISTransform.h"
 #include "signal/SignalTools.h"
 
 namespace ssi {
@@ -88,7 +88,7 @@ void MlpXmlTrain::release () {
 		*i = 0;
 		i = _streams.erase(i);
 	} 
-	std::vector<Annotation*>::iterator j = _annos.begin();
+	std::vector<old::Annotation*>::iterator j = _annos.begin();
 	while(j != _annos.end())
 	{
 		delete *j;
@@ -258,7 +258,7 @@ bool MlpXmlTrain::extract (const ssi_char_t *dir,
 		ssi_wrn ("annotation not found '%s'", anno_path);
 		return false;
 	}
-	Annotation *anno = new Annotation();
+	old::Annotation *anno = new old::Annotation();
 	ModelTools::LoadAnnotation (*anno, anno_path);
 	if (ssi_log_level > SSI_LOG_LEVEL_DEFAULT) {
 		anno->print (stdout);

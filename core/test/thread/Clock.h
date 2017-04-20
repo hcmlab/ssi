@@ -25,23 +25,29 @@
 //*************************************************************************************************
 
 #include "thread/ClockThread.h"
-using namespace ssi;
+#include "base/Random.h"
 
-class Clock : public ClockThread {
+namespace ssi
+{
 
-public:
+	class Clock : public ClockThread {
 
-	void enter() {
-		setClockS(ssi_random(0.5, 1.0));
-		_offset = ssi_time_ms();
-	}
+	public:
 
-	virtual void clock () {
-		printf("%u\n", ssi_time_ms() - _offset);
-	}
+		void enter() {
+			Randomf random(0.5, 1.0);
+			setClockS(random.next());
+			_offset = ssi_time_ms();
+		}
 
-protected:
+		virtual void clock() {
+			printf("%u\n", ssi_time_ms() - _offset);
+		}
 
-	ssi_size_t _offset;
+	protected:
 
-};
+		ssi_size_t _offset;
+
+	};
+
+}

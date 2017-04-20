@@ -1,0 +1,107 @@
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0" xmlns="http://www.w3.org/2001/06/grammar">
+
+  <rule id="rootRule" scope="public">
+	<one-of>
+		<item>
+			<ruleref uri="#command_move"/> 
+			<tag>
+				out.commandtype = "single";
+				out.data = rules.command_move;
+			</tag>
+		</item>
+		<item>
+			<tag>
+				out.commandtype = "sequence";
+				out.data = new Array();
+			</tag>
+			
+			<ruleref uri="#command_move"/>			
+			<tag> out.data.push(rules.command_move); </tag>
+				
+			<item repeat="1-4">
+				then
+				<ruleref uri="#command_move"/>			
+				<tag> out.data.push(rules.command_move); </tag>
+			</item>
+		</item>
+		<item>
+			<ruleref uri="#nonsense"/> 
+			<tag>
+				out.commandtype = "nonsense";
+				out.data = rules.nonsense.value;
+			</tag>
+		</item>		
+	</one-of>
+  </rule>
+  
+
+  
+  <rule id="command_move" scope="public">
+		<tag>
+			out.action = "move";
+			out.parameters = new Object();
+		</tag>
+  
+  		<item repeat="0-1">
+			please
+		</item>
+
+		<one-of>
+			<item>go	<tag> out.parameters.speed = "normal";	</tag>	</item>          
+			<item>run	<tag> out.parameters.speed = "fast";	</tag>	</item>
+			<item>move	<tag> out.parameters.speed = "any";		</tag>	</item>
+		</one-of>
+				
+		<ruleref uri="#direction"/>				
+		<tag> out.parameters.dir = rules.direction; </tag>
+  </rule>
+  
+  <rule id="direction" scope="public">
+		<one-of>
+			<item>
+				<tag>out = "up";</tag>
+				up
+			</item>
+			<item>
+				<tag>out = "down";</tag>
+				down
+			</item>
+			<item>
+				<tag>out = "left";</tag>
+				left
+			</item>
+			<item>
+				<tag>out = "right";</tag>
+				right
+			</item>
+			<item>
+				<tag>out = "forward";</tag>
+				<one-of>
+					<item>forward</item>          
+					<item>ahead</item>          
+				</one-of>
+			</item>
+			<item>
+				<tag>out = "back";</tag>
+				<one-of>
+					<item>back</item>          
+					<item>backwards</item>          
+				</one-of>
+			</item>
+		</one-of>
+  </rule>
+  
+
+  <rule id="nonsense" scope="public">  
+		<tag>
+			out.value = "";
+			out.uselessValue = "blubb";
+		</tag>
+		
+		<item repeat="1-">
+			blah
+			<tag>out.value += "bla";</tag>
+		</item>
+  </rule>
+
+</grammar>

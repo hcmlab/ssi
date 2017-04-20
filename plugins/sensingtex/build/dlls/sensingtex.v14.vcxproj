@@ -21,11 +21,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\SensingTex.cpp" />
-    <ClCompile Include="..\..\source\Serial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\SensingTex.h" />
-    <ClInclude Include="..\..\include\Serial.h" />
     <ClInclude Include="..\..\include\ssisensingtex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -102,7 +100,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssid.lib;seriald.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -115,7 +113,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\libs\Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..\..\libs\build\serial\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -126,7 +124,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssid.lib;seriald.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,7 +142,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssi.lib;serial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -157,7 +155,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\libs\Torch31\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..\..\libs\build\serial\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -166,7 +164,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssi.lib;serial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TargetMachine>MachineX64</TargetMachine>

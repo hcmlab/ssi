@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<annotation ssi-v="3">    
+    <scheme name="continuous" type="CONTINUOUS" sr="50.0" min="0.0" max="1.0"/>
+</annotation>

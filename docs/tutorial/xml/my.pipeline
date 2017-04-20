@@ -32,7 +32,7 @@
 	<include name="my2"/>
 	
 	<!-- event sender -->	
-	<consumer create="ZeroEventSender" option="zerotr" mindur="0.2" address="pressed@button">
+	<consumer create="TriggerEventSender" triggerType="5" mindur="0.2" address="pressed@button">
 		<input pin="button" frame="0.25s"/>		
 	</consumer>		
 	

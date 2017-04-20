@@ -50,9 +50,10 @@ public:
 
 	void SetLogLevel (int level) {};
 
-    void Start () {};
-    void Stop () {};
-	void Clear () {};
+	void Start() {};
+	void Stop() {};
+	void Clear() {};
+	bool DoRestart() { return false; }
 
 	ssi_time_t GetStartTime () { return 0; };
 	ssi_size_t GetStartTimeMs () { return 0; };
@@ -67,9 +68,9 @@ public:
 	ITransformable *AddProvider (ISensor *isensor,
 		const ssi_char_t *channel,
 		IFilter *ifilter = 0,
-		const ssi_char_t *buffer_size = THEFRAMEWORK_DEFAULT_BUFFER_CAP,
-		ssi_time_t check_interval_in_seconds = 1.0,
-		ssi_time_t sync_interval_in_seconds = 5.0) { return 0; };
+		const ssi_char_t *buffer_size = "10.0s",
+		const ssi_char_t *watch_interval = "1.0s",
+		const ssi_char_t *sync_interval = "5.0s") { return 0; };
 	void AddSensor (ISensor *isensor) {};
 
 	ITransformable *AddTransformer (ITransformable *source, 
@@ -124,10 +125,10 @@ public:
 	void AddDecorator(IObject *decorator) {};
 
 	bool IsBufferInUse (int buffer_id) { return false; };
-	int GetData (int buffer_id, ssi_byte_t **data, ssi_size_t &samples_in, ssi_size_t &samples_out, ssi_time_t start_time, ssi_time_t duration) { return 0; };
-	int GetData (int buffer_id, ssi_stream_t &stream, ssi_time_t start_time, ssi_time_t duration) { return 0; };
-	int GetData (int buffer_id, ssi_byte_t *data, ssi_size_t samples, ssi_size_t position) { return 0; };
-	int GetDataTry (int buffer_id, ssi_byte_t **data, ssi_size_t &samples_in, ssi_size_t &samples_out, ssi_time_t start_time, ssi_time_t duration) { return 0; };
+	int GetData(int buffer_id, ssi_byte_t **data, ssi_size_t &samples_in, ssi_size_t &samples_out, ssi_time_t start_time, ssi_time_t duration) { return 0; };
+	int GetData(int buffer_id, ssi_stream_t &stream, ssi_time_t start_time, ssi_time_t duration) { return 0; };
+	int  GetData(int buffer_id, ssi_byte_t *data, ssi_size_t samples, ssi_lsize_t position) { return 0; };
+	int GetDataTry(int buffer_id, ssi_byte_t **data, ssi_size_t &samples_in, ssi_size_t &samples_out, ssi_time_t start_time, ssi_time_t duration) { return 0; };
 	bool GetCurrentSampleTime (int buffer_id, ssi_time_t &time) { return false; };
 	bool GetCurrentWritePos (int buffer_id, ssi_size_t &position) { return false; };
 	bool SetCurrentSampleTime (int buffer_id, ssi_time_t time) { return false; };

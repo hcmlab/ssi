@@ -67,6 +67,16 @@
             </TR>
             <TR>
                 <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>Relative</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#Relative">Relative</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
                     <CODE>Pulse</CODE>
                 </TD>
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
@@ -172,6 +182,16 @@
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
                     <CODE>
                         <A HREF="#Multiply">Multiply</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>Mean</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#Mean">Mean</A>
                     </CODE>
                 </TD>
             </TR>
@@ -772,6 +792,39 @@
 0.040 0.150
 0.150 0.400").&nbsp;</CODE>
                             </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="Relative">Relative</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>Relative</B>&nbsp;
+                                <CODE>FILTER</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Makes each value of each dimension relative to the value before.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
                         </TR>
                         <TR>
                             <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
@@ -2135,6 +2188,39 @@
             <TR>
                 <TD ALIGN="right" VALIGN="top" WIDTH="1%">
                     <CODE SIZE="+2">
+                        <A NAME="Mean">Mean</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>Mean</B>&nbsp;
+                                <CODE>FEATURE</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Mean values along dimensions.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
                         <A NAME="MFCC">MFCC</A>
                     </CODE>
                 </TD>
@@ -2761,7 +2847,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;names of functionals separated by comma (mean,energy,std,min,max,range,minpos,maxpos,zeros,peaks,len) or leave empty to select all&nbsp;</CODE>
+                                <CODE>&nbsp;names of functionals separated by comma (mean,energy,std,min,max,range,minpos,maxpos,zeros,peaks,len,path) or leave empty to select all except path&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>

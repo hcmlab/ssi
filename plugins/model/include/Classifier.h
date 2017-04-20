@@ -84,7 +84,7 @@ public:
 	public:
 
 		Options () 
-			: console(false), merge(false), winner(false), pthres(0) {
+			: console(false), merge(false), flat(false), winner(false), pthres(0) {
 
 			setAddress("");
 
@@ -100,6 +100,7 @@ public:
 			addOption ("trainer", trainer, SSI_MAX_CHAR, SSI_CHAR, "filepath of trainer");			
 			addOption ("pthres", &pthres, 1, SSI_REAL, "probablity threshold");			
 			addOption ("merge", &merge, 1, SSI_BOOL, "in case of multiple streams merge to single stream");	
+			addOption("flat", &flat, 1, SSI_BOOL, "in case of multiple samples merge to single sample");
 			addOption ("console", &console, 1, SSI_BOOL, "output classification to console");			
 			addOption ("winner", &winner, 1, SSI_BOOL, "send winning class only");		
 			addOption ("select", select, SSI_MAX_CHAR, SSI_CHAR, "foward only specific classes (indices separated by ',') [ignored if winner=true]");
@@ -124,6 +125,7 @@ public:
 		ssi_real_t pthres;
 		bool merge;
 		bool console;
+		bool flat;
 		bool winner;
 		ssi_char_t select[SSI_MAX_CHAR];
 		ssi_char_t address[SSI_MAX_CHAR];

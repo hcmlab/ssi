@@ -34,7 +34,7 @@
 #define SSI_MODEL_EVALUATION_CONT_H
 
 #include "Evaluation.h"
-#include "model/Annotation.h"
+#include "Annotation.h"
 
 namespace ssi {
 
@@ -57,12 +57,12 @@ public:
 	void init_conf_mat (ISamples &samples);
 
 	// evaluate a trainer with a whole stream frame by frame
-	void eval (ssi_stream_t *stream, Annotation* anno, ssi_real_t fps);
+	void eval (ssi_stream_t *stream, old::Annotation* anno, ssi_real_t fps);
 
 	// eval using leave one user out continuously with the whole stream frame by frame (model is re-trained.. you may lose your old model!)
-	void evalLOUO (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<Annotation*>* annos, ssi_real_t fps, ssi_size_t reps);
+	void evalLOUO (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<old::Annotation*>* annos, ssi_real_t fps, ssi_size_t reps);
 	// eval continuously with the whole stream frame by frame (model is re-trained.. you may lose your old model!)
-	void evalFull (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<Annotation*>* annos, ssi_real_t fps, ssi_size_t reps);
+	void evalFull (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<old::Annotation*>* annos, ssi_real_t fps, ssi_size_t reps);
 
 	void print (FILE *file = stdout);
 
@@ -74,7 +74,7 @@ protected:
 	Counter _eager_abs;
 	Counter _eager_rel;
 
-	std::vector<Annotation*>* _annos;
+	std::vector<old::Annotation*>* _annos;
 	ssi_size_t _repetitions;
 
 	static ssi_char_t *ssi_log_name;

@@ -156,8 +156,7 @@ void Monitor::create(HWND hWnd, HMENU id) {
 	_hEdit = CreateWindowEx(WS_EX_CLIENTEDGE,
 		"EDIT",
 		"",
-		WS_CHILD | WS_VISIBLE | ES_READONLY | ES_AUTOVSCROLL | ES_AUTOHSCROLL |
-		ES_MULTILINE /*| WS_VSCROLL | WS_HSCROLL*/,
+		WS_CHILD | WS_VISIBLE | ES_READONLY | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_MULTILINE  /*| WS_VSCROLL | WS_HSCROLL*/,
 		0,
 		0,
 		0,
@@ -171,7 +170,18 @@ void Monitor::create(HWND hWnd, HMENU id) {
 		ssi_wrn("could not create edit");
 		ssi_PrintLastError();
 	} else {		
+		
+		// set default font
 		setFont(_fontName, _fontSize);
+		
+		// remove border
+		LONG lStyle = GetWindowLong(_hEdit, GWL_STYLE);
+		lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+		SetWindowLong(_hEdit, GWL_STYLE, lStyle);
+		LONG lExStyle = GetWindowLong(_hEdit, GWL_EXSTYLE);
+		lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+		SetWindowLong(_hEdit, GWL_EXSTYLE, lExStyle);
+
 		update();
 	}
 }

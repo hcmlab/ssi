@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\FASTDTW">
+      <UniqueIdentifier>{5971c49a-98ab-44c2-acb9-b393c25f32b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FASTDTW">
+      <UniqueIdentifier>{6382a07f-b697-4357-a67a-5928f58de745}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\SSI_FastDTW.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ColMajorCell.cpp">
+      <Filter>Source Files\FASTDTW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\FastDTW.cpp">
+      <Filter>Source Files\FASTDTW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\SearchWindow.cpp">
+      <Filter>Source Files\FASTDTW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\WarpPath.cpp">
+      <Filter>Source Files\FASTDTW</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ssifastDTW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SSI_FastDTW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BinaryDistance.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ColMajorCell.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CostMatrix.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DTW.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EuclideanDistance.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExpandedResWindow.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FastDTW.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FDAssert.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FDMath.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Foundation.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FullWindow.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\JavaTypes.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\LinearWindow.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ManhattanDistance.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\MemoryResidentMatrix.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\PAA.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\PartialWindowMatrix.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SearchWindow.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\TimeSeries.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\TimeSeriesPoint.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\TimeWarpInfo.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\WarpPath.h">
+      <Filter>Header Files\FASTDTW</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

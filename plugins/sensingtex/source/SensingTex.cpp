@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "SensingTex.h"
-#include "Serial.h"
+
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -42,32 +42,59 @@ namespace ssi {
 static char ssi_log_name[] = "sensingtex";
 
 //https://stackoverflow.com/questions/1861294/how-to-calculate-execution-time-of-a-code-snippet-in-c
-_int64 GetTimeMicros64()
+
+/* Returns the amount of milliseconds elapsed since the UNIX epoch. Works on both
+* windows and linux. */
+
+uint64 GetTimeMs64()
 {
+#ifdef _WIN32
+	/* Windows */
 	FILETIME ft;
 	LARGE_INTEGER li;
 
+	/* Get the amount of 100 nano seconds intervals elapsed since January 1, 1601 (UTC) and copy it
+	* to a LARGE_INTEGER structure. */
 	GetSystemTimeAsFileTime(&ft);
 	li.LowPart = ft.dwLowDateTime;
 	li.HighPart = ft.dwHighDateTime;
 
-	unsigned _int64 ret = li.QuadPart;
+	uint64 ret = li.QuadPart;
 	ret -= 116444736000000000LL; /* Convert from file time to UNIX epoch time. */
-	ret /= 10; /* From 100 nano seconds (10^-7) to 1 µsec intervals */
+	ret /= 10000; /* From 100 nano seconds (10^-7) to 1 millisecond (10^-3) intervals */
 
 	return ret;
+#else
+	/* Linux */
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	uint64 ret = tv.tv_usec;
+	/* Convert from micro seconds (10^-6) to milliseconds (10^-3) */
+	ret /= 1000;
+
+	/* Adds the seconds (10^0) after converting them to milliseconds (10^-3) */
+	ret += (tv.tv_sec * 1000);
+
+	return ret;
+#endif
 }
 
 SensingTex::SensingTex (const ssi_char_t *file) 
-	: _pressurematrix_provider (0),
-	_serial_buffer (0),
+	: _pressurematrix_provider (nullptr),
+	_frame_size(0),
+	_counter(0),
+	_timer(nullptr),
+	_serial_buffer (nullptr),
 	_n_serial_buffer (0),
-	_pressurematrix_buffer(0),
-	_received_cols ( 0),
-	_serial (0),
+	_pressurematrix_buffer(nullptr),
+	_received_cols (nullptr),
+	_serial (nullptr),
 	_is_connected (false),
-	_file (0),
+	_file (nullptr),
 	fpsValuecount(0),
+	lastCall(0),
 	avgFps(0.0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
@@ -126,14 +153,26 @@ bool SensingTex::connect () {
 
 	checkOptions();
 
+        //check if port exists
+        std::vector<serial::PortInfo> ports = serial::list_ports();
+
+        bool exists = false;
+        for (int i = 0; i < ports.size(); i++)
+        {
+                if (ports[i].port.compare(_options.port) == 0)
+                        exists = true;
+        }
+
+        if (!exists) ssi_err("Port %s not found!", _options.port);
+
+
+
 	//fix problem with rows / columns mix up with sensingtex microcontroller
 	char _cols = _options.cols;
 	_options.cols = _options.rows;
 	_options.rows = _cols;
 
-	ssi_sprint (_port_s, "COM%u", _options.port);
-
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "try to connect sensor (port=%s, baud=%u)...", _port_s, 115200);
+        ssi_msg (SSI_LOG_LEVEL_DETAIL, "try to connect sensor (port=%s, baud=%u)...", _options.port, 115200);
 
 	//_n_serial_buffer = 2*sizeof(char) + sizeof(RMS_Matrix_Col_t); //message should be: ['M'][RMS_Matrix_Col_t]['\n']
 	_n_serial_buffer = 2*sizeof(unsigned char) + _options.rows*sizeof(short); //the controller is just sending the configured row count per column; max is sizeof(RMS_Matrix_Col_t);
@@ -147,71 +186,77 @@ bool SensingTex::connect () {
 
 	_received_cols = new bool[_options.cols];
 
-	_serial = new Serial (_port_s, CBR_115200);
+        //this is necessary on linux!
+        serial::Timeout timeout(0, 1000,1, 1000, 1);
 
-	_is_connected = _serial->IsConnected ();
+        _serial = new serial::Serial (_options.port, 115200, timeout);
+	
+	_is_connected = _serial->isOpen();
 	if (!_is_connected) {
-		ssi_wrn ("could not connect serial sensor at port=%s", _port_s);
+                ssi_wrn ("could not connect serial sensor at port=%s", _options.port);
 		return false;
 	}
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "connected");
+        ssi_msg (SSI_LOG_LEVEL_DETAIL, "connected");
 
 
-	char bytes[6];
+        uint8_t bytes[6];
 
 	//send settings to microcontroller
-	bytes[0] = 0x43;     //C
+        bytes[0] = 0x43;     //C
 	bytes[1] = _options.rows;		//rows
 	bytes[2] = _options.cols;		//columns
 	bytes[3] = 0x00;				//freq: 2nd byte               -> SSI option sr
 	bytes[4] = _options.sr*10;		//freq: 1st byte   (200/10 Hz = 20 Hz) -> SSI option sr (default: 0x64)
-	bytes[5] = 0x0D;     //carriage return (\r)
+        bytes[5] = 0x0D;     //carriage return (\r)
 
-	_serial->WriteData(bytes,6);
+
+        _serial->write(bytes,6);
 
 	//send start command to microcontroller
-	bytes[0] = 0x53;     //S
-	bytes[1] = 0x0D;     //carriage return (\r)
+        bytes[0] = 0x53;     //S
+        bytes[1] = 0x0D;     //carriage return (\r)
 
-	_serial->WriteData(bytes,2);
+        _serial->write(bytes,2);
 
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "sent configuration");
+        ssi_msg (SSI_LOG_LEVEL_DETAIL, "sent configuration");
 
 	// set thread name
 	Thread::setName (getName ());
 
-	lastCall = GetTimeMicros64();
+	lastCall = GetTimeMs64();
 
 	return true;
 }
 
 void SensingTex::run () {
 
-	if (_serial && _is_connected) {
+        if (_serial && _is_connected) {
 
-		bool matrixDataSent = false;
+		auto matrixDataSent = false;
 
 		while (!matrixDataSent) {
 
 			//find the beginning of the microcontroller message; the message should look like this: ['M'][RMS_Matrix_Col_t]['\n']
 			do {
-				_serial->ReadData (ssi_pcast (char, _serial_buffer), 1);
+                                _serial->read (_serial_buffer, 1);
 			}
-			while(_serial_buffer[0] != 'M');
+                        while(_serial_buffer[0] != 'M');
 
-			int counter = 0;
-			char value = 0;
+                        uint8_t value = 0;
 			
 			//copy the bytes for "RMS_Matrix_Col_t" (the value count depends on the configured row count)
-			_serial->ReadData (ssi_pcast (char, _serial_buffer), _n_serial_buffer);
+			_serial->read(_serial_buffer, _n_serial_buffer);
 
 			//data check: read the finishing '\n'
-			_serial->ReadData (ssi_pcast (char, &value), 1);
-			assert(value == '\n', "the end of the message wasn't '\n'");
+                        _serial->read ( &value, 1);
 
-			//convert the bytes to the "RMS_Matrix_Col_t" struct
+                        #ifdef _WIN32
+                            assert(value == '\n', "the end of the message wasn't '\n'");
+                        #endif
+
+                        //convert the bytes to the "RMS_Matrix_Col_t" struct
 			RMS_Matrix_Col_t data;
 			memcpy(&data, &_serial_buffer[0], sizeof(RMS_Matrix_Col_t));
 
@@ -219,7 +264,7 @@ void SensingTex::run () {
 			if (data.nrowspercol == _options.rows) {
 
 				//copy the matrix values into the outgoing buffer
-				for (int row = 0; row < _options.rows; row++) {
+				for (auto row = 0; row < _options.rows; row++) {
 					int pos = (((_options.cols*_options.rows)*_counter)+(_options.cols*row)+data.col);
 					_pressurematrix_buffer[pos] = abs((data.value[row] & 0x0FFF) - 4095);
 					if (_options.scale) _pressurematrix_buffer[pos] /= 4095;
@@ -229,8 +274,8 @@ void SensingTex::run () {
 				_received_cols[data.col] = true;
 
 				//check if we have a complete matrix
-				bool matrixReady = true;
-				for (int i = 0; i < _options.cols; i++) {
+				auto matrixReady = true;
+				for (auto i = 0; i < _options.cols; i++) {
 					matrixReady &= _received_cols[i];
 
 					if (!matrixReady) break;
@@ -238,19 +283,20 @@ void SensingTex::run () {
 
 				if (matrixReady) {
 					//fps
-					long deltaMs = (long)((GetTimeMicros64() - lastCall) / 1000.0);
-					double fps = 1.0/(deltaMs/1000.0);
+					long deltaMs = (GetTimeMs64() - lastCall);
+					auto fps = 1.0/(deltaMs/1000.0);
 					avgFps += fps;
 					fpsValuecount++;
 
 					if (fpsValuecount == 10) {
 						avgFps/=fpsValuecount;
-						ssi_msg (SSI_LOG_LEVEL_DETAIL, "avg fps: %.2f", avgFps);
+						if (_options.fps)
+							ssi_msg (SSI_LOG_LEVEL_BASIC, "avg fps: %.2f", avgFps);
 						avgFps = 0;
 						fpsValuecount = 0;
 					}
 
-					lastCall = GetTimeMicros64();
+					lastCall = GetTimeMs64();
 
 					_counter++;
 
@@ -286,7 +332,7 @@ void SensingTex::run () {
 							matrixDataSent = true;
 						}
 					}
-					for (int i = 0; i < _options.cols; i++) _received_cols[i] = false;	//reset matrix ready
+					for (auto i = 0; i < _options.cols; i++) _received_cols[i] = false;	//reset matrix ready
 
 				}
 			}
@@ -301,21 +347,21 @@ void SensingTex::run () {
 bool SensingTex::disconnect () {
 
 	//send stop command to microcontroller
-	char bytes[2];
+	uint8_t bytes[2];
     bytes[0] = 0x58;     //X
     bytes[1] = 0x0D;     //carriage return (\r)
-	_serial->WriteData(bytes,2);
+	_serial->write(bytes,2);
 
 
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "try to disconnect sensor...");
 
-	delete[] _serial_buffer; _serial_buffer = 0;
+	delete[] _serial_buffer; _serial_buffer = nullptr;
 	_n_serial_buffer = 0;
 
-	delete[] _pressurematrix_buffer; _pressurematrix_buffer = 0;
-	delete[] _received_cols; _received_cols = 0;
+	delete[] _pressurematrix_buffer; _pressurematrix_buffer = nullptr;
+	delete[] _received_cols; _received_cols = nullptr;
 
-	delete _serial; _serial = 0;
+	delete _serial; _serial = nullptr;
 
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "sensor disconnected");
 

@@ -25,6 +25,7 @@
 //*************************************************************************************************
 
 #include "signal/SignalTools.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -56,7 +57,7 @@ namespace ssi {
 
 		if (delta_size) {
 			if (!ssi_parse_samples(delta_size, delta_samples, from.sr)) {
-				ssi_wrn("could not parse delta size '%s'", frame_size);
+				ssi_wrn("could not parse delta size '%s'", delta_size);
 				return;
 			}
 		}
@@ -120,7 +121,12 @@ namespace ssi {
 
 			ssi_size_t from_num = from.num;
 			ssi_size_t from_tot = from.tot;
-			SSI_ASSERT(from_num > frame_size + delta_size);
+
+			if (from_num < frame_size + delta_size)
+			{
+				ssi_err("stream too short");
+			}
+
 			ssi_size_t max_shift = (from_num - delta_size) / frame_size;
 
 			ssi_size_t sample_number_in = frame_size + delta_size;
@@ -188,6 +194,73 @@ namespace ssi {
 			to.tot = to_tot;
 		}
 	}
+
+	void SignalTools::Transform(ssi_stream_t &from,
+		ssi_stream_t &to,
+		ITransformer &transformer,
+		const ssi_char_t *frame,
+		const ssi_char_t *context_left,
+		const ssi_char_t *context_right,
+		bool call_enter,
+		bool call_flush) {
+
+		ssi_size_t frame_samples = 0;
+		ssi_size_t context_left_samples = 0;
+		ssi_size_t context_right_samples = 0;
+
+		if (!ssi_parse_samples(frame, frame_samples, from.sr)) {
+			ssi_wrn("could not parse frame '%s'", frame);
+			return;
+		}
+
+		if (context_left) {
+			if (!ssi_parse_samples(context_left, context_left_samples, from.sr)) {
+				ssi_wrn("could not parse left context '%s'", context_left);
+				return;
+			}
+		}
+
+		Transform(from, to, transformer, frame_samples, context_left_samples, context_right_samples, call_enter, call_flush);
+	}
+
+	void SignalTools::Transform(ssi_stream_t &from,
+		ssi_stream_t &to,
+		ITransformer &transformer,
+		ssi_size_t frame,
+		ssi_size_t context_left,
+		ssi_size_t context_right,
+		bool call_enter,
+		bool call_flush) {
+
+		if (frame == 0) 
+		{
+			ssi_err("zero frame step");
+		}
+
+		ssi_size_t bytes_per_sample = from.byte * from.dim;
+
+		ssi_stream_t from_ex;
+		ssi_stream_init(from_ex, 0, from.dim, from.byte, from.type, from.sr);
+
+		// we add left context + half frame step ...
+		ssi_size_t ex = frame / 2 + context_left;				
+		ssi_stream_adjust(from_ex, from.num + ex);
+
+		// and fill it with the first sample ...
+		for (ssi_size_t i = 0; i < ex; i++)
+		{
+			memcpy(from_ex.ptr + i * bytes_per_sample, from.ptr, bytes_per_sample);
+		}
+
+		// then we copy the remaining samples ...
+		memcpy(from_ex.ptr + ex * bytes_per_sample, from.ptr, from.tot);
+
+		// finally we call the old function with delta = left + right context
+		SignalTools::Transform(from_ex, to, transformer, frame, context_left + context_right, call_enter, call_flush, false);
+
+		ssi_stream_destroy(from_ex);
+	}
+
 
 	void SignalTools::Transform_Xtra(ssi_stream_t &from,
 		ssi_stream_t &to,
@@ -599,9 +672,11 @@ void SignalTools::Sum (ssi_stream_t &series) {
 
 void SignalTools::Random(ssi_stream_t &stream) {
 
+	Randomf random(0, 1);
+
 	ssi_real_t *ptr = ssi_pcast(ssi_real_t, stream.ptr);
 	for (ssi_size_t i = 0; i < stream.dim * stream.num; i++) {
-		*ptr++ = ssi_cast (ssi_real_t, ssi_random());
+		*ptr++ = random.next();
 	}
 }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2015 by Jakob Schröter <js@camaya.net>
+ *  Copyright (c) 2004-2016 by Jakob Schröter <js@camaya.net>
  *  This file is part of the gloox library. http://camaya.net/gloox
  *
  *  This software is distributed under a license. The full license
@@ -144,8 +144,6 @@ int main( int /*argc*/, char** /*argv*/ )
     ++fail;
     fprintf( stderr, "test '%s' failed\n", name.c_str() );
   }
-  delete c;
-  c = 0;
 
   //-------
   name = "util::escape";

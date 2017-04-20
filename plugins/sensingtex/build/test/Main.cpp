@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "..\..\include\ssisensingtex.h"
+#include "../../include/ssisensingtex.h"
 using namespace ssi;
 
 ssi_char_t sstring[SSI_MAX_CHAR];
@@ -40,10 +40,10 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssiioput.dll");
-	Factory::RegisterDLL ("ssisensingtex.dll");
+	Factory::RegisterDLL ("ssiframe");
+	Factory::RegisterDLL ("ssigraphic");
+	Factory::RegisterDLL ("ssiioput");
+	Factory::RegisterDLL ("ssisensingtex");
 
 	{
 		ex_sensingtex ();	
@@ -71,10 +71,11 @@ void ex_sensingtex () {
 
 	SensingTex *senstex = ssi_create (SensingTex, 0, true);
 	senstex->getOptions()->scale = true;
-	senstex->getOptions()->port = 6;
+	senstex->getOptions()->setSerialDev("COM14");
 	senstex->getOptions()->cols = 16;	//floor mat: 16		//sitting mat: 8
 	senstex->getOptions()->rows = 14;	//floor mat: 14		//sitting mat: 8
 	senstex->getOptions()->sr = 20.0;
+	senstex->getOptions()->fps = true;
 	ITransformable *senstex_p = frame->AddProvider(senstex, SSI_SENSINGTEX_PROVIDER_NAME);
 	frame->AddSensor(senstex);
 

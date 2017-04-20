@@ -62,6 +62,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	ssi::Factory::Register (ssi::TupleThresh::GetCreateName (), ssi::TupleThresh::Create) && result;
 
 	ssi::Factory::Register (ssi::VectorFusionWriter::GetCreateName (), ssi::VectorFusionWriter::Create) && result;
+	ssi::Factory::Register(ssi::CombinerVA::GetCreateName(), ssi::CombinerVA::Create) && result;
 	
 	return result;
 }

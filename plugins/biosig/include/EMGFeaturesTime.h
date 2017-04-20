@@ -32,27 +32,44 @@
 #include "base/IFeature.h"
 #include "ioput/option/OptionList.h"
 
+typedef struct CvMat CvMat;
+typedef struct CvSize CvSize;
+
+namespace cv {
+	class Mat;
+}
+
+
 namespace ssi {
 
 class EMGFeaturesTime : public IFeature{
 
 public:
 
+	struct i2{
+		int x = 0;
+		int y = 0;
+	};
+
+
 	class Options : public OptionList {
 
 	public:
 
 		Options () 
-			: print_info(false), print_features(false), hemg_segments(5){
+			: print_info(false), print_features(false), hemg_segments(5), new_features(false), n_me(8){
 
 			addOption("print_info", &print_info, 1, SSI_BOOL, "print info about feature calculation");
 			addOption("print_features", &print_features, 1, SSI_BOOL, "print feature name and number");
 			addOption("hemg_segments", &hemg_segments, 1, SSI_SIZE, "number of histogram segments");
+			addOption("new_features", &new_features, 1, SSI_BOOL, "include the top 13 features from s. gruss");
+			addOption("n_me", &n_me, 1, SSI_SIZE, "number of segments for me feature");
 						
 		};
 
-		bool print_info, print_features;
-		ssi_size_t hemg_segments;
+		bool print_info, print_features, new_features;
+		ssi_size_t hemg_segments, n_me;
+
 	};
 
 public: 	
@@ -83,9 +100,6 @@ public:
 		ssi_log_level = level;
 	}
 
-	void peak (ssi_time_t from, ssi_time_t to, ssi_real_t amplitude, ssi_real_t area);
-	void slope (ssi_time_t from, ssi_time_t to, ssi_real_t amplitude, ssi_real_t area, ssi_real_t slope);
-
 	ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {
 		return sizeof (ssi_real_t);
 	}
@@ -101,31 +115,56 @@ public:
 		if (sample_dimension_in > 2){
 			ssi_err("dim is %i, expected 1 or 2\n", sample_dimension_in);
 		}
+		int d = 12 + _options.hemg_segments;
 
-		return 12 + _options.hemg_segments;
+		if (_options.new_features) {
+			d += 6;
+		}
+
+		return d;
 	}
 
-	void EMGFeaturesTime::printFeatures();
+	virtual void EMGFeaturesTime::printFeatures();
+
+	virtual void setReferenceStream(ssi_stream_t* ref) {
+		_reference_stream = ref;
+	}
 
 protected:
 
 	EMGFeaturesTime (const ssi_char_t *file = 0);
+	float getStDev(float * in, int n_in);
+
+	void polyval(float * coefs, int n_coefs, float * xshift, int n_xshift, float * xfit);
+	void polyfit(float * x, int n_x, float * y, int n_y, float * coefs);
+	void printMat(cv::Mat m, char * name);
+	void printMat_flt(cv::Mat m, char * name);
+	void QRDecomp(cv::Mat &m, cv::Mat &Q, cv::Mat &R);
+	void QRDecomp_flt(cv::Mat & m, cv::Mat & Q, cv::Mat & R);
+	int findfirst(float * in, int n_in, float val);
+	bool feq(float a, float b);
+	int unique(float * ptr, float * unq_ptr, int n);
+	std::vector<int> find(std::vector<EMGFeaturesTime::i2> map, bool use_y, int ind);
+	std::vector<int> intersect(std::vector<int> a, std::vector<int> b);
+
 	EMGFeaturesTime::Options _options;
 	ssi_char_t *_file;
 
 	static ssi_char_t *ssi_log_name;
 	int ssi_log_level;
 
-	void EMGFeaturesTime::getMuscleActivationStatistics(ssi_stream_t stream_in);
-
-	void EMGFeaturesTime::printFeatureStat(int st);
-	void EMGFeaturesTime::printFeatureAttribute(int at, std::string str_stat);
-	void EMGFeaturesTime::printFeatureType(int ft, std::string str_stat, std::string str_att);
+	
 	ITransformer* _spec;
 	ITransformer* _sel;
 	ssi_stream_t _spec_stream;
 	ssi_stream_t _sel_stream;
+
+
+	ssi_stream_t* _reference_stream;
+
 };
+
+
 
 }
 

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/ViewModel/" id="218466" changeset="5607" shadow="36fc2437d49a46458641aea551216147" />
+  <entry name="Commanding" kind="folder" id="218465" changeset="5607" shadow="f7d2d792845a438483374e9753840194" />
+</entries>

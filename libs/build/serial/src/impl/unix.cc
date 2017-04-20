@@ -62,7 +62,7 @@ MillisecondTimer::MillisecondTimer (const uint32_t millis)
   int64_t tv_nsec = expiry.tv_nsec + (millis * 1e6);
   if (tv_nsec >= 1e9) {
     int64_t sec_diff = tv_nsec / static_cast<int> (1e9);
-    expiry.tv_nsec = tv_nsec - static_cast<int> (1e9 * sec_diff);
+    expiry.tv_nsec = tv_nsec % static_cast<int>(1e9);
     expiry.tv_sec += sec_diff;
   } else {
     expiry.tv_nsec = tv_nsec;
@@ -85,13 +85,13 @@ MillisecondTimer::timespec_now ()
 # ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time
   clock_serv_t cclock;
   mach_timespec_t mts;
-  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+  host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
   clock_get_time(cclock, &mts);
   mach_port_deallocate(mach_task_self(), cclock);
   time.tv_sec = mts.tv_sec;
   time.tv_nsec = mts.tv_nsec;
 # else
-  clock_gettime(CLOCK_REALTIME, &time);
+  clock_gettime(CLOCK_MONOTONIC, &time);
 # endif
   return time;
 }
@@ -617,12 +617,17 @@ Serial::SerialImpl::write (const uint8_t *data, size_t length)
   total_timeout_ms += timeout_.write_timeout_multiplier * static_cast<long> (length);
   MillisecondTimer total_timeout(total_timeout_ms);
 
+  bool first_iteration = true;
   while (bytes_written < length) {
     int64_t timeout_remaining_ms = total_timeout.remaining();
-    if (timeout_remaining_ms <= 0) {
+    // Only consider the timeout if it's not the first iteration of the loop
+    // otherwise a timeout of 0 won't be allowed through
+    if (!first_iteration && (timeout_remaining_ms <= 0)) {
       // Timed out
       break;
     }
+    first_iteration = false;
+
     timespec timeout(timespec_from_ms(timeout_remaining_ms));
 
     FD_ZERO (&writefds);

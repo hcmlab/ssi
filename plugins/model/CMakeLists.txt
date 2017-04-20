@@ -40,8 +40,9 @@ include_directories(
 					../../core/include/ioput
 					../../core/include
 					../../plugins/
-					../../libs/shared/AlgLib/include
-					../../libs/shared/ssiml/include
+                                        ../../libs/build/AlgLib/include
+                                        ../../libs/build/ssiml/include
+                                        ../../libs/build
 					${CAIRO_INCLUDE_DIRS}
 					)
 if(ANDROID)

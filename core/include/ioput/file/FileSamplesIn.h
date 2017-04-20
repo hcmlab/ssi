@@ -74,8 +74,8 @@ public:
 		return _n_classes;	
 	}
 	const ssi_char_t *getClassName (ssi_size_t class_index) {
-		if (class_index == SSI_ISAMPLES_GARBAGE_CLASS_ID) {
-			return SSI_ISAMPLES_GARBAGE_CLASS_NAME;
+		if (class_index == SSI_SAMPLE_GARBAGE_CLASS_ID) {
+			return SSI_SAMPLE_GARBAGE_CLASS_NAME;
 		} else if (class_index >= _n_classes) {
 			ssi_err ("index '%u' exceeds #classes '%u'", class_index, _n_classes);
 		}

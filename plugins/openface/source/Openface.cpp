@@ -99,7 +99,14 @@ namespace ssi {
 		gaze.push_back(cv::Point3f(-1, -1, -1));
 
 		//convert img to Mat so Openface can do its Magic 
-		cv::Mat captured_image = cv::Mat(_video_format.heightInPixels, _video_format.widthInPixels, CV_8UC(_video_format.numOfChannels), stream_in.ptr, ssi_video_stride(_video_format));
+		cv::Mat captured_image; 
+		if (_video_format.numOfChannels == 3) {
+			captured_image = cv::Mat(_video_format.heightInPixels, _video_format.widthInPixels, CV_8UC(_video_format.numOfChannels), stream_in.ptr, ssi_video_stride(_video_format));
+		}
+		else if (_video_format.numOfChannels == 4) {
+			cv::Mat temp = cv::Mat(_video_format.heightInPixels, _video_format.widthInPixels, CV_8UC(_video_format.numOfChannels), stream_in.ptr, ssi_video_stride(_video_format));
+			cv::cvtColor(temp, captured_image, CV_BGRA2RGB);
+		}
 
 		//update needs to be called every Frame so the internal Model of Opfenface is up to date. Returns True if a Face was detecded
 		bool detection_success = _helper->update_landmark(captured_image);

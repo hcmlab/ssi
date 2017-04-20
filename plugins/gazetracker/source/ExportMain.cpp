@@ -48,6 +48,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register(ssi::EyePainter::GetCreateName(), ssi::EyePainter::Create) && result;
 	result = ssi::Factory::Register(ssi::SceneTracker::GetCreateName(), ssi::SceneTracker::Create) && result;
 	result = ssi::Factory::Register(ssi::ScenePainter::GetCreateName(), ssi::ScenePainter::Create) && result;
+	result = ssi::Factory::Register(ssi::GazePointShifter::GetCreateName(), ssi::GazePointShifter::Create) && result;
 	
 	return result;
 }

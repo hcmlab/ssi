@@ -167,6 +167,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ControlButton.cpp" />
+    <ClCompile Include="..\..\source\ControlEvent.cpp" />
     <ClCompile Include="..\..\source\ControlGrid.cpp" />
     <ClCompile Include="..\..\source\Controller.cpp" />
     <ClCompile Include="..\..\source\ControlSlider.cpp" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\ControlButton.h" />
     <ClInclude Include="..\..\include\ControlCheckBox.h" />
+    <ClInclude Include="..\..\include\ControlEvent.h" />
     <ClInclude Include="..\..\include\ControlGrid.h" />
     <ClInclude Include="..\..\include\Controller.h" />
     <ClInclude Include="..\..\include\ControlSlider.h" />

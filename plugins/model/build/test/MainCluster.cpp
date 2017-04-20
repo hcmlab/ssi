@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 using namespace ssi;
 
@@ -39,8 +39,6 @@ unsigned short COLORS[][3] = {
 };
 
 void ex_kmeans ();
-
-void CreateMissingData (SampleList &samples, double prob);
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -63,7 +61,9 @@ int main () {
 	Factory::RegisterDLL ("ssigraphic.dll");
 	Factory::RegisterDLL ("ssisignal.dll");
 
-	ssi_random_seed ();
+#if SSI_RANDOM_LEGACY_FLAG
+	ssi_random_seed();
+#endif
 
 	Console *console = ssi_create(Console, 0, true);
 	console->setPosition(ssi_rect(0, 0, 650, 800));
@@ -121,19 +121,4 @@ void ex_kmeans () {
 		ModelTools::PlotSamples (ss, "kmeans", ssi_rect(650,0,400,400));
 		
 	}
-}
-
-void CreateMissingData (SampleList &samples, double prob) {
-
-	ssi_size_t n_streams = samples.getStreamSize ();
-	ssi_sample_t *sample = 0;
-	samples.reset ();
-	while (sample = samples.next ()) {
-		for (ssi_size_t nstrm = 0; nstrm < n_streams; nstrm++) {
-			if (ssi_random () > prob) {							
-				ssi_stream_reset (*sample->streams[nstrm]);
-			}
-		}
-	}
-	samples.setMissingData (true);
 }

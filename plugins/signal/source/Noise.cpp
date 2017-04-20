@@ -63,8 +63,6 @@ void Noise::transform_enter (ssi_stream_t &stream_in,
 	ssi_stream_t &stream_out,
 	ssi_size_t xtra_stream_in_num,
 	ssi_stream_t xtra_stream_in[]) {
-
-	ssi_random_seed ();
 }
 
 void Noise::transform (ITransformer::info info,

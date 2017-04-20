@@ -61,6 +61,29 @@ String::~String () {
 	delete[] _string;
 }
 
+bool String::empty()
+{
+	return _string[0] == '\0';
+}
+
+char& String::operator[](ssi_size_t index)
+{	
+	if (index >= ssi_strlen(_string))
+	{
+		ssi_err("out of range (%u>=%u)", index, ssi_strlen(_string));
+	}		
+	return _string[index];
+}
+
+const char& String::operator[](ssi_size_t index) const
+{
+	if (index >= ssi_strlen(_string))
+	{
+		ssi_err("out of range (%u>=%u)", index, ssi_strlen(_string));
+	}
+	return _string[index];
+}
+
 String & String::operator=(const String &other) {
 	 if (this != &other) {
 		delete[] _string;
@@ -80,6 +103,34 @@ String & String::operator=(const ssi_char_t *other) {
 	return *this;
 }
 
+String & String::operator=(const ssi_int_t value) {
+	delete[] _string;	
+	_string = new ssi_char_t[25];
+	ssi_sprint(_string, "%d", value);	
+	return *this;
+}
+
+String & String::operator=(const ssi_size_t value) {
+	delete[] _string;
+	_string = new ssi_char_t[25];
+	ssi_sprint(_string, "%u", value);
+	return *this;
+}
+
+String & String::operator=(const float value) {
+	delete[] _string;
+	_string = new ssi_char_t[25];
+	ssi_sprint(_string, "%g", value);
+	return *this;
+}
+
+String & String::operator=(const double value) {
+	delete[] _string;
+	_string = new ssi_char_t[25];
+	ssi_sprint(_string, "%g", value);
+	return *this;
+}
+
 bool String::operator==(const String &other) const {
 	return strcmp (_string, other._string) == 0;
 }
@@ -92,15 +143,15 @@ bool String::operator< (const String &other) const {
 	return strcmp (_string, other._string) > 0;
 }
 
-bool String::operator==(const char *other) const {
+bool String::operator==(const ssi_char_t *other) const {
 	return strcmp (_string, other) == 0;
 }
 
-bool String::operator!=(const char *other) const {
+bool String::operator!=(const ssi_char_t *other) const {
     return !(*this == other);
 }
 
-bool String::operator< (const char *other) const {
+bool String::operator< (const ssi_char_t *other) const {
 	return strcmp (_string, other) > 0;
 }
 
@@ -113,9 +164,53 @@ String & String::operator+=(const String &other) {
 	return *this;
 }
 
-String & String::operator+=(const char *other) {
+String & String::operator+=(const ssi_char_t *other) {
 
 	ssi_char_t *cat_string = ssi_strcat (_string, other);
+	delete[] _string;
+	_string = cat_string;
+
+	return *this;
+}
+
+String & String::operator+=(const ssi_int_t value)
+{	
+	ssi_char_t other[25];
+	ssi_sprint(other, "%d", value);
+	ssi_char_t *cat_string = ssi_strcat(_string, other);
+	delete[] _string;
+	_string = cat_string;
+
+	return *this;
+}
+
+String & String::operator+=(const ssi_size_t value)
+{
+	ssi_char_t other[25];
+	ssi_sprint(other, "%u", value);
+	ssi_char_t *cat_string = ssi_strcat(_string, other);
+	delete[] _string;
+	_string = cat_string;
+
+	return *this;
+}
+
+String & String::operator+=(const float value)
+{
+	ssi_char_t other[25];
+	ssi_sprint(other, "%g", value);
+	ssi_char_t *cat_string = ssi_strcat(_string, other);
+	delete[] _string;
+	_string = cat_string;
+
+	return *this;
+}
+
+String & String::operator+=(const double value)
+{
+	ssi_char_t other[25];
+	ssi_sprint(other, "%lg", value);
+	ssi_char_t *cat_string = ssi_strcat(_string, other);
 	delete[] _string;
 	_string = cat_string;
 
@@ -126,7 +221,23 @@ const String String::operator+(const String &other) const {
 	return String(*this) += other;
 }
 
-const String String::operator+(const char *other) const {
+const String String::operator+(const ssi_char_t *other) const {
+	return String(*this) += other;
+}
+
+const String String::operator+(const ssi_int_t other) const {
+	return String(*this) += other;
+}
+
+const String String::operator+(const ssi_size_t other) const {
+	return String(*this) += other;
+}
+
+const String String::operator+(const float other) const {
+	return String(*this) += other;
+}
+
+const String String::operator+(const double other) const {
 	return String(*this) += other;
 }
 

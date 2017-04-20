@@ -1,0 +1,18 @@
+<GRAMMAR LANGID="409">
+   <DEFINE>
+      <ID NAME="Game" VAL="1"/>
+      <ID NAME="Red" VAL="11"/>
+      <ID NAME="Blue" VAL="12"/>
+      <ID NAME="Green" VAL="13"/>
+      <ID NAME="Yellow" VAL="14"/>
+   </DEFINE>
+
+   <RULE ID="Game" TOPLEVEL="ACTIVE">
+      <L PROPID="Game">
+         <P VAL="Red">Red</P>
+         <P VAL="Blue">Blue</P>
+         <P VAL="Green">Green</P>
+         <P VAL="Yellow">Yellow</P>
+      </L>
+   </RULE>
+</GRAMMAR>

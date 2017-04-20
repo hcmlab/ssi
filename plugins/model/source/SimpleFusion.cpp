@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "SimpleFusion.h"
-#include "ISMissingData.h"
+#include "ssiml/include/ISMissingData.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"

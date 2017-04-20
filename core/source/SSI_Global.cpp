@@ -31,9 +31,9 @@ FILE *ssiout = stdout;
 ssi::IMessage *ssimsg = 0;
 ssi_size_t ssi_tic_start = 0;
 #if _WIN32|_WIN64
-ssi_char_t SSI_FILE_SEPERATOR = '\\';
+ssi_char_t SSI_FILE_SEPARATOR = '\\';
 #else
-ssi_char_t SSI_FILE_SEPERATOR = '/';
+ssi_char_t SSI_FILE_SEPARATOR = '/';
 #endif
 
 ssi_size_t ssi_print_offset = 13;
@@ -54,6 +54,12 @@ ssi_char_t *SSI_TYPE_NAMES[SSI_TYPE_NAME_SIZE] = {
 	"STRUCT",
 	"IMAGE",
 	"BOOL"
+};
+
+ssi_char_t *SSI_SCHEME_NAMES[SSI_SCHEME_TYPE::NUM] = { 
+	"DISCRETE", 
+	"CONTINUOUS", 
+	"FREE" 
 };
 
 ssi_char_t *SSI_ESTATE_NAMES[SSI_ESTATE_NAME_SIZE] = {
@@ -88,7 +94,7 @@ ssi_char_t *SSI_FILE_TYPE_STREAM = ".stream";
 ssi_char_t *SSI_FILE_TYPE_FEATURE = ".feat";
 ssi_char_t *SSI_FILE_TYPE_WAV = ".wav";
 ssi_char_t *SSI_FILE_TYPE_AVI = ".avi";
-ssi_char_t *SSI_FILE_TYPE_ANNOTATION = ".csv";
+ssi_char_t *SSI_FILE_TYPE_ANNOTATION = ".annotation";
 ssi_char_t *SSI_FILE_TYPE_OPTION = ".option";
 ssi_char_t *SSI_FILE_TYPE_TRAINDEF = ".traindef";
 ssi_char_t *SSI_FILE_TYPE_TRAINING = ".training";

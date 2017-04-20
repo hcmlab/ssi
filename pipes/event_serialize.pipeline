@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="1" sr="50">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- detect button events -->
+	<consumer create="TriggerEventSender" address="pressed@button">
+		<input pin="button" frame="0.1s" />		
+	</consumer>		
+	
+	<!-- output cursor when button is pressed -->
+	<consumer create="MapEventSender" address="cursor@button" keys="x,y">
+		<input pin="cursor" address="pressed@button" />		
+	</consumer>		
+	
+	<!-- serialize events to a stream -->
+	<sensor create="EventToStream" sr="50" eventValue="x">
+		<listen address="cursor@button"/>
+		<output channel="event output" pin="serialized"/>
+	</sensor>
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="x (serialized)" size="10.0">
+		<input pin="serialized" frame="0.2s" />		
+	</consumer>	
+	<object create="EventMonitor:monitor">
+		<listen address="cursor@button" span="20000" state="nonzerodur"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

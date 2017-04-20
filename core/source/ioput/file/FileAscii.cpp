@@ -334,7 +334,7 @@ void FileAscii::show () {
 		return;
 	}
 
-	ssi_size_t store_pos = tell ();
+	int64_t store_pos = tell ();
 	char c;
 
 	seek (0, File::BEGIN);

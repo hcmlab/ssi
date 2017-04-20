@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2005-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2005-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -126,6 +126,7 @@ namespace gloox
       m_certInfo.status |= CertRevoked;
     if( status & GNUTLS_CERT_SIGNER_NOT_CA )
       m_certInfo.status |= CertSignerNotCa;
+
     const gnutls_datum_t* certList = 0;
     unsigned int certListSize = 0;
     if( !error && ( ( certList = gnutls_certificate_get_peers( *m_session, &certListSize ) ) == 0 ) )
@@ -133,7 +134,7 @@ namespace gloox
 
     unsigned int certListSizeFull = certListSize;
 
-    gnutls_x509_crt_t* cert = new gnutls_x509_crt_t[certListSize+1];
+    gnutls_x509_crt_t* cert = new gnutls_x509_crt_t[certListSize];
     for( unsigned int i=0; !error && ( i<certListSize ); ++i )
     {
       if( gnutls_x509_crt_init( &cert[i] ) < 0
@@ -141,8 +142,7 @@ namespace gloox
         error = true;
     }
 
-    if( ( gnutls_x509_crt_check_issuer( cert[certListSize-1], cert[certListSize-1] ) > 0 )
-         && certListSize > 0 )
+    if( certListSize > 1 && ( gnutls_x509_crt_check_issuer( cert[certListSize-1], cert[certListSize-1] ) > 0 ) )
       certListSize--;
 
     bool chain = true;
@@ -154,7 +154,7 @@ namespace gloox
       m_certInfo.status |= CertInvalid;
     m_certInfo.chain = chain;
 
-    m_certInfo.chain = verifyAgainstCAs( cert[certListSize], 0 /*CAList*/, 0 /*CAListSize*/ );
+    m_certInfo.chain = verifyAgainstCAs( cert[certListSize-1], 0 /*CAList*/, 0 /*CAListSize*/ );
 
     int t = (int)gnutls_x509_crt_get_activation_time( cert[0] );
     if( t == -1 )

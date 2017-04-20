@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2015 by Jakob Schröter <js@camaya.net>
+ *  Copyright (c) 2004-2016 by Jakob Schröter <js@camaya.net>
  *  This file is part of the gloox library. http://camaya.net/gloox
  *
  *  This software is distributed under a license. The full license
@@ -58,18 +58,19 @@ int main( int /*argc*/, char** /*argv*/ )
   int fail = 0;
   std::string name;
 
-  Tag* tag = new Tag( "message", XMLNS, XMLNS_CLIENT );
+  Tag* tag = new Tag( "message" );
   tag->addAttribute( "to", "foo@myserver/4444" );
   tag->addAttribute( "from", "foo@myserver" );
   tag->addAttribute( "id", "someid" );
   tag->addAttribute( "type", "chat" );
   Tag* c = new Tag( tag, "received", XMLNS, XMLNS_MESSAGE_CARBONS );
   Tag* f = new Tag( c, "forwarded",  XMLNS, XMLNS_STANZA_FORWARDING );
-  Tag* m = new Tag( f, "message", XMLNS, XMLNS_CLIENT );
+  Tag* m = new Tag( f, "message" );
   m->addAttribute( "to", "foo@myserver/0123" );
   m->addAttribute( "from", "bar@theirserver/home" );
   m->addAttribute( "id", "someotherid" );
   m->addAttribute( "type", "chat" );
+  m->setXmlns( XMLNS_CLIENT );
   new Tag( m, "body", "a sample message body" );
   new Tag( m, "attention", XMLNS, XMLNS_ATTENTION );
 

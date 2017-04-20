@@ -332,7 +332,7 @@ namespace ssi {
 				// Special case: last state succesful, but not yet finished
 				if(!_combinationSucces[i])
 				{
-					ssi_print("Start: %d", time_ms);
+					//ssi_print("Start: %d", time_ms);
 					ssi_msg (SSI_LOG_LEVEL_DEBUG, "user %d - combination passed min duration of last state: %s", userID, recognizerName);
 					_events_combinations[i].dur = 0;
 					_events_combinations[i].time = time_ms - (ssi_size_t)((userStates.back().timeStamp - userStates.front().timeStamp) * 1000.0);
@@ -346,7 +346,7 @@ namespace ssi {
 			}
 			else if (result == Fubi::RecognitionResult::RECOGNIZED)
 			{
-				ssi_print("End: %d", time_ms);
+				//ssi_print("End: %d", time_ms);
 				ssi_msg (SSI_LOG_LEVEL_DEBUG, "user %d - combination finished: %s", userID, recognizerName);
 				_events_combinations[i].dur = (ssi_size_t)((userStates.back().timeStamp - userStates.front().timeStamp) * 1000.0);				
 				_events_combinations[i].state = SSI_ESTATE_COMPLETED;

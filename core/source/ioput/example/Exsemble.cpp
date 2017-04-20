@@ -50,6 +50,7 @@ Exsemble::~Exsemble () {
 void Exsemble::console(int top, int left, int width, int height) {
 	Console *console = ssi_pcast(Console, Factory::GetObjectFromId(SSI_FACTORY_CONSOLE_ID));
 	console->setPosition(ssi_rect(top, left, width, height));
+	printf("\r");
 }
 
 void Exsemble::add(Example::example_fptr_t func, void *arg, const char *name, const char *info) {

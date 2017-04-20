@@ -336,8 +336,8 @@ bool ex_butter_filter(void *args) {
 	SignalTools::Sum (signal);
 
 	ssi_size_t frame_size = ssi_cast (ssi_size_t, 0.1 * signal.sr);
-	double lcutoff = 0.15;
-	double hcutoff = 0.35;
+	ssi_real_t lcutoff = 0.15f;
+	ssi_real_t hcutoff = 0.35f;
 	int order = 8;
 
 	plot_push (signal, "Signal");
@@ -442,8 +442,8 @@ bool ex_butter_filter_2(void *args) {
 	SignalTools::Sum (signal);
 
 	ssi_size_t frame_size = ssi_cast (ssi_size_t, 0.1 * sr);
-	double lcutoff = 10.0;
-	double hcutoff = 20.0;
+	ssi_real_t lcutoff = 10.0f;
+	ssi_real_t hcutoff = 20.0f;
 	int order = 8;	
 
 	plot_push (signal, "Signal");
@@ -458,8 +458,8 @@ bool ex_butter_filter_2(void *args) {
 	// filter
 
 	Butfilt *filter = ssi_create (Butfilt, "butfilt", true);
-	filter->getOptions()->low = 2 * lcutoff / sr;
-	filter->getOptions()->high = 2 * hcutoff / sr;
+	filter->getOptions()->low = ssi_real_t(2 * lcutoff / sr);
+	filter->getOptions()->high = ssi_real_t(2 * hcutoff / sr);
 	filter->getOptions()->order = order;
 
 	// lowpass
@@ -530,7 +530,7 @@ bool ex_butter_filter_3(void *args) {
 	// filter
 
 	Butfilt *filter = ssi_create (Butfilt, "butfilt", true);
-	filter->getOptions()->low = 0.1;
+	filter->getOptions()->low = 0.1f;
 	filter->getOptions()->order = 4;
 	filter->getOptions()->zero = true;
 
@@ -1277,9 +1277,11 @@ bool ex_bundle(void *args) {
 	ssi_stream_select(tmp, signal, 1, &select);	
 	ssi_size_t frame_size = 1;
 
+	Randomf random(0, 1);
+
 	ssi_real_t *ptr = ssi_pcast(ssi_real_t, signal.ptr);
 	for (ssi_size_t i = 0; i < signal.num; i++) {
-		if (abs(ptr[i * signal.dim]) > 1.5 && ssi_random () > 0.7) {
+		if (abs(ptr[i * signal.dim]) > 1.5 && random.next () > 0.7) {
 			ptr[i * signal.dim] *= -5.0;
 			i += 10;
 		}
@@ -1365,7 +1367,7 @@ bool ex_ethres(void *args) {
 	ssi_time_t wins = 0.1;
 	ssi_time_t winl = 5.0;
 
-	FileAnnotationWriter awrite;
+	old::FileAnnotationWriter awrite;
 
 	ThresEventSender *tes = ssi_create (ThresEventSender, 0, true);
 	tes->getOptions()->thres = 0;

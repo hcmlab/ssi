@@ -56,6 +56,9 @@
     <ClInclude Include="..\..\include\FusionPainterVA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\CombinerVA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\EVector.cpp">
@@ -98,6 +101,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\FusionPainterVA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\CombinerVA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

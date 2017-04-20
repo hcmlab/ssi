@@ -28,6 +28,8 @@
 #include "MyOscListener.h"
 using namespace ssi;
 
+#include "curl/ssicurl.h"
+
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
 	#ifdef _DEBUG
@@ -47,12 +49,14 @@ bool ex_simulator(void *arg);
 bool ex_stream(void *arg);
 bool ex_event(void *arg);
 bool ex_samples(void *arg);
+bool ex_annotation(void *arg);
 bool ex_socket(void *arg);
 bool ex_tcp2way(void *arg);
 bool ex_sender(void *arg);
 bool ex_sender_events(void *arg);
 bool ex_sender_video(void *arg);
 bool ex_sender_file(void *arg);
+bool ex_download_file(void *arg);
 
 void test (File &file, int *data_out, ssi_size_t size);
 
@@ -73,7 +77,10 @@ int main () {
 	Factory::RegisterDLL ("ssimouse");
 	Factory::RegisterDLL ("ssigraphic");
 
-	ssi_random_seed ();
+#if SSI_RANDOM_LEGACY_FLAG	
+	ssi_random_seed();
+#endif
+
 	Socket::TYPE type_udp = Socket::UDP; 
 	Socket::TYPE type_tcp = Socket::TCP;	
 
@@ -88,6 +95,7 @@ int main () {
 	ex.add(&ex_event, 0, "EVENT", "How to write/read events to a file.");
 	ex.add(&ex_csv, 0, "CSV", "How to read a comma separated file.");
 	ex.add(&ex_simulator, 0, "SIMULATOR", "How to use 'FileReader' to feed a stream from a file into a pipeline.");
+	ex.add(&ex_annotation, 0, "ANNOTATION", "How to use 'FileAnnotationWriter' to create annotations from events.");
 	ex.add(&ex_samples, 0, "SAMPLES", "How to use 'FileSampleWriter' to store samples to a file from a pipeline.");
 	ex.add(&ex_socket, 0, "BASICS", "How to send/receive socket messages.");
 	ex.add(&ex_tcp2way, 0, "TCP2WAY", "How to establish a two way tcp connection.");
@@ -97,6 +105,7 @@ int main () {
 	ex.add(&ex_sender_events, &type_tcp, "SEND EVENTS TCP", "How to send events from a pipeline using TCP.");
 	ex.add(&ex_sender_video, 0, "STREAM VIDEO", "How to stream a video from a pipeline.");
 	//ex.add(&ex_sender_file, 0, "FILE", "How to transfer the content of a file.");
+	ex.add(&ex_download_file, 0, "DOWNLOAD FILE", "How to donwload a file.");
 	ex.show();
 
 	Factory::Clear ();
@@ -210,7 +219,7 @@ bool ex_lz4(void *arg) {
 		ssi_char_t filename[] = "raw.bin";
 		File *file = File::CreateAndOpen(File::BINARY, File::WRITE, filename);		
 		ssi_size_t bytes = file->write(data, sizeof(ssi_real_t), 10000);
-		ssi_print("raw bytes written: %u == %u bytes\n", bytes, file->tell());
+		ssi_print("raw bytes written: %u == %I64d bytes\n", bytes, file->tell());
 		delete file;
 	}
 
@@ -218,7 +227,7 @@ bool ex_lz4(void *arg) {
 		ssi_char_t filename[] = "lz4.bin";
 		File *file = File::CreateAndOpen(File::BIN_LZ4, File::WRITE, filename);	
 		bytes_compressed = file->write(data, sizeof(ssi_real_t), 10000);
-		ssi_print("lz4 bytes written: %u == %d bytes\n", bytes_compressed, file->tell());
+		ssi_print("lz4 bytes written: %u == %I64d bytes\n", bytes_compressed, file->tell());
 		delete file;
 	}
 
@@ -388,9 +397,10 @@ bool ex_csv(void *arg) {
 	mem->setFormat(";", ".2");
 	mem->setType(SSI_DOUBLE);
 	double values[3];
+	Randomf random(0, 1);
 	for (ssi_size_t i = 0; i < 10; i++) {
 		for (ssi_size_t j = 0; j < 3; j++) {
-			values[j] = ssi_random();
+			values[j] = random.next();
 		}
 		mem->write(values, sizeof(double), 3);	
 		mem->writeLine("");
@@ -436,6 +446,7 @@ bool ex_writer(void *arg) {
 	writer->getOptions()->type = File::ASCII;
 	writer->getOptions()->setDelim(";");
 	writer->getOptions()->stream = continuous;
+	writer->getOptions()->setMeta("some=meta;hello=world");
 	frame->AddConsumer(cursor_p, writer, "0.5s");
 
 	writer = ssi_create (FileWriter, 0, true);
@@ -495,6 +506,107 @@ bool ex_simulator(void *arg) {
 	reader->wait();
 	frame->Stop();
 	frame->Clear();
+
+	return true;
+}
+
+bool ex_annotation(void *arg) {
+
+	ITheFramework *frame = Factory::GetFramework();
+	ITheEventBoard *board = Factory::GetEventBoard();
+
+	Mouse *mouse = ssi_create(Mouse, 0, true);
+	mouse->getOptions()->sr = 50.0;
+	mouse->getOptions()->mask = Mouse::LEFT;
+	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
+	frame->AddSensor(mouse);
+
+	ZeroEventSender *ezero = 0;
+	
+	ezero = ssi_create(ZeroEventSender, 0, true);
+	ezero->getOptions()->setAddress("click@mouse");
+	ezero->getOptions()->mindur = 0.2;
+	frame->AddConsumer(button_p, ezero, "0.25s");
+	board->RegisterSender(*ezero);
+
+	ezero = ssi_create(ZeroEventSender, 0, true);
+	ezero->getOptions()->setAddress("click@mouse");
+	ezero->getOptions()->mindur = 0.2;
+	ezero->getOptions()->empty = false;
+	ezero->getOptions()->setString("string");
+	frame->AddConsumer(button_p, ezero, "0.25s");
+	board->RegisterSender(*ezero);
+
+	StringEventSender *ssender = ssender = ssi_create(StringEventSender, 0, true);
+	ssender->getOptions()->setAddress("cursor@string");
+	ssender->getOptions()->mean = true;
+	frame->AddEventConsumer(cursor_p, ssender, board, ezero->getEventAddress());
+	board->RegisterSender(*ssender);
+
+	MapEventSender *msender = 0;
+	
+	msender = ssi_create(MapEventSender, 0, true);
+	msender->getOptions()->setAddress("cursor@map");
+	msender->getOptions()->setKeys("x,y");
+	frame->AddEventConsumer(cursor_p, msender, board, ezero->getEventAddress());
+	board->RegisterSender(*msender);
+
+	msender = ssi_create(MapEventSender, 0, true);
+	msender->getOptions()->setAddress("cursor@map");
+	msender->getOptions()->setKeys("y,x");
+	frame->AddEventConsumer(cursor_p, msender, board, ezero->getEventAddress());
+	board->RegisterSender(*msender);
+	
+	FileAnnotationWriter *annotation = 0;
+			
+	annotation = ssi_create(FileAnnotationWriter, 0, true);	
+	annotation->getOptions()->setAnnoPath("discrete_empty_and_string");
+	annotation->getOptions()->setSchemePath("scheme_discrete.annotation");
+	annotation->getOptions()->setDefaultLabel("empty");
+	annotation->getOptions()->defaultConfidence = 0.5f;
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+	board->RegisterListener(*annotation, ezero->getEventAddress());	
+
+	annotation = ssi_create(FileAnnotationWriter, 0, true);
+	annotation->getOptions()->setAnnoPath("discrete_map");
+	annotation->getOptions()->setSchemePath("scheme_discrete.annotation");
+	annotation->getOptions()->mapKeyIndex = 1;
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+	board->RegisterListener(*annotation, msender->getEventAddress());
+
+	annotation = ssi_create(FileAnnotationWriter, 0, true);
+	annotation->getOptions()->setAnnoPath("free_empty_and_string");
+	annotation->getOptions()->setSchemePath("scheme_free");
+	annotation->getOptions()->setDefaultLabel("empty");
+	annotation->getOptions()->defaultConfidence = 0.5f;
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+	board->RegisterListener(*annotation, ezero->getEventAddress());
+
+	annotation = ssi_create(FileAnnotationWriter, 0, true);
+	annotation->getOptions()->setAnnoPath("free_map");
+	annotation->getOptions()->setSchemePath("scheme_free");
+	annotation->getOptions()->mapKeyIndex = 1;
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+	board->RegisterListener(*annotation, msender->getEventAddress());
+
+	annotation = ssi_create(FileAnnotationWriter, 0, true);
+	annotation->getOptions()->setAnnoPath("continuous");
+	annotation->getOptions()->setSchemePath("scheme_continuous");
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+	frame->AddConsumer(cursor_p, annotation, "1.0s");
+
+	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->setPos(CONSOLE_WIDTH, 0, 600, 300);
+	board->RegisterListener(*monitor, 0, 60000);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
 
 	return true;
 }
@@ -563,7 +675,7 @@ void test (File &file, int *data_out, ssi_size_t size) {
 
 	int *data_in = new int[size];
 
-	long int pos = file.tell ();
+	int64_t pos = file.tell ();
 	if (file.getType () == File::ASCII) {
 		if (!file.write (data_out, 2, size)) {
 			ssi_err ("write() failed");
@@ -1002,3 +1114,11 @@ bool ex_sender_file(void *arg) {
 	return true;
 }
 
+bool ex_download_file(void *arg)
+{
+	WebTools::DownloadFile("https://curl.haxx.se/ca/cacert.pem", "cacert.pem");
+	WebTools::DownloadFile("https://github.com/hcmlab/ssi/raw/master/README", "README", "cacert.pem");
+	WebTools::DownloadFile("https://github.com/hcmlab/ssi/raw/master/README2", "README", "cacert.pem");
+
+	return true;
+}

@@ -155,6 +155,8 @@ typedef enum
 
 // default string length
 #define SSI_MAX_CHAR	1024
-#define SSI_PATH_SEPERATOR '/'
+#define SSI_PATH_SEPARATOR '/'
+
+#define SSI_RANDOM_LEGACY_FLAG 0
 
 #endif

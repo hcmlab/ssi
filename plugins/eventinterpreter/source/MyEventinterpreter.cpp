@@ -181,7 +181,10 @@ namespace ssi {
 
 								ssi_event_adjust(_event, len + 1);
 								memcpy(_event.ptr, result, len + 1);
-								_event.time = _frame->GetElapsedTimeMs();
+
+								_event.time = e->time;	//_frame->GetElapsedTimeMs()
+								_event.dur = e->dur;
+								_event.state = e->state;
 
 								_listener->update(_event);
 							}

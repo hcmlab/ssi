@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(ssiioput)
 
-include_directories(include include/ioput include/ioput/socket ../../core/include/ioput/socket ../../core/include/ioput ../../core/include ../)
+include_directories(include include/ioput include/ioput/socket ../../core/include/ioput/socket ../../core/include/ioput ../../core/include ../ ../../libs/build/)
 
 #add_subdirectory(test)
 #add_dependencies(ssiioput_test ssi ssiioput)

@@ -35,7 +35,7 @@ lets you evaluate a model
 #ifndef SSI_MODEL_EVALUATION_H
 #define SSI_MODEL_EVALUATION_H
 
-#include "model/SampleList.h"
+#include "SampleList.h"
 #include "base/IModel.h"
 #include "base/IFusion.h"
 #include "base/ISelection.h"
@@ -43,6 +43,7 @@ lets you evaluate a model
 namespace ssi {
 
 class Trainer;
+class Annotation;
 
 class Evaluation {
 
@@ -79,6 +80,9 @@ public:
 		_stream_refs = stream_refs;
 	}
 
+	// compares two annotations
+	bool eval(Annotation *prediction, Annotation *truth);
+
 	// eval using test set (it is assumed that model has already been trained)
 	void eval(Trainer *trainer, ISamples &samples, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
 	void eval(IModel &model, ISamples &samples, ssi_size_t stream_index, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
@@ -98,6 +102,8 @@ public:
 
 	// print evaluation to file
 	void print(FILE *file = stdout, PRINT::List format = PRINT::CONSOLE);
+	//print intermediate evauation results to file (LOUO only)
+	void print_intermediate_louo(FILE *file = stdout, PRINT::List format = PRINT::CONSOLE);
 	void print_result_vec (FILE *file = stdout);
 
 	// reset
@@ -109,8 +115,17 @@ public:
 	ssi_real_t get_classwise_prob ();
 	// relative mean of class probs
 	ssi_real_t get_accuracy_prob ();
+
+	// mean of class probs (intermediate results, only woks for LOUO)
+	std::vector<ssi_real_t> get_intermediate_louo_classwise_prob();
+	// relative mean of class probs (intermediate results, only woks for LOUO)
+	std::vector<ssi_real_t> get_intermediate_louo_accuracy_prob();
+	ssi_real_t get_intermediate_louo_class_prob(ssi_size_t index, ssi_size_t nuser);
+
 	// get confussion matrix
 	ssi_size_t*const* get_conf_mat ();
+	// get intermediate confusion matrices (LOUO only)
+	std::vector<ssi_size_t*const*> get_intermediate_louo_conf_mat();
 	// get correlation coefficient
 	ssi_real_t get_correlation();
 	// get result vector
@@ -156,13 +171,15 @@ protected:
 	ssi_size_t _n_unclassified;
 	ssi_size_t _n_classified;
 	ssi_size_t _n_total;	 // unclassified + classified
-	ssi_size_t *_result_vec; // result vector, for each sample the real id and the classified id is stored, SSI_ISAMPLES_GARBAGE_CLASS_ID if unclassified		
+	ssi_size_t *_result_vec; // result vector, for each sample the real id and the classified id is stored, SSI_SAMPLE_GARBAGE_CLASS_ID if unclassified		
 	ssi_size_t *_result_vec_ptr;
 	ssi_real_t *_result_vec_reg; // result vector for regression tasks, for each sample the real score and the classified score is stored, nan if unclassified	
 	ssi_real_t *_result_vec_reg_ptr;	
 	ssi_real_t *_result_probs;
 	ssi_real_t *_result_probs_ptr;
 	ssi_size_t _n_classes;
+	ssi_size_t _n_streams;
+	ssi_size_t *_n_features;
 	ssi_char_t** _class_names;	
 
 	Trainer *_trainer;	

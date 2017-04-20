@@ -55,7 +55,7 @@ source/ThresClassEventSender.cpp
 source/XMLEventHelper.cpp
 source/XMLEventSender.cpp
 source/FixationEventSender.cpp
-source/FloatsEventSender.cpp
+#source/FloatsEventSender.cpp
 source/ZeroEventSender.cpp
 source/TheEventBoard.cpp
 source/ThresEventSender.cpp
@@ -64,7 +64,7 @@ source/StringEventSender.cpp
 source/ClockEventSender.cpp
 source/EventToStream.cpp
 source/ExportMain.cpp
-
+source/MapEventSender.cpp
 
 )
  IF(SSI_GUI STREQUAL "SDL")

@@ -33,5 +33,6 @@
 #include "EyePainter.h"
 #include "SceneTracker.h"
 #include "ScenePainter.h"
+#include "GazePointShifter.h"
 
 #endif

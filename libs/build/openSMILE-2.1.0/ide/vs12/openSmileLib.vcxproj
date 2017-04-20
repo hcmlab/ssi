@@ -289,6 +289,8 @@
     <ClInclude Include="..\..\src\include\smileutil\smileUtil.h" />
     <ClInclude Include="..\..\src\include\smileutil\smileUtilSpline.h" />
     <ClInclude Include="..\..\src\include\smileutil\zerosolve.h" />
+    <ClInclude Include="..\..\src\include\ssi\ssiSink.hpp" />
+    <ClInclude Include="..\..\src\include\ssi\ssiSource.hpp" />
     <ClInclude Include="..\..\src\include\video\openCVSource.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -400,6 +402,8 @@
     <ClCompile Include="..\..\src\smileutil\smileUtil.cpp" />
     <ClCompile Include="..\..\src\smileutil\smileUtilSpline.cpp" />
     <ClCompile Include="..\..\src\smileutil\zerosolve.cpp" />
+    <ClCompile Include="..\..\src\ssi\ssiSink.cpp" />
+    <ClCompile Include="..\..\src\ssi\ssiSource.cpp" />
     <ClCompile Include="..\..\src\video\openCVSource.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

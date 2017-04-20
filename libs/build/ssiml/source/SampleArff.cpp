@@ -187,7 +187,7 @@ ssi_sample_t *SampleArff::get (ssi_size_t index) {
 		}
 		if (i == _ind_nominals[_class_ind]) {
 			if (in->get (i)->missing ()) {
-				_sample.class_id = SSI_ISAMPLES_GARBAGE_CLASS_ID;
+				_sample.class_id = SSI_SAMPLE_GARBAGE_CLASS_ID;
 			} else {			
 				for (size_t j = 0; j < n.size (); j++) {
 					if (std::string (*in->get (i)) == n[j]) {

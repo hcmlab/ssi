@@ -286,7 +286,7 @@ bool File::close () {
 }
 
 
-bool File::seek (int32_t offset, File::ORIGIN origin) {
+bool File::seek (int64_t offset, File::ORIGIN origin) {
 
 	if (!_is_open) {
 		ssi_wrn ("file is closed ('%s', %s, %s)", _path, MODE_NAMES[_mode], TYPE_NAMES[_type]);
@@ -297,27 +297,43 @@ bool File::seek (int32_t offset, File::ORIGIN origin) {
 
 	switch (origin) {
 		case File::BEGIN:
-			res = fseek (_file, offset, SEEK_SET);
+#if __gnu_linux__			
+			res = lseek64(_file, offset, SEEK_SET);
+#else
+			res = _fseeki64(_file, offset, SEEK_SET);
+#endif
 			break;
 		case File::CURRENT:
-			res = fseek (_file, offset, SEEK_CUR);
+#if __gnu_linux__	
+			res = lseek64(_file, offset, SEEK_CUR);
+#else
+			res = _fseeki64(_file, offset, SEEK_CUR);
+#endif
 			break;
 		case File::END:
-			res = fseek (_file, offset, SEEK_END);
+#if __gnu_linux__	
+			res = lseek64(_file, offset, SEEK_END);
+#else
+			res = _fseeki64(_file, offset, SEEK_END);
+#endif
 			break;
 	}
 
 	return res == 0;
 }
 
-ssi_size_t File::tell () {
+int64_t File::tell () {
 
 	if (!_is_open) {
 		ssi_wrn ("file is closed ('%s', %s, %s)", _path, MODE_NAMES[_mode], TYPE_NAMES[_type]);
 		return 0;
 	}
-
-	return ftell (_file);
+	
+#if __gnu_linux__
+	return ftello64(_file);
+#else
+	return _ftelli64(_file);
+#endif
 }
 
 bool File::ready () {

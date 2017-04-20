@@ -73,7 +73,15 @@ void OverlapBuffer::push (ssi_size_t n_samples,
 
 ssi_real_t& OverlapBuffer::operator[](unsigned int i) {
 
-	SSI_ASSERT (i < _n_sample_values + _n_overlap_values);
+	if (i == _n_sample_values + _n_overlap_values) {
+		i -= 1;
+	}
+	else if (i >= _n_sample_values + _n_overlap_values) {
+		ssi_wrn("OverlapBuffer: Assert failed (i: %i, _n_sample_values: %i, _n_overlap_values: %i\n", i, _n_sample_values, _n_overlap_values);
+		getchar();
+	}
+
+	//SSI_ASSERT (i < _n_sample_values + _n_overlap_values);
 
 	if (!_first_push_over) {
 		return _samples[i];

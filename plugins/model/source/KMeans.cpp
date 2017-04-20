@@ -33,12 +33,10 @@
 #include "KmUtils.h"
 #include "KMeans.h"
 #include "KmTree.h"
-#include "model/ModelTools.h"
+#include "ssiml/include/ModelTools.h"
 #include "ioput/file/File.h"
-#include "ISOverSample.h"
+#include "ssiml/include/ISOverSample.h"
 #include <sstream>
-#include <time.h>
-#include <vector>
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"

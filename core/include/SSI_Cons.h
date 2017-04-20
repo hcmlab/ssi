@@ -91,6 +91,7 @@ extern ssi_char_t *SSI_TYPE_NAMES[];
 extern ssi_char_t *SSI_ESTATE_NAMES[];
 extern ssi_char_t *SSI_ETYPE_NAMES[];
 extern ssi_char_t *SSI_OBJECT_NAMES[];
+extern ssi_char_t *SSI_SCHEME_NAMES[];
 extern ssi_char_t *SSI_FILE_TYPE_STREAM;
 extern ssi_char_t *SSI_FILE_TYPE_FEATURE;
 extern ssi_char_t *SSI_FILE_TYPE_WAV;
@@ -130,6 +131,13 @@ struct ssi_stream_t {
 	ssi_type_t type; // data type
 };
 
+#define SSI_SAMPLE_REST_CLASS_NAME "REST"
+#define SSI_SAMPLE_GARBAGE_CLASS_NAME "GARBAGE"
+#define SSI_SAMPLE_GARBAGE_CLASS_ID -1
+#define SSI_SAMPLE_GARBAGE_USER_NAME "NOBODY"
+#define SSI_SAMPLE_GARBAGE_USER_ID -1
+#define SSI_SAMPLE_INVALID_SCORE NAN
+
 struct ssi_sample_t {
 	ssi_size_t num; // number of streams
 	ssi_stream_t **streams; // streams
@@ -137,6 +145,65 @@ struct ssi_sample_t {
 	ssi_size_t class_id; // id of class (for multi-class classification)	
 	ssi_real_t score; // score value (for logistic regression)
 	ssi_time_t time; // time in seconds
+};
+
+struct SSI_SCHEME_TYPE
+{
+	enum List
+	{
+		DISCRETE,
+		CONTINUOUS,
+		FREE,
+		NUM,
+	};
+};
+
+struct ssi_label_t
+{
+	ssi_real_t confidence;
+	union
+	{
+		struct
+		{
+			ssi_real_t score;
+		} continuous;
+		struct
+		{
+			ssi_time_t from;
+			ssi_time_t to;
+			ssi_int_t id;
+		} discrete;
+		struct
+		{
+			ssi_time_t from;
+			ssi_time_t to;
+			ssi_char_t *name;
+		} free;
+	};
+};
+
+struct ssi_scheme_t
+{
+	SSI_SCHEME_TYPE::List type;
+	ssi_char_t *name;
+	union
+	{
+		struct
+		{
+			ssi_time_t sr;
+			ssi_real_t min;
+			ssi_real_t max;
+		} continuous;
+		struct
+		{
+			ssi_size_t n;
+			ssi_char_t **names;
+			ssi_size_t *ids;
+		} discrete;
+		struct
+		{
+		} free;
+	};
 };
 
 struct ssi_event_t {
@@ -246,9 +313,9 @@ typedef uint32_t ssi_rgb_t;
 #define ssi_rgb(r,g,b) ((ssi_rgb_t)(((unsigned char)(r) | ((unsigned short)((unsigned char)(g)) << 8)) | (((unsigned long)(unsigned char)(b)) << 16)))
 
 #if _WIN32|_WIN64
-extern ssi_char_t SSI_FILE_SEPERATOR;
+extern ssi_char_t SSI_FILE_SEPARATOR;
 #else
-extern ssi_char_t SSI_FILE_SEPERATOR;
+extern ssi_char_t SSI_FILE_SEPARATOR;
 #endif
 
 const GUID SSI_GUID_NULL = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };

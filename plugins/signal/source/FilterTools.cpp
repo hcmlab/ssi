@@ -28,6 +28,7 @@
 #include "signal/MatrixOps.h"
 #include "FFT.h"
 #include "IFFT.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -741,9 +742,10 @@ void FilterTools::Noise (ssi_stream_t &series,
 	// prepare noise
 	ssi_real_t *noise = new ssi_real_t[nfft * series.dim];
 	ssi_real_t *pnoise = noise;
+	Randomf random(0, 1, Randomf::DISTRIBUTION::NORMAL);
 	for (ssi_size_t i = 0; i < nfft; ++i) {
 		for (ssi_size_t j = 0; j < series.dim; ++j) {
-			*pnoise++ = ssi_cast (ssi_real_t, noise_mean + noise_std * ssi_random_distr (0.0,1.0));
+			*pnoise++ = ssi_cast (ssi_real_t, noise_mean + noise_std * random.next ());
 		}
 	}
 

@@ -44,6 +44,7 @@ bool ex_checkbox(void *arg);
 bool ex_button(void *arg);
 bool ex_text(void *arg);
 bool ex_grid(void *arg);
+bool ex_event(void *arg);
 
 #define CONSOLE_WIDTH 650
 #define CONSOLE_HEIGHT 600
@@ -74,6 +75,8 @@ int main () {
 	ex.add(ex_button, 0, "BUTTON", "How to use a button to send messages to another object");
 	ex.add(ex_text, 0, "TEXT", "How to use a text field to contorl an option of to another object");
 	ex.add(ex_grid, 0, "CONTROL", "How to control options of another object through a property grid");
+	ex.add(ex_event, 0, "EVENT", "How to control options of another object through an event");
+
 #endif
 
 	ex.show();
@@ -341,5 +344,56 @@ bool ex_grid(void *arg) {
 
 	return true;
 }
+
+bool ex_event(void *arg) {
+
+	ITheFramework *frame = Factory::GetFramework();
+	ITheEventBoard *board = Factory::GetEventBoard();
+
+	Decorator *decorator = ssi_create_id(Decorator, 0, "decorator");
+	decorator->getOptions()->setOrigin(CONSOLE_WIDTH, 0);
+	frame->AddDecorator(decorator);
+
+
+	Mouse *mouse = ssi_create(Mouse, 0, true);
+	mouse->getOptions()->mask = Mouse::LEFT;
+	mouse->getOptions()->flip = true;
+	mouse->getOptions()->scale = true;
+	mouse->getOptions()->single = false;
+	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
+	frame->AddSensor(mouse);
+
+	ZeroEventSender *ezero = ssi_create_id(ZeroEventSender, 0, "ezero");
+	ezero->getOptions()->mindur = 0.2;
+	ezero->getOptions()->setAddress("click@mouse");
+	ezero->getOptions()->setString("test");
+	frame->AddConsumer(button_p, ezero, "0.2s");
+	board->RegisterSender(*ezero);
+
+	ControlEvent *cevent = ssi_create_id(ControlEvent, 0, "cevent");
+	board->RegisterListener(*cevent, "@mouse");
+
+	decorator->add("plot*", 1, 2, 0, 0, 400, CONSOLE_HEIGHT);
+
+	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->all = true;
+	monitor->getOptions()->chars = 1000;
+	monitor->getOptions()->update_ms = 100;
+	board->RegisterListener(*monitor, 0, 60000);
+
+	decorator->add("monitor", 400, 0, 400, CONSOLE_HEIGHT / 2);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
 
 #endif

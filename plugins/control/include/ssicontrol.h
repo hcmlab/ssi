@@ -34,5 +34,6 @@
 #include "ControlTextBox.h"
 #include "ControlButton.h"
 #include "ControlGrid.h"
+#include "ControlEvent.h"
 
 #endif

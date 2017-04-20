@@ -51,10 +51,10 @@ public:
 		Options ()
 			: percentage (0) {
 
-			addOption ("percentage ", &percentage , 1, SSI_FLOAT, "if > 0 keeps this percentage from the total variance");					
+			addOption ("percentage", &percentage , 1, SSI_FLOAT, "if > 0 keeps this percentage from the total variance");					
 		};
 
-		ssi_real_t percentage ;
+		ssi_real_t percentage;
 	};
 
 public:

@@ -165,6 +165,9 @@
     <ClCompile Include="..\..\source\RSPFeaturesTime.cpp">
       <Filter>Source Files\RSP</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\GSRClean.cpp">
+      <Filter>Source Files\GSR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ssibiosig.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\RSPFeaturesTime.h">
       <Filter>Header Files\RSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GSRClean.h">
+      <Filter>Header Files\GSR</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(ssiml)
 
-include_directories(include ../../../core/include ../../../plugins/
+include_directories(include ../../../core/include ../../../plugins/  ..
 
 )
 
@@ -34,16 +34,28 @@ include_directories(include ../../../core/include ../../../plugins/
 set(COMMON_SRC_FILES
 
 
+source/Annotation.cpp
+#source/AnnotationMongoVisitor.cpp
+source/arff_attr.cpp
+source/arff_data.cpp
+source/arff_instance.cpp
+source/arff_lexer.cpp
+source/arff_parser.cpp
+source/arff_scanner.cpp
+source/arff_token.cpp
+source/arff_utils.cpp
+source/arff_value.cpp
 source/ElanDocument.cpp
 source/ElanTier.cpp
 source/ElanTools.cpp
-source/Evaluation.cpp
 source/Evaluation2Latex.cpp
 source/EvaluationCont.cpp
+source/Evaluation.cpp
 source/FindNN.cpp
-source/ISAlignStrms.cpp
 source/ISDuplStrms.cpp
+source/ISFlatSample.cpp
 source/ISHotClass.cpp
+source/ISMergeDim.cpp
 source/ISMergeSample.cpp
 source/ISMergeStrms.cpp
 source/ISMissingData.cpp
@@ -62,18 +74,13 @@ source/KMeans.cpp
 source/KmTree.cpp
 source/KmUtils.cpp
 source/Machine.cpp
+source/ModelTools.cpp
 source/SampleArff.cpp
+source/SampleList.cpp
 source/Selection.cpp
 source/Trainer.cpp
-source/arff_attr.cpp
-source/arff_data.cpp
-source/arff_instance.cpp
-source/arff_lexer.cpp
-source/arff_parser.cpp
-source/arff_scanner.cpp
-source/arff_token.cpp
-source/arff_utils.cpp
-source/arff_value.cpp
+
+
 
 
 
@@ -89,7 +96,7 @@ IF(MINGW)
   	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb" )
   ELSEIF(UNIX)
 
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ggdb -fPIC" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSI_CFLAG} -std=c++11 -ggdb -fPIC" )
 
 ELSE(MINGW)
 

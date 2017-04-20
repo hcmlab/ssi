@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2005-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2005-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -284,7 +284,7 @@
  * and @link gloox::GPGEncrypted GPGEncrypted @endlink)
  * @li @xep{0030} @link gloox::Disco Service Discovery @endlink
  * @li @xep{0045} @link gloox::MUCRoom Multi-User Chat @endlink
- * @li @xep{0047} Used with @ref filetransfer_sec
+ * @li @xep{0047} In-Band Bytestreams, used with @ref filetransfer_sec
  * @li @xep{0048} @link gloox::BookmarkStorage Bookmark Storage @endlink
  * @li @xep{0049} @link gloox::PrivateXML Private XML Storage @endlink
  * @li @xep{0050} @link gloox::Adhoc Ad-hoc Commands @endlink
@@ -296,7 +296,7 @@
  * @li @xep{0077} @link gloox::Registration In-Band Registration @endlink
  * @li @xep{0078} Non-SASL Authentication (automatically used if the server does not support SASL)
  * @li @xep{0079} @link gloox::AMP Advanced Message Processing @endlink
- * @li @xep{0083} Nested Roster Groups (automatically used if supported by the server. see
+ * @li @xep{0083} Nested Roster Groups (automatically used if supported by the server, see
  * @link gloox::RosterManager::delimiter() RosterManager @endlink)
  * @li @xep{0085} Chat State Notifications (see @link gloox::MessageSession MessageSession @endlink for
  * examples)
@@ -321,7 +321,7 @@
  * @li @xep{0198} Stream Management (integrated into @link gloox::Client @endlink)
  * @li @xep{0199} @link gloox::ClientBase::xmppPing() XMPP Ping @endlink
  * @li @xep{0203} @link gloox::DelayedDelivery Delayed Delivery @endlink (new spec)
- * @li @xep{0206} @link gloox::ConnectionBOSH see BOSH @endlink
+ * @li @xep{0206} XMPP Over BOSH, see @link gloox::ConnectionBOSH BOSH @endlink
  * @li @xep{0224} @link gloox::Attention Attention @endlink
  * @li @xep{0234} @link gloox::Jingle::FileTransfer Jingle File Transfer @endlink
  * @li @xep{0256} @link gloox::LastActivity::Query Last Activity in Presence @endlink
@@ -606,7 +606,7 @@ namespace gloox
   /** Use of Cryptographic Hash Functions in XMPP namespace (@xep{0300}) */
   GLOOX_API extern const std::string XMLNS_HASHES;
 
-  /** IO Data (@xep 0244) */
+  /** IO Data (@xep{0244}) */
   GLOOX_API extern const std::string XMLNS_IODATA;
 
   /** Supported stream version (major). */

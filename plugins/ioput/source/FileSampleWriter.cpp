@@ -26,7 +26,7 @@
 
 #include "FileSampleWriter.h"
 #include "ioput/file/FileTools.h"
-#include "model/SampleList.h"
+#include "ssiml/include/SampleList.h"
 #include "base/Factory.h"
 #include "thread/Lock.h"
 
@@ -47,7 +47,7 @@ FileSampleWriter::FileSampleWriter (const ssi_char_t *file)
 	: _file (0),
 	_sample(0),
 	_mutex(0),
-	_class_id(SSI_ISAMPLES_GARBAGE_CLASS_ID),
+	_class_id(SSI_SAMPLE_GARBAGE_CLASS_ID),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
@@ -135,7 +135,7 @@ bool FileSampleWriter::classFromEvent(ssi_event_t *e) {
 		Lock lock(*_mutex);
 
 		if (e->ptr[0] == '\0') {
-			_class_id = SSI_ISAMPLES_GARBAGE_CLASS_ID;
+			_class_id = SSI_SAMPLE_GARBAGE_CLASS_ID;
 		} else {
 			_class_id = _out.getClassId(e->ptr);
 		}
@@ -183,7 +183,7 @@ void FileSampleWriter::consume_flush (ssi_size_t stream_in_num,
 	
 	_out.close ();	
 
-	_class_id = SSI_ISAMPLES_GARBAGE_CLASS_ID;
+	_class_id = SSI_SAMPLE_GARBAGE_CLASS_ID;
 	for (ssi_size_t i = 0; i < stream_in_num; i++) {
 		_sample->streams[i] = 0;
 	}

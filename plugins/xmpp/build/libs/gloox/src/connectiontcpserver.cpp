@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2004-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2004-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -26,7 +26,8 @@
 #include "util.h"
 
 #ifdef __MINGW32__
-# include <winsock.h>
+# include <winsock2.h>
+# include <ws2tcpip.h>
 #endif
 
 #if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __SYMBIAN32__ )
@@ -43,7 +44,8 @@
 #endif
 
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-# include <winsock.h>
+# include <winsock2.h>
+# include <ws2tcpip.h>
 #elif defined( _WIN32_WCE )
 # include <winsock2.h>
 #endif
@@ -53,6 +55,11 @@
 
 #ifndef _WIN32_WCE
 # include <sys/types.h>
+#endif
+
+// remove for 1.1
+#ifndef INVALID_SOCKET
+# define INVALID_SOCKET -1
 #endif
 
 namespace gloox
@@ -72,6 +79,49 @@ namespace gloox
   ConnectionBase* ConnectionTCPServer::newInstance() const
   {
     return new ConnectionTCPServer( m_connectionHandler, m_logInstance, m_server, m_port );
+  }
+
+  // remove for 1.1
+  int ConnectionTCPServer::getSocket( int af, int socktype, int proto, const LogSink& logInstance )
+  {
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+    SOCKET fd;
+#else
+    int fd;
+#endif
+    if( ( fd = ::socket( af, socktype, proto ) ) == INVALID_SOCKET )
+    {
+      std::string message = "getSocket( "
+      + util::int2string( af ) + ", "
+      + util::int2string( socktype ) + ", "
+      + util::int2string( proto )
+      + " ) failed. "
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+      "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+#else
+      "errno: " + util::int2string( errno ) + ": " + strerror( errno );
+#endif
+      logInstance.dbg( LogAreaClassDns, message );
+
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+      if( WSACleanup() != 0 )
+      {
+        logInstance.dbg( LogAreaClassDns, "WSACleanup() failed. WSAGetLastError: "
+        + util::int2string( ::WSAGetLastError() ) );
+      }
+#endif
+
+      return -ConnConnectionRefused;
+    }
+
+#ifdef HAVE_SETSOCKOPT
+    int timeout = 5000;
+    int reuseaddr = 1;
+    setsockopt( fd, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof( timeout ) );
+    setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof( reuseaddr ) );
+#endif
+
+    return (int)fd;
   }
 
   ConnectionError ConnectionTCPServer::connect()
@@ -105,16 +155,33 @@ namespace gloox
       setsockopt( m_socket, SOL_SOCKET, SO_SNDBUF, (char*)&m_bufsize, sizeof( m_bufsize ) );
 #endif
 
-    struct sockaddr_in local;
-    local.sin_family = AF_INET;
-    local.sin_port = static_cast<unsigned short int>( htons( m_port ) );
-    local.sin_addr.s_addr = m_server.empty() ? INADDR_ANY : inet_addr( m_server.c_str() );
-    memset( local.sin_zero, '\0', 8 );
+    int status = 0;
+    struct addrinfo hints;
+    struct addrinfo *res;
 
-    if( bind( m_socket, (struct sockaddr*)&local, sizeof( struct sockaddr ) ) < 0 )
+    memset( &hints, 0, sizeof hints );
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+    status = getaddrinfo( m_server.c_str(), util::int2string( m_port ).c_str(), &hints, &res );
+    if( status != 0 )
+    {
+      std::string message = "getaddrinfo() for " + ( m_server.empty() ? std::string( "*" ) : m_server )
+          + " (" + util::int2string( m_port ) + ") failed. "
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+      "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+#else
+      "errno: " + util::int2string( errno );
+#endif
+      return ConnIoError;
+    }
+
+    m_socket = ::socket( res->ai_family, res->ai_socktype, res->ai_protocol );
+
+    if( bind( m_socket, res->ai_addr, res->ai_addrlen ) < 0 )
     {
       std::string message = "bind() to " + ( m_server.empty() ? std::string( "*" ) : m_server )
-          + " (" + inet_ntoa( local.sin_addr ) + ":" + util::int2string( m_port ) + ") failed. "
+          + " (" + /*inet_ntoa( local.sin_addr ) + ":" +*/ util::int2string( m_port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
           "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
 #else
@@ -128,7 +195,7 @@ namespace gloox
     if( listen( m_socket, 10 ) < 0 )
     {
       std::string message = "listen on " + ( m_server.empty() ? std::string( "*" ) : m_server )
-          + " (" + inet_ntoa( local.sin_addr ) + ":" + util::int2string( m_port ) + ") failed. "
+          + " (" + /*inet_ntoa( local.sin_addr ) +*/ ":" + util::int2string( m_port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
           "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
 #else
@@ -159,18 +226,25 @@ namespace gloox
       return ConnNoError;
     }
 
-    struct sockaddr_in they;
-    int sin_size = sizeof( struct sockaddr_in );
+    struct sockaddr_storage they;
+    int addr_size = sizeof( struct sockaddr_storage );
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-    int newfd = static_cast<int>( accept( static_cast<SOCKET>( m_socket ), (struct sockaddr*)&they, &sin_size ) );
+    int newfd = static_cast<int>( accept( static_cast<SOCKET>( m_socket ), (struct sockaddr*)&they, &addr_size ) );
 #else
-    int newfd = accept( m_socket, (struct sockaddr*)&they, (socklen_t*)&sin_size );
+    int newfd = accept( m_socket, (struct sockaddr*)&they, (socklen_t*)&addr_size );
 #endif
 
     m_recvMutex.unlock();
 
-    ConnectionTCPClient* conn = new ConnectionTCPClient( m_logInstance, inet_ntoa( they.sin_addr ),
-                                                         ntohs( they.sin_port ) );
+    char buffer[INET6_ADDRSTRLEN];
+    char portstr[NI_MAXSERV];
+    int err = getnameinfo( (struct sockaddr*)&they, addr_size, buffer, sizeof( buffer ),
+                           portstr, sizeof( portstr ), NI_NUMERICHOST | NI_NUMERICSERV );
+    if( !err )
+      return ConnIoError;
+
+    ConnectionTCPClient* conn = new ConnectionTCPClient( m_logInstance, buffer,
+                                                         atoi( portstr ) );
     conn->setSocket( newfd );
     m_connectionHandler->handleIncomingConnection( this, conn );
 

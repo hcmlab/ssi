@@ -30,6 +30,7 @@ using namespace ssi;
 bool ex_address (void *arg);
 bool ex_eboard(void *arg);
 bool ex_sender(void *arg);
+bool ex_trigger(void *arg);
 bool ex_clock(void *arg);
 bool ex_thresclass(void *arg);
 bool ex_xmlsender(void *arg);
@@ -114,13 +115,16 @@ int main () {
 	Factory::RegisterDLL ("ssimouse");
 	Factory::RegisterDLL ("ssisignal");
 
-	ssi_random_seed ();
+#if SSI_RANDOM_LEGACY_FLAG	
+	ssi_random_seed();
+#endif
 
 	Exsemble ex;
 	ex.console(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT);
 	ex.add(&ex_address, 0, "ADDRESS", "How to use 'EventAddress' to compose an event address.");
 	ex.add(&ex_eboard, 0, "EBOARD", "How to send/receive events using 'EventBoard'.");
 	ex.add(&ex_sender, 0, "SENDER", "How to send/receive events in a pipeline.");
+	ex.add(&ex_trigger, 0, "TRIGGER", "How to use 'TriggerEventSender' in a pipeline.");
 	ex.add(&ex_thresclass, 0, "THRESCLASS", "How to use 'ThresClassEventSender' in a pipeline.");
 	ex.add(&ex_clock, 0, "CLOCK", "How to use 'ClockEventSender' in a pipeline.");
 	ex.add(&ex_xmlsender, 0, "XMLSENDER", "How to use 'XmlEventSender' in a pipeline.");	
@@ -161,7 +165,7 @@ bool ex_address (void *arg) {
 	return true;
 }
 
-bool ex_eboard (void *arg) {
+bool ex_eboard (void *arg) {	
 
 	Decorator *decorator = ssi_create(Decorator, 0, true);
 	ITheEventBoard *board = Factory::GetEventBoard();
@@ -179,8 +183,9 @@ bool ex_eboard (void *arg) {
 	MyListener listener;
 	board->RegisterListener(listener, ea.getAddress());
 
+	Randomi random(0, n_sender - 1);
 	for (ssi_size_t i = 0; i < 200; i++) {
-		ssi_size_t index = ssi_random (n_sender-1);
+		ssi_size_t index = random.next();
 		sender[index].fire ();				
 		Sleep (10);
 	}
@@ -264,7 +269,7 @@ bool ex_thresclass (void *arg) {
 	frame->AddDecorator(decorator);
 
 	Mouse *mouse = ssi_create (Mouse, "mouse", true);
-	mouse->getOptions()->scale = true;
+	mouse->getOptions()->scale = true;	
 	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 	
@@ -291,6 +296,140 @@ bool ex_thresclass (void *arg) {
 
 	decorator->add("plot*", 0, 0, 400, CONSOLE_HEIGHT/2);
 	decorator->add("monitor*", 0, CONSOLE_HEIGHT / 2, 400, CONSOLE_HEIGHT / 2);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_trigger(void *arg) {
+
+	ITheEventBoard *board = Factory::GetEventBoard("board");
+	ssi_pcast(TheEventBoard, board)->getOptions()->update = 10;
+	ITheFramework *frame = Factory::GetFramework("frame");
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	Mouse *mouse = ssi_create(Mouse, 0, true);
+	mouse->getOptions()->mask = Mouse::LEFT;
+	mouse->getOptions()->scale = true;
+	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
+	frame->AddSensor(mouse);
+
+	TriggerEventSender *trigger;
+
+	ssi_etype_t etype = SSI_ETYPE_MAP;
+
+	trigger = ssi_create(TriggerEventSender, "trigger_equal", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::EQUAL;
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->setAddress("equal@trigger");
+	trigger->getOptions()->sendStartEvent = true;
+	trigger->getOptions()->setEventString("zero");
+	frame->AddConsumer(button_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+	trigger = ssi_create(TriggerEventSender, "trigger_not_zero", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;	
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->hangInDuration = 1.5;
+	trigger->getOptions()->hangOutDuration = 1.5;
+	trigger->getOptions()->maxDuration = 5.0;
+	trigger->getOptions()->incDuration = 2.0;
+	trigger->getOptions()->setAddress("not_equal@trigger");
+	trigger->getOptions()->setEventString("not_zero");
+	trigger->getOptions()->sendStartEvent = true;
+	frame->AddConsumer(button_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+	trigger = ssi_create(TriggerEventSender, "trigger_greater", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::GREATER;	
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->thresholdIn = 0.9;	
+	trigger->getOptions()->thresholdOut = 0.75;
+	trigger->getOptions()->hardThreshold = true;
+	trigger->getOptions()->minDuration = 0.2;
+	trigger->getOptions()->maxDuration = 5.0;
+	trigger->getOptions()->incDuration = 1.0;
+	trigger->getOptions()->setAddress("greater@trigger");
+	trigger->getOptions()->sendStartEvent = true;
+	trigger->getOptions()->setEventString("x;y");
+	frame->AddConsumer(cursor_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+	trigger = ssi_create(TriggerEventSender, "trigger_lesser", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::LESSER;
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->thresholdIn = 0.1;
+	trigger->getOptions()->thresholdOut = 0.25;
+	trigger->getOptions()->hardThreshold = true;
+	trigger->getOptions()->minDuration = 0.2;
+	trigger->getOptions()->maxDuration = 5.0;
+	trigger->getOptions()->incDuration = 1.0;
+	trigger->getOptions()->setAddress("lesser@trigger");
+	trigger->getOptions()->setEventString("x;y");
+	trigger->getOptions()->sendStartEvent = true;
+	frame->AddConsumer(cursor_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+	trigger = ssi_create(TriggerEventSender, "trigger_range", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::IN_RANGE;
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->thresholdIn = 0.4;
+	trigger->getOptions()->thresholdOut = 0.4;
+	trigger->getOptions()->thresholdInEnd = 0.6;
+	trigger->getOptions()->thresholdOutEnd = 0.6;
+	trigger->getOptions()->hardThreshold = true;
+	trigger->getOptions()->minDuration = 0.2;
+	trigger->getOptions()->maxDuration = 5.0;
+	trigger->getOptions()->incDuration = 1.0;
+	trigger->getOptions()->setAddress("range@trigger");
+	trigger->getOptions()->sendStartEvent = true;
+	trigger->getOptions()->setEventString("x;y");
+	frame->AddConsumer(cursor_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+	trigger = ssi_create(TriggerEventSender, "trigger_not_range", true);
+	trigger->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_IN_RANGE;
+	trigger->getOptions()->eventType = etype;
+	trigger->getOptions()->thresholdIn = 0.4;
+	trigger->getOptions()->thresholdOut = 0.4;
+	trigger->getOptions()->thresholdInEnd = 0.6;
+	trigger->getOptions()->thresholdOutEnd = 0.6;
+	trigger->getOptions()->hardThreshold = true;
+	trigger->getOptions()->minDuration = 0.2;
+	trigger->getOptions()->maxDuration = 5.0;
+	trigger->getOptions()->incDuration = 1.0;
+	trigger->getOptions()->setAddress("not_range@trigger");
+	trigger->getOptions()->setEventString("x;y");
+	trigger->getOptions()->sendStartEvent = true;
+	frame->AddConsumer(cursor_p, trigger, "0.25s");
+	board->RegisterSender(*trigger);
+
+
+	EventMonitor *monitor = 0;
+	
+	monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->setTitle("(NOT)EQUAL");
+	board->RegisterListener(*monitor, "equal,not_equal@", 60000, IEvents::EVENT_STATE_FILTER::ALL);
+
+	monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->setTitle("LESSER/GREATER");
+	board->RegisterListener(*monitor, "greater,lesser@", 60000, IEvents::EVENT_STATE_FILTER::ALL);
+
+	monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->setTitle("(NOT)RANGE");
+	board->RegisterListener(*monitor, "range,not_range@", 60000, IEvents::EVENT_STATE_FILTER::ALL);
+
+	decorator->add("monitor*", 1, 0, CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
 
 	board->Start();
 	frame->Start();

@@ -26,12 +26,12 @@
 
 #include "Machine.h"
 #include "base/Factory.h"
-#include "ioput/file/StringList.h"
+#include "base/StringList.h"
 #include "ioput/wav/WavTools.h"
 #include "ioput/file/FileTools.h"
 #include "ElanDocument.h"
 #include "signal/SignalTools.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "ElanTools.h"
 #include "Trainer.h"
 #include "ISOverSample.h"
@@ -51,20 +51,20 @@ bool Machine::Init (Machine::Config &config) {
 	ssi_char_t sstring[SSI_MAX_CHAR];
 	ssi_char_t starget[SSI_MAX_CHAR];
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.transformFolderName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.transformFolderName.str ());
 	ssi_mkdir (sstring);
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.eventFolderName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.eventFolderName.str ());
 	ssi_mkdir (sstring);
 
 	if(config.doSnippets){
-		ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.snippetFolderName.str ());
+        ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.snippetFolderName.str ());
 		ssi_mkdir (sstring);
 	}
 
 	ssi_print ("\nINIT > %s (%s)\n\n", config.listName.str (), config.signalName.str ());
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -78,7 +78,7 @@ bool Machine::Init (Machine::Config &config) {
 
 		if (config.isAudio) {
 
-			ssi_sprint (sstring, "%s\\%s\\%s.wav", config.rawFolderName.str (), session, config.signalName.str ());
+            ssi_sprint (sstring, "%s/%s/%s.wav", config.rawFolderName.str (), session, config.signalName.str ());
 			ssi_print ("process > '%s'\n", sstring);
 			if (!WavTools::ReadWavFile (sstring, from, true)) {
 				return false;
@@ -86,7 +86,7 @@ bool Machine::Init (Machine::Config &config) {
 
 		} else {
 
-			ssi_sprint (sstring, "%s\\%s\\%s", config.rawFolderName.str (), session, config.signalName.str ());
+            ssi_sprint (sstring, "%s/%s/%s", config.rawFolderName.str (), session, config.signalName.str ());
 			ssi_print ("process > '%s'\n", sstring);
 			if (!FileTools::ReadStreamFile (sstring, from)) {
 				return false;
@@ -96,14 +96,15 @@ bool Machine::Init (Machine::Config &config) {
 		if (i == 0) {
 			sr = from.sr;
 			ssi_sprint (starget, "%s{%.0lf}", config.signalName.str (), sr);
-			ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), starget);
+            ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), starget);
 			ssi_mkdir (sstring);
 		} else if (sr != from.sr) {
 			ssi_wrn ("sample rate must not change (%lf != %lf)", from.sr, sr);
 			return false;
 		}
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), starget, session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), starget, session);
+
 		if (!FileTools::WriteStreamFile (File::BINARY, sstring, from)) {
 			return false;
 		}
@@ -129,13 +130,13 @@ bool Machine::Transform (Config &config, const ssi_char_t *prefix, ssi_size_t fr
 
 	ssi_print ("\nTRANSFORM > %s (%s)\n\n", config.listName.str (), theTransformer->getName ());
 
-	ssi_sprint (starget, "%s\\%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
+    ssi_sprint (starget, "%s/%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
 	ssi_mkdir (sstring);
 	//config.targetName = sstring;
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -146,13 +147,13 @@ bool Machine::Transform (Config &config, const ssi_char_t *prefix, ssi_size_t fr
 
 		ssi_stream_t from, to;
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.stream", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.stream", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!config.reCalculate && ssi_exists (sstring)) {	
 			ssi_print ("...skip\n");
 			continue;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		ssi_print ("process > '%s'\n", sstring);
 		
 		if (!FileTools::ReadStreamFile (sstring, from)) {
@@ -160,7 +161,7 @@ bool Machine::Transform (Config &config, const ssi_char_t *prefix, ssi_size_t fr
 		}
 		SignalTools::Transform (from, to, *theTransformer, frameSize, deltaSize, true, true);
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.stream", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.stream", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!FileTools::WriteStreamFile (File::ASCII, sstring, to)) {
 			return false;
 		}
@@ -177,7 +178,7 @@ bool Machine::PrepareBayesNet (Config &config, const ssi_char_t *prefix, ssi_siz
 	ssi_char_t sstring[SSI_MAX_CHAR];
 	ssi_char_t starget[SSI_MAX_CHAR];
 
-	ssi_sprint (starget, "%s\\%s\\%s", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str());
+    ssi_sprint (starget, "%s/%s/%s", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str());
 	ssi_mkdir(starget);
 
 	ssi_char_t tierNameInverted[SSI_MAX_CHAR];
@@ -185,7 +186,7 @@ bool Machine::PrepareBayesNet (Config &config, const ssi_char_t *prefix, ssi_siz
 
 	ssi_print ("\nSAMPLES > %s\n\n", config.listName.str ());
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);
 
@@ -194,7 +195,7 @@ bool Machine::PrepareBayesNet (Config &config, const ssi_char_t *prefix, ssi_siz
 		const ssi_char_t *session = sessions.get (i);		
 		ssi_print ("session > %s\n", session);
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.eaf", config.rootFolder.str (), config.rawFolderName.str (), session, config.annoName.str ());
+        ssi_sprint (sstring, "%s/%s/%s/%s.eaf", config.rootFolder.str (), config.rawFolderName.str (), session, config.annoName.str ());
 		ssi_print ("process > '%s'\n", sstring);
 
 		ElanDocument *elanDoc = ElanDocument::Read (sstring);		 
@@ -211,7 +212,7 @@ bool Machine::PrepareBayesNet (Config &config, const ssi_char_t *prefix, ssi_siz
 		tierPack.split (tierPackSplit, tierPackSplit, tierNameInverted, frameSize, deltaSize, ssi_cast (ssi_size_t, 0.5 * frameSize + 0.5), 0);
 		tierPackSplit.sort();
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s_%s.txt", config.rootFolder.str (), config.rawFolderName.str (), session, config.fusionName.str(), tierName);
+        ssi_sprint (sstring, "%s/%s/%s/%s_%s.txt", config.rootFolder.str (), config.rawFolderName.str (), session, config.fusionName.str(), tierName);
 		ssi::File *tierAnno = ssi::File::CreateAndOpen(File::ASCII, File::WRITE, sstring);
 		ElanTier::iterator it;
 		for (it = tierPackSplit.begin(); it != tierPackSplit.end(); it++) {
@@ -239,9 +240,9 @@ bool Machine::SamplesFromSingleTier(Config &config, const ssi_char_t *prefix, ss
 
 	ssi_print ("\nSAMPLES > %s\n\n", config.listName.str ());
 
-	ssi_sprint (starget, "%s\\%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
+    ssi_sprint (starget, "%s/%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());	
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
 	
 	if(ssi_mkdir (sstring)){
 		ssi_print("\ncreated directory %s\n", sstring);
@@ -249,7 +250,7 @@ bool Machine::SamplesFromSingleTier(Config &config, const ssi_char_t *prefix, ss
 		ssi_print("\ncould not create directory %s\n", sstring);
 	}
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -261,21 +262,21 @@ bool Machine::SamplesFromSingleTier(Config &config, const ssi_char_t *prefix, ss
 		ssi_stream_t from;
 		SampleList to;
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 
 		if (!config.reCalculate && ssi_exists (sstring)) {	
 			ssi_print ("...skip\n");
 			continue;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		ssi_print ("process > '%s'\n", sstring);
 
 		if (!FileTools::ReadStreamFile (sstring, from)) {
 			return false;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
+        ssi_sprint (sstring, "%s/%s/%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
 		ssi_print ("split > '%s'\n", sstring);
 
 		ElanDocument *elanDoc = ElanDocument::Read (sstring);		 
@@ -327,7 +328,7 @@ bool Machine::SamplesFromSingleTier(Config &config, const ssi_char_t *prefix, ss
 
 		}*/
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!ModelTools::SaveSampleList (to, sstring, File::ASCII)) {
 			return false;
 		}
@@ -347,12 +348,12 @@ bool Machine::SamplesFromMultipleTiers(Config &config, const ssi_char_t *prefix,
 
 	ssi_print ("\nSAMPLES > %s\n\n", config.listName.str ());
 
-	ssi_sprint (starget, "%s\\%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
+    ssi_sprint (starget, "%s/%s{f%ud%u}", config.sourceName.str (), prefix, frameSize, deltaSize);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
 	ssi_mkdir (sstring);
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -364,21 +365,21 @@ bool Machine::SamplesFromMultipleTiers(Config &config, const ssi_char_t *prefix,
 		ssi_stream_t from;
 		SampleList to;
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 
 		if (!config.reCalculate && ssi_exists (sstring)) {		
 			ssi_print ("...skip\n");
 			continue;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		ssi_print ("process > '%s'\n", sstring);
 
 		if (!FileTools::ReadStreamFile (sstring, from)) {
 			return false;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
+        ssi_sprint (sstring, "%s/%s/%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
 		ssi_print ("split > '%s'\n", sstring);
 
 		ElanDocument *elanDoc = ElanDocument::Read (sstring);		 
@@ -407,7 +408,7 @@ bool Machine::SamplesFromMultipleTiers(Config &config, const ssi_char_t *prefix,
 
 		}
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!ModelTools::SaveSampleList(to, sstring, File::ASCII)) {
 			return false;
 		}
@@ -429,10 +430,10 @@ bool Machine::SamplesSelectWithinTier (Config &config, const ssi_char_t *prefix,
 
 	ssi_sprint (starget, "%s_%s", config.sourceName.str (), prefix);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
 	ssi_mkdir (sstring);
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -441,7 +442,7 @@ bool Machine::SamplesSelectWithinTier (Config &config, const ssi_char_t *prefix,
 		const ssi_char_t *session = sessions.get (i);		
 		ssi_print ("session > %s\n", session);		
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 
 		if (!config.reCalculate && ssi_exists (sstring)) {		
 			ssi_print ("...skip\n");
@@ -450,7 +451,7 @@ bool Machine::SamplesSelectWithinTier (Config &config, const ssi_char_t *prefix,
 
 		SampleList samples;
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		ssi_print ("load > '%s'\n", sstring);
 
 		if (!ModelTools::LoadSampleList (samples, sstring)) {
@@ -460,7 +461,7 @@ bool Machine::SamplesSelectWithinTier (Config &config, const ssi_char_t *prefix,
 		samples.sort ();
 		ModelTools::PrintInfo (samples, ssiout);
 
-		ssi_sprint (sstring, "%s\\%s\\%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
+        ssi_sprint (sstring, "%s/%s/%s.eaf", config.rawFolderName.str (), session, config.annoName.str ());
 		ssi_print ("select > '%s'\n", sstring);
 
 		ElanDocument *elanDoc = ElanDocument::Read (sstring);		 
@@ -505,7 +506,7 @@ bool Machine::SamplesSelectWithinTier (Config &config, const ssi_char_t *prefix,
 		ISSelectSample samples_s (&samples);
 		samples_s.setSelection (n_select, select);
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!ModelTools::SaveSampleList (samples_s, sstring, File::BINARY)) {
 			return false;
 		}
@@ -526,10 +527,10 @@ bool Machine::SamplesFromStream (Config &config, const ssi_char_t *prefix, const
 
 	ssi_sprint (starget, "%s_%s", config.sourceName.str (), prefix);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str ());
 	ssi_mkdir (sstring);
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -541,21 +542,21 @@ bool Machine::SamplesFromStream (Config &config, const ssi_char_t *prefix, const
 		ssi_stream_t from;
 		SampleList to;
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.samples", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.samples", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str (), session);
 
 		if (!config.reCalculate && ssi_exists (sstring)) {		
 			ssi_print ("...skip\n");
 			continue;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		ssi_print ("process > '%s'\n", sstring);
 
 		if (!FileTools::ReadStreamFile (sstring, from)) {
 			return false;
 		}
 		
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.eaf", config.rootFolder.str (), config.rawFolderName.str (), session, config.annoName.str ());
+        ssi_sprint (sstring, "%s/%s/%s/%s.eaf", config.rootFolder.str (), config.rawFolderName.str (), session, config.annoName.str ());
 		ssi_print ("split > '%s'\n", sstring);
 
 		ssi_size_t class_id = to.addClassName (className);
@@ -571,7 +572,7 @@ bool Machine::SamplesFromStream (Config &config, const ssi_char_t *prefix, const
 			to.addSample (sample);
 		}
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.sampleFolderName.str (), config.targetName.str (), session);
 		if (!ModelTools::SaveSampleList (to, sstring, File::BINARY)) {
 			return false;
 		}
@@ -591,13 +592,13 @@ bool Machine::Trigger (Config &config, const ssi_char_t *prefix, const ssi_char_
 
 	ssi_print ("\nTRIGGER > %s\n\n", config.listName.str ());
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);
 
-	ssi_sprint (starget, "%s\\%s{%s,%g}", config.sourceName.str (), prefix, config.triggerName.str(), thres);
+    ssi_sprint (starget, "%s/%s{%s,%g}", config.sourceName.str (), prefix, config.triggerName.str(), thres);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str ());
 	
 	if(ssi_mkdir (sstring)){
 		ssi_print("\ncreated directory %s\n", sstring);
@@ -610,7 +611,7 @@ bool Machine::Trigger (Config &config, const ssi_char_t *prefix, const ssi_char_
 		const ssi_char_t *session = sessions.get (i);		
 		ssi_print ("session > %s\n", session);		
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s.samples", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!config.reCalculate && ssi_exists (sstring)) {		
 			ssi_print ("...skip\n");
 			continue;
@@ -619,12 +620,12 @@ bool Machine::Trigger (Config &config, const ssi_char_t *prefix, const ssi_char_
 		SampleList samples;
 		ssi_stream_t stream;
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		if (!ModelTools::LoadSampleList (samples, sstring)) {
 			return false;
 		}
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), trigger, session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), trigger, session);
 		if (!FileTools::ReadStreamFile (sstring, stream)) {
 			return false;
 		}		
@@ -635,7 +636,7 @@ bool Machine::Trigger (Config &config, const ssi_char_t *prefix, const ssi_char_
 		ISMissingData samples_m (&samples_t);
 		samples_m.setStream (stream_index);
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.targetName.str (), session);
 		if (!ModelTools::SaveSampleList(samples_m, sstring, File::BINARY)) {
 			return false;
 		}
@@ -655,7 +656,7 @@ bool Machine::Collect (Config &config, SampleList &samples) {
 
 	ssi_print ("\nCOLLECT > %s\n\n", config.listName.str ());
 
-	ssi_sprint (sstring, "%s\\%s", config.rootFolder.str (), config.listName.str ());
+    ssi_sprint (sstring, "%s/%s", config.rootFolder.str (), config.listName.str ());
 	StringList sessions;
 	FileTools::ReadFilesFromFile (sessions, sstring);	
 
@@ -664,7 +665,7 @@ bool Machine::Collect (Config &config, SampleList &samples) {
 		const ssi_char_t *session = sessions.get (i);		
 		ssi_print ("session > %s\n", session);		
 
-		ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
+        ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), session);
 		if (!ModelTools::LoadSampleList (samples, sstring)) {
 			return false;
 		}
@@ -682,7 +683,7 @@ bool Machine::Train (Config &config, ISamples &samples, const ssi_char_t *prefix
 	ssi_char_t starget[SSI_MAX_CHAR];
 
 	ssi_print ("\nTRAIN > %s + %s\n\n", model->getName (), ResampleTypeNames[type]);
-	ssi_sprint (starget, "%s\\%s\\%s\\%s{%s}", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), prefix, ResampleTypeNames[type]);
+    ssi_sprint (starget, "%s/%s/%s/%s{%s}", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), prefix, ResampleTypeNames[type]);
 
 	if(ssi_mkdir (starget)){
 		ssi_print("\ncreated directory %s\n", starget);
@@ -695,7 +696,7 @@ bool Machine::Train (Config &config, ISamples &samples, const ssi_char_t *prefix
 	ssi_print ("...samples\n");
 	ModelTools::PrintInfo (samples, ssiout);
 
-	ssi_sprint (sstring, "%s\\class.trainer", config.targetName.str ());
+    ssi_sprint (sstring, "%s/class.trainer", config.targetName.str ());
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -738,7 +739,7 @@ bool Machine::Train (Config &config, ISamples &samples, const ssi_char_t *prefix
 		return false;
 	}
 
-	ssi_sprint (sstring, "%s\\class", config.targetName.str ());
+    ssi_sprint (sstring, "%s/class", config.targetName.str ());
 	ssi_print ("save > '%s' \n", sstring);
 	if (!trainer.save (sstring)) {
 		return false;
@@ -754,7 +755,7 @@ bool Machine::TrainFusion (Config &config1, Config &config2, ISamples &samples, 
 	ssi_char_t starget[SSI_MAX_CHAR];
 
 	ssi_print ("\nTRAIN > %s + %s\n\n", fusion->getName (), ResampleTypeNames[type]);
-	ssi_sprint (starget, "%s\\%s\\%s_%s_%s{%s}", config1.rootFolder.str(), config1.transformFolderName.str(), config1.signalName.str (), config2.signalName.str (), prefix, ResampleTypeNames[type]);
+    ssi_sprint (starget, "%s/%s/%s_%s_%s{%s}", config1.rootFolder.str(), config1.transformFolderName.str(), config1.signalName.str (), config2.signalName.str (), prefix, ResampleTypeNames[type]);
 
 	if(ssi_mkdir (starget)){
 		ssi_print("\ncreated directory %s\n", starget);
@@ -768,7 +769,7 @@ bool Machine::TrainFusion (Config &config1, Config &config2, ISamples &samples, 
 	ssi_print ("...samples\n");
 	ModelTools::PrintInfo (samples, ssiout);
 
-	ssi_sprint (sstring, "%s\\class.trainer", starget);
+    ssi_sprint (sstring, "%s/class.trainer", starget);
 	if (!config1.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -805,7 +806,7 @@ bool Machine::TrainFusion (Config &config1, Config &config2, ISamples &samples, 
 		return false;
 	}
 
-	ssi_sprint (sstring, "%s\\class", starget);
+    ssi_sprint (sstring, "%s/class", starget);
 	ssi_print ("save > '%s' \n", sstring);
 	if (!trainer.save (sstring)) {
 		return false;
@@ -826,7 +827,7 @@ bool Machine::Eval (Machine::Config &config, ISamples &samples) {
 	ModelTools::PrintInfo (samples, ssiout);
 
 	ssi_print ("...evaluation\n");
-	ssi_sprint (sstring, "%s\\eval.txt", config.sourceName.str ());
+    ssi_sprint (sstring, "%s/eval.txt", config.sourceName.str ());
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		FILE *fp = ssi_fopen(sstring, "r");
@@ -838,7 +839,7 @@ bool Machine::Eval (Machine::Config &config, ISamples &samples) {
 		return true;
 	}
 
-	ssi_sprint (sstring, "%s\\class", config.sourceName.str ());
+    ssi_sprint (sstring, "%s/class", config.sourceName.str ());
 	ssi_print ("load > '%s'\n", sstring);
 	Trainer trainer;
 	if (!trainer.Load (trainer, sstring)) {
@@ -849,7 +850,7 @@ bool Machine::Eval (Machine::Config &config, ISamples &samples) {
 	eval.eval (&trainer, samples);
 	ssi_size_t n_result;
 	const ssi_size_t *result = eval.get_result_vec (n_result);
-	ssi_sprint (sstring, "%s\\decisions.txt", config.sourceName.str ());
+    ssi_sprint (sstring, "%s/decisions.txt", config.sourceName.str ());
 	FILE *fp = ssi_fopen(sstring, "w");
 	for (ssi_size_t i = 0; i < n_result; i++) {
 		fprintf (fp, "%u %u\n", result[i*2], result[i*2+1]);
@@ -857,7 +858,7 @@ bool Machine::Eval (Machine::Config &config, ISamples &samples) {
 	fclose (fp);
 
 	eval.print ();
-	ssi_sprint (sstring, "%s\\eval.txt", config.sourceName.str ());
+    ssi_sprint (sstring, "%s/eval.txt", config.sourceName.str ());
 	fp = ssi_fopen(sstring, "w");
 	eval.print (fp);
 	fclose (fp);
@@ -980,7 +981,7 @@ bool Machine::EventListToStream (Config &config, ssi_time_t sr, ssi_size_t dim, 
 	ssi_sprint (starget, "%s", config.sourceName.str ());
 	config.targetName = starget;
 
-	ssi_sprint (sstring, "%s\\%s\\%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.targetName.str ());
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -989,7 +990,7 @@ bool Machine::EventListToStream (Config &config, ssi_time_t sr, ssi_size_t dim, 
 	ssi_size_t n_events = 0;
 	ssi_event_t *events = 0;	
 
-	ssi_sprint (sstring, "%s\\%s\\%s.events", config.rootFolder.str (), config.eventFolderName.str (), config.sourceName.str ());
+    ssi_sprint (sstring, "%s/%s/%s.events", config.rootFolder.str (), config.eventFolderName.str (), config.sourceName.str ());
 	if (!LoadEventList (sstring, n_events, &events)) {
 		return false;
 	}
@@ -1011,7 +1012,7 @@ bool Machine::EventListToStream (Config &config, ssi_time_t sr, ssi_size_t dim, 
 		}
 	}
 	
-	ssi_sprint (sstring, "%s\\%s\\%s", config.rootFolder.str (), config.eventFolderName.str (), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s", config.rootFolder.str (), config.eventFolderName.str (), config.targetName.str ());
 	ssi_print ("save > '%s' \n", sstring);
 	if (!FileTools::WriteStreamFile (File::BINARY, sstring, stream)) {
 		return false;
@@ -1030,14 +1031,14 @@ bool Machine::CreateEventList (Config &config, const ssi_char_t *prefix, ISample
 	
 	ssi_print ("\nCREATE EVENTS\n\n");
 	
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), config.eventFolderName.str());
+    ssi_sprint (sstring, "%s/%s/%s/%s", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), config.eventFolderName.str());
 	if(ssi_mkdir (sstring)){
 		ssi_print("\ncreated directory %s\n", sstring);
 	}else{
 		ssi_print("\ncould not create directory %s\n", sstring);
 	}
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s\\boost_%.3f", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), config.eventFolderName.str(), boost);
+    ssi_sprint (sstring, "%s/%s/%s/%s/boost_%.3f", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str (), config.eventFolderName.str(), boost);
 	if(ssi_mkdir (sstring)){
 		ssi_print("\ncreated directory %s\n", sstring);
 	}else{
@@ -1046,7 +1047,7 @@ bool Machine::CreateEventList (Config &config, const ssi_char_t *prefix, ISample
 
 	ssi_sprint (starget, "%s", sstring);
 	config.targetName = starget;
-	ssi_sprint (sstring, "%s\\e.events", starget);
+    ssi_sprint (sstring, "%s/e.events", starget);
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -1055,7 +1056,7 @@ bool Machine::CreateEventList (Config &config, const ssi_char_t *prefix, ISample
 	ssi_print ("...samples\n");
 	ModelTools::PrintInfo (samples, ssiout);
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\class.trainer", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str ());
+    ssi_sprint (sstring, "%s/%s/%s/class.trainer", config.rootFolder.str (), config.transformFolderName.str (), config.sourceName.str ());
 	Trainer trainer;
 	Trainer::Load (trainer, sstring);
 
@@ -1108,7 +1109,7 @@ bool Machine::CreateEventList (Config &config, const ssi_char_t *prefix, ISample
 		count++;
 	}
 
-	ssi_sprint (sstring, "%s\\e.events", starget);
+    ssi_sprint (sstring, "%s/e.events", starget);
 	ssi_print ("save > '%s' \n", sstring);
 	if (!SaveEventList (sstring, n_events, events, n_classes, class_ids, sender_id, event_id)) {
 		return false;
@@ -1132,7 +1133,7 @@ bool Machine::EventFusion(Config &config, const ssi_char_t *prefix, IObject *fus
 	ssi_sprint (starget, "%s", prefix);
 	config.targetName = starget;
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), config.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s/%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), config.targetName.str ());
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -1141,7 +1142,7 @@ bool Machine::EventFusion(Config &config, const ssi_char_t *prefix, IObject *fus
 	ssi_size_t n_events = 0;
 	ssi_event_t *events = 0;	
 
-	ssi_sprint (sstring, "%s\\e.events", config.sourceName.str ());
+    ssi_sprint (sstring, "%s/e.events", config.sourceName.str ());
 	if (!LoadEventList (sstring, n_events, &events)) {
 		return false;
 	}
@@ -1210,7 +1211,7 @@ bool Machine::EventFusion(Config &config1, Config &config2, const ssi_char_t *pr
 	config1.targetName = starget;
 	config2.targetName = starget;
 
-	ssi_sprint (sstring, "%s\\%s\\%s.stream", config1.rootFolder.str (), config1.eventFolderName.str (), config1.targetName.str ());
+    ssi_sprint (sstring, "%s/%s/%s.stream", config1.rootFolder.str (), config1.eventFolderName.str (), config1.targetName.str ());
 	if (!config1.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		return true;
@@ -1221,7 +1222,7 @@ bool Machine::EventFusion(Config &config1, Config &config2, const ssi_char_t *pr
 	ssi_size_t n_events1 = 0;
 	ssi_event_t *events1 = 0;	
 
-	ssi_sprint (sstring, "%s\\e.events", config1.sourceName.str ());
+    ssi_sprint (sstring, "%s/e.events", config1.sourceName.str ());
 	if (!LoadEventList (sstring, n_events1, &events1)) {
 		return false;
 	}
@@ -1229,7 +1230,7 @@ bool Machine::EventFusion(Config &config1, Config &config2, const ssi_char_t *pr
 	ssi_size_t n_events2 = 0;
 	ssi_event_t *events2 = 0;	
 
-	ssi_sprint (sstring, "%s\\e.events", config2.sourceName.str ());
+    ssi_sprint (sstring, "%s/e.events", config2.sourceName.str ());
 	if (!LoadEventList (sstring, n_events2, &events2)) {
 		return false;
 	}
@@ -1350,7 +1351,7 @@ bool Machine::EventFusionEval (Config &config, const ssi_char_t *prefix, ssi_rea
 	config.targetName = starget;	
 
 	ssi_print ("...evaluation\n");
-	/*ssi_sprint (sstring, "%s\\%s\\%s.txt", config.rootFolder.str (), config.eventFolderName.str (), starget);
+    /*ssi_sprint (sstring, "%s/%s/%s.txt", config.rootFolder.str (), config.eventFolderName.str (), starget);
 	if (!config.reCalculate && ssi_exists (sstring)) {	
 		ssi_print ("...skip\n");
 		FILE *fp = ssi_fopen (sstring, "r");
@@ -1362,7 +1363,7 @@ bool Machine::EventFusionEval (Config &config, const ssi_char_t *prefix, ssi_rea
 		return true;
 	}*/
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), config.sourceName.str ());
+    ssi_sprint (sstring, "%s/%s/%s/%s.stream", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), config.sourceName.str ());
 	ssi_stream_t result;
 	FileTools::ReadStreamFile (sstring, result);
 
@@ -1399,14 +1400,14 @@ bool Machine::EventFusionEval (Config &config, const ssi_char_t *prefix, ssi_rea
 		}
 	}
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s_decisions.txt", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), starget);
+    ssi_sprint (sstring, "%s/%s/%s/%s_decisions.txt", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), starget);
 	FILE *fp = ssi_fopen(sstring, "w");
 	for (ssi_size_t i = 0; i < n_samples; i++) {
 		fprintf (fp, "%u %u\n", truth[i], guess[i]);
 	}
 	fclose (fp);
 
-	ssi_sprint (sstring, "%s\\%s\\%s\\%s.txt", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), starget);	
+    ssi_sprint (sstring, "%s/%s/%s/%s.txt", config.rootFolder.str (), config.eventFolderName.str (), config.fusionName.str(), starget);
 	File *tmp = File::CreateAndOpen (File::ASCII, File::WRITE, sstring);
 	FILE *file = tmp->getFile ();
 	tmp->setType (SSI_UINT);

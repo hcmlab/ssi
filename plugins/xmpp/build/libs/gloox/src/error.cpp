@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2007-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2007-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -88,7 +88,7 @@ namespace gloox
 
   Error::Error( const Error& error )
     : StanzaExtension( ExtError ), m_type( error.m_type ),
-      m_error( error.m_error ), m_appError( error.m_appError ? m_appError->clone() : 0 )
+      m_error( error.m_error ), m_appError( error.m_appError ? error.m_appError->clone() : 0 )
   {}
 
   Error::~Error()

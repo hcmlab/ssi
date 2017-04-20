@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<annotation ssi-v="3">
+    <info ftype="ASCII" size="50" />
+    <meta annotator="Unknown"/>
+    <scheme name="discrete" type="DISCRETE">
+        <item name="0" id="0" />
+        <item name="1" id="1" />
+        <item name="2" id="2" />
+		<item name="3" id="3" />
+        <item name="4" id="4" />
+        <item name="5" id="5" />
+		<item name="6" id="6" />
+        <item name="7" id="7" />
+        <item name="8" id="8" />
+		<item name="9" id="9" />
+    </scheme>
+</annotation>

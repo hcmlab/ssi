@@ -47,6 +47,8 @@ public:
 	ISOverSample (ISamples *samples);
 	~ISOverSample ();	
 
+	void setSeed(ssi_size_t seed);
+
 	bool setOver (Strategy strategy);
 	bool setOver (ssi_size_t class_id, ssi_size_t add_n_samples, Strategy strategy);
 	bool setOver (ssi_size_t n_classes, ssi_size_t *add_n_samples, Strategy strategy);
@@ -90,6 +92,8 @@ protected:
 
 	bool doDuplicate ();
 	bool doSmote ();
+
+	ssi_size_t _seed;
 
 };
 

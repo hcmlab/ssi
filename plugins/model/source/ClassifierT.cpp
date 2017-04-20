@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ClassifierT.h"
-#include "Trainer.h"
+#include "ssiml/include/Trainer.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -43,6 +43,7 @@ ssi_char_t ClassifierT::ssi_log_name[] = "classifier";
 ClassifierT::ClassifierT (const ssi_char_t *file) 
 	: _trainer (0),	
 	_n_classes (0),
+	_borrowed(false),
 	_merged_sample_dimension (0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT),
 	_file (0) {
@@ -65,6 +66,8 @@ ClassifierT::~ClassifierT () {
 
 void ClassifierT::setTrainer (Trainer *trainer) { 
 	_trainer = trainer; 
+	_n_classes = _trainer->getClassSize();
+	_borrowed = true;
 };
 
 void ClassifierT::transform_enter (ssi_stream_t &stream_in,
@@ -105,7 +108,13 @@ void ClassifierT::transform (ITransformer::info info,
 		_trainer->forward_probs (tmp, _n_classes, class_probs);
 		ssi_stream_destroy (tmp);
 	} else {
-		_trainer->forward_probs (stream_in, _n_classes, class_probs);
+		ssi_stream_t stream = stream_in;
+		if (_options.flat)
+		{
+			stream.dim = stream.num * stream.dim;
+			stream.num = 1;
+		}
+		_trainer->forward_probs (stream, _n_classes, class_probs);
 	}	
 }
 
@@ -117,19 +126,25 @@ void ClassifierT::transform_flush (ssi_stream_t &stream_in,
 	_merged_sample_dimension = 0;
 	_n_classes = 0;
 
-	delete _trainer;
-	_trainer = 0;
+	if (!_borrowed)
+	{
+		delete _trainer;
+		_trainer = 0;
+	}
 }
 
 void ClassifierT::loadTrainer () {
 
 	// load trainer
-	if (_options.trainer[0] != '\0') {
+	if (_options.trainer[0] != '\0') 
+	{
 		_trainer = new Trainer ();
 		if (!Trainer::Load (*_trainer, _options.trainer)) {
 			ssi_err ("could not load trainer '%s'", _options.trainer);
 		}
-	} else if (!_trainer) {
+		_borrowed = false;
+	} else if (!_trainer) 
+	{
 		ssi_err ("trainer not set");
 	}
 	_n_classes = _trainer->getClassSize ();

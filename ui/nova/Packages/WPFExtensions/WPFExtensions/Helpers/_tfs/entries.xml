@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/Helpers/" id="35444" changeset="1422" shadow="212336ab4a414f0ea06af539db4e23ca" />
+  <entry name="ExtLogicalTreeHelper.cs" kind="file" id="35363" changeset="1744" />
+  <entry name="ExtVisualTreeHelper.cs" kind="file" id="35436" changeset="1422" />
+  <entry name="TreeViewHelper.cs" kind="file" id="293965" changeset="15935" />
+</entries>

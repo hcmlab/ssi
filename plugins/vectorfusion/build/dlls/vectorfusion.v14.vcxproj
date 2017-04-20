@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\CombinerVA.h" />
     <ClInclude Include="..\..\include\EVector.h" />
     <ClInclude Include="..\..\include\FusionPainter.h" />
     <ClInclude Include="..\..\include\FusionPainterVA.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="..\..\include\VectorFusionWriter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\CombinerVA.cpp" />
     <ClCompile Include="..\..\source\EVector.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\FusionPainter.cpp" />

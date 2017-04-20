@@ -331,8 +331,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         </ul></li>
         <li><a href="#xml-basics-transformer"><span class="toc-section-number">4.1.5</span> Transformer</a><ul>
         <li><a href="#xml-basics-transformer-standard"><span class="toc-section-number">4.1.5.1</span> Standard</a></li>
-        <li><a href="#xml-basics-transformer-inplace"><span class="toc-section-number">4.1.5.2</span> In-place</a></li>
-        <li><a href="#xml-basics-transformer-chain"><span class="toc-section-number">4.1.5.3</span> Chain</a></li>
+        <li><a href="#xml-basics-transformer-async"><span class="toc-section-number">4.1.5.2</span> Asynchronous</a></li>
+        <li><a href="#xml-basics-transformer-inplace"><span class="toc-section-number">4.1.5.3</span> In-place</a></li>
+        <li><a href="#xml-basics-transformer-chain"><span class="toc-section-number">4.1.5.4</span> Chain</a></li>
         </ul></li>
         <li><a href="#xml-basics-events"><span class="toc-section-number">4.1.6</span> Events</a></li>
         </ul></li>
@@ -741,7 +742,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <blockquote>
 <p>Check out the full <a href="code/xml/basics/transformer.pipeline">pipeline</a>.</p>
 </blockquote>
-<h4 id="xml-basics-transformer-inplace"><span class="header-section-number">4.1.5.2</span> In-place</h4>
+<h4 id="xml-basics-transformer-async"><span class="header-section-number">4.1.5.2</span> Asynchronous</h4>
+<p>Sometimes, we want a transformer to consume data in a greedy way, i.e. instead of waiting until the next chunk of data is available we immediately request the latest data from the head of the buffer. This is especially useful if the processing does not run in real-time, which would usually cause the transformer to fall behind and slow down the following components. Yet, to generate samples at a steady sample rate, the result of the last operation will be returned (see our previous <a href="#basics-pipelines-synchronization">discussion</a>).</p>
+<p>To run a transformer in asynchronous mode we set the <code>async</code> flag:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;transformer</span><span class="ot"> create=</span><span class="st">&quot;MvgAvgVar&quot;</span><span class="ot"> win=</span><span class="st">&quot;5.0&quot;</span><span class="ot"> format=</span><span class="st">&quot;1&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;input</span><span class="ot"> pin=</span><span class="st">&quot;pos&quot;</span><span class="ot"> frame=</span><span class="st">&quot;0.1s&quot;</span><span class="ot"> async=</span><span class="st">&quot;true&quot;</span><span class="kw">/&gt;</span>
+    <span class="kw">&lt;output</span><span class="ot"> pin=</span><span class="st">&quot;pos-avg-async&quot;</span><span class="kw">/&gt;</span>
+<span class="kw">&lt;/transformer&gt;</span></code></pre></div>
+<blockquote>
+<p>Check out the full <a href="code/xml/basics/transformer_async.pipeline">pipeline</a>.</p>
+</blockquote>
+<h4 id="xml-basics-transformer-inplace"><span class="header-section-number">4.1.5.3</span> In-place</h4>
 <p>If we manipulate a stream on-the-fly we call it an <em>in-place</em> manipulation. In that case the result of the transformation is not stored in a buffer, but directly handed over to a component. Only consumers and sensors support in-place manipulation, and in the latter case only filter components are allowed. For instance, we can remove the y coordinate from the cursor position by adding a <code>Selector</code> (from the <code>frame</code> plugin-in) to the channel where the cursor stream is created:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;sensor</span><span class="ot"> create=</span><span class="st">&quot;Mouse:mouse&quot;</span><span class="ot"> option=</span><span class="st">&quot;mouse&quot;</span><span class="ot"> sr=</span><span class="st">&quot;50.0&quot;</span><span class="ot"> mask=</span><span class="st">&quot;1&quot;</span><span class="kw">&gt;</span>     
     <span class="kw">&lt;output</span><span class="ot"> channel=</span><span class="st">&quot;cursor&quot;</span><span class="ot"> pin=</span><span class="st">&quot;pos&quot;</span><span class="kw">&gt;</span>
@@ -757,7 +768,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <blockquote>
 <p>Check out the full <a href="code/xml/basics/transformer_inplace.pipeline">pipeline</a>.</p>
 </blockquote>
-<h4 id="xml-basics-transformer-chain"><span class="header-section-number">4.1.5.3</span> Chain</h4>
+<h4 id="xml-basics-transformer-chain"><span class="header-section-number">4.1.5.4</span> Chain</h4>
 <p>A <code>Chain</code> bundles multiple transformer in a single component. More precisely, an input stream first passes a number of filter steps, which are applied in-series, i.e. the output of the first filter servers as input for the second filter and so on. The output of the last filter operation is then forwarded to each feature component and results are concatenated. Like in the case of <a href="#xml-basics-transformer-inplace">in-place</a> transformations intermediate results are not stored. The filter/feature components are defined in a xml file (ending on <code>.chain</code>) and will be applied in order of occurrence, e.g.:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;chain&gt;</span>
     <span class="kw">&lt;filter&gt;</span>

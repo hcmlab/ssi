@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<annotation ssi-v="3">    
+    <scheme name="discrete" type="DISCRETE">
+		<item name="empty" id="0" />
+		<item name="string" id="1" />
+        <item name="x" id="2" />
+        <item name="y" id="3" />
+    </scheme>
+</annotation>

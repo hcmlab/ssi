@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 #include "signal/include/ssisignal.h"
 using namespace ssi;
@@ -49,8 +49,6 @@ bool ex_model_norm(void *arg);
 bool ex_fusion(void *arg);
 bool ex_hierarchical(void *arg);
 
-void CreateMissingData (SampleList &samples, double prob);
-
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
 	#ifdef _DEBUG
@@ -72,11 +70,12 @@ int main () {
 	Factory::RegisterDLL ("ssigraphic.dll");
 	Factory::RegisterDLL ("ssisignal.dll");
 
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed ();
+#endif
 
 	Exsemble exsemble;
-	exsemble.console(0, 0, 650, 800);
-	exsemble.add(&ex_random, 0, "RANDOM", "Test of random number generator.");	
+	exsemble.console(0, 0, 650, 800);	
 	exsemble.add(&ex_eval, 0, "EVALUATION", "How to do an evaluation.");
 	exsemble.add(&ex_model, 0, "MODEL", "How to train a single model.");
 	exsemble.add(&ex_model_norm, 0, "MODEL+NORM", "How to train a single model + normalization.");
@@ -92,30 +91,6 @@ int main () {
 #endif
 	
 	return 0;
-}
-
-bool ex_random(void *arg) {
-
-	unsigned int seed = ssi_cast (unsigned int, time (NULL));
-	ssi_size_t n = 100000;
-
-	ssi_tic ();
-	for (ssi_size_t i = 0; i < n; i++) {
-		ssi_random ();
-	}
-	ssi_toc_print ();
-
-	ssi_print ("\n");
-
-	ssi_tic ();
-	for (ssi_size_t i = 0; i < n; i++) {
-		ssi_random_distr (0,1);
-	}
-	ssi_toc_print ();
-
-	ssi_print ("\n");
-
-	return true;
 }
 
 bool ex_eval(void *arg) {
@@ -484,20 +459,5 @@ bool ex_fusion(void *arg) {
 	ssi_print("\n");
 
 	return true;
-}
-
-void CreateMissingData (SampleList &samples, double prob) {
-
-	ssi_size_t n_streams = samples.getStreamSize ();
-	ssi_sample_t *sample = 0;
-	samples.reset ();
-	while (sample = samples.next ()) {
-		for (ssi_size_t nstrm = 0; nstrm < n_streams; nstrm++) {
-			if (ssi_random () > prob) {							
-				ssi_stream_reset (*sample->streams[nstrm]);
-			}
-		}
-	}
-	samples.setMissingData (true);
 }
 

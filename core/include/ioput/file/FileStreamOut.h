@@ -49,16 +49,19 @@ public:
 		File::TYPE type, 
 		File::VERSION version = DEFAULT_VERSION);
 	bool open (ssi_stream_t &data, // data is not written!		
-		ssi_size_t n_meta, 
-		const void *meta,
 		const ssi_char_t *path,
+		ssi_size_t n_meta, 
+		const void *meta,		
+		ssi_size_t n_keys,
+		ssi_char_t **keys,		
+		ssi_char_t **values,
 		File::TYPE type, 
 		File::VERSION version = DEFAULT_VERSION);
 	bool close ();
 	bool write (ssi_stream_t &data, 
 		bool continued);
 
-	void setDelim(ssi_char_t *delim);	
+	void setDelim(const ssi_char_t *delim);	
 	
 	File *getInfoFile () {
 		return _file_info;
@@ -82,7 +85,7 @@ protected:
 	ssi_stream_t _stream;
 	ssi_size_t _sample_count;
 	ssi_time_t _last_time;
-	ssi_size_t _last_byte;
+	int64_t _last_byte;
 	ssi_char_t _string[1024];
 	bool _console;
 	ssi_char_t *_path;

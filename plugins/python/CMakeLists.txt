@@ -45,6 +45,8 @@ include_directories(
 					../../core/include/ioput/socket
 					../../core/include/ioput
 					../../core/include
+                                        ../../libs/build/
+                                        ..
 					${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS}
 					)
 

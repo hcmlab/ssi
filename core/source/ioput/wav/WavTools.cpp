@@ -298,7 +298,7 @@ ssi_byte_t *WavTools::WriteWavMemory(ssi_stream_t &stream, ssi_size_t &n_bytes) 
 
 	if (!(stream.type == SSI_FLOAT || stream.type == SSI_SHORT)) {
 		ssi_wrn("stream type '%s' not supported", SSI_TYPE_NAMES[stream.type]);
-		return false;
+		return NULL;
 	}
 
 	WAVEFORMATEX format = CreateFormat(stream);
@@ -319,7 +319,7 @@ ssi_byte_t *WavTools::WriteWavChunkMemory(ssi_stream_t &stream, ssi_size_t &n_by
 
 	if (!(stream.type == SSI_FLOAT || stream.type == SSI_SHORT)) {
 		ssi_wrn("stream type '%s' not supported", SSI_TYPE_NAMES[stream.type]);
-		return false;
+		return NULL;
 	}
 
 	WAVEFORMATEX format = CreateFormat(stream);
@@ -394,12 +394,12 @@ bool WavTools::RepairWavFile (const ssi_char_t *path,
 		return false;
 	}
 
-	ssi_size_t from = file->tell ();
+	int64_t from = file->tell ();
 	file->seek (0, File::END);
-	ssi_size_t to = file->tell ();
+	int64_t to = file->tell ();
 	file->seek (from, File::BEGIN);
 
-	ssi_size_t sample_number = (to-from) / (header.nChannels * header.nBitsPerSample / 8);
+	ssi_size_t sample_number = ssi_size_t(to-from) / (header.nChannels * header.nBitsPerSample / 8);
 	ssi_stream_init (data, sample_number, header.nChannels, header.nBitsPerSample / 8, SSI_SHORT, header.nSamplesPerSec);
 	file->read (data.ptr, 1, data.tot);
 

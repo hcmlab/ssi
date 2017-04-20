@@ -40,8 +40,8 @@ public:
 	ISHotClass (ISamples *samples);
 	~ISHotClass ();	
 
-	bool setHotClass(ssi_size_t hot_id, const ssi_char_t *rest_name = SSI_ISAMPLES_REST_CLASS_NAME);
-	bool setHotClass(ssi_size_t n_hotties, ssi_size_t *hotties, const ssi_char_t *hot_name, const ssi_char_t *rest_name = SSI_ISAMPLES_REST_CLASS_NAME);
+	bool setHotClass(ssi_size_t hot_id, const ssi_char_t *rest_name = SSI_SAMPLE_REST_CLASS_NAME);
+	bool setHotClass(ssi_size_t n_hotties, ssi_size_t *hotties, const ssi_char_t *hot_name, const ssi_char_t *rest_name = SSI_SAMPLE_REST_CLASS_NAME);
 
 	void reset () { _samples.reset (); };
 	ssi_sample_t *get (ssi_size_t index);

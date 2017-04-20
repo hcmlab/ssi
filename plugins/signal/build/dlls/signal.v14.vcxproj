@@ -232,6 +232,7 @@
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\Expression.cpp" />
     <ClCompile Include="..\..\source\FFTfeat.cpp" />
+    <ClCompile Include="..\..\source\FilterTools.cpp" />
     <ClCompile Include="..\..\source\Functionals.cpp" />
     <ClCompile Include="..\..\source\FunctionalsEventSender.cpp" />
     <ClCompile Include="..\..\source\Gate.cpp" />
@@ -239,6 +240,7 @@
     <ClCompile Include="..\..\source\Integral.cpp" />
     <ClCompile Include="..\..\source\Intensity.cpp" />
     <ClCompile Include="..\..\source\Limits.cpp" />
+    <ClCompile Include="..\..\source\Mean.cpp" />
     <ClCompile Include="..\..\source\MFCC.cpp" />
     <ClCompile Include="..\..\source\Multiply.cpp" />
     <ClCompile Include="..\..\source\MvgAvgVar.cpp" />
@@ -252,6 +254,7 @@
     <ClCompile Include="..\..\source\Noise.cpp" />
     <ClCompile Include="..\..\source\Normalize.cpp" />
     <ClCompile Include="..\..\source\Pulse.cpp" />
+    <ClCompile Include="..\..\source\Relative.cpp" />
     <ClCompile Include="..\..\source\Spectrogram.cpp" />
     <ClCompile Include="..\..\source\Statistics.cpp" />
     <ClCompile Include="..\..\source\Sum.cpp" />
@@ -265,6 +268,7 @@
     <ClInclude Include="..\..\include\Energy.h" />
     <ClInclude Include="..\..\include\Expression.h" />
     <ClInclude Include="..\..\include\FFTfeat.h" />
+    <ClInclude Include="..\..\include\FilterTools.h" />
     <ClInclude Include="..\..\include\Functionals.h" />
     <ClInclude Include="..\..\include\FunctionalsEventSender.h" />
     <ClInclude Include="..\..\include\Gate.h" />
@@ -272,6 +276,7 @@
     <ClInclude Include="..\..\include\Integral.h" />
     <ClInclude Include="..\..\include\Intensity.h" />
     <ClInclude Include="..\..\include\Limits.hpp" />
+    <ClInclude Include="..\..\include\Mean.h" />
     <ClInclude Include="..\..\include\MFCC.h" />
     <ClInclude Include="..\..\include\Multiply.h" />
     <ClInclude Include="..\..\include\MvgAvgVar.h" />
@@ -285,6 +290,7 @@
     <ClInclude Include="..\..\include\Noise.h" />
     <ClInclude Include="..\..\include\Normalize.h" />
     <ClInclude Include="..\..\include\Pulse.h" />
+    <ClInclude Include="..\..\include\Relative.h" />
     <ClInclude Include="..\..\include\Spectrogram.h" />
     <ClInclude Include="..\..\include\ssisignal.h" />
     <ClInclude Include="..\..\include\Statistics.h" />

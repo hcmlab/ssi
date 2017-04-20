@@ -49,9 +49,9 @@ public:
 	ssi_size_t pack (ElanTier &tier, const char *delim = " "); // concatenates contiguous annotation items, requires sorted list; returns added items
 	void unify (const char *string); // set all annotation item to string
 	void sort (); // sorts annotation items by start time
-	ssi_size_t invert (ElanTier &tier, String value = "", ssi_size_t tiersize = 0); // inverts annotation items; returns inverted items
-	ssi_size_t split (ElanTier &tier, ssi_size_t framesize, ssi_size_t deltasize, ssi_size_t dropsize); // splits annotation items in frames of length 'framesize', drops frames <= dropsize; returns added items
-	ssi_size_t split (ElanTier &tier, ElanTier &inverse, String inverseValue, ssi_size_t framesize, ssi_size_t deltasize, ssi_size_t dropsize, ssi_size_t tiersize = 0); // like split, but also returns inverted items
+	ssi_size_t invert (ElanTier &tier, String value = "", ssi_size_t tiersize_ms = 0); // inverts annotation items; returns inverted items
+	ssi_size_t split (ElanTier &tier, ssi_size_t framesize_ms, ssi_size_t deltasize_ms, ssi_size_t dropsize_ms); // splits annotation items in frames of length 'framesize', drops frames <= dropsize; returns added items
+	ssi_size_t split (ElanTier &tier, ElanTier &inverse, String inverseValue, ssi_size_t framesize_ms, ssi_size_t deltasize_ms, ssi_size_t dropsize_ms, ssi_size_t tiersize_ms = 0); // like split, but also returns inverted items
 	 
 	void print (FILE *file = stdout);
 

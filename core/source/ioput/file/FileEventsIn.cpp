@@ -83,7 +83,7 @@ bool FileEventsIn::open (const ssi_char_t *path) {
 	}
 
 	_doc = new TiXmlDocument();
-	if (!_doc->LoadFile (_file->getFile ())) {
+	if (!_doc->LoadFile (_file->getFile (), false)) {
 		ssi_wrn("failed loading samples from file '%s'", _path);
 		return 0;
 	}

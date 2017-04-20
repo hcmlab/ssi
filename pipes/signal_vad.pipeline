@@ -19,7 +19,7 @@
 	</transformer>
 	
 	<!-- activity detection -->
-	<consumer create="ZeroEventSender" mindur="0.3" maxdur="5.0" eager="true" hangin="3" hangout="10" address="vad@audio">
+	<consumer create="TriggerEventSender" minDuration="0.3" maxDuration="5.0" sendStartEvent="true" hangInDuration="0.1s" hangOutDuration="0.3s" address="vad@audio">
 		<input pin="vad" frame="0.1s"/>
 	</consumer>
 	
@@ -34,7 +34,6 @@
 	<object create="EventMonitor:monitor">
 		<listen address="vad@audio" span="10000"/>
 	</object>
-	
 	
 	<!-- decoration -->
 	<object create="Decorator" icon="true" title="Pipeline">

@@ -38,8 +38,8 @@ else(ANDROID)
 add_subdirectory(xmlTrain)
 add_dependencies(ssixmltrain ssimodel ssi )
 
-add_subdirectory(Train)
-add_dependencies(ssimlpxmltrain ssimodel ssi )
+#add_subdirectory(Train)
+#add_dependencies(ssimlpxmltrain ssimodel ssi )
 
 add_subdirectory(anno2sample)
 add_dependencies(ssianno2sample ssimodel ssi )

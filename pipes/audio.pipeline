@@ -5,7 +5,8 @@
 		<load name="graphic" />
 		<load name="audio"/>
 	</register>
-	<!-- audio sensor -->
+
+		<!-- audio sensor -->
 	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
 		<output channel="audio" pin="audio"/>
 	</sensor>

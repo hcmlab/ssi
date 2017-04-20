@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 #include "signal/include/ssisignal.h"
 using namespace ssi;
@@ -62,7 +62,9 @@ int main () {
 	Factory::RegisterDLL ("ssigraphic.dll");
 	Factory::RegisterDLL ("ssisignal.dll");
 
-	ssi_random_seed ();
+#if SSI_RANDOM_LEGACY_FLAG
+	ssi_random_seed();
+#endif
 
 	ex_fsel ();
 

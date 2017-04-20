@@ -252,6 +252,8 @@ void ThresEventSender::set_thresout (double thresout, ssi_type_t type) {
 void ThresEventSender::consume_enter (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
+	ssi_wrn("deprecated, use 'TriggerEventSender' instead");
+
 	_trigger_on = false;
 	_hangover_in = _options.hangin;
 	_hangover_out = _options.hangout;

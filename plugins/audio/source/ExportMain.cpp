@@ -72,6 +72,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::WavProvider::GetCreateName (),ssi::WavProvider::Create) && result;	
 	result = ssi::Factory::Register (ssi::PreEmphasis::GetCreateName (),ssi::PreEmphasis::Create) && result;	
 	result = ssi::Factory::Register(ssi::AudioMono::GetCreateName(), ssi::AudioMono::Create) && result;
+	result = ssi::Factory::Register(ssi::AudioNoiseGate::GetCreateName(), ssi::AudioNoiseGate::Create) && result;
 
 	return result;
 }

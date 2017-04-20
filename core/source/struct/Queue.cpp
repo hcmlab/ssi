@@ -180,7 +180,7 @@ Queue *Queue::Load(const ssi_char_t *filepath, void(*fromFile) (const ssi_char_t
 	FILE *fp = fopen(filepath, "rb");
 	if (!fp) {
 		ssi_wrn("could not open file '%s'", filepath);
-		return false;
+		return NULL;
 	}
 
 	Queue *q = Load(filepath, fp, fromFile);

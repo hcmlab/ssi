@@ -84,6 +84,8 @@ namespace ssi {
 
 static const bool USE_DERIVATIVE = true;
 
+class Derivative;
+
 class OSMfccChain : public IFeature {
 
 public:
@@ -163,6 +165,10 @@ public:
 	}
 	virtual OSMfcc *getOSMfcc () {
 		return _mfcc;
+	}	
+	virtual IFilter *getDeltas()
+	{		
+		return _deltas;	
 	}
 
 protected:

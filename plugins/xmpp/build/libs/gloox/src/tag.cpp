@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2005-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2005-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -91,7 +91,7 @@ namespace gloox
     return true;
   }
 
-  const std::string& Tag::Attribute::xmlns() const
+  const std::string Tag::Attribute::xmlns() const
   {
     if( !m_xmlns.empty() )
       return m_xmlns;
@@ -539,12 +539,12 @@ namespace gloox
     }
   }
 
-  const std::string& Tag::xmlns() const
+  const std::string Tag::xmlns() const
   {
     return xmlns( m_prefix );
   }
 
-  const std::string& Tag::xmlns( const std::string& prefix ) const
+  const std::string Tag::xmlns( const std::string& prefix ) const
   {
     if( prefix.empty() )
     {

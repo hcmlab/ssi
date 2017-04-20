@@ -159,7 +159,7 @@ bool SocketTcp::disconnect () {
 	_is_connected = false;
 	delete _thread; _thread = 0;
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "closed [udp]");
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "closed [tcp]");
 	return true;
 }
 

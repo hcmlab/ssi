@@ -33,7 +33,7 @@
 #include "KmUtils.h"
 #include "KMeans.h"
 #include "KmTree.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "ioput/file/File.h"
 #include "ISOverSample.h"
 #include <sstream>

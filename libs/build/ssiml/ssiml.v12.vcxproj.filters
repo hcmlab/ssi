@@ -62,9 +62,6 @@
     <ClInclude Include="include\FindNN.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ISAlignStrms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ISDuplStrms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -137,6 +134,18 @@
     <ClInclude Include="include\Machine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Annotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SampleList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ISMergeDim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\arff_attr.cpp">
@@ -185,9 +194,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\FindNN.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ISAlignStrms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ISDuplStrms.cpp">
@@ -257,6 +263,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Machine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Annotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ModelTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SampleList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ISMergeDim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

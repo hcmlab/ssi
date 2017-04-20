@@ -40,8 +40,9 @@ public:
 	PaintRandomPoints(int n) : n_tools(n) {
 
 		tools = new IPainter::ITool *[n_tools];
-		for (ssi_size_t i = 0; i < n_tools; i++) {
-			ssi_rgb_t color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
+		Randomi random(0, 255);
+		for (ssi_size_t i = 0; i < n_tools; i++) {			
+			ssi_rgb_t color = ssi_rgb(random.next(), random.next(), random.next());
 			tools[i] = new Painter::Pen(color);
 		}
 	}
@@ -66,10 +67,11 @@ public:
 		ssi_point_t point;
 
 		painter.begin(hdc, rect);
-		for (ssi_size_t i = 0; i < n_tools; i++)
-		{
-			point.x = ssi_random(rect.width + 1u);
-			point.y = ssi_random(rect.height + 1u);
+		Randomi randomw(0, rect.width + 1);
+		Randomi randomh(0, rect.height + 1);
+		for (ssi_size_t i = 0; i < n_tools - 1; i++) {
+			point.x = randomw.next();
+			point.y = randomh.next();
 			painter.pixel(*tools[i], point);
 		}
 		painter.end();

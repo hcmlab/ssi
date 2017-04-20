@@ -108,7 +108,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -150,7 +150,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\core\include;..\..\include;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\core\include;..\..\include;..\..\..;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -185,6 +185,7 @@
     <ClCompile Include="..\..\source\GSRArousalEstimation.cpp" />
     <ClCompile Include="..\..\source\GSRArtifactFilter.cpp" />
     <ClCompile Include="..\..\source\GSRBaselineMean.cpp" />
+    <ClCompile Include="..\..\source\GSRClean.cpp" />
     <ClCompile Include="..\..\source\GSRFeatures.cpp" />
     <ClCompile Include="..\..\source\GSRResponseEventListener.cpp" />
     <ClCompile Include="..\..\source\GSREventSender.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="..\..\include\GSRArousalEstimation.h" />
     <ClInclude Include="..\..\include\GSRArtifactFilter.h" />
     <ClInclude Include="..\..\include\GSRBaselineMean.h" />
+    <ClInclude Include="..\..\include\GSRClean.h" />
     <ClInclude Include="..\..\include\GSRFeatures.h" />
     <ClInclude Include="..\..\include\GSRResponseEventListener.h" />
     <ClInclude Include="..\..\include\GSREventSender.h" />

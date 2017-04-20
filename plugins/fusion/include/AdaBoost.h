@@ -29,11 +29,9 @@
 #define SSI_MODEL_ADABOOST_H
 
 #include "base/IFusion.h"
-#include "model/ModelTools.h"
+#include "..\..\libs\build\ssiml\include\ModelTools.h"
 #include "ioput/file/FileBinary.h"
 #include "ioput/option/OptionList.h"
-
-using namespace std;
 
 namespace ssi {
 

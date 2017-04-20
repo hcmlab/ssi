@@ -25,6 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -57,7 +58,9 @@ int main () {
 	Factory::RegisterDLL ("ssisignal");
 	Factory::RegisterDLL ("ssimodel");
 
-	ssi_random_seed ();
+#if SSI_RANDOM_LEGACY_FLAG	
+	ssi_random_seed();
+#endif
 	
 	Exsemble ex;
 	ex.add(&ex_value2string, 0, "VALUE2STRING", "How to convert a value to a string.");

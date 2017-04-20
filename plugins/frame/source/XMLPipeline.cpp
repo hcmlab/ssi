@@ -168,20 +168,35 @@ bool XMLPipeline::parse (const ssi_char_t *filepath, ssi_size_t n_confs, ssi_cha
 		_n_global_confpaths = n_confs;
 		_global_confpaths = new ssi_char_t *[_n_global_confpaths];
 		ssi_char_t *global_confpath_with_ext = 0;
+		ssi_char_t *key, *value;
 		for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {
 			if (confpaths[i] != 0) {
-				FilePath fpc (confpaths[i]);
-				if (strcmp (fpc.getExtension (), SSI_FILE_TYPE_PCONFIG) != 0) {
-					global_confpath_with_ext = ssi_strcat (confpaths[i], SSI_FILE_TYPE_PCONFIG);
-				} else {
-					global_confpath_with_ext = ssi_strcpy (confpaths[i]);
-				}
-				if (ssi_exists (global_confpath_with_ext)) {
-					_global_confpaths[i] = global_confpath_with_ext;
-				} else {
-					ssi_wrn ("could not find config file '%s'", confpaths[i]);
+
+				if (ssi_parse_option(confpaths[i], &key, &value))
+				{
+					_variables[String(key)] = String(value);
 					_global_confpaths[i] = 0;
-					delete[] global_confpath_with_ext;
+
+					delete[] key;
+					delete[] value;
+				}
+				else
+				{
+					FilePath fpc(confpaths[i]);
+					if (strcmp(fpc.getExtension(), SSI_FILE_TYPE_PCONFIG) != 0) {
+						global_confpath_with_ext = ssi_strcat(confpaths[i], SSI_FILE_TYPE_PCONFIG);
+					}
+					else {
+						global_confpath_with_ext = ssi_strcpy(confpaths[i]);
+					}
+					if (ssi_exists(global_confpath_with_ext)) {
+						_global_confpaths[i] = global_confpath_with_ext;
+					}
+					else {
+						ssi_wrn("could not find config file '%s'", confpaths[i]);
+						_global_confpaths[i] = 0;
+						delete[] global_confpath_with_ext;
+					}
 				}
 			}
 		}
@@ -200,6 +215,16 @@ bool XMLPipeline::parse (const ssi_char_t *filepath, ssi_size_t n_confs, ssi_cha
 		if (!pipestr) {
 			ssi_wrn("failed reading pipeline '%s'", filepath_with_ext);
 			return false;
+		}
+
+		// apply global variables
+		for (variables_map_t::iterator it = _variables.begin(); it != _variables.end(); it++)
+		{
+			ssi_char_t *old = pipestr;
+			ssi_char_t *search = ssi_strcat("$(", it->first.str(), ")");
+			pipestr = ssi_strrepl(pipestr, search, it->second.str());
+			delete[] search;
+			delete[] old;
 		}
 
 		// apply global config files
@@ -1255,6 +1280,8 @@ IConsumer *XMLPipeline::getConsumer (const ssi_char_t *name) {
 
 void XMLPipeline::clear () {
 
+	_variables.clear();
+	_consumer_map.clear();
 	_transformable_map.clear ();
 	_start_eboard = false;
 	for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {

@@ -29,6 +29,8 @@
 #include "../../signal/include/MvgAvgVar.h"
 #include "base/Factory.h"
 
+#include <ssiocv.h>
+
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
 	#ifdef _DEBUG
@@ -79,7 +81,6 @@ GSRFeatures::GSRFeatures (const ssi_char_t *file)
 }
 
 GSRFeatures::~GSRFeatures () {
-
 
 	if (_file) {
 		OptionList::SaveXML (_file, _options);
@@ -156,6 +157,114 @@ void GSRFeatures::transform( ITransformer::info info, ssi_stream_t &stream_in, s
 	psd_combo.insert(psd_combo.end(), slopes.begin(), slopes.end());
 	psd_combo.insert(psd_combo.end(), drops.begin(), drops.end());
 
+
+	float f_peak = FLT_MIN;
+	float f_si_corr = 0;
+	float f_p2pmv = 0; //peak to peak mean value
+
+	if (_options.new_features) {
+		
+
+		ssi_real_t *ptr_in = ssi_pcast(ssi_real_t, stream_in.ptr);
+
+		ssi_real_t *ptr_ref = ssi_pcast(ssi_real_t, _reference_stream->ptr); //TODO check if set
+
+
+		for (int nsamp = 0; nsamp < stream_in.num; nsamp++) {
+			if (ptr_in[nsamp] > f_peak) {
+				f_peak = ptr_in[nsamp];
+			}
+		}
+		if (f_peak < (FLT_MIN / 2)) f_peak = 0;
+
+		float* xc_in = new float[stream_in.num]();
+		float* xc_ref = new float[stream_in.num]();
+
+		float mean_in = 0;
+		float mean_ref = 0;
+
+		for (int i = 0; i < stream_in.num; i++) {
+			mean_in += ptr_in[i];
+			mean_ref += ptr_ref[i];
+		}
+
+		mean_in /= stream_in.num;
+		mean_ref /= stream_in.num; 
+
+		for (int i = 0; i < stream_in.num; i++) {
+			xc_in[i] = ptr_in[i] - mean_in;
+			xc_ref[i] = ptr_ref[i] - mean_ref;
+		}
+
+		cv::Mat xc_mat(stream_in.num, 2, CV_32F);
+
+		for (int i = 0; i < (stream_in.num); i++) {
+			xc_mat.at<float>(cv::Point2i(0, i)) = xc_ref[i];
+			xc_mat.at<float>(cv::Point2i(1, i)) = xc_in[i];
+		}
+
+		cv::Mat c_mat;
+		cv::Mat d_mat(2, 1, CV_32F);
+
+		c_mat = (xc_mat.t() * xc_mat);
+		c_mat /= (float)(stream_in.num - 1);
+
+		d_mat.at<float>(cv::Point2i(0, 0)) = sqrtf(c_mat.at<float>(cv::Point2i(0, 0)));
+		d_mat.at<float>(cv::Point2i(0, 1)) = sqrtf(c_mat.at<float>(cv::Point2i(1, 1)));
+
+		cv::Mat dxdt = d_mat * d_mat.t();
+
+		for (int i = 0; i < c_mat.cols; i++) {
+			for (int j = 0; j < c_mat.rows; j++) {
+				c_mat.at<float>(cv::Point2i(i, j)) /= dxdt.at<float>(cv::Point2i(i, j));
+			}
+		}
+
+		f_si_corr = c_mat.at<float>(cv::Point2i(0, 1));
+
+		delete[] xc_in;
+		delete[] xc_ref;
+
+		//peak to peak menan value
+
+		std::vector<int> minima;
+		std::vector<int> maxima;
+		int state = GSR_NONE;
+
+		ptr_in = ssi_pcast(ssi_real_t, stream_in.ptr);
+		float ptr_prev = *ptr_in;
+		for (int nsamp = 0; nsamp < stream_in.num; nsamp++) {
+
+			if (*ptr_in < ptr_prev) {
+				if (state == GSR_RISING) { //peak
+					maxima.push_back(*ptr_in);
+				}
+				state = GSR_FALLING;
+			}
+			else if (*ptr_in > ptr_prev) {
+				if (state == GSR_FALLING) { //trough
+					minima.push_back(*ptr_in);
+				}
+				state = GSR_RISING;
+			}
+						
+			ptr_prev = *ptr_in;
+			ptr_in++;
+
+		}
+
+		float avg_maxima = 0.0;
+		float avg_minima = 0.0;
+
+		for (int i = 0; i < maxima.size(); i++) avg_maxima += maxima[i];
+		for (int i = 0; i < minima.size(); i++) avg_minima += minima[i];
+
+		if (maxima.size() > 0) avg_maxima /= ((float)maxima.size());
+		if (minima.size() > 0) avg_minima /= ((float) minima.size());
+		
+		f_p2pmv = std::fabsf(avg_maxima - avg_minima);
+
+	}
 	
 	ssi_real_t *ptr_out = ssi_pcast(ssi_real_t, stream_out.ptr);
 
@@ -318,6 +427,16 @@ void GSRFeatures::transform( ITransformer::info info, ssi_stream_t &stream_in, s
 	ptr_out++;
 	*ptr_out = getStDev(psd_combo, ATT_AREA);
 	ptr_out++;
+
+	if (_options.new_features) {
+		*ptr_out = f_peak;
+		ptr_out++;
+		*ptr_out = f_si_corr;
+		ptr_out++;
+		*ptr_out = f_p2pmv; //peak to peak mean value
+	}
+
+
 
 }
 
@@ -532,6 +651,7 @@ void GSRFeatures::printFeatureType(int ft, std::string str_stat, std::string str
 		ssi_print("%i: %s %s %s\n", af++, str_stat.c_str(), _type.c_str(), str_att.c_str())
 	}
 }
+
 
 
 

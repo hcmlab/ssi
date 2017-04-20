@@ -38,7 +38,8 @@ using namespace ssi;
 	#endif
 #endif
 
-bool ex_libsvm(void *arg);
+bool ex_multiclass(void *arg);
+bool ex_regression(void *arg);
 
 int main () {
 
@@ -51,19 +52,17 @@ int main () {
 	Factory::RegisterDLL ("ssigraphic");
 	Factory::RegisterDLL ("ssilibsvm");
 	
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed();
+#endif
 
-	Exsemble exsemble;
-	exsemble.console(0, 0, 650, 800);
-	exsemble.add(&ex_libsvm, 0, "LIBSVM", "Test libsvm model.");
-	exsemble.show();
+	Exsemble ex;
+	ex.console(0, 0, 650, 800);
+	ex.add(ex_multiclass, 0, "MULTICLASS", "Simple multi-classification task");
+	ex.add(ex_regression, 0, "REGRESSION", "Simple regression task");
+	ex.show();
 
 	Factory::Clear();
-	
-	ssi_print ("\n\n\tpress a key to quit\n");
-	getchar ();
-
-	Factory::Clear ();
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	}
@@ -73,14 +72,14 @@ int main () {
 	return 0;
 }
 
-bool ex_libsvm(void *arg) {
+bool ex_multiclass(void *arg) {
 
 	Trainer::SetLogLevel(SSI_LOG_LEVEL_DEBUG);
 
 	ssi_size_t n_classes = 4;
-	ssi_size_t n_samples = 50;
+	ssi_size_t n_samples = 1000;
 	ssi_size_t n_streams = 1;
-	ssi_real_t train_distr[][3] = { 0.25f, 0.25f, 0.1f, 0.25f, 0.75f, 0.1f, 0.75f, 0.75f, 0.1f, 0.75f, 0.75f, 0.1f };
+	ssi_real_t train_distr[][3] = { 0.25f, 0.25f, 0.1f, 0.25f, 0.75f, 0.1f, 0.75f, 0.75f, 0.1f, 0.75f, 0.25f, 0.1f };
 	ssi_real_t test_distr[][3] = { 0.5f, 0.5f, 0.5f };
 	SampleList strain;
 	SampleList sdevel;
@@ -99,25 +98,80 @@ bool ex_libsvm(void *arg) {
 		LibSVM *model = ssi_create(LibSVM, 0, true);
 		model->getOptions()->seed = 1234;
 		model->getOptions()->silent = false;
-		model->getOptions()->params.kernel_type = LibSVM::KERNEL::RADIAL;
+		model->getOptions()->params.svm_type = LibSVM::TYPE::C_SVC;
+		model->getOptions()->params.kernel_type = LibSVM::KERNEL::LINEAR;
 		
 		Trainer trainer(model);
 		ISNorm::Params params;
 		ISNorm::ZeroParams(params, ISNorm::METHOD::SCALE);
 		params.limits[0] = -1.0f;
 		trainer.setNormalization(&params);
+		ModelTools::PlotSamples(strain, "TRAINING DATA", ssi_rect(640, 0, 400, 400));
+		ssi_tic();
 		trainer.train(strain);		
-		trainer.save("libsvm");
+		ssi_print("\nELAPSED: ")
+		ssi_toc_print();
+		ssi_print("\n\n")
+		trainer.save("multiclass");
 		ISNorm::ReleaseParams(params);
 	}
 
 	// eval
 	{
 		Trainer trainer;
-		Trainer::Load(trainer, "libsvm");
+		Trainer::Load(trainer, "multiclass");
 		trainer.eval(sdevel);		
 		trainer.cluster(stest);
-		ModelTools::PlotSamples(stest, "libsvm", ssi_rect(640,0,400,400));
+		ModelTools::PlotSamples(stest, "LABELED DATA", ssi_rect(640,0,400,400));
+	}
+
+	return true;
+}
+
+bool ex_regression(void *arg) {
+
+	Trainer::SetLogLevel(SSI_LOG_LEVEL_DEBUG);
+
+	ssi_size_t n_samples = 1000;
+
+	SampleList strain;
+	SampleList sdevel;
+	SampleList stest;
+	ModelTools::CreateTestSamplesRegression(strain, n_samples, 0.1f);
+	ModelTools::CreateTestSamplesRegression(sdevel, n_samples, 0.1f);
+	ModelTools::CreateTestSamplesRegression(stest, n_samples, 1.0f);
+
+	// train
+	{
+		LibSVM *model = ssi_create(LibSVM, 0, true);
+		model->getOptions()->seed = 1234;
+		model->getOptions()->silent = false;
+		model->getOptions()->params.svm_type = LibSVM::TYPE::EPSILON_SVR;
+		model->getOptions()->params.kernel_type = LibSVM::KERNEL::RADIAL;		
+
+		Trainer trainer(model);
+		ISNorm::Params params;
+		ISNorm::ZeroParams(params, ISNorm::METHOD::SCALE);
+		params.limits[0] = 0.0f;
+		params.limits[1] = 1.0f;
+		trainer.setNormalization(&params);
+		ModelTools::PlotSamplesRegression(strain, "TRAINING", ssi_rect(640, 0, 400, 400));
+		ssi_tic();
+		trainer.train(strain);
+		ssi_print("\nELAPSED: ")
+		ssi_toc_print();
+		ssi_print("\n\n")
+		trainer.save("regression");
+		ISNorm::ReleaseParams(params);
+	}
+
+	// eval
+	{
+		Trainer trainer;
+		Trainer::Load(trainer, "regression");
+		trainer.eval(sdevel);
+		trainer.cluster(stest);
+		ModelTools::PlotSamplesRegression(stest, "TEST", ssi_rect(640, 0, 400, 400));
 	}
 
 	return true;

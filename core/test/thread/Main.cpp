@@ -66,9 +66,9 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	// init random seed
-	srand ( static_cast<unsigned int> (time (0)) );
+#if SSI_RANDOM_LEGACY_FLAG	
 	ssi_random_seed();
+#endif
 
 	Exsemble ex;
 	ex.add(&ex_talking, 0, "TALKING", "Multiple threads sharing a variable.");
@@ -288,11 +288,13 @@ bool ex_pool (void *arg) {
 
 	ThreadPool tp ("mypool", 5);
 
+	Randomi random(0, 500);
+
 	ThreadPool::job_s job[20];
 	pool_in_s job_in[20];
 	for (ssi_size_t i = 0; i < 20; i++) {
 		job_in[i].id = i;
-		job_in[i].sleep_ms = 100u + ssi_random (500u);
+		job_in[i].sleep_ms = 100u + ssi_size_t(random.next());
 		job[i].n_in = sizeof (job_in[i]);
 		job[i].in = &job_in[i];
 		job[i].n_out = 0;

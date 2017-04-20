@@ -93,7 +93,7 @@ ENDIF(MINGW)
 
 
 add_library(ssixmpp SHARED ${SRC_FILES} )
-target_link_libraries(ssixmpp ssi gloox  ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD} ${CAIRO_LIBRARIES} ${SDL2_LIBRARIES} -dl)
+target_link_libraries(ssixmpp ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD} ${CAIRO_LIBRARIES} ${SDL2_LIBRARIES} -dl)
 #add_executable(myapp main.c)
 
 #rename targets if debug

@@ -40,7 +40,7 @@
 #define SSI_MODEL_DOLLAR$1_H
 
 #include "base/IModel.h"
-#include "model/ModelTools.h"
+#include "ssiml/include/ModelTools.h"
 #include "ioput/file/FileBinary.h"
 #include "ioput/option/OptionList.h"
 #include "GeometricRecognizer.h"

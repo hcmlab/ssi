@@ -157,6 +157,10 @@
 // advanced io
 #include <io/libsvmSink.hpp>
 
+// ssi
+#include <ssi/ssiSink.hpp>
+#include <ssi/ssiSource.hpp>
+
 // OpenCV:
 #ifdef HAVE_OPENCV
   #include <video/openCVSource.hpp>
@@ -301,6 +305,10 @@ DLLEXPORT const registerFunction componentlist[] = {
 
   // io advanced:
   cLibsvmSink::registerComponent,
+
+  // ssi
+  ssiSink::registerComponent,
+  ssiSource::registerComponent,
   
   #ifdef HAVE_OPENCV
     cOpenCVSource::registerComponent,

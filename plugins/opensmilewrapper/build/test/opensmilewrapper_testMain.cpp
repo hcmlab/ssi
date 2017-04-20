@@ -30,56 +30,60 @@
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
-	#include "SSI_LeakWatcher.h"
-	#ifdef _DEBUG
-		#define new DEBUG_NEW
-		#undef THIS_FILE
-		static char THIS_FILE[] = __FILE__;
-	#endif
+#include "SSI_LeakWatcher.h"
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 #endif
 
 bool ex_online(void *args);
 bool ex_offline(void *args);
 
-int main () {
+int main() {
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	{
 #endif
 
-	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
+		ssi_print("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("frame");
-	Factory::RegisterDLL ("opensmilewrapper");
-	Factory::RegisterDLL ("graphic");
-	Factory::RegisterDLL ("audio");
-	Factory::RegisterDLL ("ioput");
-	Factory::RegisterDLL ("event");
+		Factory::RegisterDLL("frame");
+		Factory::RegisterDLL("opensmilewrapper");
+		Factory::RegisterDLL("graphic");
+		Factory::RegisterDLL("audio");
+		Factory::RegisterDLL("ioput");
+		Factory::RegisterDLL("event");
 
-	ssi_char_t *config = "eGeMAPSv01a.conf";
+		ssi_char_t *config = "LLF-04";
 
-	Exsemble ex;
-	ex.add(ex_online, config, "ONLINE", "");
-	ex.add(ex_offline, config, "OFFLINE", "");
-	ex.show();
+		Exsemble ex;
+		ex.add(ex_online, config, "ONLINE", "");
+		ex.add(ex_offline, config, "OFFLINE", "");
+		ex.show();
 
-	Factory::Clear ();
+		Factory::Clear();
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	}
 	_CrtDumpMemoryLeaks();
 #endif
-	
+
 	return 0;
 }
 
 bool ex_online(void *args) {
 
-	ssi_char_t *config = ssi_pcast(ssi_char_t, args);
+	ssi_char_t *name = ssi_pcast(ssi_char_t, args);
+	ssi_char_t *config = ssi_strcat(name, ".conf");
+	ssi_char_t *csv = ssi_strcat(name, ".csv");
 
-	ITheFramework *frame = Factory::GetFramework ();
+	remove(csv);
 
-	Decorator *decorator = ssi_create (Decorator, 0, true);
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
 	frame->AddDecorator(decorator);
 
 	WavReader *audio = ssi_create(WavReader, 0, true);
@@ -89,21 +93,22 @@ bool ex_online(void *args) {
 	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIO_PROVIDER_NAME);
 	frame->AddSensor(audio);
 
-	OSWrapper *opensmile = ssi_create (OSWrapper, "oswrapper", true);
+	OSWrapper *opensmile = ssi_create(OSWrapper, "oswrapper", true);
 	opensmile->getOptions()->enableConsole = false;
 #ifdef DEBUG
 	opensmile->getOptions()->logLevel = 1;
-	opensmile->getOptions()->setLogFile("opensmile.log");	
+	opensmile->getOptions()->setLogFile("opensmile.log");
 #else
 	opensmile->getOptions()->logLevel = 0;
 #endif
 	opensmile->getOptions()->setConfigPath(config);
 	opensmile->getOptions()->continuous = true;
-	ITransformable *opensmile_t = frame->AddTransformer(audio_p, opensmile, "0.04s", "3.96s");
+	ITransformable *opensmile_t = frame->AddTransformer(audio_p, opensmile, "0.01s", "0.05s");
 
-	FileWriter *writer = ssi_create (FileWriter, 0, true);
-	writer->getOptions()->setPath("my");
+	FileWriter *writer = ssi_create(FileWriter, 0, true);
+	writer->getOptions()->setPath(name);
 	writer->getOptions()->type = File::ASCII;
+	writer->getOptions()->setDelim(";");
 	frame->AddConsumer(opensmile_t, writer, "1");
 
 	decorator->add("console", 0, 0, 650, 800);
@@ -115,12 +120,19 @@ bool ex_online(void *args) {
 	frame->Stop();
 	frame->Clear();
 
+	delete[] config;
+	delete[] csv;
+
 	return true;
 }
 
 bool ex_offline(void *args) {
 
-	ssi_char_t *config = ssi_pcast(ssi_char_t, args);
+	ssi_char_t *name = ssi_pcast(ssi_char_t, args);
+	ssi_char_t *config = ssi_strcat(name, ".conf");
+	ssi_char_t *csv = ssi_strcat(name, ".csv");
+
+	remove(csv);
 
 	ssi_stream_t wav;
 	ssi_stream_t features;
@@ -128,14 +140,17 @@ bool ex_offline(void *args) {
 	WavTools::ReadWavFile("audio.wav", wav);
 
 	OSWrapper *opensmile = ssi_create(OSWrapper, 0, false);
-	opensmile->getOptions()->continuous = false;
+	opensmile->getOptions()->continuous = true;
 	opensmile->getOptions()->setConfigPath(config);
 
-	SignalTools::Transform(wav, features, *opensmile, "0.04s", "3.96s");
-	FileTools::WriteStreamFile(File::BINARY, "my-offline", features);
+	SignalTools::Transform(wav, features, *opensmile, "0.04s");
+	FileTools::WriteStreamFile(File::ASCII, name, features, ";");
 
 	ssi_stream_destroy(wav);
 	ssi_stream_destroy(features);
+
+	delete[] config;
+	delete[] csv;
 
 	return true;
 }

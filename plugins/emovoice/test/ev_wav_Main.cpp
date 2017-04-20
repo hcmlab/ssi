@@ -27,7 +27,7 @@
 #include "ssi.h"
 #include "ssiev.h"
 #include "model/include/ssimodel.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -125,10 +125,10 @@ void split (const ssi_char_t *dir, const ssi_char_t *wavfile, const ssi_char_t *
 	ssi_stream_t stream;
 	WavTools::ReadWavFile (wavfile, stream);
 
-	Annotation anno;
+	old::Annotation anno;
 	ModelTools::LoadAnnotation (anno, annofile);
 
-	Annotation::Entry *entry;
+	old::Annotation::Entry *entry;
 	anno.reset ();
 	ssi_stream_t chunk;
 	ssi_size_t count = 0;
@@ -176,7 +176,7 @@ void train (const ssi_char_t *dir, const ssi_char_t *model) {
 		// create sample
 		sample->class_id = class_id;
 		sample->num = 1;
-		sample->prob = 1.0f;
+		sample->score = 1.0f;
 		sample->streams = new ssi_stream_t *[1];
 		sample->streams[0] = stream;
 		sample->time = 0;

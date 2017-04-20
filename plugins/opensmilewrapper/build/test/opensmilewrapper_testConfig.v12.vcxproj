@@ -109,8 +109,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PreBuildEvent>
-      <Command>del /F plugins\*.dll
-xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssiplugind.dll plugins\</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,8 +136,8 @@ xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssipl
       </DataExecutionPrevention>
     </Link>
     <PreBuildEvent>
-      <Command>del /F plugins\*.dll
-xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssiplugind.dll plugins\</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,8 +165,8 @@ xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssipl
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PreBuildEvent>
-      <Command>del /F plugins\*.dll
-xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssiplugin.dll plugins\</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -193,8 +193,8 @@ xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssipl
       </DataExecutionPrevention>
     </Link>
     <PreBuildEvent>
-      <Command>del /F plugins\*.dll
-xcopy /D /I /Y ..\..\plugins\$(PlatformName)\vc$(PlatformToolsetVersion)\osssiplugin.dll plugins\</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

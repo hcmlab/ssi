@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -121,7 +121,10 @@ int main (int argc, char **argv) {
 							delete[] files[i];
 						}
 						delete[] files;
-						trainer.train();
+						if (!trainer.isTrained())
+						{
+							trainer.train();
+						}
 						trainer.eval(samples, ssiout);
 					} else {
 						ssi_wrn("no test file provided, see -tset option");

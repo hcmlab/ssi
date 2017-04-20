@@ -57,6 +57,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::StringEventSender::GetCreateName(), ssi::StringEventSender::Create) && result;
 	result = ssi::Factory::Register (ssi::ZeroEventSender::GetCreateName(), ssi::ZeroEventSender::Create) && result;
 	result = ssi::Factory::Register (ssi::ThresEventSender::GetCreateName(), ssi::ThresEventSender::Create) && result;	
+	result = ssi::Factory::Register(ssi::TriggerEventSender::GetCreateName(), ssi::TriggerEventSender::Create) && result;
 	result = ssi::Factory::Register (ssi::FixationEventSender::GetCreateName(), ssi::FixationEventSender::Create) && result;		
 	result = ssi::Factory::Register (ssi::ThresClassEventSender::GetCreateName(), ssi::ThresClassEventSender::Create) && result;		
 	result = ssi::Factory::Register (ssi::XMLEventSender::GetCreateName(), ssi::XMLEventSender::Create) && result;

@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<annotation ssi-v="3">
+    <info ftype="ASCII" size="79" />
+    <meta annotator="Unknown"/>
+    <scheme name="discrete" type="DISCRETE"  color="#FFFFFFFF">
+        <item name="positive" id="0" color="#FFFF0000" />
+        <item name="negative" id="1" color="#FF0000FF" />
+    </scheme>
+</annotation>

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="device" type="CHAR" num="1024" value="Stereomix (Realtek High Definit" lock="true" help="audio device name (if empty a dialog will be shown)" />
+    <item name="remember" type="BOOL" num="1" value="true" lock="true" help="remember selected audio device" />
+    <item name="sr" type="DOUBLE" num="1" value="2.205000e+04" lock="true" help="sample rate in Hz" />
+    <item name="size" type="DOUBLE" num="1" value="1.000000e-01" lock="true" help="block size in seconds (deprecated)" />
+    <item name="block" type="DOUBLE" num="1" value="1.000000e-01" lock="true" help="block size in seconds" />
+    <item name="blockInSamples" type="UINT" num="1" value="0" lock="true" help="block size in samples (overwrites size if > 0)" />
+    <item name="channels" type="UINT" num="1" value="1" lock="true" help="number of channels (1=mono, 2=stereo)" />
+    <item name="bytes" type="UINT" num="1" value="2" lock="true" help="bytes per sample" />
+    <item name="scale" type="BOOL" num="1" value="true" lock="true" help="scale to interval [-1..1]" />
+    <item name="volume" type="FLOAT" num="1" value="-1.000000e+00" lock="true" help="recording volume in range [0..1] (only applied if > 0)" />
+</options>

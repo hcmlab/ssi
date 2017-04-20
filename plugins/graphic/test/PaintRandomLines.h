@@ -41,10 +41,13 @@ public:
 		: n_tools(n) {
 
 		tools = new IPainter::ITool *[n_tools];
+		Randomi random255(0,255);
+		Randomi random9(0, 9);
+		Randomi random4(0, 4);
 		for (ssi_size_t i = 0; i < n_tools; i++) {
-			ssi_rgb_t color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
-			IPainter::ITool::WIDTH width = 1 + ssi_random(9u);
-			IPainter::ITool::LINE_STYLES::List style = (IPainter::ITool::LINE_STYLES::List) ssi_random(4u);
+			ssi_rgb_t color = ssi_rgb(random255.next(), random255.next(), random255.next());
+			IPainter::ITool::WIDTH width = 1 + random9.next();
+			IPainter::ITool::LINE_STYLES::List style = (IPainter::ITool::LINE_STYLES::List) random4.next();
 			tools[i] = new Painter::Pen(color, width, style);
 		}
 	}
@@ -69,9 +72,11 @@ public:
 
         ssi_pointf_t *points = new ssi_pointf_t[n_tools];
 
+		Randomi randomw(0, rect.width + 1);
+		Randomi randomh(0, rect.height + 1);
 		for (ssi_size_t i = 0; i < n_tools - 1; i++) {
-			points[i].x = ssi_real_t (ssi_random(rect.width + 1u));
-			points[i].y = ssi_real_t(ssi_random(rect.height + 1u));
+			points[i].x = ssi_real_t (randomw.next());
+			points[i].y = ssi_real_t(randomh.next());
 		}
 		points[n_tools - 1].x = points[0].x;
 		points[n_tools - 1].y = points[0].y;

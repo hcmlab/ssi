@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+	<title>Flot Example</title>
+
+	<link href="examples.css" rel="stylesheet" type="text/css">
+	<script language="javascript" type="text/javascript" src="jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript">
+
+	$(function() {
+
+		// Set up the control widget
+		
+		var xBarData = [
+			[0.25, 0],
+		];
+		
+		var yBarData = [
+			[0.75, 0]
+		];
+		
+		var barPlot = $.plot($("#placeholder"), 
+		[
+			{ bars: {show: true, align: "center", barWidth: 0.25}, data: xBarData, label: "x" },
+			{ bars: {show: true, align: "center", barWidth: 0.25}, data: yBarData, label: "y" },
+		], 
+		{
+			legend: {
+				position: "sw",
+				show: true
+			},
+			series: {
+				lines: {
+					show: false
+				}
+			},
+			xaxis: {
+				min: 0,
+				max: 1,
+				show: false
+			},
+			yaxis: {
+				min: 0,
+				max: 1
+			}
+		});
+		
+		// Set up the web socket
+		
+		var ws = new WebSocket('ws://' + location.host + '/ws');
+		
+		ws.onopen = function(ev)  { console.log(ev); };
+		ws.onerror = function(ev) { console.log(ev); };
+		ws.onclose = function(ev) { console.log(ev); };
+		ws.onmessage = function(ev) {
+		
+			var data = JSON.parse(ev.data);
+
+			xBarData[0][1] = data.value[0].x; //arrayValues[0];
+			yBarData[0][1] = data.value[1].y; //arrayValues[1];
+			
+			barPlot.setData([
+			{
+				data: xBarData,
+				bars: {show: true, align: "center", barWidth: 0.25}
+			},
+			{
+				data: yBarData,
+				bars: {show: true, align: "center", barWidth: 0.25}
+			}
+			]);
+			barPlot.draw();	
+ 
+		}
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+
+	</script>
+</head>
+
+<body>
+
+	<div id="header">
+		<h2>Flot Example</h2>
+	</div>
+
+	<div id="content">
+		
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>			
+		</div>
+
+	</div>
+
+</body>
+
+</html>

@@ -17,7 +17,7 @@
 	</sensor>
 	
 	<!-- detect button events -->
-	<consumer create="ZeroEventSender:ezero" address="pressed@button">
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0" sendStartEvent="true">
 		<input pin="button" frame="0.1s" />		
 	</consumer>	
 	

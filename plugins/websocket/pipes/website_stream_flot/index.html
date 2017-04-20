@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+	<title>Flot Example</title>
+
+	<link href="examples.css" rel="stylesheet" type="text/css">
+	<script language="javascript" type="text/javascript" src="jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript">
+
+	$(function() {
+
+		// Global variables
+
+		var nData = 300;	
+		var yMin = 0;
+		var yMax = 1;
+		
+		var xData = [];	
+		var yData = [];			
+		for (var i = 0; i < nData; ++i) {
+			xData.push([i, 0])
+			yData.push([i, 0])
+		}	
+		
+		var pos = 0;
+
+		// Set up the control widget
+
+		var linePlot = $.plot("#placeholder1", 
+		[
+			{ label: "x", data: xData }, 
+			{ label: "y", data: yData },			
+		], 
+		{
+			legend: {
+				position: "sw",
+				show: true
+			},
+			series: {
+				shadowSize: 0,	// Drawing is faster without shadows
+				lines: {
+					show: true
+				}
+			},
+			xaxis: {
+				min: 0,
+				max: nData,
+				show: false
+			},				
+			yaxis: {
+				min: yMin,
+				max: yMax
+			}
+		});		
+		
+		var xBarData = [
+			[0.25, 0],
+		];
+		
+		var yBarData = [
+			[0.75, 0]
+		];
+		
+		var barPlot = $.plot($("#placeholder2"), 
+		[
+			{ bars: {show: true, align: "center", barWidth: 0.25}, data: xBarData, label: "x" },
+			{ bars: {show: true, align: "center", barWidth: 0.25}, data: yBarData, label: "y" },
+		], 
+		{
+			legend: {
+				position: "sw",
+				show: true
+			},
+			series: {
+				lines: {
+					show: false
+				}
+			},
+			xaxis: {
+				min: 0,
+				max: 1,
+				show: false
+			},
+			yaxis: {
+				min: 0,
+				max: 1
+			}
+		});
+		
+		// Set up the web socket
+		
+		var ws = new WebSocket('ws://' + location.host + '/ws');
+		
+		ws.onopen = function(ev)  { console.log(ev); };
+		ws.onerror = function(ev) { console.log(ev); };
+		ws.onclose = function(ev) { console.log(ev); };
+		ws.onmessage = function(ev) {
+		
+			var arrayBuffer;
+			var fileReader = new FileReader();
+			fileReader.onload = function() {
+			
+				arrayBuffer = this.result;
+				var arrayValues = new Float32Array(arrayBuffer);
+							
+				xData[pos] = [pos, arrayValues[0]];
+				yData[pos] = [pos, arrayValues[1]];
+				pos = (pos + 1) % nData;
+
+				linePlot.setData([xData, yData]);
+				linePlot.draw();	
+				
+				xBarData[0][1] = arrayValues[0];
+				yBarData[0][1] = arrayValues[1];
+				
+				barPlot.setData([
+				{
+					data: xBarData,
+					bars: {show: true, align: "center", barWidth: 0.25}
+				},
+				{
+					data: yBarData,
+					bars: {show: true, align: "center", barWidth: 0.25}
+				}
+				]);
+				barPlot.draw();	
+			};
+			
+			if (typeof ev.xData === "string") { 
+			} else {
+				//read blob xData from socket
+				fileReader.readAsArrayBuffer(ev.data);
+			}
+
+		}
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+
+	</script>
+</head>
+
+<body>
+
+	<div id="header">
+		<h2>Flot Example</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder1" class="demo-placeholder"></div>			
+		</div>
+		
+		<div class="demo-container">
+			<div id="placeholder2" class="demo-placeholder"></div>			
+		</div>
+
+	</div>
+
+</body>
+
+</html>

@@ -41,13 +41,17 @@ public:
 
 		pen = new IPainter::ITool *[n_tools];
 		brush = new IPainter::ITool *[n_tools];
+		Randomi random255(0, 255);
+		Randomi random9(0, 9);
+		Randomi random4(0, 4);
+		Randomf random(0, 0.5f);
 		for (ssi_size_t i = 0; i < n_tools; i++) {
-			ssi_rgb_t pen_color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
-			ssi_rgb_t brush_color = ssi_rgb(ssi_random(256u), ssi_random(256u), ssi_random(256u));
-			IPainter::ITool::WIDTH width = 1 + ssi_random(9u);
-			IPainter::ITool::LINE_STYLES::List style = (IPainter::ITool::LINE_STYLES::List) ssi_random(4u);
+			ssi_rgb_t pen_color = ssi_rgb(random255.next(), random255.next(), random255.next());
+			ssi_rgb_t brush_color = ssi_rgb(random255.next(), random255.next(), random255.next());
+			IPainter::ITool::WIDTH width = 1 + random9.next();
+			IPainter::ITool::LINE_STYLES::List style = (IPainter::ITool::LINE_STYLES::List) random4.next();
 			pen[i] = new Painter::Pen(pen_color, width, style);
-			if (ssi_random() > 0.5) {				
+			if (random.next() > 0.5f) {
 				brush[i] = new Painter::Brush(brush_color);
 			}
 			else {
@@ -79,13 +83,16 @@ public:
 		painter.begin(hdc, rect);
 		ssi_rect_t r;
 
+		Randomi randomw(0, rect.width / 2);
+		Randomi randomh(0, rect.height / 2);
+
 		for (ssi_size_t i = 0; i < n_tools; i++) {
 
-			r.left = ssi_random(rect.width / 2);
-			r.width = ssi_random(rect.width / 2);
+			r.left = randomw.next();
+			r.width = randomw.next();
 
-			r.top = ssi_random(rect.height / 2);
-			r.height = ssi_random(rect.height / 2);
+			r.top = randomh.next();
+			r.height = randomh.next();
 
 			if (i % 2) {
 				painter.rect(*pen[i], *brush[i], r);

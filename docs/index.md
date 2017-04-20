@@ -507,6 +507,21 @@ Furthemore, by using the attributes ``nv`` and ``nh`` we can tell the ``Decorato
 
 > Check out the full [pipeline](code/xml/basics/transformer.pipeline).
 
+#### Asynchronous {#xml-basics-transformer-async}
+
+Sometimes, we want a transformer to consume data in a greedy way, i.e. instead of waiting until the next chunk of data is available we immediately request the latest data from the head of the buffer. This is especially useful if the processing does not run in real-time, which would usually cause the transformer to fall behind and slow down the following components. Yet, to generate samples at a steady sample rate, the result of the last operation will be returned (see our previous [discussion](#basics-pipelines-synchronization)).
+
+To run a transformer in asynchronous mode we set the ``async`` flag:
+
+``` xml
+<transformer create="MvgAvgVar" win="5.0" format="1">
+	<input pin="pos" frame="0.1s" async="true"/>
+	<output pin="pos-avg-async"/>
+</transformer>
+```
+
+> Check out the full [pipeline](code/xml/basics/transformer_async.pipeline).
+
 #### In-place {#xml-basics-transformer-inplace}
 
 If we manipulate a stream on-the-fly we call it an *in-place* manipulation. In that case the result of the transformation is not stored in a buffer, but directly handed over to a component. Only consumers and sensors support in-place manipulation, and in the latter case only filter components are allowed. For instance, we can remove the y coordinate from the cursor position by adding a ``Selector`` (from the ``frame`` plugin-in) to the channel where the cursor stream is created:

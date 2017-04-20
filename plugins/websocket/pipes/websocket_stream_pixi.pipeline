@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssimouse" />
+		<load name="ssiwebsocket" />		
+	</register>	
+
+	<sensor create="Mouse" event="false" sr="50">
+		<output channel="cursor" pin="pin_cursor" frame="1" block="1" />
+	</sensor>
+	
+	<consumer create="websocket" http_root="website_stream_pixi" >
+		<input pin="pin_cursor" frame="1" />
+		<listen address="@" />
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+	</object>
+
+</pipeline>

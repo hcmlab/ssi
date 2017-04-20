@@ -43,8 +43,8 @@ include_directories(
 					../../core/include/ioput/socket
 					../../core/include/ioput
 					../../core/include
-					../../libs/shared/kissfft/include
-					../../libs/shared/ExpressionParser/include/
+                                        ../../libs/build/kissfft/include
+                                        ../../libs/build/ExpressionParser/include/
 					${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS}
 					)
 if(ANDROID)
@@ -85,12 +85,13 @@ source/MvgNorm.cpp
 source/MvgPeakGate.cpp
 source/Noise.cpp
 source/Normalize.cpp
-source/Operator0.cpp
-source/Operator1.cpp
+#source/Operator0.cpp
+#source/Operator1.cpp
 source/Pulse.cpp
 source/Spectrogram.cpp
 source/Statistics.cpp
-
+source/Sum.cpp
+source/Relative.cpp
 
 )
 

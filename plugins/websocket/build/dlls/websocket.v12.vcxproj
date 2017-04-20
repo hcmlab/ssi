@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{682E784C-BD4B-4EA1-BEF3-5B7297DCE20E}</ProjectGuid>
+    <ProjectGuid>{2B6D8487-9073-4640-81A1-8D88D7367A0B}</ProjectGuid>
     <RootNamespace>ssi</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>websocket</ProjectName>
@@ -34,7 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -45,7 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -168,12 +168,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp" />
-    <ClCompile Include="..\..\source\fossa.c" />
+    <ClCompile Include="..\..\source\mongoose.c" />
     <ClCompile Include="..\..\source\websocket.cpp" />
     <ClCompile Include="..\..\source\websockserver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\fossa.h" />
+    <ClInclude Include="..\..\include\mongoose.h" />
     <ClInclude Include="..\..\include\ssiwebsocket.h" />
     <ClInclude Include="..\..\include\websocket.h" />
     <ClInclude Include="..\..\include\websockserver.h" />

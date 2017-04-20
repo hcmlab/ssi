@@ -184,7 +184,7 @@ bool FileSamplesOut::write (ssi_sample_t &data) {
 			return false;
 		}
 	}
-	if (data.class_id >= _n_classes && data.class_id != SSI_ISAMPLES_GARBAGE_CLASS_ID) {
+	if (data.class_id >= _n_classes && data.class_id != SSI_SAMPLE_GARBAGE_CLASS_ID) {
 		ssi_wrn ("class id '%u' exceeds #classes '%u')", data.class_id, _n_classes);
 		return false;
 	}
@@ -200,7 +200,7 @@ bool FileSamplesOut::write (ssi_sample_t &data) {
 	} else {
 
 		_n_samples++;
-		if (data.class_id == SSI_ISAMPLES_GARBAGE_CLASS_ID) {
+		if (data.class_id == SSI_SAMPLE_GARBAGE_CLASS_ID) {
 			_n_garbage_class++;
 		} else {
 			_n_per_class[data.class_id]++;
@@ -250,7 +250,7 @@ bool FileSamplesOut::write (ssi_sample_t &data) {
 			case File::V3: {
 
 				if (_file_data->getType () == File::ASCII) {
-					sprintf (_string, "%u %d %.2f %lf", data.user_id, data.class_id, data.score, data.time);
+					sprintf (_string, "%u %d %f %lf", data.user_id, data.class_id, data.score, data.time);
 					_file_data->writeLine (_string);				
 				} else {
 					_file_data->write (&data.user_id, sizeof (data.user_id), 1);
@@ -421,7 +421,7 @@ bool FileSamplesOut::close () {
 
 ssi_size_t FileSamplesOut::getClassId(const ssi_char_t *name) {
 
-	ssi_size_t result = SSI_ISAMPLES_GARBAGE_CLASS_ID;
+	ssi_size_t result = SSI_SAMPLE_GARBAGE_CLASS_ID;
 	
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		if (ssi_strcmp(name, _classes[i])) {
@@ -434,7 +434,7 @@ ssi_size_t FileSamplesOut::getClassId(const ssi_char_t *name) {
 
 ssi_size_t FileSamplesOut::getUserId(const ssi_char_t *name) {
 
-	ssi_size_t result = SSI_ISAMPLES_GARBAGE_USER_ID;
+	ssi_size_t result = SSI_SAMPLE_GARBAGE_USER_ID;
 
 	for (ssi_size_t i = 0; i < _n_users; i++) {
 		if (ssi_strcmp(name, _users[i])) {

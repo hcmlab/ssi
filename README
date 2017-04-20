@@ -19,7 +19,7 @@ Version 0.9.9
 	
 	Core libraries are released under LGPL (see LICENSE in core folder).
 	
-	By default plugins are released under GPL, but invidual licences 
+	By default plugins are released under GPL, but individual licences 
 	may apply (see LICENSE file in plugin folder).
 	
 	For 3rd party dependencies see the README file and additional

@@ -99,7 +99,7 @@ bool FileStreamIn::open (ssi_stream_t &data,
 	}
 
 	TiXmlDocument doc;
-	if (!doc.LoadFile (_file_info->getFile ())) {
+	if (!doc.LoadFile (_file_info->getFile (), false)) {
 		ssi_wrn ("failed loading stream from file '%s'", path_info);
 		return false;
 	}
@@ -214,7 +214,6 @@ bool FileStreamIn::open (ssi_stream_t &data,
 				break;
 			}
 			default:
-				ssi_wrn ("type '%s' doesn't support meta information", SSI_TYPE_NAMES[sample_type]);
 				break;
 		}
 	}
@@ -356,12 +355,12 @@ bool FileStreamIn::close () {
 
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "close stream file '%s'", _path);
 
-	if (!_file_data->close ()) {
+	if (!_file_data || !_file_data->close ()) {
 		ssi_wrn ("could not close data file '%s'", _path);
 		return false;
 	}
 
-	if (!_file_info->close ()) {
+	if (!_file_info || !_file_info->close ()) {
 		ssi_wrn ("could not close info file '%s'", _file_info->getPath ());
 		return false;
 	}

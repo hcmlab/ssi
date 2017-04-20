@@ -189,6 +189,7 @@ xcopy /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTools
     <ClCompile Include="..\..\source\EyePainter.cpp" />
     <ClCompile Include="..\..\source\EyeTracker.cpp" />
     <ClCompile Include="..\..\source\EyeTrackerUtils.cpp" />
+    <ClCompile Include="..\..\source\GazePointShifter.cpp" />
     <ClCompile Include="..\..\source\ScenePainter.cpp" />
     <ClCompile Include="..\..\source\ScenePainterUtils.cpp" />
     <ClCompile Include="..\..\source\SceneTracker.cpp" />
@@ -197,6 +198,7 @@ xcopy /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTools
     <ClInclude Include="..\..\include\EyePainter.h" />
     <ClInclude Include="..\..\include\EyeTracker.h" />
     <ClInclude Include="..\..\include\EyeTrackerUtils.h" />
+    <ClInclude Include="..\..\include\GazePointShifter.h" />
     <ClInclude Include="..\..\include\ScenePainter.h" />
     <ClInclude Include="..\..\include\ScenePainterUtils.h" />
     <ClInclude Include="..\..\include\SceneTracker.h" />

@@ -45,11 +45,13 @@ public:
 
 	public:
 
-		Options () {
+		Options ()
+		: flat (false) {
 
 			trainer[0] = '\0';
 			
-			addOption ("trainer", trainer, SSI_MAX_CHAR, SSI_CHAR, "filepath of trainer");			
+			addOption ("trainer", trainer, SSI_MAX_CHAR, SSI_CHAR, "filepath of trainer");	
+			addOption("flat", &flat, 1, SSI_BOOL, "in case of multiple samples merge to single sample");
 		};
 
 		void setTrainer (const ssi_char_t *filepath) {
@@ -57,6 +59,7 @@ public:
 		}
 		
 		ssi_char_t trainer[SSI_MAX_CHAR];	
+		bool flat;
 	};
 
 public:
@@ -104,6 +107,7 @@ protected:
 
 	void loadTrainer ();
 
+	bool _borrowed;
 	Trainer *_trainer;
 	ssi_size_t _n_classes;
 	ssi_size_t _merged_sample_dimension;

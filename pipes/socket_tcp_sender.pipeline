@@ -16,16 +16,16 @@
 	</sensor>
 	
 	<!-- trigger -->
-	<consumer create="ZeroEventSender" mindur="0.5" maxdur="2.0" address="pressed@button" eager="true">
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0" sendStartEvent="true">
 		<input pin="button" frame="0.1s" />		
-	</consumer>		
+	</consumer>	
 	
 	<!-- socket sender 
 	
 	Streams a signal to a socket in different formats (binary, ascii, osc)
 	
 	-->
-	<consumer create="SocketWriter" type="1" port="7777" host="localhost" format="0">
+	<consumer create="SocketWriter" type="1" port="7777" host="192.168.137.101" format="0">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
 	<consumer create="SocketWriter" type="1" port="8888" host="localhost" format="1" delim=";">

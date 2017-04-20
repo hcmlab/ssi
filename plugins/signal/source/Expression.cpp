@@ -89,7 +89,7 @@ void Expression::transform (ITransformer::info info,
 			insert (_options.expression,_expression, 0, srcptr);
 			const ssi_char_t *err = _parser->parse (_expression, result);
 			if (err) {
-				ssi_err (err);
+				ssi_err ("%s", err);
 			}
 			ssi_cast2type (1, &result, dstptr++, ssi_type_t (_options.cast));
 			srcptr += stream_in.dim;
@@ -101,7 +101,7 @@ void Expression::transform (ITransformer::info info,
 					insert (_options.expression,_expression, j, srcptr);
 					const ssi_char_t *err = _parser->parse (_expression, result);
 					if (err) {
-						ssi_err (err);
+						ssi_err ("%s", err);
 					}
 					ssi_cast2type(1, &result, dstptr++, ssi_type_t(_options.cast));
 				}
@@ -115,7 +115,7 @@ void Expression::transform (ITransformer::info info,
 					insert (_options.expression,_expression, j, srcptr);
 					const ssi_char_t *err = _parser->parse (_expression, result);
 					if (err) {
-						ssi_err (err);
+						ssi_err ("%s", err);
 					}
 					switch (_join) {
 						case JOIN::SUM:

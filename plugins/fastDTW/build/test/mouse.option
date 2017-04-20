@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="sr" type="DOUBLE" num="1" value="5.000000e+01" lock="true" help="sample rate in Hz" />
+    <item name="size" type="DOUBLE" num="1" value="2.000000e-01" lock="true" help="block size in seconds" />
+    <item name="scale" type="BOOL" num="1" value="true" lock="true" help="scale cursor position to interval [0..1]" />
+    <item name="flip" type="BOOL" num="1" value="true" lock="true" help="flip cursor vertically (origin is set to the bottom left corner of the screen)" />
+    <item name="mask" type="INT" num="1" value="1" lock="true" help="or'ed button mask (0=none, 1=left, 2=right, 4=middle)" />
+    <item name="single" type="BOOL" num="1" value="false" lock="true" help="only mark when button is pressed" />
+    <item name="event" type="BOOL" num="1" value="false" lock="true" help="send an event when button after is pressed and released" />
+    <item name="address" type="CHAR" num="1024" value="click@mouse" lock="true" help="event address (event@sender)" />
+</options>

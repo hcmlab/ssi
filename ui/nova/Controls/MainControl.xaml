@@ -1,0 +1,541 @@
+﻿<UserControl x:Class="ssi.MainControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ssi"
+    Width="Auto"
+    Height="Auto"
+    Loaded="ControlLoaded">
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Background="Transparent">
+            <MenuItem Header="File">
+                <MenuItem Header="Load" Name="loadMenu" />
+                <MenuItem Header="Save Project" Name="saveProjectMenu" />
+                <MenuItem Header="Save All" Name="saveSessionMenu" />
+                <MenuItem Header="Export">
+                    <MenuItem Header="SSI SampleList" Name="exportSamplesMenu" />
+                    <MenuItem Header="Sampled Annotations" Name="exportAnnoToFrameWiseMenu" />
+                </MenuItem>
+                <MenuItem Header="Settings" Name="showSettingsMenu" />
+                <MenuItem Header="Clear" Name="clearSessionMenu" />
+            </MenuItem>
+            <MenuItem Header="Tier" Name="tierMenu">
+                <MenuItem Header="Save selected tier" Name="saveAnnoMenu" IsEnabled="False" />
+                <MenuItem Header="Save selected tier as" Name="saveAnnoMenuAs" IsEnabled="False" />
+                <MenuItem Header="Convert to discrete" Name="convertAnnoContinuousToDiscreteMenu" IsEnabled="False" />
+                <MenuItem Header="Convert to stream" Name="convertAnnoToSignalMenu" IsEnabled="False" />
+                <MenuItem Header="Export" Name="exportMenu">
+                    <MenuItem Header="Export to CSV" Name="exportAnnoToCSVMenu" IsEnabled="True" />
+                    <MenuItem Header="Export to XPS" Name="exportTierToXPSMenu" IsEnabled="True" />
+                    <MenuItem Header="Export to PNG" Name="exportTierToPNGMenu" IsEnabled="True" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Signal">
+                <!--<MenuItem Header="Calculate Praat features" Name="calculatepraat" />-->
+                <MenuItem Header="Convert to Continuous Tier" Name="exportAnnoDiscreteToContinuouMenu" />
+                <MenuItem Header="Export" Name="exports">
+                    <MenuItem Header="Export to XPS" Name="exportSignalToXPSMenu" IsEnabled="True" />
+                    <MenuItem Header="Export to PNG" Name="exportSignalToPNGMenu" IsEnabled="True" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Database">
+                <!--<MenuItem Header="Calculate Praat features" Name="calculatepraat" />-->
+                <MenuItem Header="Load Session" Name="databaseLoadSessionMenu" />
+                <MenuItem Header="Store Session" Name="databaseSaveSessionMenu" IsEnabled="False" />
+                <MenuItem Header="Store Session and mark as finished" Name="databaseSaveSessionAndMarkAsFinishedMenu" IsEnabled="False" />
+                <MenuItem Header="Cooperative Learning" Visibility="Visible">
+                    <MenuItem Header="Merge Annotations" Name="databaseCMLMergeMenu" IsEnabled="False" Visibility="Collapsed" />
+                    <MenuItem Header="Complete Session" Name="databaseCMLCompleteStepMenu" IsEnabled="False" />
+                    <MenuItem Header="Extract MFCCS for all Sessions" Name="databaseCMLExtractFeaturesMenu" IsEnabled="False"></MenuItem>
+                    <MenuItem Header="Train and Label Multiple Sessions" Name="databaseCMLTransferStepMenu"  Visibility="Collapsed"    IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="Show Download Directory" Name="databaseShowDownloadDirectoryMenu" />
+                <MenuItem Header="Change Download Directory" Name="databaseChangeDownloadDirectoryMenu" />
+                <MenuItem Header="Admin: Manage Database" Visibility="Collapsed" Name="databaseManageMenu" />
+                <!--<MenuItem Header="Test Media to database " Name="mongodbmenu3" />-->
+            </MenuItem>
+            <MenuItem Header="?">
+                <MenuItem Header="Shortcuts"  Name="helpMenu" />
+                <MenuItem Header="Check for Update" Name="updateApplicationMenu" />
+            </MenuItem>
+
+        </Menu>
+
+        <Grid Grid.Row="1" 
+              VerticalAlignment="Stretch" 
+              HorizontalAlignment="Stretch" 
+              Width="Auto" 
+              Height="Auto"
+              Name="viewGrid">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Column="0" 
+                    Grid.Row="0">
+                <local:GeometricListControl x:Name="geometricListControl" Visibility="Collapsed"></local:GeometricListControl>
+
+            </Border>
+
+            <Border Grid.Column="0" 
+                    Grid.Row="1">
+                <local:AnnoListControl x:Name="annoListControl"></local:AnnoListControl>
+            </Border>
+
+            <GridSplitter 
+                ResizeDirection="Columns"
+                Grid.Column="1"
+                Grid.Row="0" 
+                Grid.RowSpan="2"
+                Height="Auto"
+                Width="6"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" 
+                Margin="0">
+            </GridSplitter>
+
+            <Grid Grid.Column="2"
+                  Grid.Row="0"
+                  Grid.RowSpan="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Name="mediaStatusBar"
+                            Grid.Column="0"
+                            Grid.Row="0">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+
+                        <StatusBar Grid.Row="0"
+                                       Grid.Column="0"
+                                       Background="Transparent">
+                            <Button Name="mediaSettingsButton"
+                                    Background="Transparent" 
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0">
+                                <Image Source="/Resources/settings.png" Width="16"></Image>
+                            </Button>
+                            <TextBlock Name="mediaStatusFileNameLabel" TextTrimming="WordEllipsis"></TextBlock>
+                            <Separator />
+                            <TextBlock Name="mediaStatusSampleRateLabel" TextTrimming="WordEllipsis"></TextBlock>
+                        </StatusBar>
+
+                        <local:VolumeControl x:Name="mediaVolumeControl" 
+                                                        Grid.Row="0"
+                                                        Grid.Column="1"
+                                                        Width="250" 
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,20,0"/>
+
+                        <StackPanel Grid.Row="0"
+                                        Grid.Column="2"
+                                        Orientation="Horizontal">
+                            <TextBlock Name="mediaPositionLabel" 
+                                           VerticalAlignment="Center" 
+                                           TextTrimming="WordEllipsis">#0</TextBlock>
+                            <Button Name="mediaCloseButton" 
+                                        Content="X" 
+                                        HorizontalAlignment="Right" 
+                                        Background="Transparent" 
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Margin="5,0,5,0"
+                                        ToolTip="Close selected annotation tier"/>
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+                <Border Grid.Column="0" 
+                            Grid.Row="1" 
+                            Background="Transparent">
+                    <local:MediaBoxControl x:Name="mediaBoxControl"/>
+                </Border>
+
+                <GridSplitter
+                        ResizeDirection="Rows"
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Height="5"
+                        Width="Auto"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="0">
+                </GridSplitter>
+
+                <AdornerDecorator Name="signalAndAnnoAdorner"
+                                      Grid.Column="0"
+                                      Grid.Row="3">
+
+                    <Grid Name="signalAndAnnoGrid"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Width="Auto"
+                            Height="Auto">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid  Grid.Column="0"                                
+                               Grid.Row="0">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Border Name="signalStatusBar"
+                                    Grid.Column="0" 
+                                    Grid.Row="0"
+                                    Background="Transparent">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" />
+                                    </Grid.RowDefinitions>
+
+                                    <StatusBar Grid.Column="0"
+                                                   Grid.Row="0"
+                                                   Background="Transparent">
+
+                                        <Button Name="signalSettingsButton" 
+                                                    Background="Transparent" 
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="0">
+                                            <Image Source="/Resources/settings.png" Width="16"></Image>
+                                        </Button>
+                                        <TextBlock Name="signalStatusFileNameLabel" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <ComboBox Name="signalStatusDimComboBox" Width="Auto" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+                                        <TextBlock Name="signalStatusDimLabel" ToolTip="The sample dimension of the selected signal track" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusSrLabel" ToolTip="The sample rate in Hz of the selected signal track" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusBytesLabel" ToolTip="The sample bytes of the selected signal track" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusTypeLabel" ToolTip="The sample type of the selected signal track" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <Button Name="signalStatsButton" Background="Transparent" BorderThickness="0" Content="Stats" ToolTip="Show Statistics"></Button>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusValueMinLabel" ToolTip="The min Value of the Signal" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusValueMaxLabel" ToolTip="The max Value of the Signal" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="signalStatusValueLabel" ToolTip="The current sample value of the selected signal track" TextTrimming="WordEllipsis"></TextBlock>
+                                        
+                                        
+                                    </StatusBar>
+
+                                    <local:VolumeControl x:Name="signalVolumeControl" 
+                                                            Grid.Row="0"
+                                                            Grid.Column="1"
+                                                            Width="250" 
+                                                            HorizontalAlignment="Right"
+                                                            Margin="0,0,20,0"/>
+
+                                    <StackPanel Grid.Row="0"
+                                                    Grid.Column="2"                                            
+                                                    Orientation="Horizontal">
+                                        <TextBlock Name="signalPositionLabel" 
+                                                            VerticalAlignment="Center"
+                                                            TextTrimming="WordEllipsis">00:00:00.00</TextBlock>
+                                        <Separator />
+                                        
+                                        <Button Name="signalCloseButton" 
+                                                        Content="X" 
+                                                        HorizontalAlignment="Right" 
+                                                        Background="Transparent" 
+                                                        BorderBrush="Transparent" 
+                                                        BorderThickness="0"
+                                                        Margin="5,0,5,0"
+                                                        ToolTip="Close selected signal track"/>
+                                    </StackPanel>
+
+                                </Grid>
+
+                            </Border>
+
+                            <Border Grid.Column="0"
+                                    Grid.Row="1" 
+                                    Background="Transparent">
+                                <local:SignalTrackControl x:Name="signalTrackControl"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"/>
+                            </Border>
+
+                        </Grid>
+
+                        <GridSplitter ResizeDirection="Rows"
+                                            Grid.Column="0"
+                                            Grid.Row="1"
+                                            Width="Auto"
+                                            Height="5"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="0">
+                        </GridSplitter>
+
+                        <Grid  Grid.Column="0"                                
+                               Grid.Row="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Border Name="annoStatusBar" 
+                                    Grid.Column="0" 
+                                    Grid.Row="0">
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" />
+                                    </Grid.RowDefinitions>
+
+                                    <StatusBar Grid.Column="0" 
+                                    Grid.Row="0"
+                                    Background="Transparent">
+
+                                        <Button Name="annoSettingsButton" 
+                                                Background="Transparent" 
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0">
+                                            <Image Source="/Resources/settings.png" Width="16"></Image>
+                                        </Button>
+                                        <TextBlock Name="annoStatusFileNameOrSessionLabel" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="annoStatusSchemeNameLabel" ToolTip="Name of the scheme" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="annoStatusSchemeTypeLabel" ToolTip="The scheme type" TextTrimming="WordEllipsis"></TextBlock>
+                                        <StatusBar Name="annoStatusSchemeContinuousPanel" Background="Transparent">
+                                            <Separator />
+                                            <TextBlock Name="annoSchemeContinuousSrLabel" ToolTip="Sample rate in Hz" TextTrimming="WordEllipsis"></TextBlock>
+                                            <Separator />
+                                            <TextBlock Name="annoSchemeContinuousMinLabel" ToolTip="Minimum score value" TextTrimming="WordEllipsis"></TextBlock>
+                                            <Separator />
+                                            <TextBlock Name="annoSchemeContinuousMaxLabel" ToolTip="Maximum score value" TextTrimming="WordEllipsis"></TextBlock>
+                                        </StatusBar>
+                                        <Separator />
+                                        <TextBlock Name="annoStatusAnnotatorLabel" ToolTip="Name of the annotator" TextTrimming="WordEllipsis"></TextBlock>
+                                        <Separator />
+                                        <TextBlock Name="annoStatusRoleLabel" ToolTip="Name of the role that is annotated" TextTrimming="WordEllipsis"></TextBlock>
+
+                                    </StatusBar>
+
+                                    <StackPanel Grid.Row="0"
+                                                Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                Name="annorightMenu">
+                                        <CheckBox x:Name="annoContinuousMode" Style="{DynamicResource OrangeSwitchStyle}" 
+                                                  ToolTip="Continuous Annotation Mode" 
+                                                  Visibility="Collapsed"/>
+                                        <Separator Width="20" Visibility="Hidden"></Separator>
+                                        <TextBlock x:Name="annoPositionLabel" 
+                                    		VerticalAlignment="Center" 
+                                    		TextTrimming="WordEllipsis"><Run Text="00:00:00.00"/></TextBlock>
+                                        <Button x:Name="annoCloseButton" 
+                                    		Content="X" 
+                                    		HorizontalAlignment="Right" 
+                                    		Background="Transparent" 
+                                    		BorderBrush="Transparent"
+                                    		BorderThickness="0"
+                                    		Margin="5,0,5,0"
+                                    		ToolTip="Close selected annotation tier"/>
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="0"
+                                    Grid.Row="1">
+
+                                <local:AnnoTierControl
+                                        x:Name="annoTierControl"
+                                        Width="Auto"
+                                        Height="Auto"
+                                        Background="Transparent"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch" />
+                            </Border>
+
+                        </Grid>
+
+                        <Border Grid.Column="0"  
+                                    Grid.Row="3">
+                            <local:TimeTrackControl x:Name="timeLineControl" />
+                        </Border>
+
+                    </Grid>
+
+                </AdornerDecorator>
+
+            </Grid>
+
+            <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3">
+                <local:NavigatorControl x:Name="navigator"></local:NavigatorControl>
+            </Border>
+
+            <Grid Name="ShadowBox" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan ="3" Visibility="Collapsed">
+                <Border Background="Black" Opacity=".95" />
+                <Grid Name="Loadingbox" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Name="ShadowBoxText" Text="Loading Data..." HorizontalAlignment="Center" Foreground="White" FontSize="30" />
+                        <Button Name="shadowBoxCancelButton" Visibility="Collapsed" VerticalAlignment="Bottom" Background="Transparent" Content="Cancel" HorizontalAlignment="Center" Foreground="White" FontSize="30" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+
+
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="CheckedBlue" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FF285AB3" Offset="0" />
+            <GradientStop Color="#FF4184EC" Offset="0.5" />
+            <GradientStop Color="#FF558BED" Offset="0.5" />
+            <GradientStop Color="#FF7DACF0" Offset="1" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="CheckedOrange" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FFCA6A13" Offset="0" />
+            <GradientStop Color="#FFF67D0C" Offset="0.2" />
+            <GradientStop Color="#FFFE7F0C" Offset="0.2" />
+            <GradientStop Color="#FFFA8E12" Offset="0.5" />
+            <GradientStop Color="#FFFF981D" Offset="0.5" />
+            <GradientStop Color="#FFFCBC5A" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CheckedOrangeBorder" Color="#FF8E4A1B" />
+        <SolidColorBrush x:Key="CheckedBlueBorder" Color="#FF143874" />
+        <Style x:Key="OrangeSwitchStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="OnChecking">
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="53" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                            <Storyboard x:Key="OnUnchecking">
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="0" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <DockPanel x:Name="dockPanel">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                            <Grid>
+                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="3" Height="27" Width="94">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFB5B5B5" Offset="0" />
+                                            <GradientStop Color="#FFDEDEDE" Offset="0.1" />
+                                            <GradientStop Color="#FFEEEEEE" Offset="0.5" />
+                                            <GradientStop Color="#FFFAFAFA" Offset="0.5" />
+                                            <GradientStop Color="#FFFEFEFE" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse x:Name="Off" Width="14" Height="14" Stroke="#FF7A7A7A" StrokeThickness="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <Line x:Name="On" X1="0" Y1="0" X2="0" Y2="14" Stroke="#FF7A7A7A" StrokeThickness="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+                                <Border BorderBrush="#FF939393" HorizontalAlignment="Left" x:Name="slider" Width="41" Height="27" BorderThickness="1" CornerRadius="3" RenderTransformOrigin="0.5,0.5" Margin="0">
+                                    <Border.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                            <SkewTransform AngleX="0" AngleY="0" />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform X="0" Y="0" />
+                                        </TransformGroup>
+                                    </Border.RenderTransform>
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#FFF0F0F0" Offset="0" />
+                                            <GradientStop Color="#FFCDCDCD" Offset="0.1" />
+                                            <GradientStop Color="#FFFBFBFB" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Grid>
+                        </DockPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource OnUnchecking}" x:Name="OnUnchecking_BeginStoryboard" />
+                                </Trigger.ExitActions>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource OnChecking}" x:Name="OnChecking_BeginStoryboard" />
+                                </Trigger.EnterActions>
+                                <Setter TargetName="On" Property="Stroke" Value="White" />
+                                <Setter TargetName="Off" Property="Stroke" Value="White" />
+                                <!-- Change Orange or Blue color here -->
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource CheckedOrange}" />
+                                <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{StaticResource CheckedOrangeBorder}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <!-- ToDo: Add Style for Isenabled == False -->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+</UserControl>

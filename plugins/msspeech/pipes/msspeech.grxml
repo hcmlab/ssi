@@ -1,0 +1,45 @@
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+  <rule id="rootRule">
+    <one-of>	
+		<item>
+			<tag>GO</tag>
+			<one-of>
+				<item>go</item>          
+				<item>move</item>          				
+			</one-of>
+		</item>	
+		<item>
+			<tag>UP</tag>
+			<one-of>
+				<item>up</item>          
+				<item>go up</item>          
+				<item>move up</item>          
+			</one-of>
+		</item>
+		<item>
+			<tag>DOWN</tag>
+			<one-of>
+				<item>down</item>          
+				<item>go down</item>          
+				<item>move down</item>          
+			</one-of>
+		</item>
+		<item>
+			<tag>LEFT</tag>
+			<one-of>
+				<item>left</item>
+				<item>go left</item>
+				<item>move left</item>
+			</one-of>
+		</item>
+		<item>
+			<tag>RIGHT</tag>
+			<one-of>
+				<item>right</item>
+				<item>go right</item>
+				<item>move right</item>
+			</one-of>
+		</item>     
+		</one-of>
+  </rule>
+</grammar>

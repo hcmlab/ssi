@@ -272,7 +272,7 @@ void ElanTools::Merge2first(ElanDocument &first, ElanDocument &second)
 // -> features per bool op
 void ElanTools::Ssi2elan(const char* annopath, ElanDocument* elanDoc)
 {
-	Annotation anno;
+	old::Annotation anno;
 
 	//ssi anno
 	ModelTools::LoadAnnotation(anno, annopath);
@@ -285,7 +285,7 @@ void ElanTools::Ssi2elan(const char* annopath, ElanDocument* elanDoc)
 	{
 		anno.reset();
 		ElanAnnotation a;
-		Annotation::Entry* ae = anno.next(label);
+		old::Annotation::Entry* ae = anno.next(label);
 		ElanTier myTier(anno.getLabel(label));
 
 		anno.reset();
@@ -307,10 +307,10 @@ void ElanTools::Ssi2elan(const char* annopath, ElanDocument* elanDoc)
 }
 
 
-void ElanTools::Elan2ssi(ElanDocument* elanDoc, Annotation *ssiAnno)
+void ElanTools::Elan2ssi(ElanDocument* elanDoc, old::Annotation *ssiAnno)
 {
 	ElanDocument::iterator tier;
-	Annotation::Entry ae;
+	old::Annotation::Entry ae;
 	int labelIndex = 0;
 	for (tier = elanDoc->begin(); tier != elanDoc->end(); tier++) {
 

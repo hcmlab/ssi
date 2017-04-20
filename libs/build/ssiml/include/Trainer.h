@@ -34,7 +34,7 @@
 #include "base/ISamples.h"
 #include "base/ISelection.h"
 #include "base/ITransformer.h"
-#include "model/SampleList.h"
+#include "SampleList.h"
 #include "ioput/xml/tinyxml.h"
 #include "ioput/file/FileTools.h"
 #include "ioput/file/FilePath.h"
@@ -59,11 +59,23 @@ public:
 	};
 	static Trainer::VERSION DEFAULT_VERSION;
 
+	struct BALANCE
+	{
+		enum Value
+		{
+			NONE = 0,
+			UNDER,
+			OVER
+		};
+	};
+
 	Trainer ();
 	Trainer (IModel *model, ssi_size_t stream_index = 0);
 	Trainer (ssi_size_t n_models,
 		IModel **models,
 		IFusion *fusion);
+
+	void setSeed(ssi_size_t seed);
 
 	virtual ~Trainer ();
 
@@ -120,10 +132,14 @@ public:
 	void evalKFold(ssi_size_t k, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalLOO(FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalLOUO(FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
+	void setBalance(BALANCE::Value balance);
 	bool train ();
 	
 	bool forward (ssi_stream_t &stream,
 		ssi_size_t &class_index);
+	bool forward(ssi_stream_t &stream,
+		ssi_size_t &class_index,
+		ssi_real_t &class_prob);
 	bool forward_probs (ssi_stream_t &stream,
 		ssi_size_t class_num,
 		ssi_real_t *class_probs);
@@ -159,6 +175,7 @@ public:
 
 	bool isTrained () { return _is_trained; };
 	bool hasSelection () { return _has_selection; };
+	ssi_size_t *getSelection(ssi_size_t index, ssi_size_t &n_selected) { n_selected = _n_stream_select[index]; return _stream_select[index]; };
 	ssi_size_t getStreamSize () { return _n_streams; };
 	ssi_stream_t &getStreamRef (ssi_size_t stream_index) { return _stream_refs[stream_index]; };
 
@@ -227,6 +244,9 @@ protected:
 
 	ssi_size_t _n_samplepaths;
 	ssi_char_t **_samplepaths;
+
+	ssi_size_t _seed;
+	BALANCE::Value _balance;
 };
 
 }

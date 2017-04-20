@@ -35,6 +35,9 @@
 typedef struct _IplImage IplImage;
 typedef struct CvPoint CvPoint;
 
+#define MIN_ALLOWED_VALUE -5000
+#define MAX_ALLOWED_VALUE 5000
+
 namespace ssi {
 
 class SkeletonPainter : public IFilter {

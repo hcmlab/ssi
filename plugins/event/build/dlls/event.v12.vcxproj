@@ -215,6 +215,7 @@
     <ClInclude Include="..\..\include\TheEventBoard.h" />
     <ClInclude Include="..\..\include\ThresClassEventSender.h" />
     <ClInclude Include="..\..\include\ThresEventSender.h" />
+    <ClInclude Include="..\..\include\TriggerEventSender.h" />
     <ClInclude Include="..\..\include\TupleEventSender.h" />
     <ClInclude Include="..\..\include\XMLEventHelper.h" />
     <ClInclude Include="..\..\include\XMLEventSender.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="..\..\source\TheEventBoard.cpp" />
     <ClCompile Include="..\..\source\ThresClassEventSender.cpp" />
     <ClCompile Include="..\..\source\ThresEventSender.cpp" />
+    <ClCompile Include="..\..\source\TriggerEventSender.cpp" />
     <ClCompile Include="..\..\source\TupleEventSender.cpp" />
     <ClCompile Include="..\..\source\XMLEventHelper.cpp" />
     <ClCompile Include="..\..\source\XMLEventSender.cpp" />

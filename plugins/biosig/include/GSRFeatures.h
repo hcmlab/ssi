@@ -50,7 +50,7 @@ public:
 			: print_info(false), print_features(false), winsize (15.0), peaknstd (0.25f), peakmind (1.0f), peakmaxd (4.0f), slopenstd (0.5f), slopemind (0.5f), slopemaxd (4.0f),
 			f_number(true), f_type_peaks(true), f_type_slopes(true), f_type_drops(true), f_type_combo(true),
 			f_att_duration(true), f_att_amplitude(true), f_att_area(true),
-			f_stat_min(true), f_stat_max(true), f_stat_avg(true), f_stat_var(true), f_stat_std(true){
+			f_stat_min(true), f_stat_max(true), f_stat_avg(true), f_stat_var(true), f_stat_std(true), new_features(false){
 
 			addOption("print_info", &print_info, 1, SSI_BOOL, "print info about feature calculation");
 			addOption("print_features", &print_features, 1, SSI_BOOL, "print feature name and number");
@@ -83,8 +83,10 @@ public:
 			addOption("f_stat_var", &f_stat_var, 1, SSI_BOOL, "compute variance of selected attributes");
 			addOption("f_stat_std", &f_stat_std, 1, SSI_BOOL, "compute standard deviation of selected attributes");
 
+			addOption("new_features", &new_features, 1, SSI_BOOL, "include the top 13 features from s. gruss");
+
 		};
-		bool f_number, f_type_peaks, f_type_slopes, f_type_drops, f_type_combo, f_att_duration, f_att_amplitude, f_att_area, f_stat_min, f_stat_max, f_stat_avg, f_stat_var, f_stat_std;
+		bool f_number, f_type_peaks, f_type_slopes, f_type_drops, f_type_combo, f_att_duration, f_att_amplitude, f_att_area, f_stat_min, f_stat_max, f_stat_avg, f_stat_var, f_stat_std, new_features;
 
 		bool print_info, print_features;
 		ssi_time_t winsize;
@@ -94,6 +96,8 @@ public:
 		ssi_real_t slopenstd;
 		ssi_real_t slopemind;
 		ssi_real_t slopemaxd;
+
+		
 	};
 
 public: 	
@@ -164,12 +168,26 @@ public:
 		ssi_size_t dim = type * att * stat;
 		if (_options.f_number) dim += type;
 
+		if (_options.new_features) dim += 3;
+
 		return dim;
 	}
 
-	void GSRFeatures::printFeatures();
+	virtual void GSRFeatures::printFeatures();
+
+	virtual void setReferenceStream(ssi_stream_t* ref) {
+		_reference_stream = ref;
+	}
+
+
 
 protected:
+
+	enum GSR_STATE {
+		GSR_NONE = 0,
+		GSR_RISING,
+		GSR_FALLING
+	};
 
 	struct peakslopedrop {
 		ssi_time_t from;
@@ -205,6 +223,9 @@ protected:
 	void GSRFeatures::printFeatureStat(int st);
 	void GSRFeatures::printFeatureAttribute(int at, std::string str_stat);
 	void GSRFeatures::printFeatureType(int ft, std::string str_stat, std::string str_att);
+
+	ssi_stream_t* _reference_stream;
+
 };
 
 }

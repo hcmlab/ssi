@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<samples ssi-v="3">
+	<time ms="69539980" local="2016/10/16 20:22:03:258" system="2016/10/16 18:22:03:258"/>
+    <info ftype="BINARY" size="5" missing="false" garbage="0" />
+    <streams>
+        <item path="audio.samples.#0" />
+    </streams>
+    <classes>
+        <item name="start" size="1" />
+        <item name="stop" size="1" />
+        <item name="next" size="1" />
+        <item name="previous" size="1" />
+        <item name="restart" size="1" />
+    </classes>
+    <users>
+        <item name="user" size="5" />
+    </users>
+</samples>

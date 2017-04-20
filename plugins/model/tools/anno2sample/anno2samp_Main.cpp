@@ -29,7 +29,7 @@
 // --run -trainer mlp D:\wagner\openssi\core\build\tools\xmltrain\mlp\mlp
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -58,11 +58,12 @@ int main (int argc, char **argv) {
 	ssi_char_t *annopath = 0;
 	ssi_char_t *streampath = 0;
 	ssi_char_t *samplepath = 0;
+	ssi_char_t *tier = "";
 	ssi_char_t *username = 0;
 	ssi_char_t *log = 0;
 	ssi_time_t frame = 0;
 	ssi_time_t delta = 0;
-    ssi_time_t percent = 0;
+	ssi_time_t percent = 0;
 	ssi_char_t *label = 0;
 	bool noscale = false;
 	bool ascii = false;
@@ -72,6 +73,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("annotation", &annopath, "path to anno file");
 	cmd.addSCmdArg("stream", &streampath, "path to stream file(s) (if several separated by ;)");
 	cmd.addSCmdArg("samples", &samplepath, "path to sample file (separated by ;)");
+	cmd.addSCmdArg("tier", &tier, "tierid in annofile");
 	
 	cmd.addText("\nOptions:");	
 	cmd.addSCmdOption("-log", &log, "", "output to log file");
@@ -82,15 +84,16 @@ int main (int argc, char **argv) {
 	cmd.addDCmdOption("-percent", &percent, 0.5, "percentage of a frame a annotation segment has to cover (applied if frame > 0)");
 	cmd.addSCmdOption("-label", &label, "", "default label if not covered by an annotation segment (applied if frame > 0)");
 
+
 	if (cmd.read (argc, argv)) {		
 
 		if (log[0] != '\0') {
 			ssi_log_file_begin (log);
 		}
 
-		Annotation anno;
+		old::Annotation anno;
 		ssi_print("READ ANNOTATION\t\t'%s'\n", annopath);		
-		ModelTools::LoadAnnotation(anno, annopath);
+		ModelTools::LoadAnnotation(anno, annopath, tier);
 
 		ssi_size_t n_streams = ssi_split_string_count(streampath, ';');
 		ssi_char_t **tokens = new ssi_char_t *[n_streams];
@@ -109,7 +112,7 @@ int main (int argc, char **argv) {
 		
 		SampleList samples;
 		if (frame > 0) {
-			Annotation anno_c;
+			old::Annotation anno_c;
 
 			if (strlen(label) == 0){				
 				ssi_wrn("dropping samples with empty annotation")

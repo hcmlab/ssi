@@ -56,6 +56,7 @@ public:
 		}
 
 		ssi_char_t path[SSI_MAX_CHAR];
+		bool storeSystemTime;
 	};
 
 public: 	
@@ -83,7 +84,6 @@ protected:
 	FileEventWriter::Options _options;
 	ssi_char_t *_file;
 
-	bool _first_call;
 	FileEventsOut _eout;
 	ssi_char_t _string[SSI_MAX_CHAR];
 

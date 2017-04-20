@@ -92,7 +92,7 @@ void Chain::transform_enter (ssi_stream_t &stream_in,
 		if (i+1 < _stream_tmp_num-1) {
 			ssi_stream_init (*_stream_tmp[i+1], 0, _filters[i]->getSampleDimensionOut (_stream_tmp[i]->dim), _filters[i]->getSampleBytesOut (_stream_tmp[i]->byte), _stream_tmp[i]->type, _stream_tmp[i]->sr);											
 		}
-		_filters[i]->transform_enter (*_stream_tmp[i], *_stream_tmp[i+1]);
+		_filters[i]->transform_enter (*_stream_tmp[i], *_stream_tmp[i+1], xtra_stream_in_num, xtra_stream_in);
 	}
 	if (_n_features > 0) {
 		_feature_dim_out = new ssi_size_t[_n_features];
@@ -100,7 +100,7 @@ void Chain::transform_enter (ssi_stream_t &stream_in,
 		for (ssi_size_t i = 0; i < _n_features; i++) {			
 			_feature_dim_out[i] = _features[i]->getSampleDimensionOut (_stream_tmp[_stream_tmp_num-2]->dim);
 			_stream_tmp[_stream_tmp_num-1]->dim = _feature_dim_out[i];
-			_features[i]->transform_enter (*_stream_tmp[_stream_tmp_num-2], *_stream_tmp[_stream_tmp_num-1]);
+			_features[i]->transform_enter (*_stream_tmp[_stream_tmp_num-2], *_stream_tmp[_stream_tmp_num-1], xtra_stream_in_num, xtra_stream_in);
 		}
 		_stream_tmp[_stream_tmp_num-1]->dim = _feature_dim_out_tot;
 	}
@@ -128,13 +128,13 @@ void Chain::transform (ITransformer::info info,
 
 		// transform data
 		for (ssi_size_t i = 0; i < _n_filters; i++) {
-			_filters[i]->transform(info, *_stream_tmp[i], *_stream_tmp[i + 1]);
+			_filters[i]->transform(info, *_stream_tmp[i], *_stream_tmp[i + 1], xtra_stream_in_num, xtra_stream_in);
 		}
 		if (_n_features > 0) {
 			ssi_byte_t *ptr_tmp = _stream_tmp[_stream_tmp_num - 1]->ptr;
 			for (ssi_size_t i = 0; i < _n_features; i++) {
 				_stream_tmp[_stream_tmp_num - 1]->dim = _feature_dim_out[i];
-				_features[i]->transform(info, *_stream_tmp[_stream_tmp_num - 2], *_stream_tmp[_stream_tmp_num - 1]);
+				_features[i]->transform(info, *_stream_tmp[_stream_tmp_num - 2], *_stream_tmp[_stream_tmp_num - 1], xtra_stream_in_num, xtra_stream_in);
 				_stream_tmp[_stream_tmp_num - 1]->ptr += _stream_tmp[_stream_tmp_num - 1]->byte * _feature_dim_out[i];
 			}
 			_stream_tmp[_stream_tmp_num - 1]->ptr = ptr_tmp;
@@ -152,12 +152,12 @@ void Chain::transform_flush (ssi_stream_t &stream_in,
 	_stream_tmp[0] = &stream_in; // first is always the input stream
 	_stream_tmp[_stream_tmp_num-1] = &stream_out; // last is always the output stream
 	for (ssi_size_t i = 0; i < _n_filters; i++) {
-		_filters[i]->transform_flush (*_stream_tmp[i], *_stream_tmp[i+1]);
+		_filters[i]->transform_flush (*_stream_tmp[i], *_stream_tmp[i+1], xtra_stream_in_num, xtra_stream_in);
 	}
 	if (_n_features > 0) {
 		for (ssi_size_t i = 0; i < _n_features; i++) {
 			_stream_tmp[_stream_tmp_num-1]->dim = _feature_dim_out[i];				
-			_features[i]->transform_flush (*_stream_tmp[_stream_tmp_num-2], *_stream_tmp[_stream_tmp_num-1]);	
+			_features[i]->transform_flush (*_stream_tmp[_stream_tmp_num-2], *_stream_tmp[_stream_tmp_num-1], xtra_stream_in_num, xtra_stream_in);
 		}
 		_stream_tmp[_stream_tmp_num-1]->dim = _feature_dim_out_tot;	
 	}
@@ -375,7 +375,7 @@ bool Chain::parseFilter (TiXmlElement *element) {
 				return false;
 			}
 
-			ssi_msg(SSI_LOG_LEVEL_DETAIL, "load filter '%s'", i + 1, object->getName());
+			ssi_msg(SSI_LOG_LEVEL_DETAIL, "load filter#%u '%s'", i + 1, object->getName());
 
 			_filters[i] = filter;
 		}		
@@ -428,7 +428,7 @@ bool Chain::parseFeature (TiXmlElement *element) {
 				return false;
 			}
 
-			ssi_msg (SSI_LOG_LEVEL_DETAIL, "load feature '%s'", i+1, object->getName ()); 
+			ssi_msg (SSI_LOG_LEVEL_DETAIL, "load feature#%u '%s'", i+1, object->getName ()); 
 
 			_features[i] = feature;
 		}

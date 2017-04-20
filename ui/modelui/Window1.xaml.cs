@@ -129,7 +129,7 @@ namespace ssi
             if (viewh != null && selecth != null)
             {
                 viewh.LoadButton.Visibility = Visibility.Collapsed;
-                selecth.OnDataMouseDoubleClick += viewh.loadFromFile;
+               // selecth.OnDataMouseDoubleClick += viewh.loadFromFile;
                 selecth.OnDateMouseDoubleClick += new DateMouseDoubleClick(selecth_OnDateMouseDoubleClick);
             }
         }

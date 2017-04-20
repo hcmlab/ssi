@@ -53,7 +53,7 @@ void FileCSV::clear () {
 		delete[] _column_names[i];
 	}
 	delete[] _column_names; _column_names = 0;
-	delete[] _columns;
+	delete[] _columns; _columns = 0;
 	_n_columns = _n_rows = 0;
 	_has_header = false;
 }
@@ -156,7 +156,7 @@ bool FileCSV::parseString(const ssi_char_t *str, const ssi_char_t delim, bool ha
 		}
 	}
 	while (ptr = nextLine(ptr, &line, n_line, n_max_line)) {
-		n_tokens = ssi_split_string_count(line, delim);
+		n_tokens = ssi_split_string_count(line, delim, true);
 		if (n_tokens == 0) {
 			continue;
 		}
@@ -174,7 +174,7 @@ bool FileCSV::parseString(const ssi_char_t *str, const ssi_char_t delim, bool ha
 			ssi_wrn("#tokens '%u' != #columns '%u'", n_tokens, _n_columns);
 			continue;
 		}
-		if (!ssi_split_string(n_tokens, tokens, line, delim)) {
+		if (!ssi_split_string(n_tokens, tokens, line, delim, true)) {
 			continue;
 		}
 		for (ssi_size_t i = 0; i < _n_columns; i++) {
@@ -199,7 +199,7 @@ ssi_char_t *FileCSV::nextLine(ssi_char_t *str, ssi_char_t **line, ssi_size_t &n_
 		return 0;
 	}
 
-	if (ptr == '\0') {
+	if (*ptr == '\0') {
 		return 0;
 	}
 

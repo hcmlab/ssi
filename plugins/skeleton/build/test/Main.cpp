@@ -249,8 +249,8 @@ bool ex_microsoftkinect2(void *arg) {
 	ITheEventBoard *board = Factory::GetEventBoard ();
 
 	MicrosoftKinect2 *kinect2 = ssi_create(MicrosoftKinect2, 0, true);
-	kinect2->getOptions()->trackNearestPersons = 6;
-	kinect2->getOptions()->sr = 15;
+	kinect2->getOptions()->trackNearestPersons = 1;
+	kinect2->getOptions()->sr = 25;
 	ITransformable *rgb_p = frame->AddProvider(kinect2, SSI_MICROSOFTKINECT2_RGBIMAGE_PROVIDER_NAME, 0, "2.0s");
 	ITransformable *skel_p = frame->AddProvider(kinect2, SSI_MICROSOFTKINECT2_SKELETON_PROVIDER_NAME);	
 	ITransformable *face_p = frame->AddProvider(kinect2, SSI_MICROSOFTKINECT2_FACEPOINT3D_PROVIDER_NAME);	

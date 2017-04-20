@@ -94,6 +94,7 @@ void gazetracker () {
 
 	bool eyeFromFile = false;
 	bool sceneFromFile = false;
+	bool shiftableGazePoint = false;
 
 	bool record = true;
 
@@ -175,6 +176,15 @@ void gazetracker () {
 	st->getOptions()->showHeadtrackingDebugImage = false;
 	ITransformable *st_t = frame->AddTransformer(sceneCamera_p, 1, &et_t, st, "1");
 
+	ITransformable *gps_t;
+	if (shiftableGazePoint) {
+		// gaze point shifter
+		GazePointShifter *gps = ssi_create(GazePointShifter, 0, true);
+		gps_t = frame->AddTransformer(st_t, gps, "1");
+	}
+	
+
+
 	// eye painter
 	EyePainter *eyepainter = ssi_create(EyePainter, 0, true);
 	ITransformable *eyepainter_t = frame->AddTransformer(eyeCamera_p, 1, &et_t, eyepainter, "1");
@@ -186,7 +196,14 @@ void gazetracker () {
 	#else
 		scenepainter->getOptions()->drawHeatmap = true;
 	#endif
-	ITransformable *scenepainter_t = frame->AddTransformer(sceneCamera_p, 1, &st_t, scenepainter, "1");
+
+	ITransformable *scenepainter_t;
+	if (shiftableGazePoint) {
+		scenepainter_t = frame->AddTransformer(sceneCamera_p, 1, &gps_t, scenepainter, "1");
+	}
+	else {
+		scenepainter_t = frame->AddTransformer(sceneCamera_p, 1, &st_t, scenepainter, "1");
+	}
 
 	// eye plot
 	VideoPainter *eyePlot = ssi_create_id (VideoPainter, 0, "plot_eye");

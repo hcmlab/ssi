@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<stream ssi-v="2">
+    <info ftype="ASCII" sr="50.000000" dim="2" byte="4" type="FLOAT" delim=" " />
+	<chunk from="9.960000" to="12.200000" byte="0" num="112"/>
+	<chunk from="13.540000" to="16.040000" byte="2187" num="125"/>
+	<chunk from="17.880000" to="20.040000" byte="4626" num="108"/>
+	<chunk from="22.780000" to="25.580000" byte="6743" num="140"/>
+	<chunk from="26.740000" to="29.520000" byte="9492" num="139"/>
+	<chunk from="30.600000" to="33.160000" byte="12245" num="128"/>
+	<chunk from="36.820000" to="38.660000" byte="14779" num="92"/>
+	<chunk from="39.320000" to="41.140000" byte="16611" num="91"/>
+	<chunk from="42.200000" to="44.120000" byte="18432" num="96"/>
+	<chunk from="48.460000" to="50.580000" byte="20351" num="106"/>
+	<chunk from="51.780000" to="53.920000" byte="22408" num="107"/>
+	<chunk from="55.260000" to="57.700000" byte="24486" num="122"/>
+	<chunk from="59.860000" to="61.600000" byte="26853" num="87"/>
+	<chunk from="62.820000" to="64.640000" byte="28571" num="91"/>
+	<chunk from="67.020000" to="68.940000" byte="30384" num="96"/>
+</stream>

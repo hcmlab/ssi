@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2009-2015 by Jakob Schröter <js@camaya.net>
+  Copyright (c) 2009-2016 by Jakob Schröter <js@camaya.net>
   This file is part of the gloox library. http://camaya.net/gloox
 
   This software is distributed under a license. The full license
@@ -21,7 +21,7 @@
 #elif defined( __SYMBIAN32__ )
 # include "../config.h.symbian"
 #else
-//# include "config.h.unix" // run ./configure to create config.h.unix
+# include "config.h.unix" // run ./configure to create config.h.unix
 #endif
 
 #endif // CONFIG_H__

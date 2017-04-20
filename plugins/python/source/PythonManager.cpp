@@ -53,6 +53,7 @@ void PythonManager::Init()
 {
 	Py_Initialize();
 	PyEval_InitThreads();
+	//Py_DECREF(PyImport_ImportModule("threading"));
 	PyInit_ssipy();
 	_state = PyEval_SaveThread();
 }

@@ -25,8 +25,8 @@
 //*************************************************************************************************
 
 #include "FloatingCFS.h"
-#include "Evaluation.h"
-#include "Trainer.h"
+#include "ssiml/include/Evaluation.h"
+#include "ssiml/include/Trainer.h"
 
 namespace ssi {
 

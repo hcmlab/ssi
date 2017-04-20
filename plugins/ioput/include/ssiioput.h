@@ -37,6 +37,7 @@
 #include "ioput/include/SocketEventWriter.h"
 #include "ioput/include/SocketEventReader.h"
 #include "ioput/include/FileSampleWriter.h"
+#include "ioput/include/FileAnnotationWriter.h"
 #include "ioput/include/FakeSignal.h"
 
 #endif

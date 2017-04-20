@@ -29,7 +29,7 @@
 #include "audio/include/ssiaudio.h"
 
 #include "model/include/ssimodel.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssiev.h"
 
 using namespace ssi;
@@ -142,8 +142,8 @@ bool ex_mfccpitch(void *args) {
 	ITransformable *ev_mfcc_t  = frame->AddTransformer(audio_p, ev_mfcc, "0.2s");
 
 	// pitch
-	EmoVoicePitch *ev_pitch = ssi_create (EmoVoicePitch, 0, true);
-	ITransformable *ev_pitch_t = frame->AddTransformer(audio_p, ev_pitch, "0.2s", "2.0s");
+	//EmoVoicePitch *ev_pitch = ssi_create (EmoVoicePitch, 0, true);
+	//ITransformable *ev_pitch_t = frame->AddTransformer(audio_p, ev_pitch, "0.2s", "2.0s");
 	
 	// plot	
 #if __ANDROID__
@@ -162,10 +162,10 @@ bool ex_mfccpitch(void *args) {
 	sigpaint->getOptions()->type = PaintSignalType::IMAGE;
 	frame->AddConsumer(ev_mfcc_t, sigpaint, "0.2s");
 	
-	sigpaint = ssi_create_id (SignalPainter, 0, "plot"); 
-	sigpaint->getOptions()->size = 10.0;
-	sigpaint->getOptions()->setTitle("pitch");
-	frame->AddConsumer(ev_pitch_t, sigpaint, "0.2s");
+	//sigpaint = ssi_create_id (SignalPainter, 0, "plot"); 
+	//sigpaint->getOptions()->size = 10.0;
+	//sigpaint->getOptions()->setTitle("pitch");
+	//frame->AddConsumer(ev_pitch_t, sigpaint, "0.2s");
 #endif
 
 	// run framework

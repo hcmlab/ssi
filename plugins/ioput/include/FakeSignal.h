@@ -30,6 +30,7 @@
 #include "base/ISensor.h"
 #include "ioput/option/OptionList.h"
 #include "thread/ClockThread.h"
+#include "base/Random.h"
 
 namespace ssi {
 
@@ -118,6 +119,9 @@ protected:
 	ssi_size_t _image_origin[2];
 	ssi_size_t _image_step[2];
 	static ssi_uchar_t _image[80][200];
+
+	Randomi _random255;
+	Randomf _random;
 };
 }
 #endif

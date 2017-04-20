@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\source\EyeTrackerUtils.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\GazePointShifter.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ssigazetracker.h">
@@ -43,6 +46,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\EyeTrackerUtils.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GazePointShifter.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

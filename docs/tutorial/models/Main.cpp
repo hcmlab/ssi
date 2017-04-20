@@ -29,7 +29,7 @@
 #include "MyFusion.h"
 #include "audio\include\ssiaudio.h"
 #include "mouse\include\ssimouse.h"
-#include "ssiml.h"
+#include "ssiml\include\ssiml.h"
 #include "model\include\ssimodel.h"
 using namespace ssi;
 
@@ -166,7 +166,7 @@ bool ex_online(void *args) {
 	ssi_size_t n_streams = 1;
 	ssi_real_t distr[][3] = { 0.66f, 0.33f, 0.15f, 0.33f, 0.33f, 0.15f, 0.66f, 0.66f, 0.15f, 0.33f, 0.66f, 0.15f };
 	SampleList strain;
-	ModelTools::CreateTestSamples (strain, n_classes, n_sampels, n_streams, distr);	
+	ModelTools::CreateTestSamples (strain, n_classes, n_sampels, n_streams, distr);		
 
 	MyModel *model = ssi_create(MyModel, 0, true);
 	Trainer trainer (model, 0);

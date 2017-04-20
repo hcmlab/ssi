@@ -27,7 +27,8 @@
 #include "ISOverSample.h"
 #include "ISSelectClass.h"
 #include "FindNN.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -45,6 +46,8 @@ ISOverSample::ISOverSample (ISamples *samples)
 	_n_over (0),
 	_over (0),
 	_smote_k (5) {
+
+	_seed = Random::Seed();
 
 	_n_classes = _samples.getClassSize ();
 	_n_samples = _samples.getSize ();
@@ -132,6 +135,11 @@ bool ISOverSample::setOver (ssi_size_t n_classes, ssi_size_t *n_adds, Strategy s
 	return true;
 }
 
+void ISOverSample::setSeed(ssi_size_t seed)
+{
+	_seed = seed;
+}
+
 ssi_sample_t *ISOverSample::get (ssi_size_t index) {
 
 	if (index >= _n_samples + _n_over) {
@@ -164,11 +172,14 @@ bool ISOverSample::doDuplicate () {
 	ssi_size_t count = 0;
 	ssi_size_t index = 0;
 	ISSelectClass select (&_samples);
+
+	Randomf random(0, 1, _seed);
+
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		select.setSelection (i);
-		ssi_size_t max = select.getSize () - 1;
+		ssi_size_t max = select.getSize ();				
 		for (ssi_size_t j = 0; j < _n_over_per_class[i]; j++) {
-			index = ssi_random (max);
+			index = ssi_size_t(max * random.next());
 			ssi_sample_clone (*select.get (index), _over[count]);
 			_over[count++].class_id = i;
 		}		
@@ -191,25 +202,31 @@ bool ISOverSample::doSmote () {
 	ssi_size_t count = 0;
 	ssi_size_t index = 0;
 	ISSelectClass select (&_samples);
+
+	Randomi random_k(0, k - 1, _seed);
+	Randomf random(0, 1, _seed);
+	Randomf random_max(0, 1, _seed);
+
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		select.setSelection (i);
-		ssi_size_t max = select.getSize () - 1;
+		ssi_size_t max = select.getSize ();
+
 		for (ssi_size_t j = 0; j < _n_over_per_class[i]; j++) {
 
 			// clone randomly selected sample 
-			index = ssi_random (max);
+			index = ssi_size_t(random_max.next()*max);
 			ssi_sample_clone (*select.get (index), _over[count]);
 			_over[count].class_id = i;
 
 			// randomly choose one its k-nearest neighbors
 			ssi_real_t *sample = ssi_pcast (ssi_real_t,_over[count].streams[0]->ptr);			
 			FindNN::Find (_n_samples, n_features, sample, matrix, k, indices, distances);
-			index = ssi_random (k-1);
+			index = random_k.next();
 			ssi_real_t *neighbor = matrix[indices[index]];
 			
 			// use neighbor to generate synthetic sample					
 			for (ssi_size_t nfeat = 0; nfeat < n_features; nfeat++) {
-				ssi_real_t gap = ssi_cast (ssi_real_t, ssi_random ());
+				ssi_real_t gap = ssi_cast (ssi_real_t, random.next ());
 				ssi_real_t diff = neighbor[nfeat] - sample[nfeat];
 				sample[nfeat] += gap * diff;
 			}

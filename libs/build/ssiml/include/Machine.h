@@ -33,7 +33,7 @@
 #include "base/String.h"
 #include "base/ITransformer.h"
 #include "base/IModel.h"
-#include "model/SampleList.h"
+#include "SampleList.h"
 #include "base/IFusion.h"
 #include "model/include/FloatingSearch.h"
 

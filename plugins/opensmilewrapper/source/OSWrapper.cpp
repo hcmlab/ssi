@@ -193,7 +193,7 @@ void OSWrapper::transform_flush (ssi_stream_t &stream_in,
 		delete _configManager;
 		_configManager = 0;
 	}
-	if(_componentManager) {
+	if(_componentManager) {		
 		delete _componentManager;
 		_componentManager = 0;
 	}

@@ -30,8 +30,8 @@
 #define SSI_WEKARAPPER_H
 
 #include "base/IModel.h"
-#include "model/SampleList.h"
-#include "model/ModelTools.h"
+#include "SampleList.h"
+#include "ModelTools.h"
 #include "ioput/file/FileBinary.h"
 #include "ioput/option/OptionList.h"
 #include "ioput/socket/ip/UdpSocket.h"

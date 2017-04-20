@@ -114,7 +114,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.;..\..\include;..\..\..\plugins;..\..\..\libs\build;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CURL_STATICLIB;WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -152,7 +152,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>.;..\..\include;..\..\..\plugins;..\..\..\libs\build;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CURL_STATICLIB;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -166,6 +166,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\base\Random.cpp" />
+    <ClCompile Include="..\..\source\base\StringList.cpp" />
     <ClCompile Include="..\..\source\buffer\Buffer.cpp" />
     <ClCompile Include="..\..\source\buffer\TimeBuffer.cpp" />
     <ClCompile Include="..\..\source\event\EventList.cpp" />
@@ -194,6 +196,8 @@
     <ClCompile Include="..\..\source\graphic\Window.cpp" />
     <ClCompile Include="..\..\source\ioput\example\Example.cpp" />
     <ClCompile Include="..\..\source\ioput\example\Exsemble.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationIn.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationOut.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileBinaryLZ4.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileCSV.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileEventsIn.cpp" />
@@ -206,8 +210,6 @@
     <ClCompile Include="..\..\source\ioput\lz4\lz4hc.c" />
     <ClCompile Include="..\..\source\ioput\lz4\xxhash.c" />
     <ClCompile Include="..\..\source\ioput\socket\SocketImage.cpp" />
-    <ClCompile Include="..\..\source\model\Annotation.cpp" />
-    <ClCompile Include="..\..\source\model\ModelTools.cpp" />
     <ClCompile Include="..\..\source\r250.c" />
     <ClCompile Include="..\..\source\SSI_Global.cpp" />
     <ClCompile Include="..\..\source\struct\BinTree.cpp" />
@@ -224,7 +226,6 @@
     <ClCompile Include="..\..\source\graphic\DialogLibGateway.cpp" />
     <ClCompile Include="..\..\source\signal\SignalTools.cpp" />
     <ClCompile Include="..\..\source\ioput\file\File.cpp" />
-    <ClCompile Include="..\..\source\ioput\file\FileAnnotationWriter.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileAscii.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileBinary.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileEventsOut.cpp" />
@@ -235,7 +236,6 @@
     <ClCompile Include="..\..\source\ioput\file\FileStreamIn.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileStreamOut.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileTools.cpp" />
-    <ClCompile Include="..\..\source\ioput\file\StringList.cpp" />
     <ClCompile Include="..\..\source\ioput\option\CmdArgOption.cpp" />
     <ClCompile Include="..\..\source\ioput\option\CmdArgParser.cpp" />
     <ClCompile Include="..\..\source\ioput\option\OptionList.cpp" />
@@ -258,12 +258,13 @@
     <ClCompile Include="..\..\source\ioput\xml\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\source\ioput\xml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\source\ioput\pipe\NamedPipe.cpp" />
-    <ClCompile Include="..\..\source\model\SampleList.cpp" />
     <ClCompile Include="..\..\source\base\Factory.cpp" />
     <ClCompile Include="..\..\source\base\String.cpp" />
     <ClCompile Include="..\..\source\event\EventAddress.cpp" />
+    <ClCompile Include="..\..\source\web\WebTools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\base\IAnnotation.h" />
     <ClInclude Include="..\..\include\base\ICanvas.h" />
     <ClInclude Include="..\..\include\base\IColormap.h" />
     <ClInclude Include="..\..\include\base\IContinuousModel.h" />
@@ -272,6 +273,8 @@
     <ClInclude Include="..\..\include\base\IPainter.h" />
     <ClInclude Include="..\..\include\base\IWindow.h" />
     <ClInclude Include="..\..\include\base\IWindowManager.h" />
+    <ClInclude Include="..\..\include\base\Random.h" />
+    <ClInclude Include="..\..\include\base\StringList.h" />
     <ClInclude Include="..\..\include\buffer\Buffer.h" />
     <ClInclude Include="..\..\include\buffer\TimeBuffer.h" />
     <ClInclude Include="..\..\include\event\EventList.h" />
@@ -300,6 +303,8 @@
     <ClInclude Include="..\..\include\graphic\Window.h" />
     <ClInclude Include="..\..\include\ioput\example\Example.h" />
     <ClInclude Include="..\..\include\ioput\example\Exsemble.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationIn.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationOut.h" />
     <ClInclude Include="..\..\include\ioput\file\FileBinaryLZ4.h" />
     <ClInclude Include="..\..\include\ioput\file\FileCSV.h" />
     <ClInclude Include="..\..\include\ioput\file\FileEventsIn.h" />
@@ -315,8 +320,7 @@
     <ClInclude Include="..\..\include\ioput\lz4\xxhash.h" />
     <ClInclude Include="..\..\include\ioput\socket\SocketImage.h" />
     <ClInclude Include="..\..\include\ioput\socket\SocketMessage.h" />
-    <ClInclude Include="..\..\include\model\Annotation.h" />
-    <ClInclude Include="..\..\include\model\ModelTools.h" />
+    <ClInclude Include="..\..\include\ioput\web\WebTools.h" />
     <ClInclude Include="..\..\include\r250.h" />
     <ClInclude Include="..\..\include\signal\Matrix.h" />
     <ClInclude Include="..\..\include\signal\MatrixOps.h" />
@@ -340,7 +344,6 @@
     <ClInclude Include="..\..\include\thread\ThreadPool.h" />
     <ClInclude Include="..\..\include\thread\Timer.h" />
     <ClInclude Include="..\..\include\ioput\file\File.h" />
-    <ClInclude Include="..\..\include\ioput\file\FileAnnotationWriter.h" />
     <ClInclude Include="..\..\include\ioput\file\FileAscii.h" />
     <ClInclude Include="..\..\include\ioput\file\FileBinary.h" />
     <ClInclude Include="..\..\include\ioput\file\FileEventsOut.h" />
@@ -351,7 +354,6 @@
     <ClInclude Include="..\..\include\ioput\file\FileStreamIn.h" />
     <ClInclude Include="..\..\include\ioput\file\FileStreamOut.h" />
     <ClInclude Include="..\..\include\ioput\file\FileTools.h" />
-    <ClInclude Include="..\..\include\ioput\file\StringList.h" />
     <ClInclude Include="..\..\include\ioput\option\CmdArgOption.h" />
     <ClInclude Include="..\..\include\ioput\option\CmdArgParser.h" />
     <ClInclude Include="..\..\include\ioput\option\OptionList.h" />
@@ -411,7 +413,6 @@
     <ClInclude Include="..\..\include\base\IXMLPipeline.h" />
     <ClInclude Include="..\..\include\base\String.h" />
     <ClInclude Include="..\..\include\event\EventAddress.h" />
-    <ClInclude Include="..\..\include\model\SampleList.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

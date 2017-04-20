@@ -116,7 +116,7 @@ protected:
 	void inclusion (ssi_size_t n_keep, ssi_size_t k, ssi_size_t l, ssi_size_t r);	
 	void exclusion (ssi_size_t n_keep, ssi_size_t k, ssi_size_t l, ssi_size_t r);
 	bool sffs (ssi_size_t n_keep);
-	void sffs_exclusion (ssi_size_t n_keep, ssi_size_t k, ssi_real_t prob);
+	void sffs_exclusion (ssi_size_t n_keep, ssi_size_t k, bool continuation);
 	void sffs_inclusion (ssi_size_t n_keep, ssi_size_t k);
 	ssi_real_t eval_h (Evaluation *eval, Trainer *trainer, ISamples &samples);
 
@@ -145,6 +145,9 @@ protected:
 	ISamples *_samples;
 	ssi_size_t _stream_index;
 	ssi_size_t _n_dims;
+
+	float* _best_score_per_k;
+	int _last_inclusion_index;
 
 };
 

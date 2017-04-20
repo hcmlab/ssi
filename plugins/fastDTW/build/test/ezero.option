@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<options>
+    <item name="address" type="CHAR" num="1024" value="click@mouse" lock="true" help="event address (event@sender)" />
+    <item name="hard" type="BOOL" num="1" value="false" lock="true" help="consider all dimensions" />
+    <item name="hangin" type="UINT" num="1" value="0" lock="false" help="# of non-zero values before onset is detected" />
+    <item name="hangout" type="UINT" num="1" value="0" lock="false" help="# of non-zero values before offset is detected" />
+    <item name="mindur" type="DOUBLE" num="1" value="2.000000e-01" lock="false" help="minimum duration in seconds" />
+    <item name="maxdur" type="DOUBLE" num="1" value="5.000000e+00" lock="false" help="maximum duration in seconds (0 to turn off)" />
+    <item name="incdur" type="DOUBLE" num="1" value="0.000000e+00" lock="false" help="duration in seconds for sending incremental events (0 to turn off)" />
+    <item name="loffset" type="DOUBLE" num="1" value="0.000000e+00" lock="false" help="lower offset in seconds (will be substracted from event start time)" />
+    <item name="uoffset" type="DOUBLE" num="1" value="0.000000e+00" lock="false" help="upper offset in seconds (will be added to event end time)" />
+    <item name="skip" type="BOOL" num="1" value="false" lock="false" help="skip if max duration is exceeded" />
+    <item name="sname" type="CHAR" num="1024" value="zsender" lock="true" help="name of sender (if sent to event board) [deprecated, see address]" />
+    <item name="ename" type="CHAR" num="1024" value="zevent" lock="true" help="name of event (if sent to event board) [deprecated, see address]" />
+    <item name="eager" type="BOOL" num="1" value="false" lock="false" help="start event is sent as soon as possible event is triggered" />
+    <item name="empty" type="BOOL" num="1" value="true" lock="true" help="send as empty event" />
+    <item name="string" type="CHAR" num="1024" value="triangle" lock="true" help="default string (if empty == false)" />
+</options>

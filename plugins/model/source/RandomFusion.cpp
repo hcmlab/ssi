@@ -25,7 +25,8 @@
 //*************************************************************************************************
 
 #include "RandomFusion.h"
-#include "ISMissingData.h"
+#include "ssiml/include/ISMissingData.h"
+#include "base/Random.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -113,8 +114,11 @@ bool RandomFusion::forward (ssi_size_t n_models,
 	}
 
 	if (found_data) {
+
+		Randomf random(0, 1);
+
 		while (1) {
-			double rand = ssi_random ();
+			ssi_real_t rand = random.next();
 			ssi_size_t selmodel = ssi_cast (ssi_size_t, rand * (n_models - 1) + 0.5);		
 			if (tmp_probs[selmodel]) {
 

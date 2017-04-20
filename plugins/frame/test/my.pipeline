@@ -5,11 +5,11 @@
 		when = pre, post, [now]
 		wait = milliseconds to wait, if < 0 until job is finished [-1] 
 	-->
-	<job path="job.bat" args="pre 5" when="pre" wait="0"/>
+	<job path="job.bat" args="pre $(jobtime)" when="pre" wait="0"/>
 	<job path="mkdir.bat" args="$(date)" when="pre" wait="-1"/>
 	
 	<!-- will be executed after the pipeline is stopped -->
-	<job path="job.bat" args="post 3" when="post" wait="-1"/>
+	<job path="job.bat" args="post $(jobtime)" when="post" wait="-1"/>
 
 	<!-- register dlls -->
 	<register>
@@ -33,7 +33,7 @@
 	</sensor>
 	
 	<!-- will be executed right after parsing -->
-	<job path="job.bat" args="now 5" when="now" wait="2000"/>
+	<job path="job.bat" args="now $(jobtime)" when="now" wait="2000"/>
 	
 	<!-- transformer -->
 	<transformer create="Derivative" names="$(derivatives)">		
@@ -70,7 +70,7 @@
 	</consumer>		
 	
 	<!-- consumer + event + transformer + xinput -->
-	<consumer create="SignalPainter:plot" title="CURSOR">
+	<consumer create="SignalPainter:plot" title="$(title)">
 		<input pin="$(cursor_pin)" address="pressed@button">						
 			<transformer create="Derivative" names="$(derivatives)"/>
 		</input>

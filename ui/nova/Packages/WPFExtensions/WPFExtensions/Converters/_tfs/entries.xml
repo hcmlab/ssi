@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/Converters/" id="126462" changeset="1744" shadow="544c0c95d2964872ab27305aac9dfdef" />
+  <entry name="BoolToVisibilityConverter.cs" kind="file" id="36512" changeset="1744" />
+  <entry name="DoubleToLog10Converter.cs" kind="file" id="532838" changeset="21158" />
+  <entry name="EqualityToBooleanConverter.cs" kind="file" id="532839" changeset="21158" />
+</entries>

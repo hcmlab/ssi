@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
-#include "ssiml.h"
+#include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 #include "signal/include/ssisignal.h"
 using namespace ssi;
@@ -46,9 +46,10 @@ bool ex_samplesel(void *args);
 bool ex_classsel(void *args);
 bool ex_usersel(void *args);
 bool ex_strmmerge(void *args);
-bool ex_alignstrms(void *args);
+bool ex_dimmerge(void *args);
 bool ex_sampmerge(void *args);
 bool ex_missingstrm(void *args);
+bool ex_flatsample(void *args);
 bool ex_oversample(void *args);
 bool ex_undersample(void *args);
 bool ex_norm(void *args);
@@ -56,8 +57,6 @@ bool ex_dupl(void *args);
 bool ex_arff(void *args);
 bool ex_trigger(void *args);
 bool ex_elan(void *args);
-
-void CreateMissingData (SampleList &samples, double prob);
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -76,11 +75,13 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssimodel.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssisignal.dll");
+	Factory::RegisterDLL ("model");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("signal");
 
+#if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed ();
+#endif
 
 	Exsemble exsemble;
 	exsemble.console(0, 0, 650, 800);
@@ -90,9 +91,10 @@ int main () {
 	exsemble.add(&ex_samplesel, 0, "SELECT SAMPLES", "");
 	exsemble.add(&ex_classsel, 0, "SELECT CLASSES", "");
 	exsemble.add(&ex_usersel, 0, "SELECT USERS", "");
-	exsemble.add(&ex_strmmerge, 0, "MERGE STREAMS", "");
-	exsemble.add(&ex_alignstrms, 0, "ALIGN STREAMS", "");
-	exsemble.add(&ex_sampmerge, 0, "MERGE SAMPLES", "");
+	exsemble.add(&ex_sampmerge, 0, "MERGE SAMPLES", "if A has 50 samples and B has 20 sample -> C has 70 samples");
+	exsemble.add(&ex_strmmerge, 0, "MERGE STREAMS", "if A hast 2 streams and B has 3 streams -> A + B has 5 streams");
+	exsemble.add(&ex_dimmerge, 0, "MERGE DIMENSIONS", "2 streams with 2 and 3 dimensions -> 1 stream with 5 dimensions");
+	exsemble.add(&ex_flatsample, 0, "FLATTEN SAMPLES", "set number of samples to 1");
 	exsemble.add(&ex_missingstrm, 0, "REMOVE MISSING", "");
 	exsemble.add(&ex_oversample, 0, "OVER SAMPLE", "");
 	exsemble.add(&ex_undersample, 0, "UNDER SAMPLE", "");
@@ -126,8 +128,8 @@ bool ex_samplelist(void *args) {
 
 		SampleList samples;
 		ModelTools::CreateTestSamples (samples, n_classes, n_samples, n_streams, distr, "user");
-		CreateMissingData (samples, 0.9);
-		samples.get (5)->class_id = SSI_ISAMPLES_GARBAGE_CLASS_ID;
+		ModelTools::CreateMissingData (samples, 0.9f);
+		samples.get (5)->class_id = SSI_SAMPLE_GARBAGE_CLASS_ID;
 
 		ModelTools::PrintInfo (samples);
 		ModelTools::PrintSamples (samples);
@@ -161,7 +163,7 @@ bool ex_samplelist(void *args) {
 
 		SampleList samples;
 		ModelTools::CreateDynamicTestSamples (samples, n_classes, n_samples, n_streams, distr, num_min, num_max, "user");
-		CreateMissingData (samples, 0.9);
+		ModelTools::CreateMissingData (samples, 0.9f);
 
 		ModelTools::PrintInfo (samples);
 		ModelTools::PrintSamples (samples);
@@ -223,7 +225,7 @@ bool ex_samplelist(void *args) {
 	}
 
 	{
-		Annotation anno;
+		old::Annotation anno;
 		ModelTools::LoadAnnotation (anno, "in/anno.txt");
 
 		ssi_stream_t *streams[2];
@@ -249,7 +251,7 @@ bool ex_samplelist(void *args) {
 		samples_check.print (stdout);
 		samples_check_2.print (stdout);
 
-		Annotation anno_c;
+		old::Annotation anno_c;
 		ModelTools::ConvertToContinuousAnnotation (anno, anno_c, 0.075, 0.025, 0.5);
 		ModelTools::SaveAnnotation (anno_c, "out/anno_c.anno");
 
@@ -331,7 +333,7 @@ bool ex_samplelist(void *args) {
 	return true;
 }
 
-bool ex_alignstrms(void *args){
+bool ex_dimmerge(void *args){
 
 	ssi_size_t n_classes = 4;
 	ssi_size_t n_samples = 5;
@@ -454,6 +456,27 @@ bool ex_sampmerge(void *args) {
 	ModelTools::PrintInfo (merged);
 	merged.printDebug ();
 	ModelTools::PlotSamples(merged, "merged", ssi_rect(650, 0, 400, 400));
+
+	return true;
+}
+
+bool ex_flatsample(void *args)
+{
+	ssi_size_t n_classes = 4;
+	ssi_size_t n_samples = 5;
+	ssi_size_t n_streams = 3;
+	ssi_real_t distr[][3] = { 0.3f, 0.3f, 0.2f, 0.3f, 0.6f, 0.2f, 0.6f, 0.3f, 0.2f, 0.6f, 0.6f, 0.2f };
+	ssi_size_t num_min = 5;
+	ssi_size_t num_max = 5;
+
+	SampleList samples;
+	ModelTools::CreateDynamicTestSamples(samples, n_classes, n_samples, n_streams, distr, num_min, num_max, "user");
+	ModelTools::PrintInfo(samples);
+	ModelTools::PrintSample(samples, 0);
+
+	ISFlatSample flat(&samples);
+	ModelTools::PrintInfo(flat);
+	ModelTools::PrintSample(flat, 0);
 
 	return true;
 }
@@ -794,8 +817,8 @@ bool ex_missingstrm(void *args) {
 	ModelTools::CreateTestSamples (strain, n_classes, n_samples, n_streams, train_distr);			
 	ModelTools::CreateTestSamples (sdevel, n_classes, n_samples, n_streams, train_distr);
 
-	CreateMissingData (strain, 0.9);
-	CreateMissingData (sdevel, 0.9);
+	ModelTools::CreateMissingData (strain, 0.9f);
+	ModelTools::CreateMissingData (sdevel, 0.9f);
 
 	ModelTools::PrintInfo (strain);
 
@@ -917,7 +940,7 @@ bool ex_arff(void *args) {
 	ssi_real_t distr[][3] = { 0.3f, 0.3f, 0.2f, 0.3f, 1.6f, 1.2f, 1.6f, 1.3f, 10.2f, 10.6f, 10.6f, 10.2f };	
 	SampleList samples;	
 	ModelTools::CreateTestSamples (samples, n_classes, n_samples, n_streams, distr);
-	CreateMissingData (samples, 0.9);
+	ModelTools::CreateMissingData (samples, 0.9f);
 	
 	// write arff
 	ModelTools::SaveSampleListArff (samples, "out\\samples.arff");
@@ -963,8 +986,9 @@ bool ex_trigger(void *args) {
 	ssi_size_t trigger_num = ssi_cast (ssi_size_t, trigger_sr * time + 0.5);
 	ssi_stream_init (trigger, trigger_num, 1, sizeof (ssi_real_t), SSI_REAL, trigger_sr);
 	ssi_real_t *ptr = ssi_pcast (ssi_real_t, trigger.ptr);
+	Randomf random(0, 1.0);
 	for (ssi_size_t i = 0; i < trigger_num; i++) {
-		*ptr++ = ssi_cast (ssi_real_t, ssi_random (0, 1.0));
+		*ptr++ = random.next();
 	}
 	ssi_print ("1st trigger stream\n");
 	ssi_stream_print (trigger, stdout);
@@ -976,7 +1000,7 @@ bool ex_trigger(void *args) {
 	// fill second trigger stream	
 	ptr = ssi_pcast (ssi_real_t, trigger.ptr);
 	for (ssi_size_t i = 0; i < trigger_num; i++) {
-		*ptr++ = ssi_cast (ssi_real_t, ssi_random (0, 1.0));
+		*ptr++ = random.next();
 	}
 	ssi_print ("2nd trigger stream\n");
 	ssi_stream_print (trigger, stdout);
@@ -1007,7 +1031,7 @@ bool ex_elan(void *args) {
 	elanDoc->write("check.eaf");
 
 	ElanTier &tierByName = (*elanDoc)["Transcription"];
-	ssi_print("TIER %s has %u entries\n", tierByName.name(), tierByName.size());
+	ssi_print("TIER %s has %u entries\n", tierByName.name(), (ssi_size_t) tierByName.size());
 
 	ElanTier packedTier("PackedTranscription");
 	tierByName.pack(packedTier);
@@ -1018,9 +1042,10 @@ bool ex_elan(void *args) {
 	ElanTier myTier("MyTier");
 	ElanAnnotation a;
 	ssi_size_t last_to = 1000;
+	Randomi random(0,1000);
 	for (int i = 0; i < 10; i++) {
-		a.from = last_to + ssi_random(1000u);
-		a.to = a.from + ssi_random(1000u);
+		a.from = last_to + random.next();
+		a.to = a.from + random.next();
 		last_to = a.to;
 		a.value = "label";
 		myTier.push_back(a);
@@ -1048,18 +1073,4 @@ bool ex_elan(void *args) {
 	return true;
 }
 
-void CreateMissingData (SampleList &samples, double prob) {
-
-	ssi_size_t n_streams = samples.getStreamSize ();
-	ssi_sample_t *sample = 0;
-	samples.reset ();
-	while (sample = samples.next ()) {
-		for (ssi_size_t nstrm = 0; nstrm < n_streams; nstrm++) {
-			if (ssi_random () > prob) {							
-				ssi_stream_reset (*sample->streams[nstrm]);
-			}
-		}
-	}
-	samples.setMissingData (true);
-}
 

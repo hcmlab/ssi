@@ -25,7 +25,7 @@
 //*************************************************************************************************
 
 #include "EvaluationCont.h"
-#include "model/ModelTools.h"
+#include "ModelTools.h"
 #include "ioput/file/File.h"
 #include "ISSelectUser.h"
 #include "ISSelectSample.h"
@@ -102,7 +102,7 @@ void EvaluationCont::init_conf_mat (ISamples &samples) {
 	_n_classified = 0;	
 }
 
-void EvaluationCont::eval (ssi_stream_t *stream, Annotation* anno, ssi_real_t fps) 
+void EvaluationCont::eval (ssi_stream_t *stream, old::Annotation* anno, ssi_real_t fps) 
 {	
 	// test trainer against whole stream frame by frame
 	ssi_size_t wait_time = (fps > 0) ? ssi_cast(ssi_size_t, ssi_cast(ssi_real_t, _chunk_size / fps) * 1000) : 1; //in ms
@@ -112,8 +112,8 @@ void EvaluationCont::eval (ssi_stream_t *stream, Annotation* anno, ssi_real_t fp
 
 	IContinuousModel *model = (IContinuousModel *)_trainer->getModel(0);
 	ssi_time_t out_time;
-	Annotation::Entry* entry;
-	Annotation::Entry* old_entry = 0;
+	old::Annotation::Entry* entry;
+	old::Annotation::Entry* old_entry = 0;
 
 	//this represents the time between the first annotation and the last
 	//we assume that anything coming before or after this interval is not part of the evaluation
@@ -195,7 +195,7 @@ void EvaluationCont::eval (ssi_stream_t *stream, Annotation* anno, ssi_real_t fp
 	delete[] probs;
 }
 
-void EvaluationCont::evalLOUO (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<Annotation*>* annos, ssi_real_t fps, ssi_size_t reps){
+void EvaluationCont::evalLOUO (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<old::Annotation*>* annos, ssi_real_t fps, ssi_size_t reps){
 	
 	ssi_msg(SSI_LOG_LEVEL_BASIC, "Starting leave-one-user-out (continuous) evaluation with chunkSize=%d fps=%.2f reps=%d", _chunk_size, fps, reps);
 
@@ -251,7 +251,7 @@ void EvaluationCont::evalLOUO (Trainer &trainer, ISamples &samples, std::vector<
 	delete [] itrain;
 }
 
-void EvaluationCont::evalFull (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<Annotation*>* annos, ssi_real_t fps, ssi_size_t reps){
+void EvaluationCont::evalFull (Trainer &trainer, ISamples &samples, std::vector<ssi_stream_t*>* streams, std::vector<old::Annotation*>* annos, ssi_real_t fps, ssi_size_t reps){
 
 	ssi_msg(SSI_LOG_LEVEL_BASIC, "Starting full (continuous) evaluation with chunkSize=%d fps=%.2f reps=%d", _chunk_size, fps, reps);
 
@@ -318,7 +318,7 @@ void EvaluationCont::print (FILE *file) {
 	for(ssi_size_t i=0; i< _annos->size(); ++i)
 	{
 		(*_annos)[i]->reset();
-		Annotation::Entry *e = (*_annos)[i]->next();
+		old::Annotation::Entry *e = (*_annos)[i]->next();
 		while( e != 0 )
 		{
 			class_occurences[e->label_index] += 1 * _repetitions;

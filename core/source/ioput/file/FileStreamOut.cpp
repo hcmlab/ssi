@@ -54,7 +54,7 @@ FileStreamOut::~FileStreamOut () {
 	delete _delim; _delim = 0;
 }
 
-void FileStreamOut::setDelim(ssi_char_t *delim)
+void FileStreamOut::setDelim(const ssi_char_t *delim)
 {
 	if (!delim)
 	{
@@ -77,13 +77,16 @@ bool FileStreamOut::open (ssi_stream_t &data, // data is not written!
 	File::TYPE type, 
 	File::VERSION version) {
 
-	return open (data, 0, 0, path, type, version);
+	return open (data, path, 0, 0, 0, 0, 0, type, version);
 }
 
 bool FileStreamOut::open (ssi_stream_t &data, // data is not written!
-	ssi_size_t n_meta, 
-	const void *meta,
 	const ssi_char_t *path,
+	ssi_size_t n_meta, 
+	const void *meta,	
+	ssi_size_t n_keys,
+	ssi_char_t **keys,
+	ssi_char_t **values,
 	File::TYPE type, 
 	File::VERSION version) {
 
@@ -144,18 +147,16 @@ bool FileStreamOut::open (ssi_stream_t &data, // data is not written!
 		info.Print (_file_info->getFile (), 1);
 		_file_info->writeLine ("");
 
+		TiXmlElement metaElement("meta");
 		if (n_meta > 0 && meta) {
 			switch (data.type) {
 				case SSI_IMAGE: {
-					const ssi_video_params_t *params = ssi_pcast (const ssi_video_params_t, meta);
-					TiXmlElement meta ("meta" );	
-					meta.SetAttribute ("width", params->widthInPixels);
-					meta.SetAttribute ("height", params->heightInPixels);
-					meta.SetAttribute ("depth", params->depthInBitsPerChannel);
-					meta.SetAttribute ("channels", params->numOfChannels);
-					meta.SetAttribute ("flip", params->flipImage ? 1 : 0);
-					meta.Print (_file_info->getFile (), 1);
-					_file_info->writeLine ("");
+					const ssi_video_params_t *params = ssi_pcast (const ssi_video_params_t, meta);						
+					metaElement.SetAttribute ("width", params->widthInPixels);
+					metaElement.SetAttribute ("height", params->heightInPixels);
+					metaElement.SetAttribute ("depth", params->depthInBitsPerChannel);
+					metaElement.SetAttribute ("channels", params->numOfChannels);
+					metaElement.SetAttribute ("flip", params->flipImage ? 1 : 0);
 					break;
 				}								
 				default:
@@ -163,23 +164,17 @@ bool FileStreamOut::open (ssi_stream_t &data, // data is not written!
 					if (n_meta == sizeof(SSI_SKELETON_META) && ssi_strcmp(((SSI_SKELETON_META*)meta)->name, SSI_SKELETON_META_NAME))
 					{
 						SSI_SKELETON_META *sm = (SSI_SKELETON_META*)meta;						
-						TiXmlElement meta("meta");
-						meta.SetAttribute("name", SSI_SKELETON_META_NAME);
-						meta.SetAttribute("num", sm->num);
+						metaElement.SetAttribute("name", SSI_SKELETON_META_NAME);
+						metaElement.SetAttribute("num", sm->num);
 						ssi_char_t *type_s = SSI_SKELETON_TYPE_NAMES[sm->type];
-						meta.SetAttribute("type", SSI_SKELETON_TYPE_NAMES[sm->type]);
-						meta.Print(_file_info->getFile(), 1);
-						_file_info->writeLine("");
+						metaElement.SetAttribute("type", SSI_SKELETON_TYPE_NAMES[sm->type]);
 					}
 					else if (n_meta == sizeof(SSI_FACE_META) && ssi_strcmp(((SSI_FACE_META*)meta)->name, SSI_FACE_META_NAME))
 					{
 						SSI_FACE_META *sm = (SSI_FACE_META*)meta;
-						TiXmlElement meta("meta");
-						meta.SetAttribute("name", SSI_FACE_META_NAME);
-						meta.SetAttribute("num", sm->num);
-						meta.SetAttribute("type", SSI_FACE_TYPE_NAMES[sm->type]);
-						meta.Print(_file_info->getFile(), 1);
-						_file_info->writeLine("");
+						metaElement.SetAttribute("name", SSI_FACE_META_NAME);
+						metaElement.SetAttribute("num", sm->num);
+						metaElement.SetAttribute("type", SSI_FACE_TYPE_NAMES[sm->type]);
 					} 
 					else
 					{
@@ -189,6 +184,15 @@ bool FileStreamOut::open (ssi_stream_t &data, // data is not written!
 					break;
 			}
 		}
+		if(n_keys > 0 && keys != 0 && values != 0)
+		{ 
+			for (ssi_size_t i = 0; i < n_keys; i++)
+			{
+				metaElement.SetAttribute(keys[i], values[i]);
+			}
+		}
+		metaElement.Print(_file_info->getFile(), 1);
+		_file_info->writeLine("");
 	
 		ssi_char_t *path_data = ssi_strcat (path_info, "~");			
 		_file_data = File::CreateAndOpen (type, File::WRITE, path_data);
@@ -229,10 +233,10 @@ bool FileStreamOut::write (ssi_stream_t &data,
 		
 		if (!continued) {
 			if (_sample_count == 0) {
-				ssi_sprint (_string, "\t<chunk from=\"%lf\" to=\"%lf\" byte=\"%u\" num=\"%u\"/>", data.time, data.time + data.num * (1.0/data.sr), _file_data->tell (), data.num);					
+				ssi_sprint (_string, "\t<chunk from=\"%lf\" to=\"%lf\" byte=\"%I64u\" num=\"%u\"/>", data.time, data.time + data.num * (1.0/data.sr), _file_data->tell (), data.num);					
 			} else {			
 				_sample_count += data.num;
-				ssi_sprint (_string, "\t<chunk from=\"%lf\" to=\"%lf\" byte=\"%u\" num=\"%u\"/>", _last_time, _last_time + _sample_count * (1.0/data.sr), _last_byte,_sample_count);					
+				ssi_sprint (_string, "\t<chunk from=\"%lf\" to=\"%lf\" byte=\"%I64u\" num=\"%u\"/>", _last_time, _last_time + _sample_count * (1.0/data.sr), _last_byte,_sample_count);					
 				_sample_count = 0;
 			}
 			_file_info->writeLine (_string);		

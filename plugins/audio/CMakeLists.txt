@@ -62,6 +62,7 @@ message(STATUS ${ANDROID_SYSTEM_INCLUDE_DIRS})
 
 set(COMMON_SRC_FILES
 
+source/AudioMono.cpp
 source/AudioActivity.cpp
 source/VoiceActivitySender.cpp
 source/VoiceActivityVerifier.cpp

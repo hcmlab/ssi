@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	<!--
+		 This pipeline shows how to switch grammars at runtime.
+	     You can use any UDP client (e.g. the GrammarSwitcher in the plugin solution
+		 or VisualSceneMaker with a suitable plugin) to send a new grammar file name
+		 to the port of the SocketEventReader.
+		 
+		 For example, switch between
+			Grammar1.xml:	"eins", "zwei", "drei", "vier", "fünf"
+			Grammar2.xml:	"rot", "blau", "grün", "gelb"
+			Grammar3.xml:	"links", "rechts", "oben", "unten"
+	-->
+		 
+	<register>
+		<load name="ssimsspeech" />
+		<load name="ssigraphic" />		
+		<load name="ssiaudio"/>
+		<load name="ssiioput"/>
+	</register>
+		
+	<!-- event reader for grammar switching -->
+	<object create="SocketEventReader" 
+		port=4000 sname="vsm" ename="grammar"/>
+
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="false" channels="1" sr="16000" bytes="2">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- speech recognition -->
+	<consumer create="MSSpeechRecognizer" 
+		grammar="Grammar1.xml"
+		language="407" outputFormat="structure"
+		sname="speech" ename="utterance">
+		<input pin="audio" frame="0.02s" delta="0"/>
+		<listen address="grammar@vsm"/>
+	</consumer>
+	
+
+		
+	<!-- event sender -->
+	<listener create="SocketEventWriter" port="1001" host="127.0.0.1" 
+		type="0" osc="false" xml="true" reltime="true">
+		<input listen="@" span="0" />		
+	</listener>
+	
+	
+	<!-- set console options -->
+
+	<!-- audio plot -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.2s" delta="0"/>
+	</consumer>
+	
+	<!-- event monitors -->
+	<listener create="EventMonitor:monitor">
+		<input listen="utterance@speech" span="20000"/>
+	</listener>
+	<listener create="EventMonitor:monitor">
+		<input listen="@vsm" span="20000"/>
+	</listener>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

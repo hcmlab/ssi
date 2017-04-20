@@ -1,0 +1,76 @@
+﻿<grammar version="1.0" xml:lang="de-DE" root="rootRule" tag-format="semantics/1.0" xmlns="http://www.w3.org/2001/06/grammar">
+
+<!--
+	Output of the SSI recognizer plugin:
+		- "structure" output format:
+			The root rule's "out" variable as a nested data structure.
+			Example:
+				"[
+					commandtype:single,
+					data:
+					[
+						action:move,
+						parameters:
+						[
+							speed:normal,
+							dir:left
+						]
+					],
+					text:'geh nach links'
+				]"
+		- "keyword" output format:
+			Either the root rule's "out" value (if "out" is a primitive data type) or its first child (if "out" is an Object).
+			Example:
+				"single", "nonsense"
+		- "plain_text" output format:
+			The spoken text without any semantics.
+			Example:
+				"geh nach links"
+			
+
+    Special variable names:
+        The prefix "TAG" can be used to avoid conflicts 
+        with reserved words, eg. "function". (See http://www.ecma-international.org/ecma-262/5.1/#sec-7.6.1.1
+		for a list these of reserved words.)
+		It is automatically removed by the SSI recognizer plug-in.
+		
+		Example:
+			<tag> out.TAGfunction = "test"; </tag>
+			becomes "function:test" in the output data structure
+		
+    Special variable values:
+        String values starting with "$" are replaced 
+        by the SSI recognizer plug-in.
+		
+		Currently, the following replacements are implemented:
+        - "$startTime": start time of the surrounding rule's 
+          first word (ms relative to the phrase's start)
+        - "$endTime": end time of the surrounding rule's last 
+          word (ms relative to the whole phrase's start)
+		
+		Example:
+			<tag> out.start = "$startTime"; </tag>
+-->
+
+  <rule id="rootRule" scope="public">
+	<tag>
+		out.TAGfunction = "infoProviding";
+		out.content = new Object();
+		out.content.type="color";
+	</tag>
+	
+	<one-of>
+		<item> rot  <tag> out.content.data="red";    </tag> 	</item>
+		<item> blau <tag> out.content.data="blue";   </tag> 	</item>
+		<item> grün <tag> out.content.data="green";  </tag> 	</item>
+		<item> gelb <tag> out.content.data="yellow"; </tag> 	</item>
+	</one-of>
+	
+	<!-- append spoken text AFTER out was assigned -->
+	<tag>
+		out.text = "'" + meta.current().text + "'";
+	</tag>
+  </rule>
+  
+
+</grammar>

@@ -34,7 +34,7 @@
 #include "BufferWriter.h"
 
 #include "base/IConsumer.h"
-#include "Trainer.h"
+#include "ssiml/include/Trainer.h"
 #include "ioput/option/OptionList.h"
 #include "ioput/include/FileWriter.h"
 #include "ioput/file/FileAnnotationWriter.h"
@@ -178,7 +178,7 @@ protected:
 	IBufferWriter *_bufwrite;
 
 	IConsumer *_trigger;
-	FileAnnotationWriter *_annowrite;
+	old::FileAnnotationWriter *_annowrite;
 	ssi_stream_t _stream;
 
 	Trainer *_trainer;

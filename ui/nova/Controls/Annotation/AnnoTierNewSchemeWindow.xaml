@@ -1,0 +1,91 @@
+﻿<Window x:Class="ssi.AnnoTierNewSchemeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ssi"
+        mc:Ignorable="d"
+        Title="Tier Selection" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        WindowStyle="ToolWindow">
+    <Grid Margin="5,0,5,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                Discrete scheme with fixed labels
+            </TextBlock>
+            <Separator Height="10" Visibility="Hidden"></Separator>
+            <Button Name="button_discrete" Height="25" Width="120" Content="Discrete" Click="Button_Click"></Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                Discrete scheme with free labels
+            </TextBlock>
+            <Separator Height="10" Visibility="Hidden"></Separator>
+            <Button Name="button_free" Height="25" Width="120" Content="Free" Click="Button_Click"></Button>
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="2">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                Scheme with continuous values
+            </TextBlock>
+            <Separator Height="10" Visibility="Hidden"></Separator>
+            <Button Name="button_continuous" Height="25" Width="120" Content="Continuous" Click="Button_Click"></Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                Geometric Annotations
+            </TextBlock>
+        </StackPanel>
+
+        <Image x:Name="discrete_png" Grid.Row="0" Grid.Column="1" Margin="5" Width="280" Height="90" Source="/Resources/discrete.png"/>
+        <Image x:Name="free_png" Grid.Row="1" Grid.Column="1" Margin="5" Width="280" Height="90" Source="/Resources/free.png"/>
+        <Image x:Name="continuous_png" Grid.Row="2" Grid.Column="1" Margin="5" Width="280" Height="90" Source="/Resources/continuous.png"/>
+
+        <Grid Grid.Row="3" Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Name="button_point" Grid.Column="0" Grid.Row="0" Margin="5" Click="Button_Click" ToolTip="Create Point Annotations">
+                <TextBlock TextAlignment="Center" TextWrapping="Wrap"> 
+                    Points
+                </TextBlock>
+            </Button>
+            <Button IsEnabled="False" Name="button_polygon" Grid.Column="1" Grid.Row="0" Margin="5" Click="Button_Click" ToolTip="Coming soon">
+                <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                    Polygon
+                </TextBlock>
+            </Button>
+            <Button IsEnabled="False" Name="button_graph" Grid.Column="0" Grid.Row="1" Margin="5" Click="Button_Click" ToolTip="Coming soon">
+                <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                    Graph
+                </TextBlock>
+            </Button>
+            <Button IsEnabled="False" Name="button_segmentation" Grid.Column="1" Grid.Row="1" Margin="5" Click="Button_Click" ToolTip="Coming soon">
+                <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                    Segmentation
+                </TextBlock>
+            </Button>
+        </Grid>
+
+    </Grid>
+</Window>

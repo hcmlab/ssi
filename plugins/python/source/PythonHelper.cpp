@@ -29,6 +29,7 @@
 #include "ioput/file/FileTools.h"
 #include "event/EventAddress.h"
 #include "PythonChannel.h"
+#include "ssiml/include/ssiml.h"
 extern "C"
 {
 #include "ssipy.h"
@@ -277,6 +278,28 @@ namespace ssi {
 
 		return pList_stream;
 	}
+
+
+	PyObject *PythonHelper::score_to_object(ISamples &samples, ssi_size_t stream_index)
+	{
+
+		PyObject *pList_score = PyTuple_New(samples.getSize());
+
+		ssi_real_t score;
+
+		samples.reset();
+		ssi_sample_t *sample = 0;
+		int sample_counter = 0;
+		while (sample = samples.next())
+		{
+			score = sample->score;
+			PyTuple_SetItem(pList_score, sample_counter, PyFloat_FromDouble(score));
+			sample_counter++;
+		}
+
+		return pList_score;
+	}
+
 
 	PyObject *PythonHelper::labels_to_object(ISamples &samples, ssi_size_t stream_index)
 	{
@@ -1521,15 +1544,23 @@ namespace ssi {
 			return false;
 		}
 
+		SampleList samples_c;
+		ModelTools::CopySampleList(samples, samples_c);
+
 		GIL gil;
 
 		bool result = false;
 
-		PyObject *pArgs = PyTuple_New(2);
+		PyObject *pArgs = PyTuple_New(5);
 		int valcount = 0;
 
-		PyTuple_SetItem(pArgs, valcount++, samplelist_to_object(samples, stream_index));
-		PyTuple_SetItem(pArgs, valcount++, labels_to_object(samples, stream_index));
+		PyTuple_SetItem(pArgs, valcount++, samplelist_to_object(samples_c, stream_index));
+		PyTuple_SetItem(pArgs, valcount++, labels_to_object(samples_c, stream_index));
+		PyTuple_SetItem(pArgs, valcount++, score_to_object(samples_c, stream_index));
+		PyTuple_SetItem(pArgs, valcount++, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, valcount++, _pVariables);
+		Py_INCREF(_pVariables);
 
 		PyObject *pValue = call_function(FUNCTIONS::TRAIN, pArgs);
 		Py_DECREF(pArgs);
@@ -1554,12 +1585,16 @@ namespace ssi {
 
 		bool result = false;
 
-		PyObject *pArgs = PyTuple_New(2);
+		PyObject *pArgs = PyTuple_New(4);
 		int valcount = 0;
 		PyTuple_SetItem(pArgs, valcount++, stream_to_object(&stream));
 		//PyTuple_SetItem(pArgs, valcount++, PyLong_FromLong(n_probs));
 		PyObject * arr = (PyObject *)ssipyarray_From(n_probs, probs);
 		PyTuple_SetItem(pArgs, valcount++, arr);
+		PyTuple_SetItem(pArgs, valcount++, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, valcount++, _pVariables);
+		Py_INCREF(_pVariables);
 
 		PyObject *pValue = call_function(FUNCTIONS::FORWARD, pArgs);
 		Py_DECREF(pArgs);
@@ -1584,10 +1619,15 @@ namespace ssi {
 
 		bool result = false;
 
-		PyObject *pArgs = PyTuple_New(1);
+		PyObject *pArgs = PyTuple_New(3);
 		PyObject *pFilePath = PyUnicode_FromString(filepath);
 
 		PyTuple_SetItem(pArgs, 0, pFilePath);
+		PyTuple_SetItem(pArgs, 1, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, 2, _pVariables);
+		Py_INCREF(_pVariables);
+
 		PyObject *pValue = call_function(FUNCTIONS::SAVE, pArgs);
 		Py_DECREF(pArgs);
 
@@ -1612,10 +1652,14 @@ namespace ssi {
 
 		bool result = false;
 
-		PyObject *pArgs = PyTuple_New(1);
+		PyObject *pArgs = PyTuple_New(3);
 		PyObject *pFilePath = PyUnicode_FromString(filepath);
 
 		PyTuple_SetItem(pArgs, 0, pFilePath);
+		PyTuple_SetItem(pArgs, 1, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, 2, _pVariables);
+		Py_INCREF(_pVariables);
 
 		PyObject *pValue = call_function(FUNCTIONS::LOAD, pArgs);
 		Py_DECREF(pArgs);

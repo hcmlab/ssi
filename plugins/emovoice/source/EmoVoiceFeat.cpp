@@ -133,41 +133,69 @@ void EmoVoiceFeat::transform (ITransformer::info info,
 	ssi_size_t xtra_stream_in_num,
 	ssi_stream_t xtra_stream_in[]) {
 
-	ssi_size_t sample_number = stream_in.num;
-
-	short *inptr = 0;
+	bool skip = true;
 	if (stream_in.type == SSI_FLOAT) {
-		ssi_stream_adjust (_stream_short, stream_in.num);
-		inptr = ssi_pcast (short, _stream_short.ptr);
-		float *srcptr = ssi_pcast (float, stream_in.ptr);
-		for (ssi_size_t i = 0; i < stream_in.num * stream_in.dim; i++) {
-			*inptr++ = ssi_cast (short, *srcptr++ * 32768.0f);
-		}
-		inptr = ssi_pcast (short, _stream_short.ptr);
+		short *ptr_test = ssi_pcast(short, stream_in.ptr);
+		for (ssi_size_t n = 0; n < stream_in.num; n++) {
+			if (ptr_test[n] != 0){
+				skip = false;
+			}
+		}	
 	} else {
-		inptr = reinterpret_cast<short *> (stream_in.ptr);
-	}
-	mx_real_t *outptr = reinterpret_cast<mx_real_t *> (stream_out.ptr);
-
-	if (_options.fselect) {
-		if (((mx_real_t *) _feature_vector) == 0) {
-			_feature_vector = new mx_real_t[_n_features];
-		}			
-	} else {
-		_feature_vector = outptr;
-	}
-
-	_fex = fextract_soft_reset ((fextract_t *)_fex, sample_number);
-	if (fextract_calc((fextract_t *)_fex, (mx_real_t *) _feature_vector, inptr, _options.maj, _options.min) != _n_features) {
-		ssi_err ("Feature extraction was not successful!");
-	}
-
-	if (_options.fselect) {
-		if (fx_select_apply(&outptr, (fx_select_t *)_fselection, (mx_real_t *) _feature_vector) != _n_features) {
-			ssi_err ("Feature selection did not succeed!");
+		ssi_real_t *ptr_test = ssi_pcast(ssi_real_t, stream_in.ptr);
+		for (ssi_size_t n = 0; n < stream_in.num; n++) {
+			if (ptr_test[n] != 0.0f){
+				skip = false;
+			}
 		}
 	}
 
+	if (skip){
+
+		ssi_real_t *ptr_out = ssi_pcast(ssi_real_t, stream_out.ptr);
+		for (ssi_size_t n = 0; n < stream_out.num; n++)
+		{
+			ptr_out[n] = 0.0f;
+		}
+	} else {
+		ssi_size_t sample_number = stream_in.num;
+
+		short *inptr = 0;
+		if (stream_in.type == SSI_FLOAT) {
+			ssi_stream_adjust(_stream_short, stream_in.num);
+			inptr = ssi_pcast(short, _stream_short.ptr);
+			float *srcptr = ssi_pcast(float, stream_in.ptr);
+			for (ssi_size_t i = 0; i < stream_in.num * stream_in.dim; i++) {
+				*inptr++ = ssi_cast(short, *srcptr++ * 32768.0f);
+			}
+			inptr = ssi_pcast(short, _stream_short.ptr);
+		}
+		else {
+			inptr = reinterpret_cast<short *> (stream_in.ptr);
+		}
+		mx_real_t *outptr = reinterpret_cast<mx_real_t *> (stream_out.ptr);
+
+		if (_options.fselect) {
+			if (((mx_real_t *)_feature_vector) == 0) {
+				_feature_vector = new mx_real_t[_n_features];
+			}
+		}
+		else {
+			_feature_vector = outptr;
+		}
+
+		_fex = fextract_soft_reset((fextract_t *)_fex, sample_number);
+		if (fextract_calc((fextract_t *)_fex, (mx_real_t *)_feature_vector, inptr, _options.maj, _options.min) != _n_features) {
+			ssi_err("Feature extraction was not successful!");
+		}
+
+		if (_options.fselect) {
+			if (fx_select_apply(&outptr, (fx_select_t *)_fselection, (mx_real_t *)_feature_vector) != _n_features) {
+				ssi_err("Feature selection did not succeed!");
+			}
+		}
+
+	}//skip
 }
 
 void EmoVoiceFeat::transform_flush (ssi_stream_t &stream_in,

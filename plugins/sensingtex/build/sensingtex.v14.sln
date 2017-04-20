@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
 EndProject
@@ -10,6 +10,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.v14.vcxproj", "{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sensingtex", "dlls\sensingtex.v14.vcxproj", "{F02604FA-4873-42AE-8A67-81A9B30FA959}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD} = {A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{9DC7D3B1-5666-4D9B-BE05-68F3A688F05A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial", "..\..\..\libs\build\serial\visual_studio\serial\serial.v14.vcxproj", "{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +42,14 @@ Global
 		{F02604FA-4873-42AE-8A67-81A9B30FA959}.Release|Win32.Build.0 = Release|Win32
 		{F02604FA-4873-42AE-8A67-81A9B30FA959}.Release|x64.ActiveCfg = Release|x64
 		{F02604FA-4873-42AE-8A67-81A9B30FA959}.Release|x64.Build.0 = Release|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|Win32.Build.0 = Debug|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x64.ActiveCfg = Debug|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x64.Build.0 = Debug|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|Win32.ActiveCfg = Release|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|Win32.Build.0 = Release|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x64.ActiveCfg = Release|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,5 +57,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EAC45D0C-8F36-4394-8D82-470ADA6E9BB5} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
 		{F02604FA-4873-42AE-8A67-81A9B30FA959} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD} = {9DC7D3B1-5666-4D9B-BE05-68F3A688F05A}
 	EndGlobalSection
 EndGlobal

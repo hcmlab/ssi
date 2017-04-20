@@ -96,8 +96,8 @@ public:
 	virtual void setFormat (const char *delim, const char *flags) {};
 	virtual void setType (ssi_type_t type) {};
 
-	bool seek (int32_t offset, File::ORIGIN origin = File::BEGIN);
-	ssi_size_t tell ();
+	bool seek (int64_t offset, File::ORIGIN origin = File::BEGIN);
+	int64_t tell ();
 	bool ready ();
 	bool flush ();
 
