@@ -78,6 +78,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ioput", "plugins\ioput\build\dlls\ioput.v14.vcxproj", "{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F3BCD1A4-5985-47B7-9BB7-1701E582DEEC} = {F3BCD1A4-5985-47B7-9BB7-1701E582DEEC}
+		{F256A6B4-8E7E-47E2-B447-E62D2E2E51EF} = {F256A6B4-8E7E-47E2-B447-E62D2E2E51EF}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mouse", "plugins\mouse\build\dlls\mouse.v14.vcxproj", "{56A4FE6E-5C9D-4CBA-8FB6-07408B9830A3}"
@@ -124,6 +125,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "plugins\python\build\dlls\python.v14.vcxproj", "{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F3BCD1A4-5985-47B7-9BB7-1701E582DEEC} = {F3BCD1A4-5985-47B7-9BB7-1701E582DEEC}
+		{F256A6B4-8E7E-47E2-B447-E62D2E2E51EF} = {F256A6B4-8E7E-47E2-B447-E62D2E2E51EF}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libs\build\curl\curl-7.21.6\lib\libcurl.vc14.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
