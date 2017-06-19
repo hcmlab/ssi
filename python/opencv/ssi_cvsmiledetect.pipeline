@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="graphic" />
+		<load name="camera" />
+		<load name="python" />
+	</register>
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" flip="true">
+		<output channel="video" pin="image" size="2.0s"/>
+	</sensor>
+	
+	<!-- face detection -->
+	<transformer create="PythonImageFilter" script="ssi_cvsmiledetect">
+		<input pin="image" frame="1"/>
+		<output pin="image+smile"/>
+	</transformer>
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:plot" title="CAMERA" flip="false">
+		<input pin="image+smile" frame="1"/>
+	</consumer>
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,640,480">plot</area>		
+	</object>	
+	
+</pipeline>

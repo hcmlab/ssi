@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ssiioput"/>
+		<load name="ssimouse"/>
+		<load name="ssigraphic"/>
+		<load name="ssipython"/>
+	</register>
+
+	<!-- sensor -->
+	<sensor create="Mouse" mask="1" event="true" address="pressed@button" flip="true" scale="false">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- classifier -->
+	<consumer create="PythonConsumer" script="ssi_dollar" syspath=".">
+		<input pin="cursor" address="pressed@button"/>
+	</consumer>
+
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="CURSOR">
+		<input pin="cursor" address="pressed@button"/>		
+	</consumer>
+	<object create="EventMonitor:monitor">
+		<listen address="pressed@button" span="20000" state="nonzerodur"/>
+	</object>		
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

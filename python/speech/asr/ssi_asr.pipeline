@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="graphic" />
+		<load name="audio"/>
+		<load name="python"/>
+	</register>
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" sr="48000" scale="false" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- activity -->
+	<transformer create="AudioActivity" method="0" threshold="0.05">
+		<input pin="audio" frame="0.03s" delta="0.015s"/>
+		<output pin="vad"/>
+	</transformer>
+	
+	<!-- activity detection -->
+	<consumer create="TriggerEventSender" triggerType="5" minDuration="0.3" maxDuration="5.0" sendStartEvent="true" hangInSamples="3" hangOutSamples="10" address="vad@audio">
+		<input pin="vad" frame="0.1s"/>
+	</consumer>
+	
+	<!-- speech recognition 
+	
+	languages: e.g. en-US, en-GB, de-DE, ...
+	engine: sphinx, google, wit.ai, bing, api.ai, ibm	
+	
+	-->
+	<consumer create="PythonConsumer:asr" script="ssi_asr" optsstr="address=predict@asr;engine=google;language=en-US;key=" syspath=".">	
+		<input pin="audio" address="vad@audio" />		
+	</consumer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s"/>
+	</consumer>
+	<object create="EventMonitor:monitor">
+		<listen address="predict@asr" span="20000"/>
+	</object>	
+		
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+	
+</pipeline>

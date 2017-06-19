@@ -1,0 +1,12 @@
+* INSTALL
+
+pip install pyaudio
+pip install speech_recognition
+
+* TEST
+
+python -m speech_recognition
+
+* ISSUES
+
+Doesn't work with Kinect audio input

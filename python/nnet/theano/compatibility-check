@@ -1,0 +1,4 @@
+Compatibility check for GPU:
+
+Check "compute capability" under https://developer.nvidia.com/cuda-gpus
+Check supported CUDA version under https://de.wikipedia.org/wiki/CUDA

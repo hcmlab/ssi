@@ -1,0 +1,40 @@
+1. Download and install Python 3.5
+
+2. Install latest version of the following packages from http://www.lfd.uci.edu/~gohlke/pythonlibs/ using 'pip install <package>.whl'
+
+	* numpy+mkl
+	* scipy
+	* h5py
+   
+3. Install Keras: 'pip install keras'
+
+4. Open C:\User\<user>\.keras\keras.json and set backend to 'theano'
+
+5. Set up Theano to use GPU (optional)
+
+	* Install CUDA 8.0
+	* Copy the contents of cudnn 8.0 into the corresponding folders within your cuda installation
+	* Install Mingw64 (installation path without spaces) and add bin folder to system %PATH%
+	* Install Visual Studio 2015
+	* Add "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin" to system %PATH%
+	* Create the following user environement variables (check for correct versions):
+	  INCLUDE: C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt
+	  LIB: C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64
+	* Create file ".theanorc" in "C:\Users\<user>" and paste the following content (replace placeholders with according paths):
+
+#!sh
+[global]
+device = gpu
+openmp = False
+floatX = float32
+
+[mode]=FAST_RUN
+
+[nvcc]
+fastmath = True
+
+[cuda]
+root = C:\<cuda>\bin
+
+[gcc]
+cxxflags = -D_hypot=hypot -IC:\<mingw>\bin

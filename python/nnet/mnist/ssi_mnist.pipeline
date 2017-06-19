@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssipython" />		
+		<load name="ssigraphic"/>
+		<load name="ssiioput"/>
+	</register>	
+
+	<!-- load mnist data -->
+	<sensor create="PythonSensor:mnist" script="ssi_mnist" optsstr="path=mnist.pkl.gz;sr=10" syspath="." block="0.1">	
+		<output channel="digit" pin="digit" />		
+		<output channel="truth" pin="truth" />	
+	</sensor>
+		
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="DIGIT" type="1" colormap="3" staticImage="true" indx="28" indy="28">
+		<input pin="digit" frame="1">		
+			<transformer create="PythonFilter" script="ssi_mnist_rotate"/>
+		</input>	
+	</consumer>
+	
+	<consumer create="FileWriter:print" type="1">
+		<input pin="truth" frame="1"/>					
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
