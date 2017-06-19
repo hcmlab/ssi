@@ -364,7 +364,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         <li><a href="#python-events"><span class="toc-section-number">5.7</span> Events</a></li>
         <li><a href="#image-processing"><span class="toc-section-number">5.8</span> Image Processing</a></li>
         </ul></li>
-        <li><a href="#c"><span class="toc-section-number">6</span> C++</a></li>
+        <li><a href="#machine-learning"><span class="toc-section-number">6</span> Machine Learning</a><ul>
+        <li><a href="#training-data"><span class="toc-section-number">6.1</span> Training Data</a></li>
+        <li><a href="#trainer-template"><span class="toc-section-number">6.2</span> Trainer Template</a></li>
+        <li><a href="#model-implementation"><span class="toc-section-number">6.3</span> Model Implementation</a></li>
+        <li><a href="#training-and-evaluation"><span class="toc-section-number">6.4</span> Training and Evaluation</a></li>
+        <li><a href="#online-recognition"><span class="toc-section-number">6.5</span> Online Recognition</a></li>
+        </ul></li>
+        <li><a href="#c-and-api"><span class="toc-section-number">7</span> C++ and API</a></li>
         </ul>
 
         </div>
@@ -410,7 +417,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p class="caption"><em>General methodology: a simple markup language (<strong>A</strong>) allows end-users to connect components within a pipeline (<strong>B</strong>). An interpreter translates the structure, connects the sensor devices and starts the real-time processing (<strong>D</strong>). Developers are encouraged to implement new components and add them to the pool of available nodes (<strong>C</strong>).</em></p>
 </div>
 <h1 id="installation"><span class="header-section-number">2</span> Installation</h1>
-<p>SSI is freely available from <a href="http://openssi.net" class="uri">http://openssi.net</a>. The core of SSI is released under <a href="https://www.gnu.org/licenses/lgpl-3.0.de.html">LGPL</a>. Plugins are either <a href="https://www.gnu.org/licenses/gpl-3.0.de.html">GPL</a> or <a href="https://www.gnu.org/licenses/lgpl-3.0.de.html">LGPL</a>. To check out SSI you need an Apache Subversion (SVN) client (if you're on Windows you can use <a href="https://tortoisesvn.net">TortoiseSVN</a>). See INSTALL file for further installation instructions.</p>
+<p>SSI is freely available from <a href="http://openssi.net" class="uri">http://openssi.net</a>. The core of SSI is released under <a href="https://www.gnu.org/licenses/lgpl-3.0.de.html">LGPL</a>. Plugins are either <a href="https://www.gnu.org/licenses/gpl-3.0.de.html">GPL</a> or <a href="https://www.gnu.org/licenses/lgpl-3.0.de.html">LGPL</a>. See INSTALL file for further installation instructions.</p>
 <p>On Windows run <code>setup.exe</code> in the root folder to setup system variables and file associations (for the latter run as administrator) as shown <a href="#fig:introduction-download-0">here</a>. The interface allows you to pick platform and compiler. If you have a 64-bit machine you should always select <code>x64</code> since 32-bit is no longer officially supported (you will have to manually build 32-bit libraries). If you are not planning to develop new components in C++ just keep the default compiler (<code>vc140</code>) and make sure to have <a href="https://www.microsoft.com/de-de/download/details.aspx?id=48145">Visual C++ Redistributable for Visual Studio 2015</a> installed. Otherwise choose the compiler version of your Visual Studio Version (e.g. <code>vc120</code> if you are using Visual Studio 2013).</p>
 <blockquote>
 <p>CAUTION: If you check out a second version of SSI in another folder on your file system run <code>setup.exe</code> on your current installation and use <code>Undo</code> to remove previous variables and associations before you switch to that version. This will make sure that only one installation of SSI exists in your <code>%PATH%</code> variable (multiple installations in the <code>%PATH%</code> will mess up your installations and possibly cause unexpected behaviour)!</p>
@@ -836,7 +843,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   <span class="kw">&lt;provider</span><span class="ot"> channel=</span><span class="st">&quot;cursor&quot;</span><span class="ot"> pin=</span><span class="st">&quot;pos&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;/sensor&gt;</span></code></pre></div>
 <p>and define the value in a separate file (configuration):</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mouse</span>:sr = 50.0  <span class="co"># sample rate</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">mouse</span>:sr = 50.0  # sample rate</code></pre></div>
 <p>Configuration files have the file ending <code>.pipeline-config</code> and can include an arbitrary number of variables (one per line). A configuration file which has the same name and is in the same folder as a pipeline is a <em>local</em> configuration file and implicitly applied when the according pipeline is started. However, the values defined in a <em>local</em> pipeline are possibly overwritten if one or more <em>global</em> configuration files are passed.</p>
 <pre><code>xmlpipe -config global1;global2 my</code></pre>
 <p>Here we call a pipeline with name <code>my.pipeline</code>. First, global configuration files will be applied in the order given by the string, i.e. <code>global1.pipeline-config</code> followed by <code>global2.pipeline-config</code>. As soon as a matching key is found its value is applied and can no longer be overwritten by following configuration files. After applying all global configuration files, remaining variables are replaced if a local configuration file (<code>my.pipeline-config</code>) exists. To make sure every key is assigned a value, you would usually want to a local configuration file, which assigns a default value to every variable. Global configuration files, on the other hand, are often used for fine-tuning to choose among different configurations.</p>
@@ -848,20 +855,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p class="caption"><em>A graphical interface allows it to manage options and run pipelines with different configurations.</em></p>
 </div>
 <p>To assign a checkbox or a drop-down menu to a variable one has to add the <code>$(bool)</code> or <code>$(select)</code> keyword in a comment after the key/value pair, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">decorator</span>:icon = true <span class="co"># $(bool) show icon</span>
-<span class="kw">mouse</span>:sr = 50.0 <span class="co"># $(select{20.0,50.0,100.0}) sample rate</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">decorator</span>:icon = true <span class="co"># $(bool) show icon</span>
+<span class="ex">mouse</span>:sr = 50.0 <span class="co"># $(select{20.0,50.0,100.0}) sample rate</span></code></pre></div>
 <p>By default <code>xmlpipe.exe</code> will be searched in the same folder as the <code>xmlpipeui.exe</code> or if it is not found in the system path (<code>%PATH%</code>). The default path, however, can be changed in the GUI (<code>Pick</code> button) or by creating a file <code>xmlpipeui.ini</code>. The latter also allows it to set alternate search paths for pipeline and configuration files.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">exe</span>]
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">[<span class="ex">exe</span>]
 <span class="co"># path to executable</span>
-<span class="kw">path</span> = bin\xmlpipe.exe
+<span class="ex">path</span> = bin\xmlpipe.exe
 
-[<span class="kw">pipe</span>]
+[<span class="ex">pipe</span>]
 <span class="co"># search path for pipelines</span>
-<span class="kw">path</span> = .
+<span class="ex">path</span> = .
 
-[<span class="kw">config</span>]
+[<span class="ex">config</span>]
 <span class="co"># search path for config files</span>
-<span class="kw">path</span> = .</code></pre></div>
+<span class="ex">path</span> = .</code></pre></div>
 <p>Note that The variable <code>$(date)</code> is reserved and will be replaced with a time-stamp in the format <code>yyyy-mm-dd_hh-mm-ss</code> that stores when the pipeline was started.</p>
 <blockquote>
 <p>Check out the full <a href="code/xml/variables/my.pipeline">pipeline</a> with a corresponding <a href="code/xml/variables/my.pipeline-config">local</a> and <a href="code/xml/variables/global.pipeline-config">global</a> configuration file.</p>
@@ -948,12 +955,12 @@ sock <span class="op">=</span> socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 <span class="bu">input</span>(<span class="st">&quot;</span><span class="ch">\n\t</span><span class="st">press enter to start pipeline</span><span class="ch">\n</span><span class="st">&quot;</span>)
 
-MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STRT:RUN1\0&quot;</span>
+MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STRT:RUN1</span><span class="ch">\0</span><span class="st">&quot;</span>
 sock.sendto(<span class="bu">bytes</span>(MESSAGE, <span class="st">&quot;utf-8&quot;</span>), (UDP_IP, UDP_PORT))
 
 <span class="bu">input</span>(<span class="st">&quot;</span><span class="ch">\n\t</span><span class="st">press enter to stop pipeline</span><span class="ch">\n</span><span class="st">&quot;</span>)
 
-MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STOP:RUN1\0&quot;</span>
+MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STOP:RUN1</span><span class="ch">\0</span><span class="st">&quot;</span>
 sock.sendto(<span class="bu">bytes</span>(MESSAGE, <span class="st">&quot;utf-8&quot;</span>), (UDP_IP, UDP_PORT))</code></pre></div>
 <h4 id="xml-advanced-network-sharing"><span class="header-section-number">4.2.2.2</span> Stream and Event Sharing</h4>
 <p>To share a stream between two pipelines we use <code>StreamWriter</code> and <code>StreamReader</code> (from the <code>ioput</code> plug-in). The sender connects the <code>StreamWriter</code> with the pin of the stream it wants to share and sets a port, as well as the host of the receiving machines:</p>
@@ -1307,13 +1314,13 @@ To share the xml string with an external application, we use <code>SocketEventWr
 To access the n'th value of a stream we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">value <span class="op">=</span> stream[n]</code></pre></div>
 <p>To access all values one by one we can use an interator:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> s <span class="op">in</span> stream:
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> s <span class="kw">in</span> stream:
     <span class="bu">print</span>(s)</code></pre></div>
 <p>To access the m'th dimension value of the n'th samples we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">value <span class="op">=</span> stream[n,m]</code></pre></div>
 <p>Hence, another way to access every value is:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(stream.num):
-    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(stream.dim):     
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(stream.num):
+    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(stream.dim):     
         <span class="bu">print</span>(stream[n,d])</code></pre></div>
 <p>To print a stream we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="bu">print</span> (stream)</code></pre></div>
@@ -1361,12 +1368,7 @@ npimg <span class="op">=</span> numpy.asarray(image)</code></pre></div>
 <ul>
 <li><strong>time</strong> [<em>int</em>]: Time in milliseconds</li>
 <li><strong>dur</strong> [<em>int</em>]: Duration in milliseconds</li>
-<li><strong>address</strong> [<em>string</em>]: Address <script type="text/javascript">
-<!--
-h='&#x73;&#x65;&#110;&#100;&#x65;&#114;';a='&#64;';n='&#x65;&#118;&#x65;&#110;&#116;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
-// -->
-</script><noscript>&#x65;&#118;&#x65;&#110;&#116;&#32;&#x61;&#116;&#32;&#x73;&#x65;&#110;&#100;&#x65;&#114;</noscript></li>
+<li><strong>address</strong> [<em>string</em>]: Address <a href="mailto:event@sender">event@sender</a></li>
 <li><strong>state</strong> [<em>int</em>]: Event state (0=completed, 1=continued)</li>
 <li><strong>glue</strong> [<em>int</em>]: Glue id (to mark events that belong to each other)</li>
 <li><strong>prob</strong> [<em>int</em>]: Confidence value</li>
@@ -1400,7 +1402,7 @@ pi = 3.14159</code></pre>
 <p>Next, we implement <code>getChannelNames()</code> to define the channels names:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> getChannelNames(opts, <span class="bu">vars</span>):
     <span class="cf">return</span> {<span class="st">&#39;saw&#39;</span>:<span class="st">&#39;a saw wave&#39;</span>, 
-            <span class="co">&#39;sine&#39;</span>:<span class="st">&#39;a sine wave&#39;</span>}</code></pre></div>
+            <span class="st">&#39;sine&#39;</span>:<span class="st">&#39;a sine wave&#39;</span>}</code></pre></div>
 <p>The function returns a dictionary with pairs of strings. Each pair defines a channel name (key) and adds a description (value). Now, we need to describe the channel streams, which we do by adding a function <code>initChannel()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> initChannel(name, channel, types, opts, <span class="bu">vars</span>):
     <span class="cf">if</span> name <span class="op">==</span> <span class="st">&#39;saw&#39;</span>:
@@ -1424,14 +1426,14 @@ pi = 3.14159</code></pre>
     delta <span class="op">=</span> <span class="fl">1.0</span> <span class="op">/</span> sout.sr
 
     <span class="cf">if</span> name <span class="op">==</span> <span class="st">&#39;saw&#39;</span>:
-        <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sout.num):
-            <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sout.dim):
+        <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sout.num):
+            <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sout.dim):
                 sout[n,d] <span class="op">=</span> time <span class="op">-</span> math.floor(time)
             time <span class="op">+=</span> delta
 
     <span class="cf">elif</span> name <span class="op">==</span> <span class="st">&#39;sine&#39;</span>:
-        <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sout.num):
-            <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sout.dim):
+        <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sout.num):
+            <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sout.dim):
                 sout[n,d] <span class="op">=</span> math.sin(<span class="dv">2</span><span class="op">*</span>math.pi<span class="op">*</span>time)
             time <span class="op">+=</span> delta
 
@@ -1452,19 +1454,19 @@ pi = 3.14159</code></pre>
 </blockquote>
 <h2 id="python-consumer"><span class="header-section-number">5.5</span> Consumer</h2>
 <p>To implement a <a href="#basics-pipelines-components">consumer</a> we add a function <code>consume()</code>, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume(info, sin, board, opts, <span class="bu">vars</span>): 
-    <span class="cf">for</span> s <span class="op">in</span> sin:
-        <span class="bu">print</span>(sin[<span class="dv">0</span>])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
+    <span class="cf">for</span> s <span class="kw">in</span> sins:
+        <span class="bu">print</span>(s)</code></pre></div>
 <p>Since a consumer may receive multiple streams we receive a <code>tuple</code> of streams. In Python a <code>tuple</code> represents a an immutable sequence of objects. This is appropriate since the number of streams will not change between successive calls.</p>
 <p>When <code>consume()</code> is called for the first time it will already deliver the first chunks of data. However, sometimes we would like to know how many streams and what kind of streams we will receive (e.g. to initialize temporal variables). To this end, we can add a function <code>consume_enter()</code>, which is called once before the actual processing starts. Likewise, the function <code>consume_flush()</code> is called when the processing was stopped (e.g. to clean up). The following example uses the <code>consume_enter</code> and <code>consume_flush</code> to create and close a file. Note how the file pointer is stored in the variable dictionary.</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume_enter(sin, board, opts, <span class="bu">vars</span>):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume_enter(sins, board, opts, <span class="bu">vars</span>):
     <span class="bu">vars</span>[<span class="st">&#39;fp&#39;</span>] <span class="op">=</span> <span class="bu">open</span>(<span class="st">&#39;output.txt&#39;</span>, <span class="st">&#39;w&#39;</span>)
     
-<span class="kw">def</span> consume(info, sin, board, opts, <span class="bu">vars</span>): 
-    <span class="cf">for</span> s <span class="op">in</span> sin:
+<span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
+    <span class="cf">for</span> s <span class="kw">in</span> sins:
         <span class="bu">vars</span>[<span class="st">&#39;fp&#39;</span>].write(<span class="bu">str</span>(s) <span class="op">+</span> <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)
 
-<span class="kw">def</span> consume_flush(sin, board, opts, <span class="bu">vars</span>):
+<span class="kw">def</span> consume_flush(sins, board, opts, <span class="bu">vars</span>):
     <span class="bu">vars</span>[<span class="st">&#39;fp&#39;</span>].close()</code></pre></div>
 <blockquote>
 <p>Check out the Python <a href="code/python/consumer.py">script</a> and the according <a href="code/python/consumer.pipeline">pipeline</a>.</p>
@@ -1500,14 +1502,14 @@ pi = 3.14159</code></pre>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> getSampleDimensionOut(dim, opts, <span class="bu">vars</span>):
     <span class="cf">return</span> <span class="dv">1</span>    </code></pre></div>
 <p>When the pipeline is started, the function <code>transform()</code> is continuously called:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):   
-    <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sin.num):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
+    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sin.num):
         sout[n] <span class="op">=</span> <span class="dv">0</span>
-        <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
+        <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
             sout[n] <span class="op">+=</span> sin[n,d]</code></pre></div>
 <p>The first argument is a variable of type <code>ssitypeinfo</code> (see <a href="#python-types">here</a>) including the current time stamp and duration in seconds, as well as, the number of frame and delta samples. The next two arguments are the input stream and the pre-allocated output stream. Additional streams are passed in a tuple <code>sxtra</code> followed by event board, options and variables. We use the outer loop to iterate over all samples and initialize the output sample with 0. The inner loop iterates over the dimensions and sums up the sample values.</p>
 <p>With NumPy we can rewrite above statement as follows:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):
     npin <span class="op">=</span> numpy.asmatrix(sin)
     npout <span class="op">=</span> numpy.asmatrix(sout)
     numpy.<span class="bu">sum</span>(npin, axis<span class="op">=</span><span class="dv">1</span>, out<span class="op">=</span>npout)</code></pre></div>
@@ -1517,18 +1519,18 @@ pi = 3.14159</code></pre>
 </blockquote>
 <h3 id="python-transformer-feature"><span class="header-section-number">5.6.2</span> Feature</h3>
 <p>The feature we want to implement returns the energy in each dimension. Since this does not change the number of dimensions we do not need to implement <code>getSampleDimensionOut()</code>. In fact, for our purpose it is sufficient to implement <code>transform()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):   
-    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
+    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
         sout[d] <span class="op">=</span> <span class="dv">0</span>
-    <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sin.num):
-        <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
+    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sin.num):
+        <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
             val <span class="op">=</span> sin[n,d]
             sout[d] <span class="op">+=</span> val<span class="op">*</span>val
-    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
+    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
         sout[d] <span class="op">=</span> math.sqrt(sout[d] <span class="op">/</span> sin.num)  </code></pre></div>
 <p>The first loop initializes the output stream with zeros. Then we square the elements in the input stream and sum up samples per dimension. Finally, we take the square root on the output stream.</p>
 <p>Again, we can rewrite the code with NumPy to get a more compact (and more efficient) version:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):
     npin <span class="op">=</span> numpy.asmatrix(sin)
     npout <span class="op">=</span> numpy.asmatrix(sout)
     numpy.<span class="bu">sum</span>(npin, axis<span class="op">=</span><span class="dv">0</span>, out<span class="op">=</span>npout)
@@ -1577,9 +1579,9 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> send_enter(opts, <span class="bu">vars</span>):
     <span class="cf">pass</span>
 
-<span class="kw">def</span> consume(info, sin, board, opts, <span class="bu">vars</span>): 
+<span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
 
-    npin <span class="op">=</span> numpy.asmatrix(sin[<span class="dv">0</span>])
+    npin <span class="op">=</span> numpy.asmatrix(sins[<span class="dv">0</span>])
     mean <span class="op">=</span> numpy.mean(npin, axis<span class="op">=</span><span class="dv">0</span>)
 
     time_ms <span class="op">=</span> <span class="bu">round</span>(<span class="dv">1000</span> <span class="op">*</span> info.time)
@@ -1632,11 +1634,11 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 <p>In SSI an image is seen as a single block of bytes (i.e. a video is a stream with a single dimension). However, naturally we want to represent an image as a three dimensional array defined by the number of horizontal pixels (columns or width), the number of vertical pixels (rows or height) and the number of channels. Therefore, the type <a href="#python-types"><code>ssipyimage</code></a> has been introduced along with a set of special wrappers, which ensure that the samples of an input stream are converted to images. Again, the best way to work with images is by converting them to a NumPy array:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">img <span class="op">=</span> numpy.asarray(stream)</code></pre></div>
 <p>Once converted into a NumPy array, we can do further processing using the popular image processing library <a href="http://opencv.org/">OpenCv</a>. For instance, to flip and display an image we write:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume(info, sin, board, opts, <span class="bu">vars</span>): 
-    img <span class="op">=</span> numpy.asarray(sin[<span class="dv">0</span>])
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
+    img <span class="op">=</span> numpy.asarray(sins[<span class="dv">0</span>])
     cv2.flip(img, <span class="dv">0</span>, img)
     cv2.imshow(<span class="st">&#39;mywindow&#39;</span>, img)
-    cv2.resizeWindow(<span class="st">&#39;mywindow&#39;</span>, sin[<span class="dv">0</span>].width, sin[<span class="dv">0</span>].height)
+    cv2.resizeWindow(<span class="st">&#39;mywindow&#39;</span>, sins[<span class="dv">0</span>].width, sins[<span class="dv">0</span>].height)
     cv2.waitKey(<span class="dv">1</span>)</code></pre></div>
 <p>To know the properties of the image stream before <code>consume()</code> is called for the first time, we implement the function <code>setImageFormatIn()</code>, which receives a variable of type <a href="#python-types"><code>ssipyimageparams</code></a>:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> setImageFormatIn(<span class="bu">format</span>, opts, <span class="bu">vars</span>): 
@@ -1650,10 +1652,10 @@ The following example shows all four versions. Note that we use a <code>OrderedD
     <span class="kw">&lt;input</span><span class="ot"> pin=</span><span class="st">&quot;video&quot;</span><span class="ot"> frame=</span><span class="st">&quot;1&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;/consumer&gt;</span></code></pre></div>
 <p>In the same way we can manipulate a video stream. For example, to convert the input images into gray-scale we write:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):   
-    iin <span class="op">=</span> numpy.asarray(sin)
-    iout <span class="op">=</span> numpy.asarray(sout)
-    cv2.cvtColor(iin, cv2.COLOR_RGB2GRAY, iout)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
+    img_in <span class="op">=</span> numpy.asarray(sin)
+    img_out <span class="op">=</span> numpy.asarray(sout)
+    cv2.cvtColor(img_in, cv2.COLOR_RGB2GRAY, img_out)</code></pre></div>
 <p>However, since the output image is pre-allocated, we need to tell SSI that the dimension of the output image is 1. Therefore, we implement the function <code>getImageFormatOut()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> getImageFormatOut(<span class="bu">format</span>, opts, <span class="bu">vars</span>): 
     <span class="bu">format</span>.channels <span class="op">=</span> <span class="dv">1</span>
@@ -1676,10 +1678,10 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 <span class="kw">def</span> getSampleBytesOut(<span class="bu">bytes</span>, opts, <span class="bu">vars</span>):
     <span class="cf">return</span> <span class="dv">4</span>
     
-<span class="kw">def</span> transform(info, sin, sout, sxtra, board, opts, <span class="bu">vars</span>):   
-    iin <span class="op">=</span> numpy.asarray(sin)
-    iout <span class="op">=</span> numpy.reshape(sout, <span class="bu">vars</span>[<span class="st">&#39;channels&#39;</span>])
-    iin.mean((<span class="dv">0</span>,<span class="dv">1</span>),out<span class="op">=</span>iout)</code></pre></div>
+<span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
+    img <span class="op">=</span> numpy.asarray(sin)
+    feat <span class="op">=</span> numpy.reshape(sout, <span class="bu">vars</span>[<span class="st">&#39;channels&#39;</span>])
+    img.mean((<span class="dv">0</span>,<span class="dv">1</span>),out<span class="op">=</span>feat)</code></pre></div>
 <p>Note, that once more we implement <code>setImageFormatIn()</code> to know how many channels we will receive. We need this information to return the correct number of output dimensions. To use the feature in a pipeline we add:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;transformer</span><span class="ot"> create=</span><span class="st">&quot;PythonImageFeature&quot;</span><span class="ot"> script=</span><span class="st">&quot;image_feature&quot;</span><span class="kw">&gt;</span>
     <span class="kw">&lt;input</span><span class="ot"> pin=</span><span class="st">&quot;video&quot;</span><span class="ot"> frame=</span><span class="st">&quot;1&quot;</span><span class="kw">/&gt;</span>
@@ -1688,8 +1690,135 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 <blockquote>
 <p>Check out the <a href="code/python/image.pipeline">pipeline</a> and the according scripts: <a href="code/python/image_consumer.py">consumer</a>, <a href="code/python/image_feature.py">feature</a>, and , <a href="code/python/image_filter.py">filter</a>.</p>
 </blockquote>
-<h1 id="c"><span class="header-section-number">6</span> C++</h1>
-<p>For the moment please refer to <a href="tutorial/tutorial.pdf">this</a> document.</p>
+<h1 id="machine-learning"><span class="header-section-number">6</span> Machine Learning</h1>
+<p>In the following we will go through the basic steps of an online recognition pipeline. We pick a gesture recognition task and solve it using the <a href="https://depts.washington.edu/madlab/proj/dollar/index.html">$1 Unistroke Recognizer</a> by Jacob O. Wobbrock, Andrew D. Wilson and Yang Li. Again, we use Python to develop the required components.</p>
+<h2 id="training-data"><span class="header-section-number">6.1</span> Training Data</h2>
+<p>To train the gesture recognizer we use hand-drawn gestures of the numbers 0-9. The coordinates of the gestures are given relative to the screen resolution. The data is stored in SSI's sample format (<code>.samples</code>) and can be found <a href="code/ml/dollar/data">here</a>. The directory contains two sets, one for training and one for testing. Again, meta information is kept in a header file, while the actual data is stored in separate files. From the header we see that a set consists of 10 classes each represented by 5 samples. All samples have been collected from a single user.</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;samples</span><span class="ot"> ssi-v=</span><span class="st">&quot;3&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;info</span><span class="ot"> ftype=</span><span class="st">&quot;BINARY&quot;</span><span class="ot"> size=</span><span class="st">&quot;50&quot;</span><span class="ot"> missing=</span><span class="st">&quot;false&quot;</span><span class="ot"> garbage=</span><span class="st">&quot;0&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;streams&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> path=</span><span class="st">&quot;numbers_test.samples.#0&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;/streams&gt;</span>
+    <span class="kw">&lt;classes&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;0&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;1&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;2&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;3&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;4&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;5&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;6&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;7&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;8&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;9&quot;</span><span class="ot"> size=</span><span class="st">&quot;5&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;/classes&gt;</span>
+    <span class="kw">&lt;users&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;user&quot;</span><span class="ot"> size=</span><span class="st">&quot;50&quot;</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;/users&gt;</span>
+<span class="kw">&lt;/samples&gt;</span></code></pre></div>
+<h2 id="trainer-template"><span class="header-section-number">6.2</span> Trainer Template</h2>
+<p>We start by writing a trainer template, which defines which plug-ins are required and where the training data is located (the training data may consist of several separate sample files). Finally, we add the model we want to train.</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;trainer</span><span class="ot"> ssi-v=</span><span class="st">&quot;5&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;info</span><span class="ot"> trained=</span><span class="st">&quot;false&quot;</span><span class="kw">/&gt;</span>
+    <span class="kw">&lt;register&gt;</span>
+        <span class="kw">&lt;load</span><span class="ot"> name=</span><span class="st">&quot;python&quot;</span><span class="kw">/&gt;</span>
+    <span class="kw">&lt;/register&gt;</span>
+    <span class="kw">&lt;samples</span><span class="ot"> n_streams=</span><span class="st">&quot;1&quot;</span><span class="kw">&gt;</span>
+        <span class="kw">&lt;item</span><span class="ot"> path=</span><span class="st">&quot;data\numbers_train&quot;</span><span class="kw">/&gt;</span>
+    <span class="kw">&lt;/samples&gt;</span>      
+    <span class="kw">&lt;model</span><span class="ot"> create=</span><span class="st">&quot;PythonModel&quot;</span><span class="ot"> stream=</span><span class="st">&quot;0&quot;</span><span class="ot"> option=</span><span class="st">&quot;dollar&quot;</span><span class="kw">/&gt;</span>
+<span class="kw">&lt;/trainer&gt;</span></code></pre></div>
+<p>Since we want to use a model written in python we use the generic <code>PythonModel</code> wrapper and give an option file, which links to the actual Python implementation (here <code>ssi_dollar.py</code>):</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;options&gt;</span>
+    ...
+    <span class="kw">&lt;item</span><span class="ot"> name=</span><span class="st">&quot;script&quot;</span><span class="ot"> type=</span><span class="st">&quot;CHAR&quot;</span><span class="ot"> num=</span><span class="st">&quot;1024&quot;</span><span class="ot"> value=</span><span class="st">&quot;ssi_dollar&quot;</span><span class="ot"> help=</span><span class="st">&quot;name of python script (without ending)&quot;</span> <span class="kw">/&gt;</span>
+    ...
+<span class="kw">&lt;/options&gt;</span></code></pre></div>
+<h2 id="model-implementation"><span class="header-section-number">6.3</span> Model Implementation</h2>
+<p>The model uses a modified version of <a href="http://shaunkane.info/">Shaun Kane</a>'s implementation of the <a href="https://depts.washington.edu/madlab/proj/dollar/index.html">$1 Recognizer</a> (original <a href="https://depts.washington.edu/madlab/proj/dollar/others/python.sk.zip">source code</a>). $1 Recognizer is template based nearest-neighbour classifier, which basically stores a template version of all instances in the training set. At run-time it then looks for the best matching template and returns the according class.</p>
+<p>Hence, training is pretty straightforward. We convert each input stream (<code>xs[i]</code>) into a list of [x,y] coordinates (<code>points</code>) and the according class indices (<code>ys[i]</code>) into a string representation (<code>label</code>). Then we add them as a new template to the recognizer.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> train(xs, ys, scores, opts, <span class="bu">vars</span>):
+    
+    recognizer <span class="op">=</span> dollar.Recognizer ()
+
+    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(xs)):
+        points <span class="op">=</span> x2p(xs[i])
+        label <span class="op">=</span> <span class="bu">str</span>(ys[i])
+        recognizer.AddTemplate(label, points)
+
+    <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>] <span class="op">=</span> recognizer</code></pre></div>
+<p>Here, the helper function <code>x2p</code> helps us converting the stream values to a list of points:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> x2p (x):
+
+    points <span class="op">=</span> []
+    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,x.num):
+        points.append((x[i<span class="op">*</span><span class="dv">2</span>],x[i<span class="op">*</span><span class="dv">2</span><span class="op">+</span><span class="dv">1</span>]))
+
+    <span class="cf">return</span> points</code></pre></div>
+<p>To match an unknown gesture, we implement a function <code>forward</code> and store for each class the best matching template in the <code>probs</code> array (that is we look for the class template with the smallest distance).</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> forward(x, probs, opts, <span class="bu">vars</span>):
+    
+    recognizer <span class="op">=</span> <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>]
+
+    <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:        
+        points <span class="op">=</span> x2p(x)
+        recognizer.RecognizeProbs(points, probs)       </code></pre></div>
+<p>Finally, we add functions to save and load our model:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> load(path, opts, <span class="bu">vars</span>):
+
+    recognizer <span class="op">=</span> dollar.Recognizer ()
+    recognizer.Templates <span class="op">=</span> pickle.load (<span class="bu">open</span>(path, <span class="st">&#39;rb&#39;</span>))
+
+    <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>] <span class="op">=</span> recognizer</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> save(path, opts, <span class="bu">vars</span>):
+
+    recognizer <span class="op">=</span> <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>]
+
+    <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:
+        pickle.dump (recognizer.Templates, <span class="bu">open</span>(path, <span class="st">&#39;wb&#39;</span>))  </code></pre></div>
+<blockquote>
+<p>Check out the <a href="code/ml/dollar/ssi_dollar.py">code</a>.</p>
+</blockquote>
+<h2 id="training-and-evaluation"><span class="header-section-number">6.4</span> Training and Evaluation</h2>
+<p>To train our template we use the tool <code>xmltrain.exe</code>:</p>
+<pre><code>&gt; xmltrain -out dollar dollar-template</code></pre>
+<p>The final trainer is stored as <code>dollar.trainer</code>. To evaluate the performance we pass the trainer together with a test set, which creates the following output:</p>
+<pre><code>&gt; xmltrain -eval 3 -tset data/numbers_test dollar
+&gt;
+&gt; #classes:      10
+&gt; #features:     2
+&gt; #total:        50
+&gt; #classified:   50
+&gt; #unclassified: 0
+&gt;
+&gt; 0: 5 0 0 0 0 0 0 0 0 0    -&gt;   100.00%
+&gt; 1: 0 5 0 0 0 0 0 0 0 0    -&gt;   100.00%
+&gt; 2: 0 0 5 0 0 0 0 0 0 0    -&gt;   100.00%
+&gt; 3: 0 0 0 5 0 0 0 0 0 0    -&gt;   100.00%
+&gt; 4: 0 0 0 0 5 0 0 0 0 0    -&gt;   100.00%
+&gt; 5: 1 0 0 0 0 4 0 0 0 0    -&gt;    80.00%
+&gt; 6: 0 0 0 0 0 0 5 0 0 0    -&gt;   100.00%
+&gt; 7: 0 0 1 0 0 0 0 4 0 0    -&gt;    80.00%
+&gt; 8: 0 0 0 0 0 0 0 0 5 0    -&gt;   100.00%
+&gt; 9: 0 0 0 0 0 2 0 0 0 3    -&gt;    60.00%
+&gt;                           =&gt;    92.00% | 92.00%</code></pre>
+<p>From the confusion matrix we see that most gestures in the test are correctly classified. Except for 9, which in two out of five times is mapped to 5.</p>
+<h2 id="online-recognition"><span class="header-section-number">6.5</span> Online Recognition</h2>
+<p>We can now implement an online recognition pipeline by using the mouse cursor stream as input to our model. We therefore connect it to a component <code>Classifier</code> in the <code>model</code> plug-in. To trigger the classification we listen the left mouse button. We set the option <code>winner=true</code> to output only the class with the highest probability. The result is sent as a map event with the address <code>number@dollar</code> and displayed in the <code>EventMonitor</code>.</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml">...
+<span class="kw">&lt;consumer</span><span class="ot"> create=</span><span class="st">&quot;Classifier&quot;</span><span class="ot"> trainer=</span><span class="st">&quot;dollar&quot;</span><span class="ot"> address=</span><span class="st">&quot;number@dollar&quot;</span><span class="ot"> winner=</span><span class="st">&quot;true&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;input</span><span class="ot"> pin=</span><span class="st">&quot;cursor&quot;</span><span class="ot"> address=</span><span class="st">&quot;pressed@button&quot;</span><span class="kw">/&gt;</span>
+<span class="kw">&lt;/consumer&gt;</span>
+...</code></pre></div>
+<p>The result is shown <a href="#fig:ml-dollar">here</a>.</p>
+<div class="figure">
+<img src="pics/ml-dollar.png" alt="Online recognition pipeline." id="fig:ml-dollar" style="width:80.0%" />
+<p class="caption"><em>Online recognition pipeline.</em></p>
+</div>
+<blockquote>
+<p>Check out the <a href="code/ml/dollar/dollar.pipeline">code</a>.</p>
+</blockquote>
+<h1 id="c-and-api"><span class="header-section-number">7</span> C++ and API</h1>
+<p>For a documentation of the C++ API please refer to <a href="tutorial/tutorial.pdf">this</a> document. The API can be found <a href="api/index.html">here</a>.</p>
             </div>
     </div>
   </div>

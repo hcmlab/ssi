@@ -44,7 +44,7 @@ Developers, on the other hand, should be encouraged to enrich the pool of availa
 
 # Installation {#installation}
 
-SSI is freely available from <http://openssi.net>. The core of SSI is released under [LGPL](https://www.gnu.org/licenses/lgpl-3.0.de.html). Plugins are either [GPL](https://www.gnu.org/licenses/gpl-3.0.de.html) or [LGPL](https://www.gnu.org/licenses/lgpl-3.0.de.html). To check out SSI you need an Apache Subversion (SVN) client (if you're on Windows you can use  [TortoiseSVN](https://tortoisesvn.net)). See INSTALL file for further installation instructions.
+SSI is freely available from <http://openssi.net>. The core of SSI is released under [LGPL](https://www.gnu.org/licenses/lgpl-3.0.de.html). Plugins are either [GPL](https://www.gnu.org/licenses/gpl-3.0.de.html) or [LGPL](https://www.gnu.org/licenses/lgpl-3.0.de.html). See INSTALL file for further installation instructions.
 
 On Windows run ``setup.exe`` in the root folder to setup system variables and file associations (for the latter run as administrator) as shown [here](#fig:introduction-download-0). The interface allows you to pick platform and compiler. If you have a 64-bit machine you should always select ``x64`` since 32-bit is no longer officially supported (you will have to manually build 32-bit libraries). If you are not planning to develop new components in C++ just keep the default compiler (``vc140``) and make sure to have [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/de-de/download/details.aspx?id=48145) installed. Otherwise choose the compiler version of your Visual Studio Version (e.g. ``vc120`` if you are using Visual Studio 2013).
 
@@ -1327,9 +1327,9 @@ We use the option ``optsstr`` to overwrite the default values for the sample rat
 To implement a [consumer](#basics-pipelines-components) we add a function ``consume()``, e.g.:
 
 ``` Python
-def consume(info, sin, board, opts, vars): 
-    for s in sin:
-		print(sin[0])
+def consume(info, sins, board, opts, vars): 
+    for s in sins:
+		print(s)
 ```
 
 Since a consumer may receive multiple streams we receive a ``tuple`` of streams. In Python a ``tuple`` represents a an immutable sequence of objects. This is appropriate since the number of streams will not change between successive calls. 
@@ -1337,14 +1337,14 @@ Since a consumer may receive multiple streams we receive a ``tuple`` of streams.
 When ``consume()`` is called for the first time it will already deliver the first chunks of data. However, sometimes we would like to know how many streams and what kind of streams we will receive (e.g. to initialize temporal variables). To this end, we can add a function ``consume_enter()``, which is called once before the actual processing starts. Likewise, the function ``consume_flush()`` is called when the processing was stopped (e.g. to clean up). The following example uses the ``consume_enter`` and ``consume_flush`` to create and close a file. Note how the file pointer is stored in the variable dictionary.
 
 ``` Python
-def consume_enter(sin, board, opts, vars):
+def consume_enter(sins, board, opts, vars):
     vars['fp'] = open('output.txt', 'w')
 	
-def consume(info, sin, board, opts, vars): 
-    for s in sin:
+def consume(info, sins, board, opts, vars): 
+    for s in sins:
         vars['fp'].write(str(s) + '\n')
 
-def consume_flush(sin, board, opts, vars):
+def consume_flush(sins, board, opts, vars):
     vars['fp'].close()
 ```
 
@@ -1402,7 +1402,7 @@ def getSampleDimensionOut(dim, opts, vars):
 When the pipeline is started, the function ``transform()`` is continuously called:
 	
 ``` Python
-def transform(info, sin, sout, sxtra, board, opts, vars):   
+def transform(info, sin, sout, sxtras, board, opts, vars):   
     for n in range(sin.num):
         sout[n] = 0
         for d in range(sin.dim):
@@ -1414,7 +1414,7 @@ The first argument is a variable of type ``ssitypeinfo`` (see [here](#python-typ
 With NumPy we can rewrite above statement as follows:
 
 ``` Python
-def transform(info, sin, sout, sxtra, board, opts, vars):
+def transform(info, sin, sout, sxtras, board, opts, vars):
 	npin = numpy.asmatrix(sin)
 	npout = numpy.asmatrix(sout)
 	numpy.sum(npin, axis=1, out=npout)
@@ -1429,7 +1429,7 @@ Since NumPy is optimized to work with multi-dimensional arrays it can run almost
 The feature we want to implement returns the energy in each dimension. Since this does not change the number of dimensions we do not need to implement ``getSampleDimensionOut()``. In fact, for our purpose it is sufficient to implement ``transform()``:
 
 ``` python
-def transform(info, sin, sout, sxtra, board, opts, vars):   
+def transform(info, sin, sout, sxtras, board, opts, vars):   
     for d in range(sin.dim):
         sout[d] = 0
     for n in range(sin.num):
@@ -1445,7 +1445,7 @@ The first loop initializes the output stream with zeros. Then we square the elem
 Again, we can rewrite the code with NumPy to get a more compact (and more efficient) version:
 
 ``` python
-def transform(info, sin, sout, sxtra, board, opts, vars):
+def transform(info, sin, sout, sxtras, board, opts, vars):
     npin = numpy.asmatrix(sin)
     npout = numpy.asmatrix(sout)
     numpy.sum(npin, axis=0, out=npout)
@@ -1484,9 +1484,9 @@ The following example shows all four versions. Note that we use a ``OrderedDict`
 def send_enter(opts, vars):
     pass
 
-def consume(info, sin, board, opts, vars): 
+def consume(info, sins, board, opts, vars): 
 
-    npin = numpy.asmatrix(sin[0])
+    npin = numpy.asmatrix(sins[0])
     mean = numpy.mean(npin, axis=0)
 
     time_ms = round(1000 * info.time)
@@ -1563,11 +1563,11 @@ img = numpy.asarray(stream)
 Once converted into a NumPy array, we can do further processing using the popular image processing library [OpenCv](http://opencv.org/). For instance, to flip and display an image we write:
 
 ``` python
-def consume(info, sin, board, opts, vars): 
-    img = numpy.asarray(sin[0])
+def consume(info, sins, board, opts, vars): 
+    img = numpy.asarray(sins[0])
     cv2.flip(img, 0, img)
     cv2.imshow('mywindow', img)
-    cv2.resizeWindow('mywindow', sin[0].width, sin[0].height)
+    cv2.resizeWindow('mywindow', sins[0].width, sins[0].height)
     cv2.waitKey(1)
 ```
 
@@ -1597,10 +1597,10 @@ We can now connect the output of the camera to our script using ``PythonImageCon
 In the same way we can manipulate a video stream. For example, to convert the input images into gray-scale we write:
 
 ``` python
-def transform(info, sin, sout, sxtra, board, opts, vars):   
-    iin = numpy.asarray(sin)
-    iout = numpy.asarray(sout)
-    cv2.cvtColor(iin, cv2.COLOR_RGB2GRAY, iout)
+def transform(info, sin, sout, sxtras, board, opts, vars):   
+    img_in = numpy.asarray(sin)
+    img_out = numpy.asarray(sout)
+    cv2.cvtColor(img_in, cv2.COLOR_RGB2GRAY, img_out)
 ```
 
 However, since the output image is pre-allocated, we need to tell SSI that the dimension of the output image is 1. Therefore, we implement the function ``getImageFormatOut()``:
@@ -1635,10 +1635,10 @@ def getSampleTypeOut(type, types, opts, vars):
 def getSampleBytesOut(bytes, opts, vars):
     return 4
     
-def transform(info, sin, sout, sxtra, board, opts, vars):   
-    iin = numpy.asarray(sin)
-    iout = numpy.reshape(sout, vars['channels'])
-    iin.mean((0,1),out=iout)
+def transform(info, sin, sout, sxtras, board, opts, vars):   
+    img = numpy.asarray(sin)
+    feat = numpy.reshape(sout, vars['channels'])
+    img.mean((0,1),out=feat)
 ```
 
 Note, that once more we implement ``setImageFormatIn()`` to know how many channels we will receive. We need this information to return the correct number of output dimensions. To use the feature in a pipeline we add:
@@ -1652,6 +1652,184 @@ Note, that once more we implement ``setImageFormatIn()`` to know how many channe
 
 > Check out the [pipeline](code/python/image.pipeline) and the according scripts: [consumer](code/python/image_consumer.py), [feature](code/python/image_feature.py), and , [filter](code/python/image_filter.py).
 
-# C++
+# Machine Learning
 
-For the moment please refer to [this](tutorial/tutorial.pdf) document.
+In the following we will go through the basic steps of an online recognition pipeline. We pick a gesture recognition task and solve it using the [$1 Unistroke Recognizer](https://depts.washington.edu/madlab/proj/dollar/index.html) by Jacob O. Wobbrock, Andrew D. Wilson and Yang Li. Again, we use Python to develop the required components.
+
+## Training Data
+
+To train the gesture recognizer we use hand-drawn gestures of the numbers 0-9. The coordinates of the gestures are given relative to the screen resolution. The data is stored in SSI's sample format (``.samples``) and can be found [here](code/ml/dollar/data). The directory contains two sets, one for training and one for testing. Again, meta information is kept in a header file, while the actual data is stored in separate files. From the header we see that a set consists of 10 classes each represented by 5 samples. All samples have been collected from a single user.
+
+``` xml
+<samples ssi-v="3">
+    <info ftype="BINARY" size="50" missing="false" garbage="0" />
+    <streams>
+        <item path="numbers_test.samples.#0" />
+    </streams>
+    <classes>
+        <item name="0" size="5" />
+        <item name="1" size="5" />
+        <item name="2" size="5" />
+        <item name="3" size="5" />
+        <item name="4" size="5" />
+        <item name="5" size="5" />
+        <item name="6" size="5" />
+        <item name="7" size="5" />
+        <item name="8" size="5" />
+        <item name="9" size="5" />
+    </classes>
+    <users>
+        <item name="user" size="50" />
+    </users>
+</samples>
+```
+
+## Trainer Template
+
+We start by writing a trainer template, which defines which plug-ins are required and where the training data is located (the training data may consist of several separate sample files). Finally, we add the model we want to train. 
+
+``` xml
+<trainer ssi-v="5">
+    <info trained="false"/>
+	<register>
+		<load name="python"/>
+	</register>
+    <samples n_streams="1">
+		<item path="data\numbers_train"/>
+    </samples>   	
+    <model create="PythonModel" stream="0" option="dollar"/>
+</trainer>
+```
+
+Since we want to use a model written in python we use the generic ``PythonModel`` wrapper and give an option file, which links to the actual Python implementation (here ``ssi_dollar.py``):
+
+``` xml
+<options>
+    ...
+    <item name="script" type="CHAR" num="1024" value="ssi_dollar" help="name of python script (without ending)" />
+    ...
+</options>
+```
+
+## Model Implementation
+
+The model uses a modified version of [Shaun Kane](http://shaunkane.info/)'s implementation of the [$1 Recognizer](https://depts.washington.edu/madlab/proj/dollar/index.html) (original [source code](https://depts.washington.edu/madlab/proj/dollar/others/python.sk.zip)). $1 Recognizer is template based nearest-neighbour classifier, which basically stores a template version of all instances in the training set. At run-time it then looks for the best matching template and returns the according class. 
+
+Hence, training is pretty straightforward. We convert each input stream (``xs[i]``) into a list of \[x,y\] coordinates (``points``) and the according class indices (``ys[i]``) into a string representation (``label``). Then we add them as a new template to the recognizer. 
+
+``` python
+def train(xs, ys, scores, opts, vars):
+    
+    recognizer = dollar.Recognizer ()
+
+    for i in range(len(xs)):
+        points = x2p(xs[i])
+        label = str(ys[i])
+        recognizer.AddTemplate(label, points)
+
+    vars['recognizer'] = recognizer
+```
+
+Here, the helper function ``x2p`` helps us converting the stream values to a list of points:
+	
+``` python	
+def x2p (x):
+
+    points = []
+    for i in range(0,x.num):
+        points.append((x[i*2],x[i*2+1]))
+
+    return points
+```	
+
+To match an unknown gesture, we implement a function ``forward`` and store for each class the best matching template in the ``probs`` array (that is we look for the class template with the smallest distance).
+
+``` python
+def forward(x, probs, opts, vars):
+	
+    recognizer = vars['recognizer']
+
+    if not recognizer is None:        
+        points = x2p(x)
+        recognizer.RecognizeProbs(points, probs)       
+```		
+
+Finally, we add functions to save and load our model:
+
+``` python
+def load(path, opts, vars):
+
+    recognizer = dollar.Recognizer ()
+    recognizer.Templates = pickle.load (open(path, 'rb'))
+
+    vars['recognizer'] = recognizer
+```		
+
+``` python
+def save(path, opts, vars):
+
+    recognizer = vars['recognizer']
+
+    if not recognizer is None:
+        pickle.dump (recognizer.Templates, open(path, 'wb'))  
+```			
+	
+> Check out the [code](code/ml/dollar/ssi_dollar.py).	
+	
+## Training and Evaluation
+
+To train our template we use the tool ``xmltrain.exe``:
+
+```
+> xmltrain -out dollar dollar-template
+```
+
+The final trainer is stored as ```dollar.trainer```. To evaluate the performance we pass the trainer together with a test set, which creates the following output:
+
+```
+> xmltrain -eval 3 -tset data/numbers_test dollar
+>
+> #classes:      10
+> #features:     2
+> #total:        50
+> #classified:   50
+> #unclassified: 0
+>
+> 0: 5 0 0 0 0 0 0 0 0 0    ->   100.00%
+> 1: 0 5 0 0 0 0 0 0 0 0    ->   100.00%
+> 2: 0 0 5 0 0 0 0 0 0 0    ->   100.00%
+> 3: 0 0 0 5 0 0 0 0 0 0    ->   100.00%
+> 4: 0 0 0 0 5 0 0 0 0 0    ->   100.00%
+> 5: 1 0 0 0 0 4 0 0 0 0    ->    80.00%
+> 6: 0 0 0 0 0 0 5 0 0 0    ->   100.00%
+> 7: 0 0 1 0 0 0 0 4 0 0    ->    80.00%
+> 8: 0 0 0 0 0 0 0 0 5 0    ->   100.00%
+> 9: 0 0 0 0 0 2 0 0 0 3    ->    60.00%
+>							=>    92.00% | 92.00%
+```
+
+From the confusion matrix we see that most gestures in the test are correctly classified. Except for 9, which in two out of five times is mapped to 5.
+							
+## Online Recognition
+
+We can now implement an online recognition pipeline by using the mouse cursor stream as input to our model. We therefore connect it to a component ```Classifier``` in the ```model``` plug-in. To trigger the classification we listen the left mouse button. We set the option ```winner=true``` to output only the class with the highest probability. The result is sent as a map event with the address ```number@dollar``` and displayed in the ```EventMonitor```.
+
+``` xml
+...
+<consumer create="Classifier" trainer="dollar" address="number@dollar" winner="true">
+	<input pin="cursor" address="pressed@button"/>
+</consumer>
+...
+```
+
+The result is shown [here](#fig:ml-dollar).
+
+![*Online recognition pipeline.*](pics/ml-dollar.png){#fig:ml-dollar width=80%}
+
+> Check out the [code](code/ml/dollar/dollar.pipeline).	
+
+# C++ and API
+
+For a documentation of the C++ API please refer to [this](tutorial/tutorial.pdf) document. The API can be found [here](api/index.html).
+
+
