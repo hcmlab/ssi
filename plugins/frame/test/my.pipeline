@@ -13,12 +13,12 @@
 
 	<!-- register dlls -->
 	<register>
-		<load name="ioput"/>
-		<load name="mouse"/>
-		<load name="graphic"/>
-		<load name="signal"/>
-		<load name="model"/>
-		<load name="control"/>
+		<item name="ioput" depend="ssidialog.dll"/>
+		<item name="mouse"/>
+		<item name="graphic"/>
+		<item name="signal"/>
+		<item name="model"/>
+		<item name="control"/>
 	</register>
 	
 	<!-- sensor + provider + filter -->
@@ -65,7 +65,7 @@
 	</gate>
 	
 	<!-- event -->	
-	<consumer create="ZeroEventSender" mindur="0.2" address="pressed@button" eager="true">
+	<consumer create="TriggerEventSender" mindur="0.2" address="pressed@button" eager="true" triggerType="5">
 		<input pin="button" frame="0.25s"/>		
 	</consumer>		
 	

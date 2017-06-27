@@ -34,6 +34,7 @@ namespace ssi
         public static bool continuousAnnoMode = false;
         public static bool askForLabel = false;
         public static AnnoTierSegment objectContainer = null;
+        public static bool MouseActive = true;
 
         static public event AnnoTierChangeEventHandler OnTierChange;
 
@@ -274,7 +275,7 @@ namespace ssi
 
             Select(this);
 
-            if (!(anno.Scheme.Type == AnnoScheme.TYPE.FREE || anno.Scheme.Type == AnnoScheme.TYPE.DISCRETE))
+            if (!IsDiscreteOrFree)
             {
                 Loaded += delegate
                 {
@@ -290,15 +291,31 @@ namespace ssi
                                 closestIndex = GetClosestContinuousIndex(closestposition);
                                 if (closestIndex > -1)
                                 {
-                                    if (this == Mouse.DirectlyOver || (Mouse.GetPosition(this).Y > 0 &&
-                                        Mouse.GetPosition(this).Y < this.ActualHeight && continuousTierEllipse == Mouse.DirectlyOver))
                                     {
-                                        double normal = 1.0 - (Mouse.GetPosition(this).Y / this.ActualHeight);
+                                        continuousTierEllipse.Visibility = Visibility.Visible;
+
+                                       Point relativePoint = continuousTierEllipse.TransformToAncestor(this).Transform(new Point(0, 0));
+                                        double yPos = relativePoint.Y + continuousTierEllipse.Height / 2;
+
+                                        if ((this == Mouse.DirectlyOver || (Mouse.GetPosition(this).Y > 0 && Mouse.GetPosition(this).Y < this.ActualHeight && continuousTierEllipse == Mouse.DirectlyOver)) && MouseActive)
+                                            yPos = Mouse.GetPosition(this).Y;
+
+                                        double numberoflevels = Properties.Settings.Default.ContinuousHotkeysNumber;
+                                        double fac =  1 + (1 / (numberoflevels - 1));
+                                        double segmentheight = (this.ActualHeight / numberoflevels);
+
+                                        for (int i=0; i< numberoflevels; i++)
+                                        {
+                                            if (Keyboard.IsKeyDown(Key.D1 + i) )
+                                                yPos =  (numberoflevels - (i* fac))  * segmentheight;
+                                        }
+
+                                        double normal = 1.0 - (yPos / this.ActualHeight);
                                         double normalized = (normal * range) + anno.Scheme.MinScore;
 
                                         continuousTierEllipse.Height = this.ActualHeight / 10;
                                         continuousTierEllipse.Width = continuousTierEllipse.Height;
-                                        continuousTierEllipse.SetValue(Canvas.TopProperty, (Mouse.GetPosition(this).Y - continuousTierEllipse.Height / 2));
+                                        continuousTierEllipse.SetValue(Canvas.TopProperty, (yPos - continuousTierEllipse.Height / 2));
                                         AnnoList[closestIndex].Label = (normalized).ToString();
 
                                         for (int i = closestIndexOld; i < closestIndex; i++)
@@ -330,12 +347,10 @@ namespace ssi
             }
             selectedTier = this;
 
-            foreach (AnnoListItem item in anno)
+            if (IsDiscreteOrFree)
             {
-                AnnoScheme.Label l = new AnnoScheme.Label(item.Label, item.Color);
-
-                if (IsDiscreteOrFree)
-                {
+                foreach (AnnoListItem item in anno)
+                {                
                     AddSegment(item);
                 }
             }
@@ -508,7 +523,8 @@ namespace ssi
             continuousTierEllipse.Fill = Brushes.WhiteSmoke;
             continuousTierEllipse.Stroke = Brushes.Black;
             continuousTierEllipse.Visibility = Visibility.Hidden;
-            continuousTierEllipse.SetValue(Canvas.LeftProperty, 0.0);
+            continuousTierEllipse.SetValue(Canvas.LeftProperty, continuousTierEllipse.Width / 2);
+            continuousTierEllipse.SetValue(Canvas.TopProperty, this.ActualHeight/2 - continuousTierEllipse.Height / 2);
             this.Children.Add(continuousTierEllipse);
 
             TimeRangeChanged(MainHandler.Time);
@@ -548,9 +564,11 @@ namespace ssi
             //TimeRangeChanged(MainHandler.Time);
         }
 
-        public void ContinuousAnnoMode()
+        public void ContinuousAnnoMode(bool activated)
         {
-            if (!continuousAnnoMode)
+
+            dispatcherTimer.Stop();
+            if (!activated)
             {
                 dispatcherTimer.Start();
                 continuousAnnoMode = true;

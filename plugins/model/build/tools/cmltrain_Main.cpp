@@ -58,21 +58,26 @@ struct params_t
 	ssi_char_t *annotator_new;
 	ssi_char_t *role;
 	ssi_char_t *dlls;
+	ssi_char_t *srcurl;
 	ssi_char_t *logpath;
 	ssi_char_t *filter;
 	ssi_char_t *list;
 	ssi_char_t *classname;
 	ssi_char_t *stream;
-	//ssi_char_t *trainer;
+	ssi_char_t *trainerTmp;
+	ssi_char_t *trainer;
 	//ssi_time_t frame;
 	bool cooperative;
-	int context;
+	ssi_char_t *balance;
+	int contextLeft;
+	int contextRight;
 	bool finished;
 	bool locked;
 	double confidence;
 	double label_mingap;
 	double label_mindur;
 	bool overwrite;
+	bool force;
 };
 
 void getSessions(StringList &list, params_t &params);
@@ -83,7 +88,6 @@ void uploadAnnotations(params_t &params);
 void downloadAnnotations(params_t &params);
 void removeAnnotations(params_t &params);
 void cutStreamFromLabel(params_t &params);
-void extract(params_t &params);
 void train(params_t &params);
 void forward(params_t &params);
 
@@ -98,21 +102,20 @@ int main (int argc, char **argv) {
 
 	//--extract -filter 066_2016-05-23_Augsburg -log log.txt D:\korpora\nova\aria-noxi expert close
 
-	//--train -context 5 -username system -password AriaSSI -list 066_2016-05-23_Augsburg;067_2016-05-23_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" 
-	//--train -cooperative -context 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" 
+	//--train -under -leftContext 5 -rightContext 5 -username system -password AriaSSI -list 066_2016-05-23_Augsburg;067_2016-05-23_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer-template>
+	//--train -cooperative -under -leftContext 5 -rightContext 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer-template>
 
-	//--forward -context 5 -assign systemcml -username system -password AriaSSI -filter *Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]"
-	//--forward -cooperative -context 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]"
+	//--forward -leftContext 5 -rightContext 5 -assign systemcml -username system -password AriaSSI -filter *Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer>
+	//--forward -cooperative -leftContext 5 -rightContext 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer>
 
 	char info[1024];
 	ssi_sprint (info, "\n%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL("model");
-	Factory::RegisterDLL("liblinear");
-	Factory::RegisterDLL("opensmile");
-	Factory::RegisterDLL("signal");
-	Factory::RegisterDLL("frame");
-	Factory::RegisterDLL("event");
+#if !_DEBUG && defined _MSC_VER && _MSC_VER == 1900	
+	const ssi_char_t *default_source = "https://github.com/hcmlab/ssi/raw/master/bin/x64/vc140";
+#else
+	const ssi_char_t *default_source = "";
+#endif
 
 	CmdArgParser cmd;
 	cmd.info (info);
@@ -129,19 +132,22 @@ int main (int argc, char **argv) {
 	params.annotator_new = 0;
 	params.role = 0;
 	params.dlls = 0;
+	params.srcurl = 0;
 	params.logpath = 0;
 	params.filter = 0;
 	params.list = 0;
 	params.classname = 0;
 	params.stream = 0;
-//	params.trainer = 0;
+	params.trainerTmp = 0;
+	params.trainer = 0;
 	params.finished = false;
 	params.locked = false;
 	params.confidence = -1.0;
 	params.label_mingap = 0;
 	params.label_mindur = 0;
-//	params.frame = 0.04;
-	params.context = 0;	
+	params.contextLeft = 0;	
+	params.contextRight = 0;
+	params.balance = 0;
 	params.overwrite = false;
 
 	cmd.addMasterSwitch("--remove");
@@ -159,7 +165,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
-	cmd.addSCmdOption("-password", &params.password, "", "database password");
+	cmd.addSCmdOption("-password", &params.password, "", "database password");	
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--upload");
@@ -176,12 +182,12 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-role", &params.role, "", "set a fixed role (otherwise read from meta data)");
 	cmd.addBCmdOption("-finished", &params.finished, false, "annotation will be marked as finished");
 	cmd.addBCmdOption("-locked", &params.locked, false, "annotation will be marked as locked");
+	cmd.addBCmdOption("-force", &params.force, false, "overwrite locked annotations");
 	cmd.addDCmdOption("-confidence", &params.confidence, -1.0, "force confidence value (applied if >= 0)");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--download");
@@ -199,7 +205,6 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--cut");
@@ -214,21 +219,6 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
-	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
-
-	cmd.addMasterSwitch("--extract");
-
-	cmd.addText("\nArguments:");
-	cmd.addSCmdArg("root", &params.root, "path to database on disk");	
-	cmd.addSCmdArg("role", &params.role, "name of role");
-	cmd.addSCmdArg("stream", &params.stream, "name of stream");
-
-	cmd.addText("\nOptions:");
-	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
-	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
-	cmd.addBCmdOption("-overwrite", &params.overwrite, false, "overwrite existing features files");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--train");
@@ -242,16 +232,20 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("scheme", &params.scheme, "name of scheme");
 	cmd.addSCmdArg("annotator", &params.annotator, "name of annotator");
 	cmd.addSCmdArg("stream", &params.stream, "name of stream");	
-	//cmd.addSCmdArg("trainer", &params.trainer, "name of trainer template");
+	cmd.addSCmdArg("template", &params.trainerTmp, "trainer template path");
+	cmd.addSCmdArg("trainer", &params.trainer, "trainer path");
 
 	cmd.addText("\nOptions:");	
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
-	cmd.addICmdOption("-context", &params.context, 0, "context (number of frames added to the left and right of center frame)");
-	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
+	cmd.addICmdOption("-left", &params.contextLeft, 0, "left context (number of frames added to the left of center frame)");
+	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
+	cmd.addSCmdOption("-balance", &params.balance, "none", "set sample balancing strategy (none,under,over)");
+	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");	
+	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--forward");
@@ -265,7 +259,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("scheme", &params.scheme, "name of scheme");
 	cmd.addSCmdArg("annotator", &params.annotator, "name of annotator");
 	cmd.addSCmdArg("stream", &params.stream, "name of stream");
-	//cmd.addSCmdArg("trainer", &params.trainer, "name of trainer template");
+	cmd.addSCmdArg("trainer", &params.trainer, "trainer path");
 
 	cmd.addText("\nOptions:");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
@@ -274,19 +268,51 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
 	cmd.addBCmdOption("-finished", &params.finished, false, "annotation will be marked as finished");
 	cmd.addBCmdOption("-locked", &params.locked, false, "annotation will be marked as locked");
-	cmd.addICmdOption("-context", &params.context, 0, "context (number of frames added to the left and right of center frame)");
+	cmd.addICmdOption("-left", &params.contextLeft, 0, "left context (number of frames added to the left of center frame)");
+	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
 	cmd.addSCmdOption("-assign", &params.annotator_new, "", "assign a different annotator");
 	cmd.addDCmdOption("-confidence", &params.confidence, -1.0, "force confidence value (applied if >= 0)");
 	cmd.addDCmdOption("-mingap", &params.label_mingap, 0, "gaps between labels with same name that are smaller than this value will be closed");
 	cmd.addDCmdOption("-mindur", &params.label_mindur, 0, "labels with a duration smaller or equal to this value will be removed");
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
-	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';'");
+	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 	
 	if (cmd.read (argc, argv)) {		
 
+		ssi_print("%s", info);
+
+		// set directories
+		FilePath exepath_fp(argv[0]);
+		ssi_char_t workdir[SSI_MAX_CHAR];
+		ssi_getcwd(SSI_MAX_CHAR, workdir);
+		ssi_char_t exedir[SSI_MAX_CHAR];
+		if (exepath_fp.isRelative()) {
+#if _WIN32|_WIN64
+			ssi_sprint(exedir, "%s\\%s", workdir, exepath_fp.getDir());
+#else
+			ssi_sprint(exedir, "%s/%s", workdir, exepath_fp.getDir());
+#endif
+		}
+		else {
+			strcpy(exedir, exepath_fp.getDir());
+		}
+		ssi_print("download source=%s\ndownload target=%s\n\n", params.srcurl, exedir);
+		Factory::SetDownloadDirs(params.srcurl, exedir);
+
 		if (params.logpath && params.logpath[0] != '\0') {
 			ssimsg = new FileMessage(params.logpath);
+		}
+
+		if (params.stream != 0)
+		{
+			FilePath stream_fp(params.stream);
+			if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
+			{
+				delete[] params.stream;
+				params.stream = ssi_strcpy(stream_fp.getPath());
+			}			
 		}
 
 		loadDlls(params);		
@@ -332,20 +358,12 @@ int main (int argc, char **argv) {
 
 		case 5: {
 
-			extract(params);
-
-			break;
-		}
-
-
-		case 6: {
-
 			train(params);
 
 			break;
 		}
 
-		case 7: {
+		case 6: {
 
 			forward(params);
 
@@ -372,12 +390,15 @@ int main (int argc, char **argv) {
 	delete[] params.scheme;
 	delete[] params.role;
 	delete[] params.dlls;
+	delete[] params.srcurl;
 	delete[] params.logpath;
 	delete[] params.filter;
 	delete[] params.list;
 	delete[] params.stream;
 	delete[] params.classname;
-//	delete[] params.trainer;
+	delete[] params.trainerTmp;
+	delete[] params.trainer;
+	delete[] params.balance;
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	}
@@ -505,7 +526,7 @@ void uploadAnnotations(params_t &params)
 				anno.setConfidence((ssi_real_t)params.confidence);
 			}
 
-			if (!CMLAnnotation::Save(&anno, &client, session, role, anno.getScheme()->name, annotator, params.finished, params.locked))
+			if (!CMLAnnotation::Save(&anno, &client, session, role, anno.getScheme()->name, annotator, params.finished, params.locked, params.force))
 			{		
 				ssi_wrn("could not upload annotation to database");
 				continue;
@@ -684,72 +705,6 @@ void cutStreamFromLabel(params_t &params)
 	}
 }
 
-void extract(params_t &params)
-{
-	ssi_char_t fromPath[SSI_MAX_CHAR];
-	ssi_char_t toPath[SSI_MAX_CHAR];
-
-	OSMfccChain *feat = ssi_create_id(OSMfccChain, 0, "feat");
-	feat->getOptions()->deltas_enable = true;
-	feat->getOSTransformFFT()->getOptions()->nfft = 2048;
-	feat->getOSSpecScale()->getOptions()->firstNote = 27.05;
-	feat->getOSMfcc()->getOptions()->first = 0;
-	((Derivative*)feat->getDeltas())->getOptions()->set(Derivative::D0TH | Derivative::D1ST | Derivative::D2ND);
-
-	ssi_char_t *featname = "mfccdd[-f 0.04 -d 0]";
-
-	StringList sessions;
-	getSessions(sessions, params);
-	for (StringList::iterator session = sessions.begin(); session != sessions.end(); session++)
-	{
-		StringList roles;
-		roles.parse(params.role, ';');
-		
-		for (StringList::iterator role = roles.begin(); role != roles.end(); role++)
-		{
-			if (ssi_strcmp(role->str(), "expert"))
-			{
-				ssi_sprint(fromPath, "%s\\Expert_%s.wav", session->str(), params.stream);
-			}			
-			else if (ssi_strcmp(role->str(), "novice"))
-			{
-				ssi_sprint(fromPath, "%s\\Novice_%s.wav", session->str(), params.stream);
-			}
-
-			ssi_sprint(toPath, "%s\\%s.%s.%s.stream", session->str(), params.stream, featname, role->str());
-
-			ssi_print("\n-------------------------------------------\n");
-			ssi_print("EXTRACT FEATURES '%s>%s'\n\n", fromPath, toPath);
-
-			if (!params.overwrite && ssi_exists(toPath))
-			{
-				continue;
-			}
-
-			if (!ssi_exists(fromPath))
-			{
-				ssi_wrn("input file not found");
-				continue;
-			}
-
-			ssi_stream_t from, to;
-
-			WavTools::ReadWavFile(fromPath, from, true);
-
-			ssi_size_t frame_samples = ssi_size_t(0.04 * from.sr);
-			ssi_size_t delta_samples = ssi_size_t(0.0 * from.sr);
-			SignalTools::Transform(from, to, *feat, frame_samples, delta_samples);
-
-			FileTools::WriteStreamFile(File::BINARY, toPath, to);
-
-			ssi_stream_destroy(from);
-			ssi_stream_destroy(to);
-			
-		}
-		
-	}
-}
-
 void train(params_t &params)
 {
 	MongoURI uri(params.server, params.port, params.username, params.password);
@@ -759,23 +714,11 @@ void train(params_t &params)
 		return;
 	}
 
-	//Trainer trainer;
-	//if (!Trainer::Load(trainer, params.trainer))
-	//{		
-	//	return;
-	//}
-	LibLinear *lin = ssi_create_id(LibLinear, 0, "model");
-	lin->getOptions()->seed = 1234;
-	lin->getOptions()->silent = true;
-	lin->getOptions()->setParams("-s 0 -e 0.1 -B 0.1");
-	lin->getOptions()->balance = LibLinear::BALANCE::UNDER;
-	Trainer trainer(lin);
-
-	ISNorm::Params norm;
-	ISNorm::ZeroParams(norm, ISNorm::METHOD::SCALE);
-	norm.limits[0] = -1.0f;
-	norm.limits[1] = 1.0f;
-	trainer.setNormalization(&norm);
+	Trainer trainer;
+	if (!Trainer::Load(trainer, params.trainerTmp))
+	{
+		return;
+	}
 
 	StringList roles;
 	roles.parse(params.role, ';');
@@ -786,7 +729,7 @@ void train(params_t &params)
 	if (!params.cooperative)
 	{
 		CMLTrainer cmltrainer;
-		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.context);
+		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
 
 		for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
 		{
@@ -807,10 +750,20 @@ void train(params_t &params)
 		}
 
 		ssi_char_t string[SSI_MAX_CHAR];
-		ssi_sprint(string, "%s\\models\\%s.%s.%s", params.root, params.stream, params.scheme, params.annotator);
+		ssi_sprint(string, "%s", params.trainer);
 
 		ssi_print("\n-------------------------------------------\n");
 		ssi_print("TRAIN '%s'\n\n", string);
+
+		if (ssi_strcmp(params.balance, "under", false))
+		{
+			trainer.setBalance(Trainer::BALANCE::UNDER);
+		}
+		else if (ssi_strcmp(params.balance, "over", false))
+		{
+			trainer.setBalance(Trainer::BALANCE::OVER);
+		}
+
 		if (cmltrainer.train(&trainer))
 		{
 			trainer.save(string);
@@ -830,7 +783,7 @@ void train(params_t &params)
 				ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
 
 				CMLTrainer cmltrainer;
-				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.context);
+				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
 
 				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative))
 				{
@@ -838,14 +791,21 @@ void train(params_t &params)
 					continue;
 				}
 
-				ssi_char_t string[SSI_MAX_CHAR];
-				ssi_sprint(string, "%s\\%s\\%s.%s.%s", params.root, session, params.stream, params.scheme, params.annotator);
-
 				ssi_print("\n-------------------------------------------\n");
-				ssi_print("TRAIN '%s'\n\n", string);
+				ssi_print("TRAIN '%s'\n\n", params.trainer);
+
+				if (ssi_strcmp(params.balance, "under", false))
+				{
+					trainer.setBalance(Trainer::BALANCE::UNDER);
+				}
+				else if (ssi_strcmp(params.balance, "over", false))
+				{
+					trainer.setBalance(Trainer::BALANCE::OVER);
+				}
+
 				if (cmltrainer.train(&trainer))
 				{
-					trainer.save(string);
+					trainer.save(params.trainer);
 				}
 			}
 		}		
@@ -872,12 +832,10 @@ void forward(params_t &params)
 	if (!params.cooperative)
 	{
 		CMLTrainer cmltrainer;
-		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.context);
-		
-		ssi_sprint(string, "%s\\models\\%s.%s.%s", params.root, params.stream, params.scheme, params.annotator);
+		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
 
 		Trainer trainer;
-		if (!Trainer::Load(trainer, string))
+		if (!Trainer::Load(trainer, params.trainer))
 		{
 			ssi_wrn("ERROR: could not load trainer");
 			return;
@@ -891,7 +849,7 @@ void forward(params_t &params)
 			for (StringList::iterator role = roles.begin(); role != roles.end(); role++)
 			{
 				ssi_print("\n-------------------------------------------\n");
-				ssi_print("FORWARD '%s->%s.%s.%s.%s'\n\n", params.stream, session, role->str(), params.scheme, params.annotator);
+				ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
 
 				Annotation *anno = cmltrainer.forward(&trainer, session, role->str(), params.annotator, params.cooperative);
 				if (!anno)
@@ -900,12 +858,15 @@ void forward(params_t &params)
 					continue;
 				}
 
-				anno->packClass(params.label_mingap);
-				if (params.label_mindur > 0)
+				if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 				{
-					anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
+					anno->packClass(params.label_mingap);
+					if (params.label_mindur > 0)
+					{
+						anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
+					}
+					anno->packClass(params.label_mingap);
 				}
-				anno->packClass(params.label_mingap);
 
 				if (params.confidence >= 0)
 				{
@@ -938,12 +899,10 @@ void forward(params_t &params)
 				ssi_print("FORWARD '%s->%s.%s.%s.%s'\n\n", params.stream, session, role->str(), params.scheme, params.annotator);
 
 				CMLTrainer cmltrainer;
-				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.context);
-
-				ssi_sprint(string, "%s\\%s\\%s.%s.%s", params.root, session, params.stream, params.scheme, params.annotator);
+				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);				
 
 				Trainer trainer;
-				if (!Trainer::Load(trainer, string))
+				if (!Trainer::Load(trainer, params.trainer))
 				{
 					ssi_wrn("ERROR: could not load trainer");
 					continue;
@@ -979,6 +938,6 @@ void forward(params_t &params)
 
 				delete anno;
 			}
-		}
-	}
+		}	
+	}	
 }

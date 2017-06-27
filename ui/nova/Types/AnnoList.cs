@@ -22,17 +22,36 @@ namespace ssi
         {
             get
             {
-                if (Source.HasFile())
+                if (Source.HasFile)
                 {
                     return Source.File.Name;
                 }
-                else if (Source.HasDatabase())
+                else if (Source.HasDatabase)
                 {
-                    return Scheme.Name;
+                    return Source.Database.OID.ToString();
                 }
                 else
                 {
                     return "*";
+                }                
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                if (Source.HasFile)
+                {
+                    return Source.File.Path;
+                }
+                else if (Source.HasDatabase)
+                {
+                    return Source.Database.OID.ToString();
+                }
+                else
+                {
+                    return null;
                 }
             }
         }
@@ -59,38 +78,40 @@ namespace ssi
             ID = GetRandomInt(1, Int32.MaxValue);
         }
 
-        public bool Save(List<DatabaseMediaInfo> loadedMedia = null)
+        public bool Save(List<string> loadedStreams = null, bool force = false)
         {
             bool saved = false;
 
-            if (!HasChanged)
+            if (!force && !HasChanged)
             {
                 return true;
             }
 
-            if (Source.HasFile())
+            if (Source.HasFile || Source.StoreToFile)
             {
-                if (saveToFile(Source.File.Path))
+               
+                if (!Source.HasFile)
+                {
+                  Source.File.Path = FileTools.SaveFileDialog(Scheme.Name, ".annotation", "Annotation(*.annotation)|*.annotation", ""); 
+                }
+              
+                if (Source.HasFile)
+                {
+                    if (SaveToFile(Source.File.Path))
+                    {
+                        saved = true;
+                    }
+                }
+            }
+            else if (Source.HasDatabase || Source.StoreToDatabase)
+            {
+                if (DatabaseHandler.SaveAnnoList(this, loadedStreams, force))
                 {
                     saved = true;
                 }
-            }
-
-            if (Source.HasDatabase())
-            {
-                if (DatabaseHandler.StoreToDatabase(this, loadedMedia) != null)
+                if (!Source.HasDatabase)
                 {
-                    saved = true;
-                }
-            }
-
-            if (!saved)
-            {
-                string path = FileTools.SaveFileDialog(Scheme.Name, ".annotation", "Annotation(*.annotation)|*.annotation", "");
-                if (path != null)
-                {
-                    Source.File.Path = path;
-                    Save();
+                    Source.Database.OID = DatabaseHandler.GetAnnotationId(Meta.Role, Scheme.Name, Meta.Annotator, Source.Database.Session);
                 }
             }
 

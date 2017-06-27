@@ -55,7 +55,7 @@ public:
 		V2 = 2,		// + user names
 		V3 = 3,		// + relative model/fusion path + feature selection
 		V4 = 4,		// + transformer
-		V5 = 5		// simplified
+		V5 = 5,		// simplified
 	};
 	static Trainer::VERSION DEFAULT_VERSION;
 
@@ -247,6 +247,9 @@ protected:
 
 	ssi_size_t _seed;
 	BALANCE::Value _balance;
+
+	TiXmlNode *_metaNode;
+	TiXmlNode *_registerNode;
 };
 
 }

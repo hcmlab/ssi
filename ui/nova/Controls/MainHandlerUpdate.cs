@@ -7,11 +7,15 @@ using Octokit;
 using System.Windows;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace ssi
 {
     public partial class MainHandler
     {
+        WebClient webClient;
+   
+
         private async void checkForUpdates(bool silent = false)
         {
             try
@@ -60,6 +64,13 @@ namespace ssi
             checkForUpdates(false);
         }
 
+        private void updateCML_Click(object sender, RoutedEventArgs e)
+        {
+            updateCML();
+        }
+
+        
+
         public int compareVersion(string Version1, string Version2)
         {
             Regex regex = new Regex(@"([\d]+)");
@@ -79,5 +90,29 @@ namespace ssi
             }
             return 0;
         }
+
+
+        public void DownloadFile(string urlAddress, string location)
+        {
+            using (webClient = new WebClient())
+            {
+
+                Uri URL = new Uri(urlAddress);
+                // Start the stopwatch which we will be using to calculate the download speed
+
+                try
+                {
+                    // Start downloading the file
+                    webClient.DownloadFile(URL, location);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+
+
     }
 }

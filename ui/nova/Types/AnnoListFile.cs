@@ -16,7 +16,7 @@ namespace ssi
 
         #region SAVE TO FILE
 
-        private bool saveToFile(string filePath, string delimiter = ";")
+        public bool SaveToFile(string filePath, string delimiter = ";")
         {
             Dictionary<string, string> LabelIds = new Dictionary<string, string>();
 
@@ -26,7 +26,7 @@ namespace ssi
                 sw.WriteLine("<?xml version=\"1.0\" ?>");
                 sw.WriteLine("<annotation ssi-v=\"3\">");
 
-                sw.WriteLine("    <info ftype=\"" + Source.File.Type.ToString() + "\" size=\"" + this.Count + "\" />");
+                sw.WriteLine("    <info ftype=\"" + Source.File.Type.ToString() + "\" size=\"" + this.Count + "\" />");              
                 sw.WriteLine("    <meta annotator=\"" + Properties.Settings.Default.Annotator + "\"/>");
                 if (Scheme.Type == AnnoScheme.TYPE.CONTINUOUS)
                 {
@@ -88,7 +88,7 @@ namespace ssi
                     {
                         foreach (AnnoListItem e in this)
                         {
-                            sw.WriteLine(e.Label + delimiter + e.Confidence.ToString("n2"));
+                            sw.WriteLine(e.Label + delimiter + e.Confidence);
                         }
                     }
                     else if (Scheme.Type == AnnoScheme.TYPE.FREE)
@@ -97,11 +97,11 @@ namespace ssi
                         {
                             if (e.Color != Scheme.MaxOrForeColor)
                             {
-                                sw.WriteLine(e.Start.ToString("n2") + delimiter + e.Stop.ToString("n2") + delimiter + e.Label + delimiter + e.Confidence.ToString("n2"));
+                                sw.WriteLine(e.Start + delimiter + e.Stop + delimiter + e.Label + delimiter + e.Confidence);
                             }
                             else
                             {
-                                sw.WriteLine(e.Start.ToString("n2") + delimiter + e.Stop.ToString("n2") + delimiter + e.Label + delimiter + e.Confidence.ToString("n2") + delimiter + "color=" + e.Color.ToString());
+                                sw.WriteLine(e.Start + delimiter + e.Stop + delimiter + e.Label + delimiter + e.Confidence + delimiter + "color=" + e.Color.ToString());
                             }
                         }
                     }
@@ -114,11 +114,11 @@ namespace ssi
                             if (e.Label != "GARBAGE")
                             {
                                 LabelIds.TryGetValue(e.Label, out index);
-                                sw.WriteLine(e.Start.ToString("n2") + delimiter + e.Stop.ToString("n2") + delimiter + index + delimiter + e.Confidence.ToString("n2"));
+                                sw.WriteLine(e.Start + delimiter + e.Stop + delimiter + index + delimiter + e.Confidence);
                             }
                             else
                             {
-                                sw.WriteLine(e.Start.ToString("n2") + delimiter + e.Stop.ToString("n2") + delimiter + -1 + delimiter + e.Confidence.ToString("n2"));
+                                sw.WriteLine(e.Start + delimiter + e.Stop + delimiter + -1 + delimiter + e.Confidence);
                             }
                         }
                     }
@@ -133,28 +133,28 @@ namespace ssi
                             {
                                 output += '(' + e.Points[i].Label + ':' + e.Points[i].XCoord + ':' + e.Points[i].YCoord + ":" + e.Points[i].Confidence + ')' + delimiter;
                             }
-                            sw.WriteLine(output + e.Confidence.ToString("n2"));
+                            sw.WriteLine(output + e.Confidence);
                         }
                     }
                     else if (Scheme.Type == AnnoScheme.TYPE.POLYGON)
                     {
                         foreach (AnnoListItem e in this)
                         {
-                            sw.WriteLine(e.Label + delimiter + e.Confidence.ToString("n2"));
+                            sw.WriteLine(e.Label + delimiter + e.Confidence);
                         }
                     }
                     else if (Scheme.Type == AnnoScheme.TYPE.GRAPH)
                     {
                         foreach (AnnoListItem e in this)
                         {
-                            sw.WriteLine(e.Label + delimiter + e.Confidence.ToString("n2"));
+                            sw.WriteLine(e.Label + delimiter + e.Confidence);
                         }
                     }
                     else if (Scheme.Type == AnnoScheme.TYPE.SEGMENTATION)
                     {
                         foreach (AnnoListItem e in this)
                         {
-                            sw.WriteLine(e.Label + delimiter + e.Confidence.ToString("n2"));
+                            sw.WriteLine(e.Label + delimiter + e.Confidence);
                         }
                     }
 
@@ -563,7 +563,7 @@ namespace ssi
                 //    MessageBox.Show("Annotation data was not found, load scheme only from '" + filepath + "'");
                 //}
             }
-            catch (Exception e)
+            catch
             {
                 MessageBox.Show("An exception occured while reading annotation from '" + filepath + "'");
             }
@@ -694,6 +694,7 @@ namespace ssi
             AnnoList list = new AnnoList();
             list.Source.File.Path = filepath;
             list.Scheme = new AnnoScheme();
+           
 
             try
             {
@@ -756,15 +757,9 @@ namespace ssi
                         }
                         if (data.Length > 2)
                         {
-                            if (data[2].Contains("#"))
-                            {
-                                tier = data[2];
-                                tier = tier.Remove(0, 1);
-                            }
-                            else
-                            {
-                                bool isconfidence = double.TryParse(data[3], out confidence);
-                            }
+                        
+                           bool isconfidence = double.TryParse(data[2], out confidence);
+                           
                         }
                         if (data.Length > 3)
                         {
@@ -774,9 +769,12 @@ namespace ssi
                             {
                                 list.Scheme.MaxScore = double.Parse(data[4]);
                             }
-                            AnnoListItem e = new AnnoListItem(start, samplerate == 0 ? 0 : 1 /samplerate, label, "Range: " + list.Scheme.MinScore + "-" + list.Scheme.MaxScore, Colors.Black);
+                            AnnoListItem e = new AnnoListItem(start, samplerate == 0 ? 0 : 1 / samplerate, label, "Range: " + list.Scheme.MinScore + "-" + list.Scheme.MaxScore, Colors.Black);
                             list.AddSorted(e);
                         }
+
+                       
+
                         else
                         {
                             AnnoListItem e = new AnnoListItem(start, samplerate == 0 ? 0 : 1 / samplerate, label, "", Colors.Black, 1);
@@ -818,7 +816,7 @@ namespace ssi
                 sr.Close(); ;
                 list.HasChanged = false;
             }
-            catch (Exception e)
+            catch
             {
                 MessageBox.Show("An exception occured while reading annotation from '" + filepath + "'");
             }

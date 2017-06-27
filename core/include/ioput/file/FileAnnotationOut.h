@@ -80,7 +80,7 @@ protected:
 	std::map<String, String> _meta;
 
 	ssi_size_t _n_labels;
-	ssi_char_t _string[1024];
+	ssi_char_t _string[SSI_MAX_CHAR];
 	bool _console;
 	ssi_char_t *_path;
 };

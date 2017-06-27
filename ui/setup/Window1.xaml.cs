@@ -291,8 +291,7 @@ namespace ssi
 
             if (!Directory.Exists(dir))
             {
-                Log("path not found: " + dir);
-                return false;
+                Directory.CreateDirectory(dir);                
             }
 
             Log("set $(" + SSI_LIBRARY_VARIABLE + "): " + dir);

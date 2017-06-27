@@ -739,8 +739,10 @@ bool ex_timeserver (void *arg) {
 
 bool ex_xml(void *arg) {
 
-	XMLPipeline *xmlpipe = ssi_create(XMLPipeline, 0, false);
-	xmlpipe->SetRegisterDllFptr(Factory::RegisterDLL);
+	Factory::SetDownloadDirs("file:///E:/openssi/bin/x64/vc140", ".\\");
+
+	XMLPipeline *xmlpipe = ssi_create(XMLPipeline, 0, false);	
+	xmlpipe->SetRegisterXMLFptr(Factory::RegisterXML);
 	xmlpipe->setLogLevel(SSI_LOG_LEVEL_DEBUG);
 	xmlpipe->addVariable("jobtime", "4");
 	ssi_char_t *confs[] = { "global", "global2", "global3", "title=CURSOR" };	
@@ -752,21 +754,27 @@ bool ex_xml(void *arg) {
 	frame->AddDecorator(decorator);
 
 	ITheEventBoard *eboard = 0;
-	if (xmlpipe->startEventBoard()) {
+	if (xmlpipe->startEventBoard()) 
+	{
 		eboard = Factory::GetEventBoard();
 	}
 
-	if (eboard) {
+	if (eboard) 
+	{
 		eboard->Start();
 	}
 	frame->Start();
 	frame->Wait();	
 	frame->Stop();
-	if (eboard) {
+	if (eboard) 
+	{
 		eboard->Stop();
 	}
 	frame->Clear();	
-	eboard->Clear();
+	if (eboard)
+	{
+		eboard->Clear();
+	}
 
 	delete xmlpipe;
 

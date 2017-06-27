@@ -1724,3 +1724,19 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 12.04.17 CHG : ssiml/Annotation : extrect sample list from continuous scheme : Johannes
 - 20.04.17 CHG : SSI_Tools : added ssi_remove() to delete files : Johannes
 - 20.04.17 ADD : ioput/web/WebTools : helper functions to download files from the web : Johannes
+
+*** Version 1.0.0 *** 
+- 15.05.17 CHG : tools/xmlpipe : if parsing fails, combines the last two arguments (workaround to start a pipeline with blanks in the path) : Johannes
+- 18.05.17 CHG : base/Factory : downloads missing dlls : Johannes
+- 18.05.17 ADD : tools/xmlchain : tool to run chains offline : Johannes
+- 18.05.17 CHG : tools/xmlpipe : url parameter to specify source for missing dlls/dependencies : Johannes
+- 18.05.17 CHG : tools/xmltrain : url parameter to specify source for missing dlls : Johannes
+- 18.05.17 CHG : frame/XMLPipeline : added depend argument to solve dependencies : Johannes
+- 18.05.17 CHG : frame/Chain : supports register tag : Johannes
+- 18.05.17 CHG : model/Trainer : supports register tag : Johannes
+- 18.05.17 BUG : control : properly generates api : Johannes
+- 29.05.17 BUG : python/PythonHelper : system path may include non-latin characters : Johannes
+- 07.06.17 CHG : xmlpipe : pipeline properly stops on system signal (e.g. user presses ctrl+c or system is shut down) : Johannes
+- 09.06.17 BUG : plugins/activemq : removed references from v14 to v12 : Johannes
+- 12.06.17 CHG : base/Factory : does not try to download dlls with relative or absolute filepath : Johannes
+- 14.06.17 CHG : model/cmltrain : supports new annotation format : Johannes

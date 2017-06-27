@@ -207,8 +207,7 @@ bool FileAnnotationOut::write (ssi_label_t &data) {
 					delete[] tmp;
 
 					if (_file_data->getType() == File::ASCII) {
-						sprintf(_string, "%g;%g;%s;%g", data.free.from, data.free.to, name, data.confidence);
-						_file_data->writeLine(_string);
+						ssi_fprint(_file_data->getFile(), "%g;%g;%s;%g\n", data.free.from, data.free.to, name, data.confidence);						
 					}
 					else {
 						_file_data->write(&data.free.from, sizeof(data.free.from), 1);

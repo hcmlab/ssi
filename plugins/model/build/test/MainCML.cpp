@@ -33,6 +33,7 @@ using namespace ssi;
 
 bool ex_read(void *args);
 bool ex_write(void *args);
+bool ex_remove(void *args);
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -53,16 +54,17 @@ int main () {
 
 	ssi_random_seed ();
 
-	MongoURI uri("137.250.171.233", 3389, "Demo", "Aria");
+	MongoURI uri("137.250.171.233", 3389, "system", "AriaSSI");
 	MongoClient client;
-	client.connect(uri, "definition_v1", false, 1000);
+	client.connect(uri, "definition", false, 1000);
 
 	if (client.is_connected())
 	{
 		Exsemble exsemble;
 		exsemble.console(0, 0, 650, 800);
-		exsemble.add(&ex_read, &client, "READ ANNO", "Reads a continuous/discrete/free annotation from a MongoDB");
-		exsemble.add(&ex_write, &client, "WRITE ANNO", "Writes a continuous/discrete/free annotation to a MongoDB");		
+		exsemble.add(&ex_write, &client, "WRITE ANNO", "Writes a continuous/discrete/free annotation");
+		exsemble.add(&ex_read, &client, "READ ANNO", "Reads a continuous/discrete/free annotation");			
+		exsemble.add(&ex_remove, &client, "REMOVE ANNO", "Remove an annotation");
 		exsemble.show();
 
 		client.close();
@@ -87,19 +89,19 @@ bool ex_read(void *args)
 	MongoClient *client = ssi_pcast(MongoClient, args);
 	Annotation anno;
 	
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Hans", "Expert", "Discrete"))
+	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Discrete", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Max", "Novice", "Continuous"))
+	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Continuous", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Max", "Novice", "Transcription"))
+	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Transcription", "system"))
 	{
 		return false;
 	}
@@ -108,13 +110,12 @@ bool ex_read(void *args)
 	return true;
 }
 
-
 bool ex_write(void *args)
 {
 	MongoClient *client = ssi_pcast(MongoClient, args);
 	Annotation anno;
 
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Hans", "Expert", "Discrete"))
+ 	if (!CMLAnnotation::SetScheme(&anno, client, "Discrete"))
 	{
 		return false;
 	}
@@ -125,13 +126,13 @@ bool ex_write(void *args)
 	anno.add(3.0, 4.0, 1, 1.0f);
 	anno.add(4.0, 5.0, -1, 1.0f);
 	anno.add(5.0, 6.0, 1, 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session-01", "Hans", "Expert", "Discrete"))
+	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Discrete", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Max", "Novice", "Continuous"))
+	if (!CMLAnnotation::SetScheme(&anno, client, "Continuous"))
 	{
 		return false;
 	}
@@ -141,13 +142,13 @@ bool ex_write(void *args)
 	anno.add(0.25f, 1.0f);
 	anno.add(0.5f, 1.0f);
 	anno.add(1.0f, 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session-01", "Max", "Novice", "Continuous"))
+	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Continuous", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session-01", "Max", "Novice", "Transcription"))
+	if (!CMLAnnotation::SetScheme(&anno, client, "Transcription"))
 	{
 		return false;
 	}
@@ -157,11 +158,33 @@ bool ex_write(void *args)
 	anno.add(2.0, 3.0, "Lovè", 1.0f);
 	anno.add(3.0, 4.0, "Tobi", 1.0f);
 	anno.add(4.0, 5.0, "!", 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session-01", "Max", "Novice", "Transcription"))
+	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Transcription", "system"))
 	{
 		return false;
 	}
 	anno.print();
+
+	return true;
+}
+
+bool ex_remove(void *args)
+{
+	MongoClient *client = ssi_pcast(MongoClient, args);
+
+	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Discrete", "system"))
+	{
+		return false;
+	}
+
+	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Continuous", "system"))
+	{
+		return false;
+	}
+
+	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Transcription", "system"))
+	{
+		return false;
+	}
 
 	return true;
 }

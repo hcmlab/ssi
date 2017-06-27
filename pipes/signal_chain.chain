@@ -1,4 +1,7 @@
 <chain>
+	<register>
+		<item name="signal"/>
+	</register>
 	<filter>
 		<item create="Derivative" names="0th,1st" />
 	</filter>

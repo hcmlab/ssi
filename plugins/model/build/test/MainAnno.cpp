@@ -38,6 +38,7 @@ bool ex_create_samples(void *args);
 bool ex_filter(void *args);
 bool ex_pack_class(void *args);
 bool ex_eval(void *args);
+bool ex_elan(void *args);
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -69,6 +70,7 @@ int main () {
 	exsemble.add(&ex_filter, 0, "FILTER", "Remove labels with small confidence/duration.");
 	exsemble.add(&ex_pack_class, 0, "PACK CLASS", "Combine successive samples of same class.");
 	exsemble.add(&ex_eval, 0, "EVALUATION", "Framewise comparison of two annotations.");
+	exsemble.add(&ex_elan, 0, "READ ELAN", "Read an ELAN annotation.");
 	exsemble.show();
 
 	ssi_print ("\n\n\tpress enter to quit\n\n");
@@ -577,6 +579,60 @@ bool ex_eval(void *args)
 	
 	eval.eval(&prediction, &truth);
 	eval.print();
+
+	return true;
+}
+
+bool ex_elan(void *args)
+{
+	//const ssi_char_t *filepath = "in\\test.eaf";
+	ssi_char_t filepath[SSI_MAX_CHAR];
+
+	int sess[19] = { 10, 11, 112, 113, 2, 3, 34, 35, 36, 37, 42, 43, 48, 5, 79, 8, 94, 95, 97 };
+
+	for (int i = 0; i < 19; i++)
+	{
+		ssi_sprint(filepath, "X:\\nova\\semaine\\%d\\%d.eaf", sess[i], sess[i]);
+
+		ElanDocument *elanDoc = ElanDocument::Read(filepath);
+
+		ElanTier &laughter = (*elanDoc)["Laughter"];
+		laughter.unify("laughter");
+		ssi_print("TIER %s has %u entries\n", laughter.name(), (ssi_size_t)laughter.size());
+		laughter.print();
+
+		ElanTier &transcription = (*elanDoc)["Transcription"];
+		ssi_print("TIER %s has %u entries\n", transcription.name(), (ssi_size_t)transcription.size());
+		transcription.print();
+
+		ElanTier speech("speech");
+		transcription.pack(speech);
+		speech.unify("speech");
+		ssi_print("TIER %s has %u entries\n", speech.name(), (ssi_size_t)speech.size());
+		speech.print();
+
+		Annotation annotation;
+		std::map<String, ssi_size_t> classes;
+		classes["laugh"] = 0;
+		classes["speech"] = 1;
+		annotation.setDiscreteScheme("laughter", classes);
+
+		for (ElanTier::iterator segment = laughter.begin(); segment != laughter.end(); segment++)
+		{
+			annotation.add(segment->from / 1000.0, segment->to / 1000.0, classes["laugh"], 1.0f);
+		}
+		for (ElanTier::iterator segment = speech.begin(); segment != speech.end(); segment++)
+		{
+			annotation.add(segment->from / 1000.0, segment->to / 1000.0, classes["speech"], 1.0f);
+		}
+		annotation.sort();
+		annotation.print();
+
+		ssi_sprint(filepath, "X:\\nova\\semaine\\%d\\user.laughter", sess[i]);
+		annotation.save(filepath, File::ASCII);
+
+		delete elanDoc;
+	}
 
 	return true;
 }

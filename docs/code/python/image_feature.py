@@ -30,12 +30,11 @@ def getSampleBytesOut(bytes, opts, vars):
     return 4
     
 
-def transform(info, sin, sout, sxtra, board, opts, vars):   
+def transform(info, sin, sout, sxtras, board, opts, vars):   
 
-    iin = numpy.asarray(sin)
-    iout = numpy.reshape(sout, vars['channels'])
-
-    iin.mean((0,1),out=iout)
+    img = numpy.asarray(sin)
+    feat = numpy.reshape(sout, vars['channels'])
+    img.mean((0,1),out=feat)
 
 
 

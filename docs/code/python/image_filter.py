@@ -18,12 +18,12 @@ def getImageFormatOut(format, opts, vars):
     return format
     
 
-def transform(info, sin, sout, sxtra, board, opts, vars):   
+def transform(info, sin, sout, sxtras, board, opts, vars):   
 
-    iin = numpy.asarray(sin)
-    iout = numpy.asarray(sout)
+    img_in = numpy.asarray(sin)
+    img_out = numpy.asarray(sout)
 
-    cv2.cvtColor(iin, cv2.COLOR_RGB2GRAY, iout)
+    cv2.cvtColor(img_in, cv2.COLOR_RGB2GRAY, img_out)
 
 
 

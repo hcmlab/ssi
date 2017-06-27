@@ -50,143 +50,54 @@ namespace ssi
 
         private void annoContinuousMode_Changed(object sender, RoutedEventArgs e)
         {
-         
+            control.annoContinuousModeDeactiveMouse.IsChecked = Properties.Settings.Default.ContinuousDeactiveMouse;
+
             if (AnnoTier.Selected != null && AnnoTier.Selected.AnnoList.Scheme.Type == AnnoScheme.TYPE.CONTINUOUS)
-            AnnoTier.Selected.ContinuousAnnoMode();
+               if (control.annoContinuousModeCheckBox.IsChecked == true)
+                {
+                    AnnoTierStatic.Selected.ContinuousAnnoMode(false);
+                    control.annoContinuousModeDeactiveMouse.Visibility = Visibility.Visible;
+                    control.annoContinuousModeDeactiveMouseLabel.Visibility = Visibility.Visible;
+                    
+                }
+                else
+                {
+                    AnnoTierStatic.Selected.ContinuousAnnoMode(true);
+                    control.annoContinuousModeDeactiveMouse.Visibility = Visibility.Collapsed;
+                    control.annoContinuousModeDeactiveMouseLabel.Visibility = Visibility.Collapsed;
+                }
         }
 
 
-        private void navigatorNewAnno_Click(object sender, RoutedEventArgs e)
+
+        private void annoContinuousModeDeactiveMouse_Checked(object sender, RoutedEventArgs e)
         {
-            if (Time.TotalDuration > 0)
-            {
-                AnnoTierNewSchemeWindow dialog = new AnnoTierNewSchemeWindow();
-                dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                dialog.ShowDialog();
+            AnnoTier.MouseActive = false;
+            Properties.Settings.Default.ContinuousDeactiveMouse = true;
+            Properties.Settings.Default.Save();
+        }
 
-                if (dialog.DialogResult == true)
-                {
-                    AnnoScheme.TYPE annoType = dialog.Result();
+        private void annoContinuousModeDeactiveMouse_Unchecked(object sender, RoutedEventArgs e)
+        {
+            AnnoTier.MouseActive = true;
+            Properties.Settings.Default.ContinuousDeactiveMouse = false;
+            Properties.Settings.Default.Save();
+        }
 
-                    if (DatabaseLoaded)
-                    {
-                        databaseAddNewAnnotation(annoType);
-                    }
-                    else
-                    {
-                        AnnoList annoList = null;
 
-                        double defaultSr = 25.0;
+        private void navigatorNewAnnoFromDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            addNewAnnotationDatabase();
+        }
 
-                        foreach (IMedia m in mediaList)
-                        {
-                            if (m.GetMediaType() == MediaType.VIDEO)
-                            {
-                                defaultSr = m.GetSampleRate();
-                                break;
-                            }
-                        }
-
-                        if (annoType == AnnoScheme.TYPE.FREE)
-                        {
-                            AnnoTierNewFreeSchemeWindow dialog2 = new AnnoTierNewFreeSchemeWindow(annoLists.Count);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };                                
-                            }
-                        }
-                        else if (annoType == AnnoScheme.TYPE.DISCRETE)
-                        {
-                            AnnoTierNewDiscreteSchemeWindow dialog2 = new AnnoTierNewDiscreteSchemeWindow();
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-
-                            if (dialog2.DialogResult == true)
-                            {
-                                annoList = dialog2.GetAnnoList();
-                            }
-                        }
-                        else if (annoType == AnnoScheme.TYPE.CONTINUOUS)
-                        {
-                            AnnoTierNewContinuousSchemeWindow.Input input = new AnnoTierNewContinuousSchemeWindow.Input() { SampleRate = defaultSr, MinScore = 0.0, MaxScore = 1.0, MinColor = Defaults.Colors.GradientMin, MaxColor = Defaults.Colors.GradientMax };
-                            AnnoTierNewContinuousSchemeWindow dialog2 = new AnnoTierNewContinuousSchemeWindow(input);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };
-                            }
-                        } else if (annoType == AnnoScheme.TYPE.POINT)
-                        {
-                            AnnoTierNewPointSchemeWindow.Input input = new AnnoTierNewPointSchemeWindow.Input() { SampleRate = defaultSr, NumPoints = 1, Color = Colors.Green };
-                            AnnoTierNewPointSchemeWindow dialog2 = new AnnoTierNewPointSchemeWindow(input);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };
-                            }
-                        }
-                        else if (annoType == AnnoScheme.TYPE.POLYGON)
-                        {
-                            AnnoTierNewPolygonSchemeWindow.Input input = new AnnoTierNewPolygonSchemeWindow.Input() { SampleRate = defaultSr, NumNodes = 1, NodeColour = Colors.Green, LineColour = Colors.Red };
-                            AnnoTierNewPolygonSchemeWindow dialog2 = new AnnoTierNewPolygonSchemeWindow(input);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };
-                            }
-                        }
-                        else if (annoType == AnnoScheme.TYPE.GRAPH)
-                        {
-                            AnnoTierNewGraphSchemeWindow.Input input = new AnnoTierNewGraphSchemeWindow.Input() { SampleRate = defaultSr, NumNodes = 1, NodeColour = Colors.Green, LineColour = Colors.Red };
-                            AnnoTierNewGraphSchemeWindow dialog2 = new AnnoTierNewGraphSchemeWindow(input);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };
-                            }
-                        }
-                        else if (annoType == AnnoScheme.TYPE.SEGMENTATION)
-                        {
-                            AnnoTierNewSegmentationSchemeWindow.Input input = new AnnoTierNewSegmentationSchemeWindow.Input() { SampleRate = defaultSr, MinScore = 0.0, MaxScore = 1.0, MinColor = Colors.LightBlue, MaxColor = Colors.Red };
-                            AnnoTierNewSegmentationSchemeWindow dialog2 = new AnnoTierNewSegmentationSchemeWindow(input);
-                            dialog2.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            dialog2.ShowDialog();
-                            if (dialog2.DialogResult == true)
-                            {
-                                AnnoScheme annoScheme = dialog2.Result;
-                                annoList = new AnnoList() { Scheme = annoScheme };
-                            }
-                        }
-
-                        if (annoList != null)
-                        {
-                            annoList.Meta.Annotator = Properties.Settings.Default.Annotator;                          
-                            addAnnoTier(annoList);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageTools.Warning("Nothing to annotate, load some data first.");
-            }
+        private void navigatorNewAnnoFromFile_Click(object sender, RoutedEventArgs e)
+        {
+            addNewAnnotationFile();
         }
 
         private void navigatorClearSession_Click(object sender, RoutedEventArgs e)
         {
-            clearSession();
+            clearWorkspace();
         }
         
         private void navigatorPlay_Click(object sender, RoutedEventArgs e)
@@ -212,8 +123,7 @@ namespace ssi
             else
             {
                 control.navigator.playButton.IsEnabled = false;
-                control.navigator.Statusbar.Content = "";
-            }
+            }            
 
             if (!playIsPlaying)
             {
@@ -223,6 +133,17 @@ namespace ssi
             {
                 control.navigator.playButton.Content = "II";
             }
+
+            bool isConnected = DatabaseHandler.IsConnected;
+            bool isConnectedAndHasSession = DatabaseHandler.IsConnected && DatabaseHandler.IsSession;
+
+            control.navigator.newAnnoFromDatabaseButton.IsEnabled = isConnectedAndHasSession;
+            control.navigator.statusBarSessionInfo.Foreground = isConnectedAndHasSession ? Brushes.Black : Brushes.DarkGray;
+            control.navigator.statusBarSessionInfo.Content = DatabaseHandler.SessionInfo;
+            control.navigator.statusBarServer.Content = DatabaseHandler.ServerInfo;
+            control.navigator.statusBarServer.Foreground = isConnected ? Brushes.Black : Brushes.DarkGray;
+            control.navigator.statusBarDatabase.Content = DatabaseHandler.DatabaseInfo;
+            control.navigator.statusBarDatabase.Foreground = isConnected ? Brushes.Black : Brushes.DarkGray;
         }
 
         public void updateTimeRange(double duration, SignalTrack track)

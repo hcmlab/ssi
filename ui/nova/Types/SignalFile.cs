@@ -121,7 +121,7 @@ namespace ssi
                 signal.filePath = filepath;
                 string[] tmp = filepath.Split('\\');
                 signal.fileName = tmp[tmp.Length - 1];
-                signal.name = signal.fileName.Split('.')[0];
+                signal.name =  Path.GetFileNameWithoutExtension(signal.fileName);
 
                 doc.Load(filepath);
 
@@ -461,7 +461,7 @@ namespace ssi
         public static Signal LoadWaveFile(string filepath)
         {
             WavHeader Header = new WavHeader();
-            Signal signal = null;
+            Signal signal = null;            
 
             using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
             using (BinaryReader br = new BinaryReader(fs))

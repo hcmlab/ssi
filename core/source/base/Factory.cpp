@@ -29,6 +29,7 @@
 #include "frame/include/TheFramework.h"
 #include "thread/Lock.h"
 #include "ioput/file/FilePath.h"
+#include "ioput/web/WebTools.h"
 #include "graphic/Console.h"
 #ifdef SSI_USE_SDL
 #include "graphic/SDL_WindowManager.h"
@@ -64,6 +65,8 @@ Factory::Factory()
 	_strings_counter(0),
 	_board(0),
 	_frame(0),
+	_srcdir(0),
+	_dstdir(0),
 	_wmanager(0) {
 		
 	#if __ANDROID__
@@ -76,7 +79,8 @@ Factory::Factory()
 }
 
 Factory::~Factory () {
-
+	delete[] _srcdir;
+	delete[] _dstdir;
 }
 
 Factory *Factory::GetFactory() {
@@ -108,20 +112,23 @@ bool Factory::register_h (const ssi_char_t *name,
 	return true;
 }
 
-bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *message) {
-
+ssi_char_t *Factory::fullDLLPath(const ssi_char_t *filepath)
+{
+	ssi_char_t *filepath_x = 0;
 	FilePath fp(filepath);
 
-	ssi_char_t *filepath_x = 0;
+	const ssi_char_t *name = fp.getName();
+	ssi_size_t n_name = ssi_strlen(name);
+
 	#if _WIN32|_WIN64
-	#ifdef DEBUG		
+	#ifdef DEBUG				
 		if (ssi_strcmp(fp.getName(), "ssi", true, 3))
 		{
-			filepath_x = ssi_strcat(fp.getPath(), "d.dll");
+			filepath_x = ssi_strcat(fp.getPath(), name[n_name-1] == 'd' ? ".dll" : "d.dll");
 		}
 		else
 		{
-			filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), "d.dll");
+			filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), name[n_name - 1] == 'd' ? ".dll" : "d.dll");
 		}
 	#else
 		if (ssi_strcmp(fp.getName(), "ssi", true, 3))
@@ -135,41 +142,68 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 	#endif
 	#else //unix
 		//add shared libryry postfix
-		#ifdef DEBUG
-			if (ssi_strcmp(fp.getName(), "ssi", true, 3))
-			{
-				filepath_x = ssi_strcat(fp.getPath(), "d.so");
-			}
-			else
-			{
-				filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), "d.so");
-			}
-		#else 
-			if (ssi_strcmp(fp.getName(), "ssi", true, 3))
-			{
-				filepath_x = ssi_strcat(fp.getPath(), ".so");
-			}
-			else
-			{
-				filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), ".so");
-			}
-			#if __ANDROID__
-				//add lib prefix
-                 char* tmp = ssi_strcat ("lib", filepath_x);
-                
-				//add apps lib path
-                filepath_x = ssi_strcat (android->getLibDir(), tmp);
+	#ifdef DEBUG
+		if (ssi_strcmp(fp.getName(), "ssi", true, 3))
+		{
+			filepath_x = ssi_strcat(fp.getPath(), name[n_name - 1] == 'd' ? ".so" : "d.so");
+		}
+		else
+		{
+			filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), name[n_name - 1] == 'd' ? ".so" : "d.so");
+		}
+	#else 
+		if (ssi_strcmp(fp.getName(), "ssi", true, 3))
+		{
+			filepath_x = ssi_strcat(fp.getPath(), ".so");
+		}
+		else
+		{
+			filepath_x = ssi_strcat(fp.getDir(), "ssi", fp.getName(), ".so");
+		}
+	#if __ANDROID__
+		//add lib prefix
+		char* tmp = ssi_strcat("lib", filepath_x);
 
-			#else
-                
-                 char* tmp = ssi_strcat ("",filepath_x);
-                filepath_x=tmp;
+		//add apps lib path
+		filepath_x = ssi_strcat(android->getLibDir(), tmp);
 
-			#endif
-		#endif
+	#else
+
+		char* tmp = ssi_strcat("", filepath_x);
+		filepath_x = tmp;
+
+	#endif
+	#endif
 	#endif
 
-	dll_handle_map_t::iterator it = _dll_handle_map.find (String (filepath_x));
+	return filepath_x;
+}
+
+bool Factory::registerDLL (const ssi_char_t *name,
+	FILE *logfile, 
+	IMessage *message) {
+
+	ssi_char_t *fullname = fullDLLPath(name);
+	FilePath fullnameFp(fullname);
+	ssi_char_t *fullpath = 0;
+	if (ssi_strcmp(fullnameFp.getDir(), ""))
+	{
+		fullpath = _dstdir ? ssi_strcat(_dstdir, fullname) : ssi_strcpy(fullname);
+	}
+	else
+	{
+		fullpath = ssi_strcpy(fullname);
+	}
+
+	if (_srcdir && !ssi_exists(fullpath))
+	{
+		ssi_char_t *url = ssi_strcat(_srcdir, "/", fullname);
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "download '%s'", url);
+		WebTools::DownloadFile(url, fullpath);
+		delete[] url;
+	}
+
+	dll_handle_map_t::iterator it = _dll_handle_map.find (String (fullname));
 	bool succeeded = true;
 
 	#if _WIN32|_WIN64
@@ -177,7 +211,7 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 	if (it == _dll_handle_map.end ()) 
 	{
 
-		HMODULE hDLL = ::LoadLibrary (filepath_x);
+		HMODULE hDLL = ::LoadLibrary (fullname);
 
 		succeeded = false;
 		if(hDLL) {
@@ -186,13 +220,13 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 			
 			if (register_fptr) 
 			{				
-				_dll_handle_map.insert (dll_handle_pair_t (String (filepath_x), hDLL));				
-				ssi_msg (SSI_LOG_LEVEL_DEFAULT, "register '%s'", filepath_x);
+				_dll_handle_map.insert (dll_handle_pair_t (String (fullname), hDLL));
+				ssi_msg (SSI_LOG_LEVEL_DEFAULT, "load '%s'", fullname);
 				succeeded = register_fptr (GetFactory (), logfile, message);
 			}
 			else 
 			{
-				ssi_wrn ("Register() function not found '%s'", filepath_x);
+				ssi_wrn ("Register() function not found '%s'", fullname);
 				DWORD loadLibraryError = GetLastError();				
 				if(!FreeLibrary(hDLL))
 				{
@@ -204,12 +238,12 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 		} 
 		else 
 		{
-			ssi_wrn ("not found '%s'", filepath_x);
+			ssi_wrn ("not found '%s'", fullname);
 		}
 	} 
 	else 
 	{
-		ssi_msg (SSI_LOG_LEVEL_DEFAULT, "already loaded '%s'", filepath_x);
+		ssi_msg (SSI_LOG_LEVEL_DEFAULT, "already loaded '%s'", fullname);
 	}
 
 	#else
@@ -249,9 +283,69 @@ bool Factory::registerDLL (const ssi_char_t *filepath, FILE *logfile, IMessage *
 
 	#endif
 
-	delete[] filepath_x;
+	delete[] fullname;
+	delete[] fullpath;
 	
 	return succeeded;
+}
+
+bool Factory::registerXML(TiXmlElement *element,
+	FILE *logfile,
+	IMessage *message)
+{
+	ssi_char_t *tags[2] = { "load", "item" };
+	for (ssi_size_t i = 0; i < 2; i++)
+	{
+		TiXmlElement *load = element->FirstChildElement(tags[i]);
+		const ssi_char_t *name = 0;
+		const ssi_char_t *depend = 0;
+		if (load)
+		{
+			do
+			{
+				if (_srcdir && _srcdir[0] != '\0')
+				{
+					depend = load->Attribute("depend");
+					if (depend)
+					{
+						ssi_size_t n_tokens = ssi_split_string_count(depend, ';');
+						ssi_char_t **tokens = new ssi_char_t*[n_tokens];
+						ssi_split_string(n_tokens, tokens, depend, ';');
+
+						for (ssi_size_t i = 0; i < n_tokens; i++)
+						{
+							ssi_char_t *fullname = tokens[i];
+							ssi_char_t *fullpath = _dstdir ? ssi_strcat(_dstdir, fullname) : ssi_strcpy(fullname);						
+							if (!ssi_exists(fullpath))
+							{
+								ssi_char_t *url = ssi_strcat(_srcdir, "/", fullname);
+								ssi_msg(SSI_LOG_LEVEL_BASIC, "download dependency '%s'", url);
+								WebTools::DownloadFile(url, fullpath);
+								delete[] url;
+							}
+							delete[] fullpath;
+							delete[] tokens[i];
+						}
+						delete[] tokens;
+					}
+				}
+
+				name = load->Attribute("name");
+				if (!name) 
+				{
+					ssi_wrn("register->%s: attribute 'name' is missing", tags[i]);
+					return false;
+				}
+
+				SSI_DBG(SSI_LOG_LEVEL_DEBUG, "register->%s: <name='%s'>", tags[i], name);
+
+				registerDLL(name, logfile, message);
+
+			} while (load = load->NextSiblingElement(tags[i]));
+		}
+	}
+
+	return true;
 }
 
 ssi_size_t Factory::GetDllNames (ssi_char_t ***names) {
@@ -378,6 +472,61 @@ ssi_size_t Factory::GetObjectIds(ssi_char_t ***names, const ssi_char_t *filter) 
 	return n_names;
 }
 
+IObject *Factory::CreateXML(TiXmlElement *element,
+	bool auto_free)
+{
+	const ssi_char_t *create = element->Attribute("create");
+	if (!create) {
+		ssi_wrn("%s: attribute 'create' is missing", element->Value());
+		return 0;
+	}
+	const ssi_char_t *option = element->Attribute("option");
+	if (!option || option[0] == '\0') {
+		option = 0;
+	}
+
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "%s: <create='%s' option='%s'>", element->Value(), create, option);
+
+	IObject *object = Create(create, option, auto_free);
+	if (!object) {
+
+		// check for old format
+		ssi_size_t n_tokens = ssi_split_string_count(create, '_');
+		if (n_tokens == 3) {
+
+			ssi_char_t **tokens = new ssi_char_t *[n_tokens];
+			ssi_split_string(n_tokens, tokens, create, '_');
+
+			ssi_wrn("deprecated: use '%s' instead of '%s'", tokens[2], create);
+
+			object = Create(tokens[2], option, auto_free);
+
+			for (ssi_size_t i = 0; i < n_tokens; i++) {
+				delete[] tokens[i];
+			}
+			delete[] tokens;
+		}
+
+		if (!object) {
+			ssi_wrn("%s: could not create object '%s'", element->Value(), create);
+			return 0;
+		}
+	}
+
+	TiXmlAttribute *attribute = element->FirstAttribute();
+	while (attribute)
+	{
+		if (strcmp(attribute->Name(), "create") != 0 && strcmp(attribute->Name(), "option") != 0) {
+			if (object->getOptions()->setOptionValueFromString(attribute->Name(), attribute->Value())) {
+				SSI_DBG(SSI_LOG_LEVEL_DEBUG, "%s: set option <'%s'='%s'>", element->Value(), attribute->Name(), attribute->Value());
+			}
+		}
+		attribute = attribute->Next();
+	}
+
+	return object;
+}
+
 IObject *Factory::Create(const ssi_char_t *name,
 	const ssi_char_t *file,
 	bool auto_free,
@@ -471,6 +620,21 @@ IObject *Factory::create(const ssi_char_t *name, const ssi_char_t *file, bool au
 	}
 
 	return object;
+}
+
+void Factory::setDownloadDirs(const ssi_char_t *srcdir, const ssi_char_t *dstdir)
+{
+	delete[] _srcdir; _srcdir = 0;
+	if (srcdir)
+	{
+		_srcdir = ssi_strcpy(srcdir);
+	}
+	delete[] _dstdir; _dstdir = 0;
+	if (dstdir)
+	{
+		_dstdir = ssi_strcpy(dstdir);
+	}
+
 }
 
 IObject *Factory::GetObjectFromId(const ssi_char_t *id) {

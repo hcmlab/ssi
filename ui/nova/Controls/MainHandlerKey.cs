@@ -12,7 +12,7 @@ namespace ssi
         {
             if (!this.control.annoListControl.editTextBox.IsFocused)
             {
-                if (e.KeyboardDevice.IsKeyDown(Key.Space))
+                if (e.KeyboardDevice.IsKeyDown(Key.Space) && mediaList.Count > 0)
                 {
                     if (IsPlaying())
                     {
@@ -27,10 +27,9 @@ namespace ssi
 
                 if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.KeyboardDevice.IsKeyDown(Key.L))
                 {
-                    if (AnnoTierStatic.Selected != null && Properties.Settings.Default.CMLDefaultStream != null)
+                    if (AnnoTierStatic.Selected != null)
                     {
-                        DatabaseHandler.StoreToDatabase(AnnoTierStatic.Selected.AnnoList, loadedDBmedia, false);
-                        CompleteTier(Properties.Settings.Default.CMLContext, AnnoTierStatic.Selected, Properties.Settings.Default.CMLDefaultStream, Properties.Settings.Default.CMLDefaultConf, Properties.Settings.Default.CMLDefaultGap, Properties.Settings.Default.CMLDefaultMinDur);
+                        databaseCMLCompleteStep();
                     }
 
                     e.Handled = true;
@@ -104,7 +103,6 @@ namespace ssi
 
                         timeline.CurrentSelectPosition = annoCursor.X;
                         timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X);
-                        timeline.CurrentPlayPositionPrecise = Time.TimeFromPixel(signalCursor.X);
                         AnnoTierStatic.Label.select(true);
                         isKeyDown = true;
                     }
@@ -129,7 +127,6 @@ namespace ssi
 
                     mediaList.Move(Time.TimeFromPixel(signalCursor.X) + fps);
                     timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X) + fps;
-                    timeline.CurrentPlayPositionPrecise = Time.TimeFromPixel(signalCursor.X) + fps;
                     double pos = Time.PixelFromTime(timeline.CurrentPlayPosition);
                     signalCursor.X = pos;
 
@@ -167,7 +164,6 @@ namespace ssi
 
                         timeline.CurrentSelectPosition = annoCursor.X;
                         timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X);
-                        timeline.CurrentPlayPositionPrecise = Time.TimeFromPixel(signalCursor.X);
                         AnnoTierStatic.Label.select(true);
                         isKeyDown = true;
                     }
@@ -192,7 +188,6 @@ namespace ssi
 
                     mediaList.Move(Time.TimeFromPixel(signalCursor.X) - fps);
                     timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X) - fps;
-                    timeline.CurrentPlayPositionPrecise = timeline.CurrentPlayPosition;
                     double pos = Time.PixelFromTime(timeline.CurrentPlayPosition);
                     signalCursor.X = pos;
 
@@ -346,11 +341,7 @@ namespace ssi
             {
                 if (e.KeyboardDevice.IsKeyDown(Key.S) && e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
                 {
-                    if (DatabaseLoaded)
-                    {
-                        databaseStore();
-                    }
-                    else saveSelectedAnno();
+                    saveSelectedAnno();
                 }
                 else if (e.KeyboardDevice.IsKeyDown(Key.Delete) || e.KeyboardDevice.IsKeyDown(Key.Back))
                 {
@@ -362,7 +353,7 @@ namespace ssi
 
                 if (e.KeyboardDevice.IsKeyDown(Key.R) && e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
                 {
-                    if (Properties.Settings.Default.DefaultDiscreteSampleRate != 0 && AnnoTierStatic.Selected.AnnoList.Scheme.SampleRate != Properties.Settings.Default.DefaultDiscreteSampleRate)
+                    if (Properties.Settings.Default.DefaultDiscreteSampleRate != 0 && AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.AnnoList.Scheme.SampleRate != Properties.Settings.Default.DefaultDiscreteSampleRate)
                     {
                         foreach (AnnoListItem ali in AnnoTierStatic.Selected.AnnoList)
                         {
@@ -389,10 +380,14 @@ namespace ssi
                     AnnoTier track = AnnoTierStatic.Selected;
                     if (track != null)
                     {
-                        if (DatabaseLoaded)
-                            databaseReload(track);
+                        if (track.AnnoList.Source.HasFile)
+                        {
+                            reloadAnnoTierFromFile(track);
+                        }
                         else
-                            reloadAnnoTier(track.AnnoList.Source.File.Path);
+                        {
+                            ReloadAnnoTierFromDatabase(track);                            
+                        }
                     }
                     e.Handled = true;
                 }
@@ -420,11 +415,50 @@ namespace ssi
                 {
                     if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.IsContinuous)
                     {
-                        AnnoTierStatic.Selected.ContinuousAnnoMode();
+                        
+                        if (control.annoContinuousModeCheckBox.IsChecked == true)
+                        {
+                            AnnoTierStatic.Selected.ContinuousAnnoMode(true);
+                            control.annoContinuousModeCheckBox.IsChecked = false;
+                           
+
+                        }
+
+                        else
+                        {
+                            control.annoContinuousModeCheckBox.IsChecked = true;
+                            AnnoTierStatic.Selected.ContinuousAnnoMode(false);
+                           
+                        }
                     }
                     isKeyDown = true;
                     // e.Handled = true;
                 }
+
+
+                if (e.KeyboardDevice.IsKeyDown(Key.N))
+                {
+                    if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.IsContinuous)
+                    {
+
+                        if (control.annoContinuousModeDeactiveMouse.IsChecked == true)
+                        {
+                            
+                            control.annoContinuousModeDeactiveMouse.IsChecked = false;
+
+
+                        }
+
+                        else
+                        {
+                            control.annoContinuousModeDeactiveMouse.IsChecked = true;
+
+                        }
+                    }
+                    isKeyDown = true;
+                    // e.Handled = true;
+                }
+
 
                 if (e.KeyboardDevice.IsKeyDown(Key.Q) && !isKeyDown)
                 {
@@ -505,7 +539,6 @@ namespace ssi
 
                     timeline.CurrentSelectPosition = annoCursor.X;
                     timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X);
-                    timeline.CurrentPlayPositionPrecise = Time.TimeFromPixel(signalCursor.X);
 
                     if (AnnoTierStatic.Label != null)
                     {
@@ -562,7 +595,6 @@ namespace ssi
 
                     timeline.CurrentSelectPosition = annoCursor.X;
                     timeline.CurrentPlayPosition = Time.TimeFromPixel(signalCursor.X);
-                    timeline.CurrentPlayPositionPrecise = Time.TimeFromPixel(signalCursor.X);
 
                     double start = annoCursor.X;
                     double end = signalCursor.X;

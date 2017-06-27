@@ -59,8 +59,6 @@ Chain::Chain (const ssi_char_t *file)
 			_file = ssi_strcpy(file);
 		}
 	}
-
-	_xmlpipe = ssi_create (XMLPipeline, 0, false);	
 }
 
 Chain::~Chain () {
@@ -69,8 +67,6 @@ Chain::~Chain () {
 		OptionList::SaveXML(_file, _options);
 		delete[] _file;
 	}
-
-	delete _xmlpipe;
 }
 
 void Chain::transform_enter (ssi_stream_t &stream_in,
@@ -314,6 +310,12 @@ void Chain::parse () {
 		return;	
 	}
 
+	TiXmlElement *load = body->FirstChildElement("register");
+	if (load)
+	{
+		Factory::RegisterXML(load);
+	}
+
 	TiXmlElement *filter = body->FirstChildElement ("filter");
 	if (filter) {
 		if (!parseFilter (filter)) {
@@ -360,7 +362,7 @@ bool Chain::parseFilter (TiXmlElement *element) {
 				ssi_wrn("filter: failed parsing '%u'th <item> tag", i);
 				return false;
 			}
-			IObject *object = _xmlpipe->parseObject(item, false);
+			IObject *object = Factory::CreateXML(item, false);
 			if (!object) {
 				ssi_wrn("filter: class not found");
 				return false;
@@ -413,7 +415,7 @@ bool Chain::parseFeature (TiXmlElement *element) {
 				ssi_wrn ("feature: failed parsing '%u'th <item> tag", i);
 				return false;
 			}
-			IObject *object = _xmlpipe->parseObject (item, false);
+			IObject *object = Factory::CreateXML(item, false);
 			if (!object) {
 				ssi_wrn ("filter: class not found");
 				return false;

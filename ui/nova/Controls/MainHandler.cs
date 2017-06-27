@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,13 @@ namespace ssi
 {
     public partial class MainHandler
     {
-        public static string BuildVersion = "0.9.9.7.0";
+
+        //Config
+        public static string BuildVersion = "0.9.9.9.5";
+        public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
+
+
+
 
         private static Timeline timeline = null;
 
@@ -58,23 +65,16 @@ namespace ssi
         private bool isMouseButtonDown = false;
         private bool isKeyDown = false;
         private string lastDownloadFileName = null;
-        public bool databaseIsLoaded = false;
 
-        public List<DatabaseMediaInfo> loadedDBmedia = null;
+        public List<string> databaseSessionStreams;
 
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         public AnnoTierSegment temp_segment;
 
-        public bool DatabaseLoaded
-        {
-            get { return databaseIsLoaded; }
-            set { databaseIsLoaded = value; }
-        }
-
         public class DownloadStatus
         {
             public string File;
-            public string percent;
+            public double percent;
             public bool active;
         }
 
@@ -94,11 +94,6 @@ namespace ssi
             }
 
             return null;
-        }
-
-        public MenuItem LoadButton
-        {
-            get { return control.loadMenu; }
         }
 
         public MainHandler(MainControl view)
@@ -143,59 +138,67 @@ namespace ssi
             control.annoTierControl.MouseDown += annoTierControl_MouseDown;
             control.annoTierControl.MouseMove += annoTierControl_MouseMove;
             control.annoTierControl.MouseRightButtonUp += annoTierControl_MouseRightButtonUp;
-            control.annoContinuousMode.Checked += annoContinuousMode_Changed;
-            control.annoContinuousMode.Unchecked += annoContinuousMode_Changed;
+            control.annoContinuousModeCheckBox.Checked += annoContinuousMode_Changed;
+            control.annoContinuousModeCheckBox.Unchecked += annoContinuousMode_Changed;
+            control.annoContinuousModeDeactiveMouse.Checked += annoContinuousModeDeactiveMouse_Checked;
+            control.annoContinuousModeDeactiveMouse.Unchecked += annoContinuousModeDeactiveMouse_Unchecked;
 
             // Geometric
 
             control.geometricListControl.editButton.Click += geometricListEdit_Click;
             control.geometricListControl.editTextBox.GotMouseCapture += geometricListEdit_Focused;
-            //control.geometricListControl.xTextBox.GotMouseCapture += geometricListEdit_Focused;
-            //control.geometricListControl.yTextBox.GotMouseCapture += geometricListEdit_Focused;
             control.geometricListControl.copyButton.Click += geometricListCopy_Click;
             control.geometricListControl.selectAllButton.Click += geometricListSelectAll_Click;
             control.geometricListControl.geometricDataGrid.SelectionChanged += geometricList_Selection;
             control.geometricListControl.MenuItemDeleteClick.Click += geometricListDelete;
             control.geometricListControl.KeyDown += geometricKeyDown;
+            control.geometricListControl.Visibility = Visibility.Collapsed;
 
             // Menu
 
-            control.clearSessionMenu.Click += navigatorClearSession_Click;
-            control.saveSessionMenu.Click += saveSession_Click;
-            control.saveProjectMenu.Click += saveProject_Click;
-            control.showSettingsMenu.Click += showSettings_Click;
+            control.menu.MouseEnter += tierMenu_MouseEnter;
 
-            control.updateApplicationMenu.Click += updateApplication_Click;
-            control.tierMenu.MouseEnter += tierMenu_Click;
-            control.helpMenu.Click += helpMenu_Click;
+            control.annoSaveMenu.Click += annoSave_Click;
+            control.annoExportMenu.Click += annoExport_Click;
+            control.annoSaveAllMenu.Click += annoSaveAll_Click;
 
-            control.saveAnnoMenu.Click += saveAnno_Click;
-            control.saveAnnoMenuAs.Click += saveAnnoAs_Click;
+            control.loadFilesMenu.Click += loadFiles_Click;
+            control.fileSaveProjectMenu.Click += fileSaveProject_Click;
+            control.fileLoadProjectMenu.Click += fileLoadProject_Click;                 
+
             control.exportSamplesMenu.Click += exportSamples_Click;
+            control.exportToGenie.Click += exportToGenie_Click;
             control.exportTierToXPSMenu.Click += exportTierToXPS_Click;
             control.exportTierToPNGMenu.Click += exportTierToPNG_Click;
             control.exportSignalToXPSMenu.Click += exportSignalToXPS_Click;
             control.exportSignalToPNGMenu.Click += exportSignalToPNG_Click;
             control.exportAnnoToCSVMenu.Click += exportAnnoToCSV_Click;
-            control.convertAnnoContinuousToDiscreteMenu.Click += exportAnnoContinuousToDiscrete_Click;
-            control.convertAnnoToSignalMenu.Click += exportAnnoToSignal_Click;
-            control.exportAnnoDiscreteToContinuouMenu.Click += exportSignalToContinuous_Click;
-            control.exportAnnoToFrameWiseMenu.Click += exportAnnoToFrameWiseMenu_Click;
 
-            control.databaseSaveSessionMenu.Click += databaseSaveSession_Click;
-            control.databaseSaveSessionAndMarkAsFinishedMenu.Click += databaseSaveSessionAndMarkAsFinished_Click;
+            control.convertAnnoContinuousToDiscreteMenu.Click += convertAnnoContinuousToDiscrete_Click;
+            control.convertAnnoToSignalMenu.Click += convertAnnoToSignal_Click;
+            control.convertSignalToAnnoContinuousMenu.Click += convertSignalToAnnoContinuous_Click;
+            
             control.databaseLoadSessionMenu.Click += databaseLoadSession_Click;
-            control.databaseShowDownloadDirectoryMenu.Click += databaseShowDownloadDirectory_Click;
-            control.databaseChangeDownloadDirectoryMenu.Click += databaseChangeDownloadDirectory_Click;
             control.databaseCMLCompleteStepMenu.Click += databaseCMLCompleteStep_Click;
-            control.databaseCMLTransferStepMenu.Click += databaseCMLTransferStep_Click;
             control.databaseCMLExtractFeaturesMenu.Click += databaseCMLExtractFeatures_Click;
-            control.databaseManageMenu.Click += databaseManage_Click;
+            control.databaseCMLTrainMenu.Click += databaseCMLTrain_Click;
+            control.databaseCMLPredictMenu.Click += databaseCMLPredict_Click;
+            control.databaseManageUsersMenu.Click += databaseManageUsers_Click;
+            control.databaseManageDBsMenu.Click += databaseManageDBs_Click;
+            control.databaseManageSessionsMenu.Click += databaseManageSessions_Click;
+            control.databaseManageAnnotationsMenu.Click += databaseManageAnnotations_Click;
             control.databaseCMLMergeMenu.Click += databaseCMLMerge_Click;
+
+            control.showSettingsMenu.Click += showSettings_Click;
+
+            control.helpMenu.Click += helpMenu_Click;
+            control.updateApplicationMenu.Click += updateApplication_Click;
+            control.updateCMLMenu.Click += updateCML_Click;
 
             // Navigator
 
-            control.navigator.newAnnoButton.Click += navigatorNewAnno_Click;
+            control.navigator.newAnnoFromFileButton.Click += navigatorNewAnnoFromFile_Click;
+            control.navigator.newAnnoFromDatabaseButton.Click += navigatorNewAnnoFromDatabase_Click;
             control.navigator.clearButton.Click += navigatorClearSession_Click;
             control.navigator.jumpFrontButton.Click += navigatorJumpFront_Click;
             control.navigator.playButton.Click += navigatorPlay_Click;
@@ -248,12 +251,101 @@ namespace ssi
                 checkForUpdates(true);
             }
 
+
+            //Download Hardware Video Acceleration Library, if not present yet.
+            string hardwareAcceleratorLibrary = "EVRPresenter64.dll";
+            string hardwareAcceleratorLibraryPath = AppDomain.CurrentDomain.BaseDirectory + hardwareAcceleratorLibrary;
+
+            if (!(File.Exists(hardwareAcceleratorLibraryPath)))
+            {
+                
+                DownloadFile("https://github.com/hcmlab/nova/raw/master/" + hardwareAcceleratorLibrary, hardwareAcceleratorLibraryPath);
+
+            }
+
+
+
+            if (Properties.Settings.Default.DatabaseDirectory == "")
+            {                
+                Properties.Settings.Default.DatabaseDirectory = Directory.GetCurrentDirectory() + "\\data";
+                Properties.Settings.Default.Save();
+                Directory.CreateDirectory(Properties.Settings.Default.DatabaseDirectory);
+            }
+
+
+            if (Properties.Settings.Default.CMLDirectory == "")
+            {
+                Properties.Settings.Default.CMLDirectory = Directory.GetCurrentDirectory() + "\\cml";
+                Properties.Settings.Default.Save();
+                Directory.CreateDirectory(Properties.Settings.Default.CMLDirectory);
+            }
+
+
+            // Database
+
+            control.databaseConnectMenu.Click += DatabaseConnectMenu_Click;            
+            if (Properties.Settings.Default.DatabaseAutoLogin)
+            {
+                databaseConnect();
+            }            
+            else
+            {
+                updateNavigator();
+            }
+
             // Clear
 
             clearSignalInfo();
             clearAnnoInfo();
             clearMediaBox();
+        }     
+
+
+        private void updateCML()
+        {
+
+            /*
+           * CMLTrain and XMLchain executables are downloaded from the official SSI git repository.
+           * */
+
+            string SSIbinaryGitPath = "https://github.com/hcmlab/ssi/raw/master/bin/x64/vc140/";
+
+            //Download CMLtrain, if not present yet.
+            string cmltrainexe = "cmltrain.exe";
+            string cmltrainexePath = AppDomain.CurrentDomain.BaseDirectory + cmltrainexe;
+
+            try
+            {
+                DownloadFile(SSIbinaryGitPath + cmltrainexe, cmltrainexePath);
+            }
+            catch { }
+
+
+            //Download xmlchain, if not present yet.
+            string xmlchainexe = "xmlchain.exe";
+            string xmlchainexePath = AppDomain.CurrentDomain.BaseDirectory + xmlchainexe;
+
+            DownloadFile(SSIbinaryGitPath + xmlchainexe, xmlchainexePath);
+
+            if(File.Exists(xmlchainexePath) && File.Exists(cmltrainexePath))
+            {
+
+                long sizexmlchain = new System.IO.FileInfo(xmlchainexePath).Length;
+                long sizecmltrain = new System.IO.FileInfo(cmltrainexePath).Length;
+
+                if (sizexmlchain == 0 || sizecmltrain == 0)
+                {
+                    if (File.Exists(xmlchainexePath)) File.Delete(xmlchainexePath);
+                    if (File.Exists(cmltrainexePath)) File.Delete(cmltrainexePath);
+                    MessageBox.Show("Could not update CMLtrain.exe and XMLchain.exe");
+                }
+                else MessageBox.Show("Successfully updated CMLtrain.exe and XMLchain.exe");
+            }
+
         }
+
+
+
 
         private void signalAndAnnoControlSizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -269,7 +361,7 @@ namespace ssi
             updateAnnoInfo(AnnoTierStatic.Selected);
         }
 
-        public bool clearSession()
+        public bool clearWorkspace()
         {
             tokenSource.Cancel();
             Stop();
@@ -300,10 +392,7 @@ namespace ssi
                 }
             }
 
-            DatabaseLoaded = false;
             if (Time.TotalDuration > 0) fixTimeRange(Properties.Settings.Default.DefaultZoomInSeconds);
-
-            control.geometricListControl.Visibility = Visibility.Collapsed;
 
             while (mediaBoxes.Count > 0)
             {
@@ -323,9 +412,17 @@ namespace ssi
 
             signalCursor.X = 0;
             Time.TotalDuration = 0;
+            Time.SelectionStart = 0;
+            Time.CurrentPlayPosition = 0;
+
+            if (DatabaseHandler.IsSession)
+            {
+                DatabaseHandler.ChangeSession(null);
+            }
 
             updateControl();
             control.timeLineControl.rangeSlider.Update();
+            control.geometricListControl.Visibility = Visibility.Collapsed;
 
             return true;
         }
@@ -388,31 +485,56 @@ namespace ssi
             }
         }
 
-        private void saveSession_Click(object sender, RoutedEventArgs e)
+        private void annoSaveAll_Click(object sender, RoutedEventArgs e)
         {
             saveAllAnnos();
         }
 
-        private void showSettings_Click(object sender, RoutedEventArgs e)
+        private void showSettings()
         {
             Settings s = new Settings();
+            s.Tab.SelectedIndex = 0;
             s.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             s.ShowDialog();
 
             if (s.DialogResult == true)
             {
+                bool reconnect = false;
+
+                if (Properties.Settings.Default.MongoDBUser != s.MongoUser()
+                    || Properties.Settings.Default.DatabaseAddress != s.DatabaseAddress()
+                    || Properties.Settings.Default.MongoDBPass != s.MongoPass())
+                {
+                    reconnect = true;
+                }
+
+
                 Properties.Settings.Default.UncertaintyLevel = s.Uncertainty();
                 Properties.Settings.Default.Annotator = s.AnnotatorName();
-                Properties.Settings.Default.DatabaseAddress = s.MongoServer();
+                Properties.Settings.Default.DatabaseAddress = s.DatabaseAddress();
                 Properties.Settings.Default.MongoDBUser = s.MongoUser();
                 Properties.Settings.Default.MongoDBPass = s.MongoPass();
+                Properties.Settings.Default.DatabaseAutoLogin= s.DBAutoConnect();
                 Properties.Settings.Default.DefaultZoomInSeconds = double.Parse(s.ZoomInseconds());
                 Properties.Settings.Default.DefaultMinSegmentSize = double.Parse(s.SegmentMinDur());
                 Properties.Settings.Default.DefaultDiscreteSampleRate = double.Parse(s.SampleRate());
                 Properties.Settings.Default.CheckUpdateOnStart = s.CheckforUpdatesonStartup();
+                Properties.Settings.Default.ContinuousHotkeysNumber = int.Parse(s.ContinuousHotkeyLevels());
                 Properties.Settings.Default.DatabaseAskBeforeOverwrite = s.DBAskforOverwrite();
                 Properties.Settings.Default.Save();
+
+                if (reconnect)
+                {                    
+                    databaseConnect();
+                }
+
             }
+
+        }
+
+        private void showSettings_Click(object sender, RoutedEventArgs e)
+        {
+            showSettings();
         }
     }
 }

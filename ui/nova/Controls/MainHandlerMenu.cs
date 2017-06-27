@@ -9,26 +9,54 @@ namespace ssi
 {
     public partial class MainHandler
     {
-        private void tierMenu_Click(object sender, RoutedEventArgs e)
+        private void updateMenu()
         {
-            control.saveAnnoMenu.IsEnabled = false;
-            control.saveAnnoMenuAs.IsEnabled = false;
-            control.convertAnnoContinuousToDiscreteMenu.IsEnabled = false;
-            control.convertAnnoToSignalMenu.IsEnabled = false;
-            control.exportMenu.IsEnabled = false;            
+            AnnoTier tier = AnnoTierStatic.Selected;
+            bool hasTier = tier != null;
+            SignalTrack track = SignalTrackStatic.Selected;
+            bool hasTrack = track != null;
+            MediaBox box = MediaBoxStatic.Selected;
+            bool hasBox = box != null;
+            bool isConnected = DatabaseHandler.IsConnected;
+            bool isConnectedAndHasSession = isConnected && DatabaseHandler.IsSession;
+            int authentication = DatabaseHandler.CheckAuthentication();
 
-            AnnoTier a = AnnoTierStatic.Selected;
-            if (a != null)
-            {
-                if (!a.IsDiscreteOrFree)
-                {
-                    control.convertAnnoContinuousToDiscreteMenu.IsEnabled = true;
-                    control.convertAnnoToSignalMenu.IsEnabled = true;
-                }
-                control.saveAnnoMenu.IsEnabled = true;
-                control.saveAnnoMenuAs.IsEnabled = true;
-                control.exportMenu.IsEnabled = true;
-            }
+            // file
+
+            control.fileSaveProjectMenu.IsEnabled = hasTier || hasTrack || hasBox;
+            control.exportSamplesMenu.IsEnabled = hasTier && hasTrack;            
+            control.exportToGenie.IsEnabled = hasTier;
+            control.exportSelectedTrackMenu.IsEnabled = hasTier;
+            control.exportSelectedTierMenu.IsEnabled = hasTier;
+
+            // database
+                         
+            control.databaseLoadSessionMenu.IsEnabled = isConnected;
+
+            control.databaseCMLMenu.IsEnabled = isConnected;
+            control.databaseCMLCompleteStepMenu.IsEnabled = isConnectedAndHasSession;
+            control.databaseCMLExtractFeaturesMenu.IsEnabled = isConnected && (authentication > 1);
+            control.databaseCMLMergeMenu.IsEnabled = isConnected && (authentication > 2);
+            control.databaseCMLTrainMenu.IsEnabled = isConnected && (authentication > 1);
+            control.databaseCMLPredictMenu.IsEnabled = isConnected && (authentication > 1);
+
+            control.databaseAdminMenu.Visibility = isConnected && (authentication > 2) ? Visibility.Visible : Visibility.Collapsed;
+            control.databaseManageUsersMenu.Visibility = isConnected && (authentication > 3) ? Visibility.Visible : Visibility.Collapsed;             
+
+            // annotation
+
+            control.annoSaveAllMenu.IsEnabled = hasTier;
+            control.annoSaveMenu.IsEnabled = hasTier;
+            control.annoExportMenu.IsEnabled = hasTier;
+            control.convertSelectedTierMenu.IsEnabled = hasTier;
+            control.convertAnnoContinuousToDiscreteMenu.IsEnabled = hasTier && tier.IsContinuous;
+            control.convertAnnoToSignalMenu.IsEnabled = hasTier && tier.IsContinuous;
+            control.convertSignalToAnnoContinuousMenu.IsEnabled = hasTrack;
+        }
+
+        private void tierMenu_MouseEnter(object sender, RoutedEventArgs e)
+        {
+            updateMenu();
         }
 
         private void helpMenu_Click(object sender, RoutedEventArgs e)

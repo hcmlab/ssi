@@ -120,7 +120,7 @@ namespace ssi
 		}
 
 		std::mt19937 *engine = (std::mt19937*)_engine;
-		std::uniform_int<ssi_int_t> *distr = (std::uniform_int<ssi_int_t> *) _distr;
+		std::uniform_int_distribution<ssi_int_t> *distr = (std::uniform_int_distribution<ssi_int_t> *) _distr;
 
 		return distr->operator()(*engine);
 #endif

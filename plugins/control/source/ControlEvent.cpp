@@ -43,7 +43,8 @@ namespace ssi {
 
 	ssi_char_t *ControlEvent::ssi_log_name = "ctrlevent";
 
-	ControlEvent::ControlEvent(const ssi_char_t *file) {
+	ControlEvent::ControlEvent(const ssi_char_t *file)
+	: _file(0) {
 
 		if (file) {
 			if (!OptionList::LoadXML(file, _options)) {

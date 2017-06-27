@@ -15,6 +15,9 @@ namespace ssi
 {
     public class Face : Image, IMedia, INotifyPropertyChanged
     {
+        private float KINECT_SMALL_VALUES_BUG_THRES = -10f;
+        private float KINECT_LARGE_VALUES_BUG_THRES = 10f;
+
         private string filepath;
         private Signal signal;
         private MediaType type;
@@ -74,21 +77,26 @@ namespace ssi
         {
             for (int i = 0; i < 3; i++)
             {
-                mins[i] = signal.min[i];
-                maxs[i] = signal.max[i];
+                mins[i] = float.MaxValue;
+                maxs[i] = float.MinValue;
             }
-            
-            for (int i = 3; i < signal.dim; i++)
+
+            for (int i = 0; i < signal.number * signal.dim; i++)
             {
+                // negative values are evil, sometimes occur though            
                 int dim = i % 3;
-                if (mins[dim] > signal.min[i])
-                {
-                    mins[dim] = signal.min[i];
-                }
-                else if (maxs[dim] < signal.max[i])
-                {
-                    maxs[dim] = signal.max[i];
-                }                                      
+                if (signal.data[i] > KINECT_SMALL_VALUES_BUG_THRES 
+                    && signal.data[i] < KINECT_LARGE_VALUES_BUG_THRES)
+                { 
+                    if (mins[dim] > signal.data[i])
+                    {
+                        mins[dim] = signal.data[i];
+                    }
+                    else if (maxs[dim] < signal.data[i])
+                    {
+                        maxs[dim] = signal.data[i];
+                    }
+                }                                
             }
 
             mins[0] = mins[1] = Math.Min(mins[0], mins[1]);
@@ -99,6 +107,13 @@ namespace ssi
         {
             for (int i = 0; i < signal.number * signal.dim; i++)
             {
+                // negative values are evil, sometimes occur though
+                if (i >= signal.dim && signal.data[i] <= KINECT_SMALL_VALUES_BUG_THRES
+                    && signal.data[i] < KINECT_LARGE_VALUES_BUG_THRES)
+                {
+                    signal.data[i] = signal.data[i - signal.dim];
+                }
+
                 int dim = i % 3;
                 if (maxs[dim] - mins[dim] != 0)
                 {
@@ -113,7 +128,7 @@ namespace ssi
         
         public void Draw(object myObject, EventArgs myEventArgs)
         {
-            Draw(MainHandler.Time.CurrentPlayPositionPrecise);
+            Draw(MainHandler.Time.CurrentPlayPosition);
         }
 
         public void Draw(double time)

@@ -419,6 +419,9 @@
     <ClCompile Include="..\..\source\web\WebTools.cpp">
       <Filter>Source Files\ioput\web</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationWriter.cpp">
+      <Filter>Source Files\ioput\file</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\r250.h">
@@ -870,6 +873,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ioput\web\WebTools.h">
       <Filter>Header Files\ioput\web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationWriter.h">
+      <Filter>Header Files\ioput\file</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

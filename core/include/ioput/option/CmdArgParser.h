@@ -149,6 +149,8 @@ class CmdArgParser {
     void addCmdOption(CmdArgOption *option);
 
     virtual ~CmdArgParser();
+
+	static char ssi_log_name[];
 };
 
 }

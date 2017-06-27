@@ -45,7 +45,7 @@
 	<!-- decoration -->
 	<object create="Decorator" icon="true" title="Pipeline">
 		<area pos="0,0,400,600">console</area>
-		<area pos="400,0,400,600">plot</area>
+		<area pos="400,0,400,300">plot</area>
 		<area pos="400,300,400,300" nv="1">plot-energy*</area>
 	</object>
 

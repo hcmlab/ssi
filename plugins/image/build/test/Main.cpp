@@ -86,7 +86,7 @@ bool main_online (void *args) {
 	ITransformable *camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME, 0, "2.0s");
 	camera->setLogLevel(SSI_LOG_LEVEL_DEBUG);
 	frame->AddSensor(camera);
-
+	
 	Mouse *mouse = ssi_create (Mouse, 0, true);
 	mouse->getOptions()->scale = true;
 	ITransformable *cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);

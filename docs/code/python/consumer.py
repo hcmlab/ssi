@@ -11,25 +11,25 @@ Output stream(s) to the console or a file.
 import sys
 
 
-def getOptions(opts,vars):
+def getOptions(opts, vars):
 
     opts['path'] = ''  
 
 
-def consume_enter(sin, board, opts, vars):
+def consume_enter(sins, board, opts, vars):
     
     vars['fp'] = open(opts['path'], 'w') if opts['path'] else sys.stdout
 
 
-def consume(info, sin, board, opts, vars): 
+def consume(info, sins, board, opts, vars): 
 
-    print('time = %d ms, dur = %d ms' % (info.time, info.dur))
+    print('time = %f s, dur = %f s' % (info.time, info.dur))
 
-    for s in sin:
+    for s in sins:
         vars['fp'].write(str(s) + '\n')
 
 
-def consume_flush(sin, board, opts, vars):
+def consume_flush(sins, board, opts, vars):
     
     if vars['fp'] is not sys.stdout:
         vars['fp'].close()

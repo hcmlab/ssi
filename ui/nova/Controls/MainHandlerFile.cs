@@ -16,6 +16,11 @@ namespace ssi
     {
         #region LOAD
 
+        private void loadFiles_Click(object sender, RoutedEventArgs e)
+        {
+            loadFiles();
+        }
+
         public void loadMultipleFilesOrDirectory(string[] filenames)
         {
             Array.Sort(filenames, StringComparer.InvariantCulture);
@@ -47,7 +52,7 @@ namespace ssi
             Color foreground,
             Color background)
         {
-            if (filepath == null || filepath.EndsWith("~"))
+            if (filepath == null || filepath.EndsWith("~") || !File.Exists(filepath))
             {
                 return false;
             }
@@ -136,11 +141,6 @@ namespace ssi
                     loaded = true;
                     break;
 
-                case SSI_FILE_TYPE.CSV:
-                    loadCSVFile(filepath, foreground, background);
-                    loaded = true;
-                    break;
-
                 case SSI_FILE_TYPE.AUDIO:
                     Signal signal = loadWAVSignalFile(filepath, foreground, background);
                     IMedia media = loadMediaFile(filepath, MediaType.AUDIO);                    
@@ -163,6 +163,11 @@ namespace ssi
 
                 case SSI_FILE_TYPE.EVENTS:
                     ImportAnnoFromSSIEvents(filepath);
+                    loaded = true;
+                    break;
+
+                case SSI_FILE_TYPE.CSV:
+                    loadCSVFile(filepath, foreground, background);
                     loaded = true;
                     break;
 
@@ -203,14 +208,17 @@ namespace ssi
 
         private void addMedia(IMedia media)
         {
-            double time = Time.TimeFromPixel(signalCursor.X);
-            media.Move(time);
+            media.Play();
+            media.Pause();
             mediaList.Add(media);
+
 
             if (media.GetMediaType() != MediaType.AUDIO)
             {
                 addMediaBox(media);
             }
+
+
 
             control.navigator.playButton.IsEnabled = true;
         }
@@ -223,14 +231,30 @@ namespace ssi
                 return null;
             }
 
-            MediaKit media = new MediaKit(filename, type);
-            // Media media = new Media(filename, type);   
-            media.OnMediaMouseDown += OnMediaMouseDown;
-            media.OnMediaMouseUp += OnMediaMouseUp;
-            media.OnMediaMouseMove += OnMediaMouseMove;
-            addMedia(media);
+       
 
-            return media;
+            if(Mediabackend == MEDIABACKEND.MEDIAKIT)
+            {
+                MediaKit media = new MediaKit(filename, type);
+                media.OnMediaMouseDown += OnMediaMouseDown;
+                media.OnMediaMouseUp += OnMediaMouseUp;
+                media.OnMediaMouseMove += OnMediaMouseMove;
+                addMedia(media);
+                return media;
+            }
+           else if(Mediabackend == MEDIABACKEND.MEDIA)
+            {
+                Media media = new Media(filename, type);
+                media.OnMediaMouseDown += OnMediaMouseDown;
+                media.OnMediaMouseUp += OnMediaMouseUp;
+                media.OnMediaMouseMove += OnMediaMouseMove;
+                addMedia(media);
+                return media;
+            }
+
+
+            return null;
+           
         }
 
         private void loadAnnoFile(string filename)
@@ -283,7 +307,7 @@ namespace ssi
 
         private void loadSignalFile(string filename, Color signalColor, Color backgroundColor)
         {
-            if (!File.Exists(filename))
+            if (!File.Exists(filename) || !File.Exists(filename + "~"))
             {
                 MessageTools.Error("Stream file not found '" + filename + "'");
                 return;
@@ -345,30 +369,44 @@ namespace ssi
             Regex regcontnew = new Regex(csvcontnew);
             StreamReader sr = new StreamReader(filename, System.Text.Encoding.Default);
             string line = sr.ReadLine();
+            string[] split = line.Split(';');
             double samplerate = 1.0;
 
             if (line != null)
             {
                 bool iscontinouswithtier = regcontnew.IsMatch(line);
-                if (reg.IsMatch(line) && !iscontinouswithtier) type = "semicolon";
-                else if (reglegacy.IsMatch(line) && !iscontinouswithtier) type = "legacy";
-                else if ((regcont.IsMatch(line) || iscontinouswithtier))
+
+               
+
+                if ((regcont.IsMatch(line) || iscontinouswithtier))
                 {
                     string[] data = line.Split(';');
-                    try
+
+                    if(data.Length == 3)
                     {
-                        double start = Convert.ToDouble(data[0], CultureInfo.InvariantCulture);
-                        line = sr.ReadLine();
-                        data = line.Split(';');
-                        double start2 = Convert.ToDouble(data[0], CultureInfo.InvariantCulture);
-                        samplerate = start2 - start;
-                        type = "continuous";
+                        try
+                        {
+                            double start = Convert.ToDouble(data[0], CultureInfo.InvariantCulture);
+                            line = sr.ReadLine();
+                            data = line.Split(';');
+                            double start2 = Convert.ToDouble(data[0], CultureInfo.InvariantCulture);
+                            samplerate = 1 / (start2 - start);
+                            type = "continuous";
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading continuous file");
+                        }
                     }
-                    catch
-                    {
-                        MessageBox.Show("Error reading continuous file");
-                    }
+
+                    else if (reg.IsMatch(line) && !iscontinouswithtier) type = "semicolon";
+
+                    else if (reglegacy.IsMatch(line) && !iscontinouswithtier) type = "legacy";
+
                 }
+
+               
+              
 
                 sr.Close();
             }
@@ -395,7 +433,7 @@ namespace ssi
    
         public void loadProjectFile(string filepath)
         {
-            clearSession();
+            clearWorkspace();
 
             string workdir = Path.GetDirectoryName(filepath);
 
@@ -403,6 +441,7 @@ namespace ssi
             try
             {
                 doc.Load(filepath);
+               
                 foreach (XmlNode node in doc.SelectNodes("//media"))
                 {                    
                     string path = FileTools.GetAbsolutePath(node.InnerText, workdir);
@@ -425,20 +464,53 @@ namespace ssi
                     loadFile(path, foreground, background);
                 }
 
+                if (DatabaseHandler.IsConnected)
+                {
+                    XmlNode node = doc.SelectSingleNode("//tiers");
+                    if(node!=null && node.Attributes["database"] != null)
+                    {
+                        DatabaseHandler.ChangeDatabase(node.Attributes["database"].LastChild.Value);
+                    }
+                }
+
                 foreach (XmlNode node in (doc.SelectNodes("//tier")))
                 {
                     string path = node.InnerText;
-                    if (path == "")
+                    if (!Path.HasExtension(path))
                     {
-                        path = node.Attributes["filepath"].LastChild.Value;
+                        AnnoList annoList = DatabaseHandler.LoadAnnoList(path);
+                        if (annoList != null)
+                        {
+                            addAnnoTier(annoList);
+                        }
+                        else
+                        {
+                            MessageTools.Warning("Could not load annotation from database with id '" + node.InnerText + "'");
+                        }
                     }
-                    path = FileTools.GetAbsolutePath(path, workdir);
-                    loadFile(path);
+                    else
+                    {                        
+                        if (path == "")
+                        {
+                            path = node.Attributes["filepath"].LastChild.Value;
+                        }
+                        path = FileTools.GetAbsolutePath(path, workdir);
+                        loadFile(path);
+                    }                    
                 }
             }
             catch (Exception e)
             {
                 MessageTools.Error(e.ToString());
+            }
+        }
+
+        private void loadProject()
+        {
+            string[] filePath = FileTools.OpenFileDialog("NOVA Project (*.nova)|*.nova", false);
+            if (filePath != null && filePath.Length > 0)
+            {
+                loadProjectFile(filePath[0]);
             }
         }
 
@@ -450,11 +522,12 @@ namespace ssi
         {
             if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.AnnoList != null)
             {
-                AnnoTierStatic.Selected.AnnoList.Save();
+                AnnoTierStatic.Selected.AnnoList.Save(databaseSessionStreams);
+                updateAnnoInfo(AnnoTierStatic.Selected);
             }
         }
 
-        private void saveSelectedAnnoAs()
+        private void exportSelectedAnnoAs()
         {
             if (AnnoTierStatic.Selected.AnnoList != null)
             {
@@ -462,9 +535,10 @@ namespace ssi
                 string path = FileTools.SaveFileDialog(AnnoTierStatic.Selected.AnnoList.Source.File.Name, ".annotation", "Annotation(*.annotation)|*.annotation", AnnoTierStatic.Selected.AnnoList.Source.File.Directory);
                 if (path != null)
                 {
+                    AnnoSource source = AnnoTierStatic.Selected.AnnoList.Source;
                     AnnoTierStatic.Selected.AnnoList.Source.File.Path = path;                    
                     AnnoTierStatic.Selected.AnnoList.Save();
-                    updateAnnoInfo(AnnoTierStatic.Selected);
+                    AnnoTierStatic.Selected.AnnoList.Source = source;
                 }
             }
         }
@@ -488,11 +562,11 @@ namespace ssi
             string filePath = FileTools.SaveFileDialog("project", ".nova", "NOVA Project (*.nova)|*.nova", firstmediadir);
             if (filePath != null)
             {
-                saveProject(annoTiers, mediaBoxes, signalTracks, filePath);
+                saveProjectFile(annoTiers, mediaBoxes, signalTracks, filePath);
             }
         }
 
-        private void saveProject(List<AnnoTier> annoTiers, List<MediaBox> mediaBoxes, List<SignalTrack> signalTracks, string filepath)
+        private void saveProjectFile(List<AnnoTier> annoTiers, List<MediaBox> mediaBoxes, List<SignalTrack> signalTracks, string filepath)
         {
             string workdir = Path.GetDirectoryName(filepath);
 
@@ -524,13 +598,25 @@ namespace ssi
                 }
             }
             sw.WriteLine("\t</signals>");
+           
+            if (DatabaseHandler.IsConnected && DatabaseHandler.IsDatabase && DatabaseHandler.IsSession)
+            {
+                sw.WriteLine("\t<tiers database=\"" + DatabaseHandler.DatabaseName + "\">");
+            }
+            else
+            {
+                sw.WriteLine("\t<tiers>");
+            }
 
-            sw.WriteLine("\t<tiers>");
             foreach (AnnoTier t in annoTiers)
             {
-                if (t.AnnoList.Source.File.Path != "")
+                if (t.AnnoList.Source.HasFile )
                 {
-                    sw.WriteLine("\t\t<tier name=\"" + t.AnnoList.Scheme.Name + "\">" + FileTools.GetRelativePath(t.AnnoList.Source.File.Path, workdir) + "</tier>");
+                    sw.WriteLine("\t\t<tier>" + FileTools.GetRelativePath(t.AnnoList.Path, workdir) + "</tier>");
+                }
+                else if (t.AnnoList.Source.HasDatabase)
+                {
+                    sw.WriteLine("\t\t<tier>" + t.AnnoList.Path + "</tier>");
                 }
             }
             sw.WriteLine("\t</tiers>");
@@ -704,9 +790,9 @@ namespace ssi
             if (AnnoTierStatic.Selected != null && !AnnoTierStatic.Selected.IsDiscreteOrFree)
             {
                 Dictionary<string, UserInputWindow.Input> input = new Dictionary<string, UserInputWindow.Input>();
-                input["labels"] = new UserInputWindow.Input() { Label = "Class labels (separated by ;)", DefaultValue = "LOW;MEDIUM;HIGH" };
-                input["thresholds"] = new UserInputWindow.Input() { Label = "Upper thresholds (separated by ;)", DefaultValue = "0.33;0.66;1.0" };
-                input["offset"] = new UserInputWindow.Input() { Label = "Optional offset (s)", DefaultValue = "0.0" };
+                input["labels"] = new UserInputWindow.Input() { Label = "Class labels (separated by ;)", DefaultValue = Properties.Settings.Default.ConvertToDiscreteClasses };
+                input["thresholds"] = new UserInputWindow.Input() { Label = "Upper thresholds (separated by ;)", DefaultValue = Properties.Settings.Default.ConvertToDiscreteThreshs };
+                input["offset"] = new UserInputWindow.Input() { Label = "Optional offset (s)", DefaultValue = Properties.Settings.Default.ConvertToDiscreteDelays };
                 UserInputWindow dialog = new UserInputWindow("Convert to discrete annotation", input);
                 dialog.ShowDialog();
 
@@ -716,6 +802,12 @@ namespace ssi
 
                 if (dialog.DialogResult == true)
                 {
+                    Properties.Settings.Default.ConvertToDiscreteClasses = dialog.Result("labels");
+                    Properties.Settings.Default.ConvertToDiscreteThreshs = dialog.Result("thresholds");
+                    Properties.Settings.Default.ConvertToDiscreteDelays = dialog.Result("offset");
+                    Properties.Settings.Default.Save();
+
+
                     string[] labels = dialog.Result("labels").Split(';');
                     for (int i = 0; i < labels.Length; i++)
                     {
@@ -856,11 +948,11 @@ namespace ssi
                 if (annoTier.AnnoList.HasChanged)
                 {
                     MessageBoxResult m = MessageBoxResult.None;
-                    m = MessageBox.Show("You need to save continous annotations on tier #" + annoTier.AnnoList.Scheme.Name + " first", "Confirm", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    m = MessageBox.Show("You need to save continous annotations on tier " + annoTier.AnnoList.Scheme.Name + " first", "Confirm", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                     if (m == MessageBoxResult.OK)
                     {
-                        saveSelectedAnnoAs();
+                        exportSelectedAnnoAs();
                     }
                 }
 
@@ -897,27 +989,24 @@ namespace ssi
 
         #region EVENTHANDLER
 
-        private void saveAnno_Click(object sender, RoutedEventArgs e)
+        private void annoSave_Click(object sender, RoutedEventArgs e)
         {
             saveSelectedAnno();
         }
 
-        private void saveAnnoAs_Click(object sender, RoutedEventArgs e)
+        private void annoExport_Click(object sender, RoutedEventArgs e)
         {
-            saveSelectedAnnoAs();
+            exportSelectedAnnoAs();
         }
 
-        private void saveProject_Click(object sender, RoutedEventArgs e)
+        private void fileSaveProject_Click(object sender, RoutedEventArgs e)
+        {        
+            saveProject();         
+        }
+
+        private void fileLoadProject_Click(object sender, RoutedEventArgs e)
         {
-            if (DatabaseLoaded)
-            {
-                MessageBox.Show("Storing a project file is meant for working with annotation files only , not the database.");
-            }
-            else if (annoTiers.Count == 0)
-            {
-                MessageBox.Show("No annotations have been loaded.");
-            }
-            else saveProject();
+            loadProject();
         }
 
         private void exportSamples_Click(object sender, RoutedEventArgs e)
@@ -925,10 +1014,10 @@ namespace ssi
             ExportSamplesWindow window = new ExportSamplesWindow();
             foreach (AnnoTier tier in this.annoTiers)
             {
-                if (tier.AnnoList.Source.HasFile() && (tier.AnnoList.Scheme.Type == AnnoScheme.TYPE.DISCRETE ||
+                if (tier.AnnoList.Source.HasFile && 
+                    (tier.AnnoList.Scheme.Type == AnnoScheme.TYPE.DISCRETE ||
                     tier.AnnoList.Scheme.Type == AnnoScheme.TYPE.FREE))
                 {
-
                     window.control.annoComboBox.Items.Add(tier.AnnoList.Source.File.Path);
                 }
             }
@@ -939,7 +1028,7 @@ namespace ssi
             window.ShowDialog();
         }
 
-        private void exportAnnoToFrameWiseMenu_Click(object sender, RoutedEventArgs e)
+        private void exportToGenie_Click(object sender, RoutedEventArgs e)
         {
             Dictionary<string, UserInputWindow.Input> input = new Dictionary<string, UserInputWindow.Input>();
             input["separator"] = new UserInputWindow.Input() { Label = "File seperator", DefaultValue = ";" };
@@ -958,17 +1047,17 @@ namespace ssi
             }
         }
 
-        private void exportAnnoContinuousToDiscrete_Click(object sender, RoutedEventArgs e)
+        private void convertAnnoContinuousToDiscrete_Click(object sender, RoutedEventArgs e)
         {
             ExportAnnoContinuousToDiscrete();
         }
 
-        private void exportSignalToContinuous_Click(object sender, RoutedEventArgs e)
+        private void convertSignalToAnnoContinuous_Click(object sender, RoutedEventArgs e)
         {
             ExportSignalToContinuous();
         }
 
-        private void exportAnnoToSignal_Click(object sender, RoutedEventArgs e)
+        private void convertAnnoToSignal_Click(object sender, RoutedEventArgs e)
         {
             ExportAnnoToSignal();
         }

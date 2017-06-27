@@ -19,14 +19,14 @@ def send_enter(opts, vars): # redundant
     pass
 
 
-def consume(info, sin, board, opts, vars): 
+def consume(info, sins, board, opts, vars): 
 
-    npin = numpy.asmatrix(sin[0])
+    npin = numpy.asmatrix(sins[0])
     mean = numpy.mean(npin, axis=0)
 
     time_ms = round(1000 * info.time)
     dur_ms = round(1000 * info.dur)
-	
+
     board.update(time_ms, dur_ms, 'empty@python', state=board.COMPLETED)
     board.update(time_ms, dur_ms, 'string@python', str(mean));
     board.update(time_ms, dur_ms, 'tuple@python', (mean[0,0], mean[0,1]));

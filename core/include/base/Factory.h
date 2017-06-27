@@ -37,6 +37,7 @@
 #include "base/IWindowManager.h"
 #include "base/Array1D.h"
 #include "thread/Mutex.h"
+#include "ioput/xml/tinyxml.h"
 #if __ANDROID__
 #define HEADLESS 1
 #include "base/AndroidApp.h"
@@ -62,7 +63,8 @@ class Factory {
 
 public:
 
-	typedef bool (register_dll_fptr_t)(const ssi_char_t *dllpath, FILE *logfile, IMessage *message);
+	typedef bool (register_xml_fptr_t)(TiXmlElement *element, FILE *logfile, IMessage *message);
+	typedef bool (register_dll_fptr_t)(const ssi_char_t *name, FILE *logfile, IMessage *message);
 	typedef IObject *(create_fptr_t)(const ssi_char_t *name, const ssi_char_t *file, bool auto_free);
 	typedef bool (*register_fptr_from_dll_t)(Factory *factory, FILE *logfile, IMessage *message);
 	typedef void (*unregister_fptr_from_dll_t)();
@@ -95,6 +97,11 @@ public:
 		IMessage *message = 0) {
 		return GetFactory ()->registerDLL (dllpath, logfile, message);
 	}
+	static bool RegisterXML(TiXmlElement *element,
+		FILE *logfile = 0,
+		IMessage *message = 0) {
+		return GetFactory()->registerXML(element, logfile, message);
+	}
 	static bool ExportDlls (const ssi_char_t *target_dir) {
 		return GetFactory ()->exportDlls (target_dir);
 	}
@@ -107,6 +114,15 @@ public:
 		const ssi_char_t *file = 0,
 		bool auto_free = true,
 		const ssi_char_t *id = 0);
+	static IObject *CreateXML(TiXmlElement *element,
+		bool auto_free = true);
+
+	static void SetDownloadDirs(const ssi_char_t *srcdir, const ssi_char_t *dstdir)
+	{
+		GetFactory()->setDownloadDirs(srcdir, dstdir);
+	}
+
+
 	static IObject *GetObjectFromId(const ssi_char_t *id);
 	static const ssi_char_t *GetObjectId(IObject *object);
 	static void ClearObjects () {
@@ -186,10 +202,15 @@ protected:
 
 	bool register_h (const ssi_char_t *name,
 		IObject::create_fptr_t create_fptr);
-	bool registerDLL (const ssi_char_t *dllpath,
-		FILE *logfile = 0,
-		IMessage *message = 0);
+	bool registerDLL (const ssi_char_t *name,
+		FILE *logfile,
+		IMessage *message);
+	bool registerXML(TiXmlElement *element,
+		FILE *logfile,
+		IMessage *message);
 	bool exportDlls (const ssi_char_t *target_dir);
+
+	ssi_char_t *fullDLLPath(const ssi_char_t *filepath);
 
 	typedef std::map<String, HMODULE> dll_handle_map_t;
 	typedef std::pair<String, HMODULE> dll_handle_pair_t;
@@ -204,6 +225,8 @@ protected:
 	ssi_char_t *getUniqueObjectId(const ssi_char_t *id);
 	IObject *getObjectFromId(const ssi_char_t *id);
 	const ssi_char_t *getObjectId(IObject *object);
+
+	void setDownloadDirs(const ssi_char_t *srcdir, const ssi_char_t *dstdir);
 
 	typedef std::map<String, IObject *> object_id_map_t;
 	typedef std::pair<String, IObject *> object_id_pair_t;
@@ -238,6 +261,10 @@ protected:
 	ssi_size_t _id_counter;
 	ssi_char_t *_strings[SSI_FACTORY_STRINGS_MAX];
 	ssi_size_t _strings_counter;
+
+	// download directories
+	ssi_char_t *_dstdir;
+	ssi_char_t *_srcdir;
 
 	// print function
 	void print(FILE *file = ssiout);

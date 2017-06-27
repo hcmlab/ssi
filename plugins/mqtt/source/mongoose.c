@@ -766,7 +766,7 @@ static void byteReverse(unsigned char *buf, unsigned longs) {
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void MD5_Init(MD5_CTX *ctx) {
+void mongoose_MD5_Init(MD5_CTX *ctx) {
   ctx->buf[0] = 0x67452301;
   ctx->buf[1] = 0xefcdab89;
   ctx->buf[2] = 0x98badcfe;
@@ -858,7 +858,7 @@ static void MD5Transform(uint32_t buf[4], uint32_t const in[16]) {
   buf[3] += d;
 }
 
-void MD5_Update(MD5_CTX *ctx, const unsigned char *buf, size_t len) {
+void mongoose_MD5_Update(MD5_CTX *ctx, const unsigned char *buf, size_t len) {
   uint32_t t;
 
   t = ctx->bits[0];
@@ -893,7 +893,7 @@ void MD5_Update(MD5_CTX *ctx, const unsigned char *buf, size_t len) {
   memcpy(ctx->in, buf, len);
 }
 
-void MD5_Final(unsigned char digest[16], MD5_CTX *ctx) {
+void mongoose_MD5_Final(unsigned char digest[16], MD5_CTX *ctx) {
   unsigned count;
   unsigned char *p;
   uint32_t *a;
@@ -945,16 +945,16 @@ char *cs_md5(char buf[33], ...) {
   va_list ap;
   MD5_CTX ctx;
 
-  MD5_Init(&ctx);
+  mongoose_MD5_Init(&ctx);
 
   va_start(ap, buf);
   while ((p = va_arg(ap, const unsigned char *) ) != NULL) {
     size_t len = va_arg(ap, size_t);
-    MD5_Update(&ctx, p, len);
+    mongoose_MD5_Update(&ctx, p, len);
   }
   va_end(ap);
 
-  MD5_Final(hash, &ctx);
+  mongoose_MD5_Final(hash, &ctx);
   cs_to_hex(buf, hash, sizeof(hash));
 
   return buf;

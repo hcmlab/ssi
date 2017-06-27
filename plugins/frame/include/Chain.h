@@ -179,8 +179,6 @@ protected:
 
 	ssi_size_t _meta_size;
 	ssi_byte_t *_meta_data;
-
-	IXMLPipeline *_xmlpipe;
 };
 
 }

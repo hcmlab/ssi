@@ -11,7 +11,7 @@ Calculates energy.
 import numpy
 
 
-def transform(info, sin, sout, sxtra, board, opts, vars):
+def transform(info, sin, sout, sxtras, board, opts, vars):
 
     npin = numpy.asmatrix(sin)
     npout = numpy.asmatrix(sout)

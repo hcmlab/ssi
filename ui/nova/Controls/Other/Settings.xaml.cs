@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,11 +20,20 @@ namespace ssi
             DefaultZoom.Text = Properties.Settings.Default.DefaultZoomInSeconds.ToString();
             Segmentmindur.Text = Properties.Settings.Default.DefaultMinSegmentSize.ToString();
             Samplerate.Text = Properties.Settings.Default.DefaultDiscreteSampleRate.ToString();
-            DBServer.Text = Properties.Settings.Default.DatabaseAddress;
+            ContinuousHotkeysnum.Text = Properties.Settings.Default.ContinuousHotkeysNumber.ToString();
+            string[] tokens = Properties.Settings.Default.DatabaseAddress.Split(':');
+            if (tokens.Length == 2)
+            {
+                DBHost.Text = tokens[0];
+                DBPort.Text = tokens[1];
+            }
             DBUser.Text = Properties.Settings.Default.MongoDBUser;
             DBPassword.Password = Properties.Settings.Default.MongoDBPass;
+            DBConnnect.IsChecked = Properties.Settings.Default.DatabaseAutoLogin;
             UpdatesCheckbox.IsChecked = Properties.Settings.Default.CheckUpdateOnStart;
             OverwriteAnnotation.IsChecked = Properties.Settings.Default.DatabaseAskBeforeOverwrite;
+            DownloadDirectory.Text = Properties.Settings.Default.DatabaseDirectory;
+            CMLDirectory.Text = Properties.Settings.Default.CMLDirectory;
         }
 
         public double Uncertainty()
@@ -45,9 +56,9 @@ namespace ssi
             return Segmentmindur.Text;
         }
 
-        public string MongoServer()
+        public string DatabaseAddress()
         {
-            return DBServer.Text;
+            return DBHost.Text + ":" + DBPort.Text;
         }
 
         public string MongoUser()
@@ -65,9 +76,19 @@ namespace ssi
             return Samplerate.Text;
         }
 
+        public string ContinuousHotkeyLevels()
+        {
+            return ContinuousHotkeysnum.Text;
+        }
+
         public bool CheckforUpdatesonStartup()
         {
             return (UpdatesCheckbox.IsChecked == true);
+        }
+
+        public bool DBAutoConnect()
+        {
+            return (DBConnnect.IsChecked == true);
         }
 
         public bool DBAskforOverwrite()
@@ -87,9 +108,102 @@ namespace ssi
             e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void IntNumberValidationTextBoxContinuous(object sender, TextCompositionEventArgs e)
         {
+            Regex regex = new Regex("^[2-9]$");
+            e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Properties.Settings.Default.DatabaseDirectory != DownloadDirectory.Text)                
+            {
+                if (Directory.Exists(DownloadDirectory.Text))
+                {
+                    Directory.CreateDirectory(DownloadDirectory.Text);
+                    Properties.Settings.Default.DatabaseDirectory = DownloadDirectory.Text;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    MessageTools.Warning("Directory does not exist '" + DownloadDirectory.Text + "'");
+                    return;
+                }
+            }
+
+
+            if (Properties.Settings.Default.CMLDirectory != CMLDirectory.Text)
+            {
+                if (Directory.Exists(CMLDirectory.Text))
+                {
+                    Directory.CreateDirectory(CMLDirectory.Text);
+                    Properties.Settings.Default.CMLDirectory = CMLDirectory.Text;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    MessageTools.Warning("Directory does not exist '" + CMLDirectory.Text + "'");
+                    return;
+                }
+            }
+
             DialogResult = true;
+            Close();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+
+        private void PickDownloadDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = Properties.Settings.Default.DatabaseDirectory;
+            dialog.ShowNewFolderButton = true;
+            dialog.Description = "Select the folder where you want to store the media of your databases in.";
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                DownloadDirectory.Text = dialog.SelectedPath;
+            }
+        }
+
+        private void ViewDownloadDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(DownloadDirectory.Text))
+            {
+                Directory.CreateDirectory(DownloadDirectory.Text);
+                Process.Start(DownloadDirectory.Text);
+            }
+        }
+
+        private void PickCMLDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = Properties.Settings.Default.CMLDirectory;
+            dialog.ShowNewFolderButton = true;
+            dialog.Description = "Select the folder where the Cooperative machine learning tools are stored.";
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                CMLDirectory.Text = dialog.SelectedPath;
+            }
+        }
+
+
+        private void ViewCMLDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(CMLDirectory.Text))
+            {
+                Directory.CreateDirectory(CMLDirectory.Text);
+                Process.Start(CMLDirectory.Text);
+            }
         }
     }
 }

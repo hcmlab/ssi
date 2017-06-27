@@ -20,8 +20,6 @@ namespace ssi
         private MongoClient mongo;
         private IMongoDatabase database;
         private int authlevel = 0;
-        private List<DatabaseMediaInfo> files = new List<DatabaseMediaInfo>();
-        private List<DatabaseMediaInfo> allfiles = new List<DatabaseMediaInfo>();
         private AnnoList mean = null;
         private AnnoList rms = null;
         private AnnoList merge = null;
@@ -34,17 +32,10 @@ namespace ssi
 
         private void ConnecttoDB()
         {
-            try
-            {
+          
                 mongo = DatabaseHandler.Client;
-                int count = 0;
-                while (mongo.Cluster.Description.State.ToString() == "Disconnected")
-                {
-                    Thread.Sleep(100);
-                    if (count++ >= 25) throw new MongoException("Unable to connect to the database. Please make sure that " + mongo.Settings.Server.Host + " is online and you entered your credentials correctly!");
-                }
-
-                authlevel = DatabaseHandler.CheckAuthentication(Properties.Settings.Default.MongoDBUser, Properties.Settings.Default.DatabaseName);
+                database = DatabaseHandler.Database;
+                authlevel = DatabaseHandler.CheckAuthentication();
 
                 if (authlevel > 2)
                 {
@@ -55,31 +46,19 @@ namespace ssi
                     MessageBox.Show("Sorry, you are not authorized on the database to perform this step!");
                     this.Close();
                 }
-            }
-            catch (MongoException e)
-
-            {
-                MessageBox.Show(e.Message);
-                mongo.Cluster.Dispose();
-            }
-        }
-
-        private void Connect_Click(object sender, RoutedEventArgs e)
-        {
-            ConnecttoDB();
         }
 
         private void CollectionResultsBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CollectionResultsBox.SelectedItem != null)
+            if (SessionsResultsBox.SelectedItem != null)
             {
-                Properties.Settings.Default.LastSessionId = ((DatabaseSession)(CollectionResultsBox.SelectedValue)).Name;
+                Properties.Settings.Default.LastSessionId = ((DatabaseSession)(SessionsResultsBox.SelectedValue)).Name;
                 Properties.Settings.Default.Save();
 
                 GetAnnotationSchemes();
                 // GetRoles();
 
-                //     GetAnnotations();
+                //GetAnnotations();
             }
         }
 
@@ -95,34 +74,25 @@ namespace ssi
             this.Close();
         }
 
-        public System.Collections.IList Annotations()
-        {
-            if (AnnotationResultBox.SelectedItems != null)
-                return AnnotationResultBox.SelectedItems;
-            else return null;
-        }
 
         public void GetSessions()
 
         {
-            database = mongo.GetDatabase(Properties.Settings.Default.DatabaseName);
-
             var sessioncollection = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Sessions);
             var sessions = sessioncollection.Find(_ => true).ToList();
 
             if (sessions.Count > 0)
             {
-                if (CollectionResultsBox.Items != null) CollectionResultsBox.Items.Clear();
+                if (SessionsResultsBox.Items != null) SessionsResultsBox.Items.Clear();
                 List<DatabaseSession> items = new List<DatabaseSession>();
                 foreach (var c in sessions)
                 {
-                    //CollectionResultsBox.Items.Add(c.GetElement(1).Value.ToString());
-                    items.Add(new DatabaseSession() { Name = c["name"].ToString(), Location = c["location"].ToString(), Language = c["language"].ToString(), Date = c["date"].AsDateTime.ToShortDateString(), OID = c["_id"].AsObjectId });
+                    items.Add(new DatabaseSession() { Name = c["name"].ToString(), Location = c["location"].ToString(), Language = c["language"].ToString(), Date = c["date"].ToUniversalTime(), Id = c["_id"].AsObjectId });
                 }
 
-                CollectionResultsBox.ItemsSource = items;
+                SessionsResultsBox.ItemsSource = items;
             }
-            else CollectionResultsBox.ItemsSource = null;
+            else SessionsResultsBox.ItemsSource = null;
         }
 
         public ObjectId GetObjectID(IMongoDatabase database, string collection, string value, string attribute)
@@ -140,12 +110,12 @@ namespace ssi
         public void GetAnnotations(bool onlyme = false)
 
         {
+           
             AnnotationResultBox.ItemsSource = null;
             //  AnnotationResultBox.Items.Clear();
-            List<DatabaseAnno> items = new List<DatabaseAnno>();
+            List<DatabaseAnnotation> items = new List<DatabaseAnnotation>();
             List<string> Collections = new List<string>();
 
-            database = mongo.GetDatabase(Properties.Settings.Default.DatabaseName);
             var sessions = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Sessions);
             var annotations = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Annotations);
             var annotationschemes = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Schemes);
@@ -179,9 +149,13 @@ namespace ssi
                 result2 = roles.Find(filterat).Single();
                 if (result2.ElementCount > 0) roleid = result2.GetValue(0).AsObjectId;
             }
-            ObjectId sessionid = GetObjectID(mongo.GetDatabase(Properties.Settings.Default.DatabaseName), DatabaseDefinitionCollections.Sessions, "name", Properties.Settings.Default.LastSessionId);
+
+            DatabaseSession session = (DatabaseSession) SessionsResultsBox.SelectedItem;
+            ObjectId sessionid = GetObjectID(mongo.GetDatabase(Properties.Settings.Default.DatabaseName), DatabaseDefinitionCollections.Sessions, "name", session.Name);
             var filter = builder.Eq("session_id", sessionid);
             var annos = annotations.Find(filter).ToList();
+
+           
 
             foreach (var anno in annos)
             {
@@ -201,7 +175,7 @@ namespace ssi
 
                 if (result.ElementCount > 0 && result2.ElementCount > 0 && anno["scheme_id"].AsObjectId == schemeid && anno["role_id"].AsObjectId == roleid)
                 {
-                    items.Add(new DatabaseAnno() { Role = rolename, AnnoScheme = annoschemename, AnnotatorFullname = annotatornamefull, Annotator = annotatorname, OID = anno["_id"].AsObjectId });
+                    items.Add(new DatabaseAnnotation() { Role = rolename, Scheme = annoschemename, AnnotatorFullName = annotatornamefull, Annotator = annotatorname, Id = anno["_id"].AsObjectId, Session=  session.Name});
                 }
                 //else if (result.ElementCount == 0 && result2.ElementCount > 0 && annos["role_id"].AsObjectId == roleid)
                 //{
@@ -209,7 +183,7 @@ namespace ssi
                 //}
                 else if (result.ElementCount > 0 && result2.ElementCount == 0 && anno["scheme_id"].AsObjectId == schemeid)
                 {
-                    items.Add(new DatabaseAnno() { Role = rolename, AnnoScheme = annoschemename, AnnotatorFullname = annotatornamefull, Annotator = annotatorname, OID = anno["_id"].AsObjectId });
+                    items.Add(new DatabaseAnnotation() { Role = rolename, Scheme = annoschemename, AnnotatorFullName = annotatornamefull, Annotator = annotatorname, Id = anno["_id"].AsObjectId, Session = session.Name });
                 }
             }
 
@@ -218,6 +192,7 @@ namespace ssi
 
         public void GetAnnotationSchemes()
         {
+  
             var annoschemes = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Schemes);
             var annosch = annoschemes.Find(_ => true).ToList();
 
@@ -264,6 +239,8 @@ namespace ssi
             AnnoList merge = al[0];
             merge.Meta.Annotator = "RootMeanSquare";
             merge.Meta.AnnotatorFullName = "RootMeanSquare";
+            merge.Source.StoreToDatabase = true;
+            merge.Source.Database.Session = al[0].Source.Database.Session;
 
             double[] array = new double[al[0].Count];
 
@@ -293,6 +270,8 @@ namespace ssi
             AnnoList merge = al[0];
             merge.Meta.Annotator = "Mean";
             merge.Meta.AnnotatorFullName = "Mean";
+            merge.Source.StoreToDatabase = true;
+            merge.Source.Database.Session = al[0].Source.Database.Session;
 
             double[] array = new double[al[0].Count];
             foreach (AnnoList a in al)
@@ -362,11 +341,12 @@ namespace ssi
                 double maxerr = 0.0;
 
                 double[] array = new double[al[0].Count];
-
+                double length = GetAnnoListMinLength(al);
                 // if (al[0].Meta.Annotator != null && al[0].Meta.Annotator.Contains("RootMeanSquare"))
                 {
-                    for (int i = 0; i < al[0].Count; i++)
+                    for (int i = 0; i < length; i++)
                     {
+             
                         double err = double.Parse(al[0][i].Label) - double.Parse(al[1][i].Label);
                         if (err > maxerr) maxerr = err;
                         if (err < minerr) minerr = err;
@@ -375,30 +355,17 @@ namespace ssi
                     mse = (double)sum_sq / (al[0].Count);
                     MessageBox.Show("The Mean Square Error for Annotation " + al[1].Scheme.Name + " is " + mse + " (Normalized: " + mse / (maxerr - minerr) + "). This is for your information only, no new tier has been created!");
                 }
-                //else if (al[1].Meta.Annotator != null && al[1].Meta.Annotator.Contains("RootMeanSquare"))
-                //{
-                //    for (int i = 0; i < al[0].Count; i++)
-                //    {
-                //        double err = double.Parse(al[1][i].Label) - double.Parse(al[0][i].Label);
-                //        if (err > maxerr) maxerr = err;
-                //        if (err < minerr) minerr = err;
-                //        sum_sq += err * err;
-                //    }
-                //    mse = (double)sum_sq / (al[1].Count);
-                //    MessageBox.Show("The Mean Square Error for Annotation " + al[0].Scheme.Name + " is " + mse + " (Normalized: " + mse / (maxerr - minerr) + "). This is for your information only, no new tier has been created!");
-                //}
-                //else MessageBox.Show("Select RMS Annotation and Reference Annotation. If RMS Annotation is not present, please create it first.");
             }
             else MessageBox.Show("Select RMS Annotation and ONE Reference Annotation. If RMS Annotation is not present, please create it first.");
         }
 
-        private List<AnnoList> convertAnnoListstoMatrix(string restclass)
+        private List<AnnoList> convertAnnoListsToMatrix(string restclass)
         {
-            List<AnnoList> annolists = DatabaseHandler.LoadFromDatabase(AnnotationResultBox.SelectedItems, Properties.Settings.Default.DatabaseName, Properties.Settings.Default.LastSessionId, Properties.Settings.Default.MongoDBUser);
+            List<AnnoList> annolists = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
 
             List<AnnoList> convertedlists = new List<AnnoList>();
 
-            double maxlength = GetAnnoListLength(annolists);
+            double maxlength = GetAnnoListMinLength(annolists);
             double chunksize = Properties.Settings.Default.DefaultMinSegmentSize; //Todo make option
 
             foreach (AnnoList al in annolists)
@@ -410,7 +377,7 @@ namespace ssi
             return convertedlists;
         }
 
-        private double GetAnnoListLength(List<AnnoList> annolists)
+        private double GetAnnoListMinLength(List<AnnoList> annolists)
         {
             double length = 0;
             foreach (AnnoList al in annolists)
@@ -426,6 +393,7 @@ namespace ssi
             AnnoList result = new AnnoList();
             result.Scheme = annolist.Scheme;
             result.Meta = annolist.Meta;
+            result.Source = annolist.Source;
             double currentpos = 0;
 
             bool foundlabel = false;
@@ -492,9 +460,10 @@ namespace ssi
             AnnoList result = new AnnoList();
             result.Scheme = al[0].Scheme;
             result.Meta = al[0].Meta;
-            result.Source = al[0].Source;
             result.Meta.Annotator = "Merge";
             result.Meta.AnnotatorFullName = "Merge";
+            result.Source.StoreToDatabase = true;
+            result.Source.Database.Session = al[0].Source.Database.Session;
 
             for (int i = 0; i < cont.Count - 1; i++)
             {
@@ -519,6 +488,9 @@ namespace ssi
 
             return result;
         }
+
+
+
 
         private double FleissKappa(List<AnnoList> annolists, string restclass)
         {
@@ -726,82 +698,6 @@ namespace ssi
             return cohens_kappa;
         }
 
-        public double Krippendorffsalpha(List<AnnoList> annolists, string restclass)
-        {
-            int n = annolists.Count;   // n = number of raters, here number of annolists
-
-            List<AnnoScheme.Label> classes = annolists[0].Scheme.Labels;
-            //add the restclass we introduced in last step.
-            AnnoScheme.Label rest = new AnnoScheme.Label(restclass, System.Windows.Media.Colors.Black);
-            classes.Add(rest);
-
-            int k = 0;  //k = number of classes
-            //For Discrete Annotations find number of classes, todo, find number of classes on free annotations.
-            if (annolists[0].Scheme.Type == AnnoScheme.TYPE.DISCRETE)
-            {
-                k = classes.Count;
-            }
-
-            int N = annolists[0].Count; //Number of Subjects, here Number of Labels.
-
-            double[] pj = new double[k];
-            double[] Pi = new double[N];
-
-            int dim = n * N;
-
-            double[,] matrix = new double[n, N];
-
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < N; j++)
-                {
-                    double inputValue = double.Parse(annolists[i][j].Label);
-                    matrix[i, j] = inputValue;
-                }
-            }
-
-            double[,] coincidencematrix = new double[N, N];
-
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < N; j++)
-                {
-                }
-            }
-
-            ////add  and initalize matrix
-            //int[,] matrix = new int[N, k];
-
-            //for (int i = 0; i < N; i++)
-            //{
-            //    for (int j = 0; j < k; j++)
-            //    {
-            //        matrix[i, j] = 0;
-            //    }
-            //}
-
-            ////fill the matrix
-
-            //foreach (AnnoList al in annolists)
-            //{
-            //    int count = 0;
-            //    foreach (AnnoListItem ali in al)
-            //    {
-            //        for (int i = 0; i < classes.Count; i++)
-            //        {
-            //            if (ali.Label == classes[i].Name)
-            //            {
-            //                matrix[count, i] = matrix[count, i] + 1;
-            //            }
-            //        }
-
-            //        count++;
-            //    }
-            //}
-
-            return 0;
-        }
-
         private double Cronbachsalpha(List<AnnoList> annolists, int decimals)
         {
             int n = annolists.Count;   // n = number of raters, here number of annolists
@@ -846,6 +742,10 @@ namespace ssi
             //return PearsonCorrelation(annolists[0], annolists[1]);
             return alpha;
         }
+
+
+
+        #region Helper Functions
 
         private Matrix<double> SpearmanCorrelationMatrix(double[][] data)
         {
@@ -949,14 +849,20 @@ namespace ssi
             return Math.Sqrt(variance);
         }
 
+        #endregion
+
+
+
+
+
+
+
         private void CalculateMedian_Click(object sender, RoutedEventArgs e)
         {
             Ok.IsEnabled = false;
 
-            List<AnnoList> al = DatabaseHandler.LoadFromDatabase(AnnotationResultBox.SelectedItems, Properties.Settings.Default.DatabaseName, Properties.Settings.Default.LastSessionId, Properties.Settings.Default.MongoDBUser);
+            List<AnnoList> al = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
             mean = calculateMean(al);
-
-            //todo do something
         }
 
         private void RolesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -968,20 +874,20 @@ namespace ssi
         {
             Ok.IsEnabled = false;
 
-            List<AnnoList> al = DatabaseHandler.LoadFromDatabase(AnnotationResultBox.SelectedItems, Properties.Settings.Default.DatabaseName, Properties.Settings.Default.LastSessionId, Properties.Settings.Default.MongoDBUser);
+            List<AnnoList> al = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
             rms = rootMeanSquare(al);
         }
 
         private void CalculateRMSE_Click(object sender, RoutedEventArgs e)
         {
-            List<AnnoList> al = DatabaseHandler.LoadFromDatabase(AnnotationResultBox.SelectedItems, Properties.Settings.Default.DatabaseName, Properties.Settings.Default.LastSessionId, Properties.Settings.Default.MongoDBUser);
+            List<AnnoList> al = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
             RMSE(al);
         }
 
         private void CalculateFleissKappa_Click(object sender, RoutedEventArgs e)
         {
             string restclass = "Rest";
-            List<AnnoList> convertedlists = convertAnnoListstoMatrix(restclass);
+            List<AnnoList> convertedlists = convertAnnoListsToMatrix(restclass);
             double fleisskappa = FleissKappa(convertedlists, restclass);
 
             //Landis and Koch (1977)
@@ -1000,7 +906,7 @@ namespace ssi
         private void CalculateCohenKappa_Click(object sender, RoutedEventArgs e)
         {
             string restclass = "Rest";
-            List<AnnoList> convertedlists = convertAnnoListstoMatrix(restclass);
+            List<AnnoList> convertedlists = convertAnnoListsToMatrix(restclass);
             double cohenkappa = CohensKappa(convertedlists, restclass);
 
             //Landis and Koch (1977)
@@ -1018,7 +924,7 @@ namespace ssi
 
         private void CalculateCronbach_Click(object sender, RoutedEventArgs e)
         {
-            List<AnnoList> annolists = DatabaseHandler.LoadFromDatabase(AnnotationResultBox.SelectedItems, Properties.Settings.Default.DatabaseName, Properties.Settings.Default.LastSessionId, Properties.Settings.Default.MongoDBUser);
+            List<AnnoList> annolists = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
 
             double cronbachalpha = Cronbachsalpha(annolists, 10);
 
@@ -1032,13 +938,13 @@ namespace ssi
             else if (cronbachalpha >= 0.81 && cronbachalpha < 0.90) interpretation = "Good agreement";
             else if (cronbachalpha >= 0.9) interpretation = "Excellent agreement";
 
-            MessageBox.Show("Cronbach's alpha: " + cronbachalpha.ToString("F3") + ": " + interpretation + "\nThis feature is in beta, no warranty!");
+            MessageBox.Show("Cronbach's alpha: " + cronbachalpha.ToString("F3") + ": " + interpretation);
         }
 
         private void CalculateMergeDiscrete_Click(object sender, RoutedEventArgs e)
         {
             string restclass = "Rest";
-            List<AnnoList> convertedlists = convertAnnoListstoMatrix(restclass);
+            List<AnnoList> convertedlists = convertAnnoListsToMatrix(restclass);
 
             merge = MergeDiscreteLists(convertedlists, restclass);
         }

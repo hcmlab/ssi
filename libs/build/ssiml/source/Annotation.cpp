@@ -1030,7 +1030,6 @@ bool Annotation::save(const ssi_char_t *path, File::TYPE type)
 		return false;
 	}
 
-
 	for (std::map<String, String>::iterator it = _meta.begin(); it != _meta.end(); it++)
 	{
 		out.writeMeta(it->first.str(), it->second.str());
@@ -1715,6 +1714,10 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 		chunk.ptr += stream.dim * stream.byte;
 		it++;
 	}
+
+	sample->streams[0] = 0;
+	ssi_sample_destroy(*sample);
+	delete sample;
 
 	return true;
 }

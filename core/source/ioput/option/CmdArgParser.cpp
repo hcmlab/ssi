@@ -31,6 +31,8 @@
 
 namespace ssi {
 
+char CmdArgParser::ssi_log_name[] = "cmdparser_";
+
 CmdArgParser::CmdArgParser() {
 
 	n_master_switches = 1; // the default!
@@ -207,7 +209,7 @@ bool CmdArgParser::read(int argc_, char **argv_)
 		if(current_option >= 0)
 		{
 			if(cmd_options_[current_option]->is_setted) {
-				printf ("CmdArgParser: option %s is setted twice", cmd_options_[current_option]->name);
+				ssi_wrn ("option %s is setted twice", cmd_options_[current_option]->name);
 				return false;
 			}
 			if (!cmd_options_[current_option]->read(&argc, &argv)) {
@@ -235,7 +237,7 @@ bool CmdArgParser::read(int argc_, char **argv_)
 				cmd_options_[current_option]->is_setted = true;        
 			}
 			else {
-				printf ("CmdArgParser: parse error near <%s>. Too many arguments.", argv[0]);
+				ssi_wrn("parse error near <%s>, too many arguments.", argv[0]);
 				return false;
 			}
 		}    
@@ -246,7 +248,7 @@ bool CmdArgParser::read(int argc_, char **argv_)
 	{
 		if(cmd_options_[i]->isArgument() && (!cmd_options_[i]->is_setted))
 		{
-			printf ("CmdArgParser: not enough arguments!\n");
+			ssi_wrn ("not enough arguments");
 			help();
 			return false;
 		}

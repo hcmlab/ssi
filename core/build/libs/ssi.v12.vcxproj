@@ -198,6 +198,7 @@
     <ClCompile Include="..\..\source\ioput\example\Exsemble.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileAnnotationIn.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileAnnotationOut.cpp" />
+    <ClCompile Include="..\..\source\ioput\file\FileAnnotationWriter.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileBinaryLZ4.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileCSV.cpp" />
     <ClCompile Include="..\..\source\ioput\file\FileEventsIn.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="..\..\include\ioput\example\Exsemble.h" />
     <ClInclude Include="..\..\include\ioput\file\FileAnnotationIn.h" />
     <ClInclude Include="..\..\include\ioput\file\FileAnnotationOut.h" />
+    <ClInclude Include="..\..\include\ioput\file\FileAnnotationWriter.h" />
     <ClInclude Include="..\..\include\ioput\file\FileBinaryLZ4.h" />
     <ClInclude Include="..\..\include\ioput\file\FileCSV.h" />
     <ClInclude Include="..\..\include\ioput\file\FileEventsIn.h" />

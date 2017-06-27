@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="5">
+    <info trained="false"/>
+	<register>
+		<load name="python"/>
+	</register>
+    <samples n_streams="1">
+		<item path="data\numbers_train"/>
+    </samples>   	
+    <model create="PythonModel" stream="0" option="dollar"/>
+</trainer>

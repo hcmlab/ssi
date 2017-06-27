@@ -191,7 +191,7 @@ namespace ssi {
 			for (ssi_size_t i = 0; i < n_tokens; i++)
 			{
 				ssi_char_t *full = ssi_fullpath(tokens[i]);
-				PyObject *pPath = PyUnicode_FromString(full);
+				PyObject *pPath = PyUnicode_DecodeLocale(full, NULL);
 
 				bool found = false;
 				PyObject *item;

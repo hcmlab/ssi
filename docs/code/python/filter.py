@@ -20,13 +20,13 @@ def getSampleTypeOut(type, types, opts, vars): # redundant
     return type
 
 
-def transform_enter(sin, sout, sxtra, board, opts, vars): # redundant
+def transform_enter(sin, sout, sxtras, board, opts, vars): # redundant
     pass
 
 
-def transform(info, sin, sout, sxtra, board, opts, vars):   
+def transform(info, sin, sout, sxtras, board, opts, vars):   
 
-    print('time = %d ms, frame = %d, delta = %d' % (info.time, info.frame, info.delta))
+    print('time = %f s, frame = %d, delta = %d' % (info.time, info.frame, info.delta))
     
     for n in range(sin.num):
         sout[n] = 0
@@ -34,5 +34,5 @@ def transform(info, sin, sout, sxtra, board, opts, vars):
             sout[n] += sin[n,d]
 
 
-def transform_flush(sin, sout, sxtra, board, opts, vars):  # redundant 
+def transform_flush(sin, sout, sxtras, board, opts, vars):  # redundant 
     pass

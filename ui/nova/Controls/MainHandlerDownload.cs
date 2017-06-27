@@ -1,43 +1,27 @@
-﻿using MongoDB.Bson;
-using Octokit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
-using System.Xml;
 using Tamir.SharpSsh;
 
 namespace ssi
 {
     public partial class MainHandler
     {
-
-        #region GENERAL
-
-        private int numberOfParallelDownloads = 0;
-        private List<long> downloadsReceived = new List<long>();
-        private List<long> downloadsTotal = new List<long>();
+        private int numberOfActiveParallelDownloads = 0;
         private List<string> filesToDownload = new List<string>();
-        private List<DownloadStatus> downloads = new List<DownloadStatus>();
-
+        private List<DownloadStatus> statusOfDownloads = new List<DownloadStatus>();
+        public static int NumberOfAllCurrentDownloads = 0;
 
         private void CanceledDownload(string localpath)
         {
-            foreach (DownloadStatus d in downloads)
+            foreach (DownloadStatus d in statusOfDownloads)
             {
                 if (d.active == true && d.File == localpath)
                 {
@@ -59,153 +43,140 @@ namespace ssi
                         filesToDownload.Remove(localpath.Trim('~'));
                     }
 
-                    numberOfParallelDownloads--;
+                    numberOfActiveParallelDownloads--;
                     break;
                 }
             }
 
+            Action EmptyDelegate = delegate () { };
+            control.ShadowBoxText.UpdateLayout();
+            control.ShadowBoxText.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+            control.ShadowBoxText.Text = "Loading Data";
             control.ShadowBox.Visibility = Visibility.Collapsed;
             control.shadowBoxCancelButton.Visibility = Visibility.Collapsed;
+            control.ShadowBox.UpdateLayout();
 
-            if (numberOfParallelDownloads <= 0)
+            if (numberOfActiveParallelDownloads <= 0)
             {
                 string[] files = new string[filesToDownload.Count];
-                for (int i = 0; i < filesToDownload.Count; i++)
+                int i = 0;
+                foreach (string path in filesToDownload)
                 {
-                    files[i] = filesToDownload[i];
+                    long length = new System.IO.FileInfo(path).Length;
+                    if (length == 0)
+                    {
+                        if (File.Exists(path)) File.Delete(path);
+                    }
+                    else
+                    {
+                        files[i] = path;
+                        i++;
+                    }
                 }
 
-                try
-                {
-                    if (files.Length > 0) loadMultipleFilesOrDirectory(files);
-                }
-                catch { }
-
+                loadMultipleFilesOrDirectory(files);
                 filesToDownload.Clear();
-                downloads.Clear();
+                statusOfDownloads.Clear();
                 tokenSource.Dispose();
                 tokenSource = new CancellationTokenSource();
             }
         }
 
-        private void updateOnTransfer(string text)
+        private void UpdateOnDownload(DownloadStatus status)
         {
-            string[] split = text.Split('#');
             control.ShadowBoxText.Text = "";
-            foreach (DownloadStatus d in downloads)
+            foreach (DownloadStatus d in statusOfDownloads)
             {
-                if (d.File == split[0])
-                {
-                    d.percent = split[1];
-                }
-
                 int pos = d.File.LastIndexOf("\\") + 1;
-                if (double.Parse(d.percent) < 99.0) control.ShadowBoxText.Text = control.ShadowBoxText.Text + "Downloading " + d.File.Substring(pos, d.File.Length - pos) + "  (" + d.percent + "%)\n";
+                if (status.percent < 99.0) control.ShadowBoxText.Text = control.ShadowBoxText.Text + "Downloading " + d.File.Substring(pos, d.File.Length - pos) + "  (" + d.percent.ToString("F2") + "%)\n";
                 else d.active = false;
             }
         }
 
-        private void clientDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void FinishedDownload(string filePath)
         {
-            string id_ = ((System.Net.WebClient)(sender)).QueryString["id"];
-            int id = Int32.Parse(id_);
+            NumberOfAllCurrentDownloads--;
+            numberOfActiveParallelDownloads--;
+            //remove empty files here, e.g. non existing ones.
+            statusOfDownloads.Remove(statusOfDownloads.Find(dl => dl.File == filePath));
 
-            string filename = ((System.Net.WebClient)(sender)).QueryString["file"];
-
-            numberOfParallelDownloads--;
-            if (numberOfParallelDownloads == 0)
+            if (numberOfActiveParallelDownloads <= 0 && NumberOfAllCurrentDownloads <= 0)
             {
                 Action EmptyDelegate = delegate () { };
-                control.navigator.Statusbar.Content = "© HCM-Lab, Augsburg University";
-                control.navigator.Statusbar.UpdateLayout();
-                control.navigator.Statusbar.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
                 control.ShadowBoxText.UpdateLayout();
                 control.ShadowBoxText.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
                 control.ShadowBoxText.Text = "Loading Data";
                 control.ShadowBox.Visibility = Visibility.Collapsed;
+                control.shadowBoxCancelButton.Visibility = Visibility.Collapsed;
                 control.ShadowBox.UpdateLayout();
-                downloadsReceived.Clear();
-                downloadsTotal.Clear();
+
                 string[] files = new string[filesToDownload.Count];
-                for (int i = 0; i < filesToDownload.Count; i++)
+                int i = 0;
+                foreach (string path in filesToDownload)
                 {
-                    files[i] = filesToDownload[i];
+                    long length = new System.IO.FileInfo(path).Length;
+                    if (length == 0)
+                    {
+                        if (File.Exists(path)) File.Delete(path);
+                    }
+                    else
+                    {
+                        files[i] = path;
+                        i++;
+                    }
                 }
-                loadMultipleFilesOrDirectory(files);
+
                 filesToDownload.Clear();
+                statusOfDownloads.Clear();
+                loadMultipleFilesOrDirectory(files);
             }
         }
 
-        private void clientDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            try
-            {
-                Action EmptyDelegate = delegate () { };
-
-                string filename = ((System.Net.WebClient)(sender)).QueryString["file"];
-                string id_ = ((System.Net.WebClient)(sender)).QueryString["id"];
-                int id = Int32.Parse(id_);
-
-                downloadsReceived[id] = e.BytesReceived;
-                downloadsTotal[id] = e.TotalBytesToReceive;
-
-                double bytesreceived = 0;
-                double bytestotal = 0;
-                for (int i = 0; i < downloadsTotal.Count; i++)
-
-                {
-                    bytesreceived = bytesreceived + downloadsReceived[i];
-                    bytestotal = bytestotal + downloadsTotal[i];
-                }
-
-                double percent = ((double)bytesreceived / (double)bytestotal) * 100.0;
-
-                control.navigator.Statusbar.Content = "Downloading " + lastDownloadFileName + "  (" + percent.ToString("F3") + "%)";
-                control.navigator.Statusbar.UpdateLayout();
-                control.navigator.Statusbar.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
-                control.ShadowBox.Visibility = Visibility.Visible;
-                control.ShadowBoxText.Text = "Downloading Files... Total progress: " + "  (" + percent.ToString("F2") + "%)";
-            }
-            catch (Exception ex)
-            {
-                MessageTools.Error(ex.ToString());
-            }
-        }
-
-        #endregion GENERAL
-
-        #region SFTP
-
-        private async Task SFTPDownloadFiles(string ftphost, string folder, string db, string sessionid, string fileName, string login, string password)
+        private async Task SFTP(string url, string localpath)
         {
             bool iscanceled = false;
-            string localfilepath = Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid + "\\";
+
+            string[] split = url.Split(':');
+            string[] split2 = split[1].Split(new char[] { '/' }, 4);
+            string ftphost = split2[2];
+            string fileName = split2[3].Substring(split2[3].LastIndexOf("/") + 1, (split2[3].Length - split2[3].LastIndexOf("/") - 1));
+            string folder = split2[3].Remove(split2[3].Length - fileName.Length);
+
+            string login = Properties.Settings.Default.DataServerLogin;
+            string password = Properties.Settings.Default.DataServerPass;
+
             lastDownloadFileName = fileName;
 
             string ftpfilepath = "/" + folder + fileName;
-            string localpath = localfilepath + fileName;
 
-            if (!localpath.EndsWith(".stream~")) filesToDownload.Add(localpath);
-            numberOfParallelDownloads++;
+            filesToDownload.Add(localpath);
+            numberOfActiveParallelDownloads++;
 
-            if (!File.Exists(localfilepath + fileName))
+            if (!File.Exists(localpath))
             {
                 DownloadStatus dl = new DownloadStatus();
                 dl.File = localpath;
-                dl.percent = "0.00";
+                dl.percent = 0.0;
                 dl.active = true;
-                downloads.Add(dl);
+                statusOfDownloads.Add(dl);
 
                 Sftp sftp = new Sftp(ftphost, login, password);
                 try
                 {
-                    sftp.OnTransferProgress += new FileTransferEvent(SFTPonTransferProgress);
-                    await control.Dispatcher.BeginInvoke(new Action<string>(SFTPConnect), DispatcherPriority.Normal, "");
-                    Console.WriteLine("Connecting...");
-                    sftp.Connect();
-                    Console.WriteLine("OK");
+                    sftp.OnTransferProgress += (src, dst, transferredBytes, totalBytes, message) =>
+                    {
+                        dl.percent = ((double)transferredBytes / (double)totalBytes) * 100.0;
+                        control.Dispatcher.BeginInvoke(new Action<DownloadStatus>(UpdateOnDownload), DispatcherPriority.Normal, dl);
+                    };
 
-                    Directory.CreateDirectory(Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid);
+                    Action EmptyDelegate = delegate () { };
+                    control.ShadowBoxText.Text = "Connecting to Server...";
+                    control.ShadowBox.Visibility = Visibility.Visible;
+                    control.shadowBoxCancelButton.Visibility = Visibility.Visible;
+                    control.UpdateLayout();
+                    control.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+                    sftp.Connect();
+
                     tokenSource = new CancellationTokenSource();
                     CancellationToken token = tokenSource.Token;
 
@@ -218,14 +189,11 @@ namespace ssi
                             {
                                 try
                                 {
-                                    Console.WriteLine("Downloading...");
-                                    sftp.Get(ftpfilepath, localfilepath);
-                                    Console.WriteLine("Disconnecting...");
+                                    sftp.Get(ftpfilepath, localpath);
                                     sftp.Close();
                                 }
                                 catch
                                 {
-                                    Console.WriteLine("Disconnecting on cancel..");
                                     sftp.Cancel();
                                     sftp.Close();
                                 }
@@ -233,84 +201,46 @@ namespace ssi
                         }
                     }, token);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Console.WriteLine(e.Message);
                     if (null != sftp && sftp.Connected)
                     {
                         sftp.Cancel();
                     }
-                    MessageBox.Show("Can't login to Data Server. Not authorized. Continuing without media.");
+                    MessageBox.Show("Can't login to data server, not authorized!");
                 }
             }
-            else { Console.WriteLine("File " + fileName + " already exists, skipping download"); }
 
-            if (!iscanceled) await control.Dispatcher.BeginInvoke(new Action<string>(SFTPUpdateOnTransferEnd), DispatcherPriority.Normal, "");
+            if (!iscanceled) await control.Dispatcher.BeginInvoke(new Action<string>(FinishedDownload), DispatcherPriority.Normal, localpath);
         }
 
-        private void SFTPConnect(string text)
+        private async Task httpPost(string URL, string localpath)
         {
-            control.ShadowBoxText.Text = "Connecting to Server...";
-            control.ShadowBox.Visibility = Visibility.Visible;
-            control.shadowBoxCancelButton.Visibility = Visibility.Visible;
-        }
+            string login = Properties.Settings.Default.DataServerLogin;
+            string password = Properties.Settings.Default.DataServerPass;
 
-        private void SFTPUpdateOnTransferEnd(string text)
-        {
-            numberOfParallelDownloads--;
-            if (numberOfParallelDownloads <= 0)
-            {
-                control.ShadowBox.Visibility = Visibility.Collapsed;
-                control.shadowBoxCancelButton.Visibility = Visibility.Collapsed;
-                numberOfParallelDownloads = 0;
-                string[] files2 = new string[filesToDownload.Count];
-                for (int i = 0; i < filesToDownload.Count; i++)
-                {
-                    files2[i] = filesToDownload[i];
-                }
-
-                if (files2.Length > 0) loadMultipleFilesOrDirectory(files2);
-                filesToDownload.Clear();
-                downloads.Clear();
-            }
-        }
-
-        private void SFTPonTransferProgress(string src, string dst, int transferredBytes, int totalBytes, string message)
-        {
-            double percent = ((double)transferredBytes / (double)totalBytes) * 100.0;
-            string param = dst + "#" + percent.ToString("F2");
-            control.Dispatcher.BeginInvoke(new Action<string>(updateOnTransfer), DispatcherPriority.Normal, param);
-        }
-
-        #endregion SFTP
-
-        #region HTTPPOST
-        private async Task httpPost(string URL, string filename, string db, string login, string password, string sessionid = "Default")
-        {
-            string fileName = filename;
+            string fileName = Path.GetFileName(localpath);
             if (fileName.EndsWith(".stream%7E"))
             {
                 fileName = fileName.Remove(fileName.Length - 3);
                 fileName = fileName + "~";
             }
 
-            string localpath = Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid + "\\" + filename;
-            numberOfParallelDownloads++;
-
-            if (!localpath.EndsWith(".stream~")) filesToDownload.Add(localpath);
+            numberOfActiveParallelDownloads++;
+            filesToDownload.Add(localpath);
 
             if (!File.Exists(localpath))
             {
                 DownloadStatus dl = new DownloadStatus();
                 dl.File = localpath;
-                dl.percent = "0.00";
+                dl.percent = 0.0;
                 dl.active = true;
-                downloads.Add(dl);
+                statusOfDownloads.Add(dl);
 
                 try
                 {
                     Action EmptyDelegate = delegate () { };
-                    control.ShadowBoxText.Text = "Downloading '" + filename + "'";
+                    control.ShadowBoxText.Text = "Downloading '" + fileName + "'";
                     control.ShadowBox.Visibility = Visibility.Visible;
                     control.shadowBoxCancelButton.Visibility = Visibility.Visible;
                     control.UpdateLayout();
@@ -323,7 +253,7 @@ namespace ssi
                     {
                         double percent = ((double)e.BytesReceived / (double)e.TotalBytesToReceive) * 100.0;
                         string param = localpath + "#" + percent.ToString("F2");
-                        control.Dispatcher.BeginInvoke(new Action<string>(updateOnTransfer), DispatcherPriority.Normal, param);
+                        control.Dispatcher.BeginInvoke(new Action<DownloadStatus>(UpdateOnDownload), DispatcherPriority.Normal, dl);
                     };
 
                     client.UploadValuesCompleted += (s, e) =>
@@ -332,16 +262,15 @@ namespace ssi
                         {
                             byte[] response = e.Result;
                             File.WriteAllBytes(localpath, response);
-                            control.Dispatcher.BeginInvoke(new Action<string>(httpPostFinished), DispatcherPriority.Normal, "");
+                            control.Dispatcher.BeginInvoke(new Action<string>(FinishedDownload), DispatcherPriority.Normal, localpath);
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             //Could happen when we cancel the download.
                         }
                     };
 
-                    Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", filename, URL);
-                    Directory.CreateDirectory(Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid);
+                    Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, URL);
 
                     tokenSource = new CancellationTokenSource();
                     CancellationToken token = tokenSource.Token;
@@ -349,14 +278,16 @@ namespace ssi
                     await Task.Run(() =>
                     {
                         token.Register(() => { client.CancelAsync(); CanceledDownload(localpath); return; });
-                        string resultString = Regex.Match(sessionid, @"\d+").Value;
+
                         //Here we assume that the session is stored as simple ID. (as it is done in the Noxi Database). If the SessionID really is a string, this step is not needed.
+                        string resultString = Regex.Match(DatabaseHandler.SessionName, @"\d+").Value;
                         int sid = Int32.Parse(resultString);
+
                         var values = new NameValueCollection();
                         values.Add("username", login);
                         values.Add("password", password);
                         values.Add("session_id", sid.ToString());
-                        values.Add("filename", filename);
+                        values.Add("filename", fileName);
 
                         Uri url = new Uri(URL);
                         client.UploadValuesAsync(url, values);
@@ -367,77 +298,74 @@ namespace ssi
                     MessageTools.Error(ex.ToString());
                 }
             }
-            else await control.Dispatcher.BeginInvoke(new Action<string>(httpPostFinished), DispatcherPriority.Normal, "");
+            else await control.Dispatcher.BeginInvoke(new Action<string>(FinishedDownload), DispatcherPriority.Normal, "");
         }
 
-        private void httpPostFinished(string param)
+        private async Task httpGet(string URL, string localpath)
         {
-            numberOfParallelDownloads--;
-            if (numberOfParallelDownloads <= 0)
-            {
-                Action EmptyDelegate = delegate () { };
-                control.ShadowBoxText.UpdateLayout();
-                control.ShadowBoxText.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
-                control.ShadowBoxText.Text = "Loading Data";
-                control.ShadowBox.Visibility = Visibility.Collapsed;
-                control.shadowBoxCancelButton.Visibility = Visibility.Collapsed;
-                control.ShadowBox.UpdateLayout();
-
-                string[] files = new string[filesToDownload.Count];
-                for (int i = 0; i < filesToDownload.Count; i++)
-                {
-                    files[i] = filesToDownload[i];
-                }
-
-                filesToDownload.Clear();
-                downloads.Clear();
-                loadMultipleFilesOrDirectory(files);
-            }
-        }
-
-        #endregion HTTPPOST
-
-        #region HTTPGET
-
-        private void httpGet(string URL, string db, string sessionid = "Default", string filename = "")
-        {
-            string fileName = filename;
+            string fileName = Path.GetFileName(localpath);
             if (fileName.EndsWith(".stream%7E"))
             {
                 fileName = fileName.Remove(fileName.Length - 3);
                 fileName = fileName + "~";
             }
 
-            string localpath = Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid + "\\" + fileName;
+            filesToDownload.Add(localpath);
+            numberOfActiveParallelDownloads++;
 
             if (!File.Exists(localpath))
             {
+                DownloadStatus dl = new DownloadStatus();
+                dl.File = localpath;
+                dl.percent = 0.0;
+                dl.active = true;
+                statusOfDownloads.Add(dl);
+
                 try
                 {
+                    Action EmptyDelegate = delegate () { };
+                    control.ShadowBoxText.Text = "Downloading '" + fileName + "'";
+                    control.ShadowBox.Visibility = Visibility.Visible;
+                    control.shadowBoxCancelButton.Visibility = Visibility.Visible;
+                    control.UpdateLayout();
+                    control.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+                    // Create a new WebClient instance.
+
                     WebClient client = new WebClient();
 
-                    client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(clientDownloadProgressChanged);
-                    client.DownloadFileCompleted += clientDownloadFileCompleted;
-                    client.QueryString.Add("file", localpath);
-                    client.QueryString.Add("id", numberOfParallelDownloads.ToString());
-                    downloadsTotal.Add(0);
-                    downloadsReceived.Add(0);
+                    client.DownloadProgressChanged += (s, e) =>
+                    {
+                        dl.percent = ((double)e.BytesReceived / (double)e.TotalBytesToReceive) * 100.0;
+                        control.Dispatcher.BeginInvoke(new Action<DownloadStatus>(UpdateOnDownload), DispatcherPriority.Normal, dl);
+                    };
 
-                    if (!localpath.EndsWith(".stream~")) filesToDownload.Add(localpath);
-                    numberOfParallelDownloads++;
-                    Directory.CreateDirectory(Properties.Settings.Default.DatabaseDirectory + "\\" + db + "\\" + sessionid);
-                    client.DownloadFileAsync(new Uri(URL), Properties.Settings.Default.DatabaseDirectory + "\\" + db + " \\" + sessionid + "\\" + fileName);
+                    client.DownloadFileCompleted += (s, e) =>
+                    {
+                        try
+                        {
+                            control.Dispatcher.BeginInvoke(new Action<string>(FinishedDownload), DispatcherPriority.Normal, localpath);
+                        }
+                        catch
+                        {
+                            //Could happen when we cancel the download.
+                        }
+                    };
+
+                    tokenSource = new CancellationTokenSource();
+                    CancellationToken token = tokenSource.Token;
+
+                    await Task.Run(() =>
+                    {
+                        token.Register(() => { client.CancelAsync(); CanceledDownload(localpath); return; });
+                        client.DownloadFileAsync(new Uri(URL), localpath);
+                    }, token);
                 }
                 catch (Exception ex)
                 {
                     MessageTools.Error(ex.ToString());
-
                 }
             }
-            else if (!localpath.EndsWith(".stream~") && !localpath.EndsWith(".stream%7E")) loadFile(localpath);
+            else await control.Dispatcher.BeginInvoke(new Action<string>(FinishedDownload), DispatcherPriority.Normal, "");
         }
-
-        #endregion HTTPGET
- 
     }
 }

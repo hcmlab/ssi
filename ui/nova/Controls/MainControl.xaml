@@ -4,7 +4,8 @@
     xmlns:local="clr-namespace:ssi"
     Width="Auto"
     Height="Auto"
-    Loaded="ControlLoaded">
+    Loaded="ControlLoaded"
+    Background="White" >
 
     <Grid>
 
@@ -13,56 +14,62 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="Transparent">
-            <MenuItem Header="File">
-                <MenuItem Header="Load" Name="loadMenu" />
-                <MenuItem Header="Save Project" Name="saveProjectMenu" />
-                <MenuItem Header="Save All" Name="saveSessionMenu" />
+        <Menu Grid.Row="0" Background="Transparent" Name="menu">
+            <Button Name="showSettingsMenu" Background="Transparent" BorderBrush="Transparent">
+                <Image Source="/Resources/settings.png" Width="16"></Image>
+            </Button>
+            <MenuItem Header="FILE">
+                <MenuItem Header="Load Files (add to workspace)" Name="loadFilesMenu" />
+                <MenuItem Header="Load Project (clear workspace)" Name="fileLoadProjectMenu" />
+                <MenuItem Header="Save Project" Name="fileSaveProjectMenu" />
                 <MenuItem Header="Export">
-                    <MenuItem Header="SSI SampleList" Name="exportSamplesMenu" />
-                    <MenuItem Header="Sampled Annotations" Name="exportAnnoToFrameWiseMenu" />
-                </MenuItem>
-                <MenuItem Header="Settings" Name="showSettingsMenu" />
-                <MenuItem Header="Clear" Name="clearSessionMenu" />
-            </MenuItem>
-            <MenuItem Header="Tier" Name="tierMenu">
-                <MenuItem Header="Save selected tier" Name="saveAnnoMenu" IsEnabled="False" />
-                <MenuItem Header="Save selected tier as" Name="saveAnnoMenuAs" IsEnabled="False" />
-                <MenuItem Header="Convert to discrete" Name="convertAnnoContinuousToDiscreteMenu" IsEnabled="False" />
-                <MenuItem Header="Convert to stream" Name="convertAnnoToSignalMenu" IsEnabled="False" />
-                <MenuItem Header="Export" Name="exportMenu">
-                    <MenuItem Header="Export to CSV" Name="exportAnnoToCSVMenu" IsEnabled="True" />
-                    <MenuItem Header="Export to XPS" Name="exportTierToXPSMenu" IsEnabled="True" />
-                    <MenuItem Header="Export to PNG" Name="exportTierToPNGMenu" IsEnabled="True" />
+                    <MenuItem Header="To SSI Sample List" Name="exportSamplesMenu" />
+                    <MenuItem Header="To GeNIe Data Sheet" Name="exportToGenie" />
+                    <MenuItem Header="Selected Annotation" Name="exportSelectedTierMenu">
+                        <MenuItem Header="To CSV" Name="exportAnnoToCSVMenu" />
+                        <MenuItem Header="To XPS" Name="exportTierToXPSMenu" />
+                        <MenuItem Header="To PNG" Name="exportTierToPNGMenu" />
+                    </MenuItem>
+                    <MenuItem Header="Selected Signal" Name="exportSelectedTrackMenu">
+                        <MenuItem Header="To XPS" Name="exportSignalToXPSMenu" />
+                        <MenuItem Header="To PNG" Name="exportSignalToPNGMenu"/>
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Signal">
-                <!--<MenuItem Header="Calculate Praat features" Name="calculatepraat" />-->
-                <MenuItem Header="Convert to Continuous Tier" Name="exportAnnoDiscreteToContinuouMenu" />
-                <MenuItem Header="Export" Name="exports">
-                    <MenuItem Header="Export to XPS" Name="exportSignalToXPSMenu" IsEnabled="True" />
-                    <MenuItem Header="Export to PNG" Name="exportSignalToPNGMenu" IsEnabled="True" />
+            <MenuItem Header="DATABASE">
+                <MenuItem Header="Load Session (clear workspace)" Name="databaseLoadSessionMenu" />
+                <MenuItem Header="Administration" Name="databaseAdminMenu">
+                    <MenuItem Header="Manage Users" Name="databaseManageUsersMenu" />
+                    <MenuItem Header="Manage Databases" Name="databaseManageDBsMenu" />
+                    <MenuItem Header="Manage Sessions" Name="databaseManageSessionsMenu" />
+                    <MenuItem Header="Manage Annotations" Name="databaseManageAnnotationsMenu" />
+                </MenuItem>
+                <MenuItem Header="Connect" Name="databaseConnectMenu" />
+            </MenuItem>
+            <MenuItem Header="ANNOTATION">
+                <MenuItem Header="Save All" Name="annoSaveAllMenu" />
+                <MenuItem Header="Save Selected" Name="annoSaveMenu" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Export Selected As" Name="annoExportMenu" />
+                <MenuItem Header="Convert Selected Annotation" Name="convertSelectedTierMenu">
+                    <MenuItem Header="To Discrete Annotation" Name="convertAnnoContinuousToDiscreteMenu" />
+                    <MenuItem Header="To Signal" Name="convertAnnoToSignalMenu" />
+                </MenuItem>
+                <MenuItem Header="Convert Selected Signal">
+                    <MenuItem Header="To Continuous Annotation" Name="convertSignalToAnnoContinuousMenu" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Database">
-                <!--<MenuItem Header="Calculate Praat features" Name="calculatepraat" />-->
-                <MenuItem Header="Load Session" Name="databaseLoadSessionMenu" />
-                <MenuItem Header="Store Session" Name="databaseSaveSessionMenu" IsEnabled="False" />
-                <MenuItem Header="Store Session and mark as finished" Name="databaseSaveSessionAndMarkAsFinishedMenu" IsEnabled="False" />
-                <MenuItem Header="Cooperative Learning" Visibility="Visible">
-                    <MenuItem Header="Merge Annotations" Name="databaseCMLMergeMenu" IsEnabled="False" Visibility="Collapsed" />
-                    <MenuItem Header="Complete Session" Name="databaseCMLCompleteStepMenu" IsEnabled="False" />
-                    <MenuItem Header="Extract MFCCS for all Sessions" Name="databaseCMLExtractFeaturesMenu" IsEnabled="False"></MenuItem>
-                    <MenuItem Header="Train and Label Multiple Sessions" Name="databaseCMLTransferStepMenu"  Visibility="Collapsed"    IsEnabled="False" />
-                </MenuItem>
-                <MenuItem Header="Show Download Directory" Name="databaseShowDownloadDirectoryMenu" />
-                <MenuItem Header="Change Download Directory" Name="databaseChangeDownloadDirectoryMenu" />
-                <MenuItem Header="Admin: Manage Database" Visibility="Collapsed" Name="databaseManageMenu" />
-                <!--<MenuItem Header="Test Media to database " Name="mongodbmenu3" />-->
+            <MenuItem Header="LEARNING" Name="databaseCMLMenu">
+                <MenuItem Header="Merge Annotations" Name="databaseCMLMergeMenu" />
+                <MenuItem Header="Extract Features" Name="databaseCMLExtractFeaturesMenu"/>
+                <MenuItem Header="Train Models" Name="databaseCMLTrainMenu"/>
+                <MenuItem Header="Predict Annotations" Name="databaseCMLPredictMenu"/>
+                <MenuItem Header="Complete Current Annotation" Name="databaseCMLCompleteStepMenu"/>
             </MenuItem>
             <MenuItem Header="?">
                 <MenuItem Header="Shortcuts"  Name="helpMenu" />
-                <MenuItem Header="Check for Update" Name="updateApplicationMenu" />
+                <MenuItem Header="Update CML Tools" Name="updateCMLMenu" />
+                <MenuItem Header="Check For Update" Name="updateApplicationMenu" />
+                
             </MenuItem>
 
         </Menu>
@@ -75,32 +82,40 @@
               Name="viewGrid">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" 
+            <Grid Grid.Column="0" 
                     Grid.Row="0">
-                <local:GeometricListControl x:Name="geometricListControl" Visibility="Collapsed"></local:GeometricListControl>
 
-            </Border>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" 
+                <Border Grid.Column="0" 
+                    Grid.Row="0">
+                    <local:GeometricListControl x:Name="geometricListControl"></local:GeometricListControl>
+                </Border>
+
+                <Border Grid.Column="0" 
                     Grid.Row="1">
-                <local:AnnoListControl x:Name="annoListControl"></local:AnnoListControl>
-            </Border>
+                    <local:AnnoListControl x:Name="annoListControl"></local:AnnoListControl>
+                </Border>
+
+            </Grid>
+
 
             <GridSplitter 
                 ResizeDirection="Columns"
                 Grid.Column="1"
                 Grid.Row="0" 
-                Grid.RowSpan="2"
                 Height="Auto"
                 Width="6"
                 HorizontalAlignment="Stretch" 
@@ -109,8 +124,7 @@
             </GridSplitter>
 
             <Grid Grid.Column="2"
-                  Grid.Row="0"
-                  Grid.RowSpan="2">
+                  Grid.Row="0">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -351,7 +365,7 @@
                                                 BorderThickness="0">
                                             <Image Source="/Resources/settings.png" Width="16"></Image>
                                         </Button>
-                                        <TextBlock Name="annoStatusFileNameOrSessionLabel" TextTrimming="WordEllipsis"></TextBlock>
+                                        <TextBlock Name="annoStatusFileNameOrOIDLabel" TextTrimming="WordEllipsis"></TextBlock>
                                         <Separator />
                                         <TextBlock Name="annoStatusSchemeNameLabel" ToolTip="Name of the scheme" TextTrimming="WordEllipsis"></TextBlock>
                                         <Separator />
@@ -374,11 +388,12 @@
                                     <StackPanel Grid.Row="0"
                                                 Grid.Column="1"
                                                 Orientation="Horizontal"
-                                                HorizontalAlignment="Right"
-                                                Name="annorightMenu">
-                                        <CheckBox x:Name="annoContinuousMode" Style="{DynamicResource OrangeSwitchStyle}" 
-                                                  ToolTip="Continuous Annotation Mode" 
-                                                  Visibility="Collapsed"/>
+                                                HorizontalAlignment="Right">
+                                        <Label Name="annoContinuousModeDeactiveMouseLabel" Visibility="Hidden">Deactive Mouse</Label>
+                                        <CheckBox Name="annoContinuousModeDeactiveMouse"  Visibility="Hidden"></CheckBox>
+                                        <CheckBox x:Name="annoContinuousModeCheckBox" Style="{DynamicResource OrangeSwitchStyle}" 
+                                                  ToolTip="Continuous Annotation Mode. Shortcut: M" 
+                                                  Visibility="Hidden"/>
                                         <Separator Width="20" Visibility="Hidden"></Separator>
                                         <TextBlock x:Name="annoPositionLabel" 
                                     		VerticalAlignment="Center" 
@@ -421,7 +436,7 @@
 
             </Grid>
 
-            <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3">
+            <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
                 <local:NavigatorControl x:Name="navigator"></local:NavigatorControl>
             </Border>
 
@@ -434,6 +449,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
+            
         </Grid>
     </Grid>
 
@@ -476,7 +492,7 @@
                         <DockPanel x:Name="dockPanel">
                             <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True" VerticalAlignment="Center" />
                             <Grid>
-                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="3" Height="27" Width="94">
+                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="3" Height="20" Width="94">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                             <GradientStop Color="#FFB5B5B5" Offset="0" />
@@ -495,7 +511,7 @@
                                         <Line x:Name="On" X1="0" Y1="0" X2="0" Y2="14" Stroke="#FF7A7A7A" StrokeThickness="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Grid>
                                 </Border>
-                                <Border BorderBrush="#FF939393" HorizontalAlignment="Left" x:Name="slider" Width="41" Height="27" BorderThickness="1" CornerRadius="3" RenderTransformOrigin="0.5,0.5" Margin="0">
+                                <Border BorderBrush="#FF939393" HorizontalAlignment="Left" x:Name="slider" Width="41" Height="20" BorderThickness="1" CornerRadius="3" RenderTransformOrigin="0.5,0.5" Margin="0">
                                     <Border.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform ScaleX="1" ScaleY="1" />

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<samples ssi-v="3">
+    <info ftype="BINARY" size="50" missing="false" garbage="0" />
+    <streams>
+        <item path="numbers_train.samples.#0" />
+    </streams>
+    <classes>
+        <item name="0" size="5" />
+        <item name="1" size="5" />
+        <item name="2" size="5" />
+        <item name="3" size="5" />
+        <item name="4" size="5" />
+        <item name="5" size="5" />
+        <item name="6" size="5" />
+        <item name="7" size="5" />
+        <item name="8" size="5" />
+        <item name="9" size="5" />
+    </classes>
+    <users>
+        <item name="user" size="50" />
+    </users>
+</samples>

@@ -36,7 +36,7 @@
 	containing the sample data (here in ascii format since type is set to 1).
 	
 	-->
-	<consumer create="FileWriter" path="cursor" type="1" stream="false" delim=";">
+	<consumer create="FileWriter" path="cursor" type="1" stream="true" delim=";">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
 	

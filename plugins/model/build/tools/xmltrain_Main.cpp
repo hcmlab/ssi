@@ -46,7 +46,11 @@ int main (int argc, char **argv) {
 	char info[1024];
 	ssi_sprint (info, "\n%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL("ssimodel.dll");
+#if !_DEBUG && defined _MSC_VER && _MSC_VER == 1900	
+	const ssi_char_t *default_source = "https://github.com/hcmlab/ssi/raw/master/bin/x64/vc140";
+#else
+	const ssi_char_t *default_source = "";
+#endif
 
 	//**** READ COMMAND LINE ****//
 
@@ -54,9 +58,10 @@ int main (int argc, char **argv) {
 	cmd.info (info);
 
 	ssi_char_t *inpath = 0;
-	ssi_char_t *outpath = 0;
+	ssi_char_t *outpath = 0;	
 	ssi_char_t *tset = 0;
 	ssi_char_t *dlls = 0;
+	ssi_char_t *srcurl = 0;
 	ssi_char_t *log = 0;
 	ssi_char_t **tokens = 0;
 	int eval = -1;
@@ -69,7 +74,8 @@ int main (int argc, char **argv) {
 	cmd.addText("\nOptions:");
 	cmd.addSCmdOption("-out", &outpath, "", "use a different path to save trainer after training");
 	cmd.addBCmdOption("-overwrite", &overwrite, "", "overwrite existing model");
-	cmd.addSCmdOption("-dlls", &dlls, "", "list of requird dlls separated by ';'");
+	cmd.addSCmdOption("-dlls", &dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
+	cmd.addSCmdOption("-url", &srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addICmdOption("-eval", &eval, -1, "set an evaluation (will not output trainer)\n\t\t\t0=KFOLD (see -kfolds)\n\t\t\t1=LOO (Leave-one-sample-out)\n\t\t\t2=LOUO (Leave-one-user-out)\n\t\t\t3=TEST (Use test set, see -tset)\n\t\t\t4=ContLOUO (continuous LOUO)");
 	cmd.addICmdOption("-kfolds", &kfolds, 2, "set number of folds for KFOLD evaluation");
 	cmd.addSCmdOption("-tset", &tset, "", "set sample file for TEST evaluation (if multiple files separate by ';')");
@@ -77,6 +83,28 @@ int main (int argc, char **argv) {
 	
 	if (cmd.read (argc, argv)) 
 	{		
+		ssi_print("%s", info);
+
+		// set directories
+		FilePath exepath_fp(argv[0]);
+		ssi_char_t workdir[SSI_MAX_CHAR];
+		ssi_getcwd(SSI_MAX_CHAR, workdir);
+		ssi_char_t exedir[SSI_MAX_CHAR];
+		if (exepath_fp.isRelative()) {
+#if _WIN32|_WIN64
+			ssi_sprint(exedir, "%s\\%s", workdir, exepath_fp.getDir());
+#else
+			ssi_sprint(exedir, "%s/%s", workdir, exepath_fp.getDir());
+#endif
+		}
+		else {
+			strcpy(exedir, exepath_fp.getDir());
+		}
+		ssi_print("download source=%s\ndownload target=%s\n\n", srcurl, exedir);
+		Factory::SetDownloadDirs(srcurl, exedir);
+
+		// register model dll
+		Factory::RegisterDLL("model");
 
 		if (log[0] != '\0') 
 		{

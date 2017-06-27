@@ -44,6 +44,7 @@ ISMissingData::ISMissingData (ISamples *samples)
 	_n_samples_per_class (0) {
 
 	_sample_map = new ssi_size_t[_samples.getSize ()];
+	setStream(0);
 }
 
 ISMissingData::~ISMissingData () {
