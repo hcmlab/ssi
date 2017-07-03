@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <samples ssi-v="3">
-    <info ftype="BINARY" size="50" missing="false" garbage="0" />
+    <info ftype="ASCII" size="50" missing="false" garbage="0" />
     <streams>
         <item path="numbers_train.samples.#0" />
     </streams>
