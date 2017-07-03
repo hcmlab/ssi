@@ -300,6 +300,22 @@ int main (int argc, char **argv) {
 		}
 		ssi_print("download source=%s\ndownload target=%s\n\n", params.srcurl, exedir);
 		Factory::SetDownloadDirs(params.srcurl, exedir);
+		
+		if (params.srcurl[0] != '\0')
+		{
+			ssi_char_t *depend[2] = { "libbson-1.0.dll", "libmongoc-1.0.dll" };
+			for (ssi_size_t i = 0; i < 2; i++)
+			{
+				ssi_char_t *dlldst = ssi_strcat(exedir, "\\", depend[i]);
+				ssi_char_t *dllsrc = ssi_strcat(params.srcurl, "\\", depend[i]);
+				if (!ssi_exists(dlldst))
+				{
+					WebTools::DownloadFile(dllsrc, dlldst);
+				}
+				delete[] dlldst;
+				delete[] dllsrc;
+			}
+		}
 
 		if (params.logpath && params.logpath[0] != '\0') {
 			ssimsg = new FileMessage(params.logpath);
