@@ -45,10 +45,10 @@ struct params_t {
 	ssi_char_t *exepath;
 	ssi_char_t *filepath;
 	ssi_char_t *debug_path;
+	ssi_char_t *debug_socket;
 	ssi_char_t *config_paths;
 	ssi_char_t *srcurl;
 	bool init_only;
-	bool debug_to_file;
 	bool save_pipe;
 	bool init;
 	bool export_dlls;
@@ -156,7 +156,6 @@ bool Parse_and_Run(int argc, char **argv)
 	params.config_paths = 0;
 	params.srcurl = 0;
 	params.init_only = false;
-	params.debug_to_file = false;
 	params.export_dlls = false;
 	params.show_close_button = false;
 	params.save_pipe = false;
@@ -169,9 +168,10 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.addSCmdOption("-config", &params.config_paths, "", "paths to global config files (seperated by ;) []");
 	cmd.addBCmdOption("-save", &params.save_pipe, false, "save pipeline after applying config files [false]");
 	cmd.addBCmdOption("-init", &params.init_only, false, "only initialize pipepline [false]");
-	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
-	cmd.addBCmdOption("-dbg2file", &params.debug_to_file, false, "debug to file [false] (deprecated, use -debug instead)");
-	cmd.addSCmdOption("-debug", &params.debug_path, "", "debug to a file or stream to an udp socket (<host>:<port>) [""]");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");	
+	cmd.addSCmdOption("-log", &params.debug_path, "", "debug to a file [""]");
+	cmd.addSCmdOption("-debug", &params.debug_path, "", "debug to a file [""] (deprecated use 'log')");
+	cmd.addSCmdOption("-log2socket", &params.debug_socket, "", "debug to an udp socket (<host>:<port>) [""]");
 	cmd.addBCmdOption("-export", &params.export_dlls, false, "copy registered dlls to working directory [false]");
 	cmd.addBCmdOption("-closebut", &params.show_close_button, false, "enable close button in menu of console [false]");
 	cmd.addBCmdOption("-quickedit", &params.enable_quick_edit, false, "enable quick edit mode [false]");
@@ -181,11 +181,11 @@ bool Parse_and_Run(int argc, char **argv)
 		return false;
 	}
 
-	if (params.debug_to_file)
-	{
-		ssi_log_file_begin("ssi_dbg.txt");
-	}
 	if (params.debug_path[0] != '\0')
+	{
+		ssimsg = new FileMessage(params.debug_path);
+	}
+	else if (params.debug_socket[0] != '\0')
 	{
 		ssi_size_t n = ssi_split_string_count(params.debug_path, ':');
 		if (n > 1) {
@@ -198,9 +198,6 @@ bool Parse_and_Run(int argc, char **argv)
 				delete[] tokens[i];
 			}
 			delete[] tokens;
-		}
-		else {
-			ssimsg = new FileMessage(params.debug_path);
 		}
 	}
 
@@ -215,11 +212,7 @@ bool Parse_and_Run(int argc, char **argv)
 		Run(argv[0], params);
 	}
 
-	if (params.debug_to_file)
-	{
-		ssi_log_file_end();
-	}
-	if (params.debug_path[0] != '\0') {
+	if (params.debug_path[0] != '\0' || params.debug_socket[0] != '\0') {
 		delete ssimsg;
 		ssimsg = 0;
 	}
@@ -227,6 +220,7 @@ bool Parse_and_Run(int argc, char **argv)
 	delete[] params.filepath;
 	delete[] params.config_paths;
 	delete[] params.debug_path;
+	delete[] params.debug_socket;
 	delete[] params.srcurl;
 
 	return true;

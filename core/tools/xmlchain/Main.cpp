@@ -103,7 +103,7 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.addSCmdOption("-left", &params.left, "0", "set left context (see frame)");
 	cmd.addSCmdOption("-right", &params.right, "0", "set right context (see frame)");
 	cmd.addSCmdOption("-url", &params.srcUrl, default_source, "override default url for downloading missing dlls and dependencies");
-	cmd.addSCmdOption("-debug", &params.debugPath, "", "debug to a file or stream to an udp socket (<host>:<port>) [""]");
+	cmd.addSCmdOption("-log", &params.debugPath, "", "debug to a file [""]");
 
 	if (!cmd.read(argc, argv))
 	{
@@ -112,21 +112,7 @@ bool Parse_and_Run(int argc, char **argv)
 
 	if (params.debugPath[0] != '\0')
 	{
-		ssi_size_t n = ssi_split_string_count(params.debugPath, ':');
-		if (n > 1) {
-			ssi_char_t **tokens = new ssi_char_t *[n];
-			ssi_split_string(n, tokens, params.debugPath, ':');
-			ssi_size_t port = 0;
-			sscanf(tokens[1], "%u", &port);
-			ssimsg = new SocketMessage(Socket::UDP, port, tokens[0]);
-			for (ssi_size_t i = 0; i < n; i++) {
-				delete[] tokens[i];
-			}
-			delete[] tokens;
-		}
-		else {
-			ssimsg = new FileMessage(params.debugPath);
-		}
+		ssimsg = new FileMessage(params.debugPath);
 	}
 
 	ssi_print("%s", info);

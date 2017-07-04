@@ -25,7 +25,7 @@ namespace ssi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MongoDBUser")]
+        [global::System.Configuration.DefaultSettingValueAttribute("login")]
         public string MongoDBUser {
             get {
                 return ((string)(this["MongoDBUser"]));
@@ -37,7 +37,7 @@ namespace ssi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MongoDBPass")]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
         public string MongoDBPass {
             get {
                 return ((string)(this["MongoDBPass"]));
@@ -121,7 +121,7 @@ namespace ssi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("137.250.171.233:37317")]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost:27017")]
         public string DatabaseAddress {
             get {
                 return ((string)(this["DatabaseAddress"]));
@@ -181,7 +181,7 @@ namespace ssi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Unknown")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Annotator")]
         public string Annotator {
             get {
                 return ((string)(this["Annotator"]));
@@ -434,12 +434,12 @@ namespace ssi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ContinuousDeactiveMouse {
+        public bool LiveModeActivateMouse {
             get {
-                return ((bool)(this["ContinuousDeactiveMouse"]));
+                return ((bool)(this["LiveModeActivateMouse"]));
             }
             set {
-                this["ContinuousDeactiveMouse"] = value;
+                this["LiveModeActivateMouse"] = value;
             }
         }
         

@@ -19,6 +19,11 @@ namespace ssi
             bool hasBox = box != null;
             bool isConnected = DatabaseHandler.IsConnected;
             bool isConnectedAndHasSession = isConnected && DatabaseHandler.IsSession;
+            bool hasDatabaseTier = false;
+            if (isConnectedAndHasSession && hasTier && tier.AnnoList.Source.HasDatabase)
+            {
+                hasDatabaseTier = true;
+            }
             int authentication = DatabaseHandler.CheckAuthentication();
 
             // file
@@ -47,11 +52,13 @@ namespace ssi
 
             control.annoSaveAllMenu.IsEnabled = hasTier;
             control.annoSaveMenu.IsEnabled = hasTier;
+            control.annoReloadMenu.IsEnabled = hasTier;
+            control.annoReloadBackupMenu.IsEnabled = hasDatabaseTier;
             control.annoExportMenu.IsEnabled = hasTier;
             control.convertSelectedTierMenu.IsEnabled = hasTier;
             control.convertAnnoContinuousToDiscreteMenu.IsEnabled = hasTier && tier.IsContinuous;
             control.convertAnnoToSignalMenu.IsEnabled = hasTier && tier.IsContinuous;
-            control.convertSignalToAnnoContinuousMenu.IsEnabled = hasTrack;
+            control.convertSignalMenu.IsEnabled = hasTrack;
         }
 
         private void tierMenu_MouseEnter(object sender, RoutedEventArgs e)
@@ -59,7 +66,12 @@ namespace ssi
             updateMenu();
         }
 
-        private void helpMenu_Click(object sender, RoutedEventArgs e)
+        private void helpDocumentationMenu_Click(object sender, RoutedEventArgs e)
+        {            
+            System.Diagnostics.Process.Start("https://rawgit.com/hcmlab/nova/master/docs/index.html");
+        }
+
+        private void helpShortcutsMenu_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Shortcuts:\n\nalt + return to enter fullscreen, esc to close fullscreen\nleftctrl for continuous anno mode, again to close\nalt+click or W on discrete anno to change label/color\nDel on Anno to delete Anno, on tier to delete tier\nalt + right/left to move signalmarker framewise\nshift + alt + right/left to move annomarker framewise\nQ to move signalmarker to start and annomarker to end of selected Segment\nE move annomarker to start and signalmarker to end of selected Segment\na for new Anno between boths markers\nSpace Play/Pause media ", "Quick Reference");
         }

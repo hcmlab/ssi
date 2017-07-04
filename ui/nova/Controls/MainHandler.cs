@@ -13,7 +13,7 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "0.9.9.9.5";
+        public static string BuildVersion = "0.9.9.9.6";
         public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
 
 
@@ -50,12 +50,12 @@ namespace ssi
         public Cursor signalCursor = null;
         public Cursor annoCursor = null;
 
-        private List<SignalTrack> signalTracks = new List<SignalTrack>();
-        private List<Signal> signals = new List<Signal>();
-        private List<AnnoTier> annoTiers = new List<AnnoTier>();
-        private List<AnnoList> annoLists = new List<AnnoList>();
-        private MediaList mediaList = new MediaList();
-        private List<MediaBox> mediaBoxes = new List<MediaBox>();
+        public static List<SignalTrack> signalTracks = new List<SignalTrack>();
+        public static List<Signal> signals = new List<Signal>();
+        public static List<AnnoTier> annoTiers = new List<AnnoTier>();
+        public static List<AnnoList> annoLists = new List<AnnoList>();
+        public static MediaList mediaList = new MediaList();
+        public static List<MediaBox> mediaBoxes = new List<MediaBox>();
 
         private bool playIsPlaying = false;
         private double playSampleRate = Defaults.DefaultSampleRate;
@@ -137,11 +137,11 @@ namespace ssi
             AnnoTierStatic.OnTierSegmentChange += changeAnnoTierSegmentHandler;
             control.annoTierControl.MouseDown += annoTierControl_MouseDown;
             control.annoTierControl.MouseMove += annoTierControl_MouseMove;
-            control.annoTierControl.MouseRightButtonUp += annoTierControl_MouseRightButtonUp;
-            control.annoContinuousModeCheckBox.Checked += annoContinuousMode_Changed;
-            control.annoContinuousModeCheckBox.Unchecked += annoContinuousMode_Changed;
-            control.annoContinuousModeDeactiveMouse.Checked += annoContinuousModeDeactiveMouse_Checked;
-            control.annoContinuousModeDeactiveMouse.Unchecked += annoContinuousModeDeactiveMouse_Unchecked;
+            control.annoTierControl.MouseUp += annoTierControl_MouseRightButtonUp;
+            control.annoLiveModeCheckBox.Checked += annoLiveMode_Changed;
+            control.annoLiveModeCheckBox.Unchecked += annoLiveMode_Changed;
+            control.annoLiveModeActivateMouse.Checked += annoLiveModeActiveMouse_Checked;
+            control.annoLiveModeActivateMouse.Unchecked += annoLiveModeActiveMouse_Unchecked;
 
             // Geometric
 
@@ -159,6 +159,8 @@ namespace ssi
             control.menu.MouseEnter += tierMenu_MouseEnter;
 
             control.annoSaveMenu.Click += annoSave_Click;
+            control.annoReloadMenu.Click += annoReload_Click;
+            control.annoReloadBackupMenu.Click += annoReloadBackup_Click;
             control.annoExportMenu.Click += annoExport_Click;
             control.annoSaveAllMenu.Click += annoSaveAll_Click;
 
@@ -191,7 +193,8 @@ namespace ssi
 
             control.showSettingsMenu.Click += showSettings_Click;
 
-            control.helpMenu.Click += helpMenu_Click;
+            control.helpDocumentationMenu.Click += helpDocumentationMenu_Click;
+            control.helpShortcutsMenu.Click += helpShortcutsMenu_Click;
             control.updateApplicationMenu.Click += updateApplication_Click;
             control.updateCMLMenu.Click += updateCML_Click;
 
@@ -203,8 +206,6 @@ namespace ssi
             control.navigator.jumpFrontButton.Click += navigatorJumpFront_Click;
             control.navigator.playButton.Click += navigatorPlay_Click;
             control.navigator.jumpEndButton.Click += navigatorJumpEnd_Click;
-            control.navigator.followAnnoCheckBox.Unchecked += navigatorFollowAnno_Unchecked;
-            control.navigator.correctionModeCheckBox.Click += navigatorCorrectionMode_Click;
 
             // Timeline
 
@@ -263,6 +264,15 @@ namespace ssi
 
             }
 
+            string cmltrainexe = "cmltrain.exe";
+            string cmltrainexePath = AppDomain.CurrentDomain.BaseDirectory + cmltrainexe;
+
+            if (!(File.Exists(cmltrainexePath)))
+            {
+
+                updateCML();
+
+            }
 
 
             if (Properties.Settings.Default.DatabaseDirectory == "")
@@ -298,9 +308,11 @@ namespace ssi
             clearSignalInfo();
             clearAnnoInfo();
             clearMediaBox();
-        }     
+        }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void updateCML()
         {
 
@@ -327,16 +339,39 @@ namespace ssi
 
             DownloadFile(SSIbinaryGitPath + xmlchainexe, xmlchainexePath);
 
-            if(File.Exists(xmlchainexePath) && File.Exists(cmltrainexePath))
+
+
+            //Download libmongoc-1.0.dll, if not present yet.
+            string libmongocdll = "libmongoc-1.0.dll";
+            string libmongocdllPath = AppDomain.CurrentDomain.BaseDirectory + libmongocdll;
+
+            DownloadFile(SSIbinaryGitPath + libmongocdll, libmongocdllPath);
+
+
+            //Download libbson-1.0.dll, if not present yet.
+            string libsondll = "libbson-1.0.dll";
+            string libbsondllPath = AppDomain.CurrentDomain.BaseDirectory + libsondll;
+
+            DownloadFile(SSIbinaryGitPath + libsondll, libbsondllPath);
+
+
+
+
+
+            if (File.Exists(xmlchainexePath) && File.Exists(cmltrainexePath) && File.Exists(libmongocdllPath) && File.Exists(libbsondllPath))
             {
 
                 long sizexmlchain = new System.IO.FileInfo(xmlchainexePath).Length;
                 long sizecmltrain = new System.IO.FileInfo(cmltrainexePath).Length;
+                long sizelibmongocdll = new System.IO.FileInfo(libmongocdllPath).Length;
+                long sizelibsondll = new System.IO.FileInfo(libbsondllPath).Length;
 
-                if (sizexmlchain == 0 || sizecmltrain == 0)
+                if (sizexmlchain == 0 || sizecmltrain == 0 || sizelibmongocdll == 0 || sizelibsondll == 0)
                 {
                     if (File.Exists(xmlchainexePath)) File.Delete(xmlchainexePath);
                     if (File.Exists(cmltrainexePath)) File.Delete(cmltrainexePath);
+                    if (File.Exists(libmongocdllPath)) File.Delete(libmongocdllPath);
+                    if (File.Exists(libbsondllPath)) File.Delete(libbsondllPath);
                     MessageBox.Show("Could not update CMLtrain.exe and XMLchain.exe");
                 }
                 else MessageBox.Show("Successfully updated CMLtrain.exe and XMLchain.exe");
@@ -476,7 +511,7 @@ namespace ssi
 
         public void loadFiles()
         {
-            string[] filenames = FileTools.OpenFileDialog("Viewable files (*.stream,*.annotation;*.wav,*.avi,*.wmv)|*.stream;*.annotation;*.wav;*.avi;*.wmv;*mp4;*mpg;*mkv;*vui|Signal files (*.stream)|*.stream|Annotation files (*.annotation)|*annotation;*.anno|Wave files (*.wav)|*.wav|Video files(*.avi,*.wmv,*.mp4;*.mov)|*.avi;*.wmv;*.mp4;*.mov|All files (*.*)|*.*", true);
+            string[] filenames = FileTools.OpenFileDialog("Viewable files|*.stream;*.csv;*.annotation;*.wav;*.avi;*.wmv;*mp4;*mpg;*mkv|Signal files (*.stream,*.csv)|*.stream;*.csv|Annotation files (*.annotation)|*annotation|Wave files (*.wav)|*.wav|Video files(*.avi,*.wmv,*.mp4;*.mov)|*.avi;*.wmv;*.mp4;*.mov|All files (*.*)|*.*", true);
             if (filenames != null)
             {
                 control.Cursor = Cursors.Wait;
@@ -488,6 +523,24 @@ namespace ssi
         private void annoSaveAll_Click(object sender, RoutedEventArgs e)
         {
             saveAllAnnos();
+        }
+
+
+        private bool showDialogClearWorkspace(Window dialog)
+        {
+            if (DatabaseHandler.IsSession)
+            {
+                MessageBoxResult result = MessageBox.Show("The workspace will be cleared. Do you want to continue?", "Question", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.No)
+                {
+                    return false;
+                }
+                clearWorkspace();
+            }
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            dialog.ShowDialog();
+            return true;
+
         }
 
         private void showSettings()
@@ -522,6 +575,12 @@ namespace ssi
                 Properties.Settings.Default.ContinuousHotkeysNumber = int.Parse(s.ContinuousHotkeyLevels());
                 Properties.Settings.Default.DatabaseAskBeforeOverwrite = s.DBAskforOverwrite();
                 Properties.Settings.Default.Save();
+                
+
+                foreach(AnnoTier tier in AnnoTiers)
+                {
+                    tier.TimeRangeChanged(MainHandler.Time);
+                }
 
                 if (reconnect)
                 {                    

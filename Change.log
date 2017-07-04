@@ -1740,3 +1740,9 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 09.06.17 BUG : plugins/activemq : removed references from v14 to v12 : Johannes
 - 12.06.17 CHG : base/Factory : does not try to download dlls with relative or absolute filepath : Johannes
 - 14.06.17 CHG : model/cmltrain : supports new annotation format : Johannes
+
+*** Version 1.0.1 *** 
+- 03.07.17 CHG : model/cmltrain : download bson and mongo dlls : Johannes
+- 03.07.17 BUG : model/cmltrain : does not crash if empty an annotation is loaded : Johannes
+- 03.07.17 BUG : signal/SignalTools : left context has been ignored : Johannes
+- 03.07.17 BUG : xmltrain,xmlchain : options -log2socket and -log replace buggy -debug (failed on absolute path) : Johannes

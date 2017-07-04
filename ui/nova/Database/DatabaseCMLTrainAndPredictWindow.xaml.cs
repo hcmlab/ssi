@@ -19,8 +19,6 @@ namespace ssi
     {
         private MainHandler handler;
         private Mode mode;
-        private AnnoSource undoSource;
-        private AnnoMeta undoMeta;
 
         public class Trainer
         {
@@ -39,8 +37,7 @@ namespace ssi
         {
             TRAIN,
             PREDICT,
-            COMPLETE,
-            COMPLETE_UNDO,
+            COMPLETE
         }
 
         public DatabaseCMLTrainAndPredictWindow(MainHandler handler, Mode mode)
@@ -108,8 +105,7 @@ namespace ssi
             GetDatabases(DatabaseHandler.DatabaseName);
             GetAnnotators();
             GetRoles();
-            GetSchemes();
-            GetStreams();
+            GetSchemes();            
 
             if (mode == Mode.COMPLETE)
             {
@@ -139,6 +135,8 @@ namespace ssi
                 SessionsBox.IsEnabled = false;
             }
 
+            GetStreams();
+
             ApplyButton.Focus();
         }
 
@@ -152,29 +150,6 @@ namespace ssi
 
             Properties.Settings.Default.CMLDefaultTrainer = TrainerPathComboBox.SelectedItem.ToString();
             Properties.Settings.Default.Save();
-
-            if (mode == Mode.COMPLETE_UNDO)
-            {
-                AnnoList annoList = AnnoList.LoadfromFile("~.annotation");
-                annoList.Source = undoSource;
-                annoList.Meta = undoMeta;
-                annoList.Save();
-
-                handler.ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected);
-
-                ApplyButton.Content = "Complete";
-                mode = Mode.COMPLETE;
-
-                return;
-            }
-
-            if (mode == Mode.COMPLETE)
-            {
-                AnnoList annoList = AnnoTierStatic.Selected.AnnoList;
-                annoList.SaveToFile("~.annotation");
-                undoSource = annoList.Source;
-                undoMeta = annoList.Meta;
-            }
 
             Trainer trainer = (Trainer) TrainerPathComboBox.SelectedItem;
             bool force = mode == Mode.COMPLETE || ForceCheckBox.IsChecked.Value;
@@ -328,10 +303,8 @@ namespace ssi
 
             if (mode == Mode.COMPLETE)
             {
-                handler.ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected);
-
-                ApplyButton.Content = "Undo";
-                mode = Mode.COMPLETE_UNDO;                
+                handler.ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected, false);
+                Close();
             }
            
         }
@@ -470,6 +443,7 @@ namespace ssi
             {
                 AnnotatorsBox.Items.Add(annotator.FullName);
             }
+            
 
             if (AnnotatorsBox.Items.Count > 0)
             {
@@ -724,18 +698,20 @@ namespace ssi
                 string schemeName = (string)SchemesBox.SelectedItem;
                 DatabaseScheme scheme = DatabaseHandler.Schemes.Find(s => s.Name == schemeName);
 
-                bool isDiscrete = scheme.Type == AnnoScheme.TYPE.DISCRETE;
-                FillGapPanel.Visibility = isDiscrete ? Visibility.Visible : Visibility.Collapsed;
-                RemoveLabelPanel.Visibility = isDiscrete ? Visibility.Visible : Visibility.Collapsed;
-    
-                bool template = mode == Mode.TRAIN || mode == Mode.COMPLETE;
-
-                List<Trainer> trainers = getTrainer(stream, scheme, template);
-                foreach (Trainer trainer in trainers)
+                if(scheme != null)
                 {
-                    TrainerPathComboBox.Items.Add(trainer);
+                    bool isDiscrete = scheme.Type == AnnoScheme.TYPE.DISCRETE;
+                    FillGapPanel.Visibility = isDiscrete ? Visibility.Visible : Visibility.Collapsed;
+                    RemoveLabelPanel.Visibility = isDiscrete ? Visibility.Visible : Visibility.Collapsed;
+    
+                    bool template = mode == Mode.TRAIN || mode == Mode.COMPLETE;
+
+                    List<Trainer> trainers = getTrainer(stream, scheme, template);
+                    foreach (Trainer trainer in trainers)
+                    {
+                        TrainerPathComboBox.Items.Add(trainer);
+                    }
                 }
-                                  
             }
             
             if (TrainerPathComboBox.Items.Count > 0)
@@ -753,6 +729,7 @@ namespace ssi
         private void Annotations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             GetSessions();
+            GetStreams();
         }
 
         private void ShowAllSessionsCheckBox_Checked(object sender, RoutedEventArgs e)

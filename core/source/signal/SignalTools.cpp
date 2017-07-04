@@ -220,6 +220,13 @@ namespace ssi {
 			}
 		}
 
+		if (context_right) {
+			if (!ssi_parse_samples(context_right, context_right_samples, from.sr)) {
+				ssi_wrn("could not parse right context '%s'", context_right);
+				return;
+			}
+		}
+
 		Transform(from, to, transformer, frame_samples, context_left_samples, context_right_samples, call_enter, call_flush);
 	}
 

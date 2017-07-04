@@ -507,6 +507,12 @@ namespace ssi
 
         private void loadProject()
         {
+            MessageBoxResult result = MessageBox.Show("The workspace will be cleared. Do you want to continue?", "Question", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+
             string[] filePath = FileTools.OpenFileDialog("NOVA Project (*.nova)|*.nova", false);
             if (filePath != null && filePath.Length > 0)
             {
@@ -518,12 +524,38 @@ namespace ssi
 
         #region SAVE
 
-        private void saveSelectedAnno()
+        private void saveSelectedAnno(bool force = false)
         {
             if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.AnnoList != null)
             {
-                AnnoTierStatic.Selected.AnnoList.Save(databaseSessionStreams);
+                AnnoTierStatic.Selected.AnnoList.Save(databaseSessionStreams, force);
                 updateAnnoInfo(AnnoTierStatic.Selected);
+            }
+        }
+
+        private void reloadBackupSelectedAnno()
+        {
+            if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.AnnoList != null)
+            {
+                if (AnnoTierStatic.Selected.AnnoList.Source.HasDatabase)
+                {
+                    ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected, true);
+                }
+            }
+        }
+
+        private void reloadSelectedAnno()
+        {
+            if (AnnoTierStatic.Selected != null && AnnoTierStatic.Selected.AnnoList != null)
+            {
+                if (AnnoTierStatic.Selected.AnnoList.Source.HasFile)
+                {
+                    reloadAnnoTierFromFile(AnnoTierStatic.Selected);
+                }
+                else if (AnnoTierStatic.Selected.AnnoList.Source.HasDatabase)
+                {
+                    ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected, false);
+                }
             }
         }
 
@@ -537,7 +569,7 @@ namespace ssi
                 {
                     AnnoSource source = AnnoTierStatic.Selected.AnnoList.Source;
                     AnnoTierStatic.Selected.AnnoList.Source.File.Path = path;                    
-                    AnnoTierStatic.Selected.AnnoList.Save();
+                    AnnoTierStatic.Selected.AnnoList.Save(null, true);
                     AnnoTierStatic.Selected.AnnoList.Source = source;
                 }
             }
@@ -994,6 +1026,16 @@ namespace ssi
             saveSelectedAnno();
         }
 
+        private void annoReload_Click(object sender, RoutedEventArgs e)
+        {
+            reloadSelectedAnno();
+        }
+
+        private void annoReloadBackup_Click(object sender, RoutedEventArgs e)
+        {
+            reloadBackupSelectedAnno();
+        }
+
         private void annoExport_Click(object sender, RoutedEventArgs e)
         {
             exportSelectedAnnoAs();
@@ -1012,7 +1054,7 @@ namespace ssi
         private void exportSamples_Click(object sender, RoutedEventArgs e)
         {
             ExportSamplesWindow window = new ExportSamplesWindow();
-            foreach (AnnoTier tier in this.annoTiers)
+            foreach (AnnoTier tier in annoTiers)
             {
                 if (tier.AnnoList.Source.HasFile && 
                     (tier.AnnoList.Scheme.Type == AnnoScheme.TYPE.DISCRETE ||

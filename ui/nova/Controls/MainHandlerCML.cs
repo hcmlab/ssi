@@ -22,23 +22,20 @@ namespace ssi
         private void databaseCMLTrain_Click(object sender, RoutedEventArgs e)
         {
             DatabaseCMLTrainAndPredictWindow dialog = new DatabaseCMLTrainAndPredictWindow(this, DatabaseCMLTrainAndPredictWindow.Mode.TRAIN);
-            dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            dialog.ShowDialog();
+            showDialogClearWorkspace(dialog);
 
         }
 
         private void databaseCMLPredict_Click(object sender, RoutedEventArgs e)
         {
             DatabaseCMLTrainAndPredictWindow dialog = new DatabaseCMLTrainAndPredictWindow(this, DatabaseCMLTrainAndPredictWindow.Mode.PREDICT);
-            dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            dialog.ShowDialog();
+            showDialogClearWorkspace(dialog);
 
         }
 
         private void databaseCMLCompleteStep()
         {
-            saveSelectedAnno();
-
+            saveSelectedAnno(true);
             DatabaseCMLTrainAndPredictWindow dialog = new DatabaseCMLTrainAndPredictWindow(this, DatabaseCMLTrainAndPredictWindow.Mode.COMPLETE);
             dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             dialog.ShowDialog();
@@ -53,13 +50,14 @@ namespace ssi
         public string CMLExtractFeature(string chainPath, string fromPath, string toPath, string frameStep, string leftContext, string rightContext)
         {
             string result = "";
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
 
             try
             {
                 string arguments = " -step " + frameStep +
                     " -left " + leftContext +
                     " -right " + rightContext +
-                    " -debug cml.log " +
+                    " -log " + logPath + " " +
                     chainPath + " " +
                     fromPath + " " +
                     toPath;
@@ -67,13 +65,13 @@ namespace ssi
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
-                startInfo.FileName = "xmlchain.exe";
+                startInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "\\xmlchain.exe";
                 startInfo.Arguments = arguments;
-                result += "\n-------------------------------------------\r\n" + startInfo.Arguments + "\n-------------------------------------------\r\n";
+                result += "\n-------------------------------------------\r\n" + startInfo.FileName + startInfo.Arguments + "\n-------------------------------------------\r\n";
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
-                result += File.ReadAllText("cml.log");    
+                result += File.ReadAllText(logPath);    
             }
             catch (Exception ex)
             {
@@ -90,6 +88,7 @@ namespace ssi
             string[] split = server.Split(':');
             string ip = split[0];
             string port = split[1];
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
 
             try
             {
@@ -99,7 +98,7 @@ namespace ssi
                         " -username " + username +                        
                         " -list " + sessions +
                         (complete ? " -cooperative" : "") +
-                        " -log cml.log";
+                        " -log " + logPath;
                 string options = options_no_pass + " -password " + password;
                 string arguments = "\"" + datapath + "\\" + database + "\" " +
                         ip + " " +
@@ -115,13 +114,13 @@ namespace ssi
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
-                startInfo.FileName = "cmltrain.exe";
+                startInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "\\cmltrain.exe";
                 startInfo.Arguments = "--train " + options + " " + arguments;
-                result += "\n-------------------------------------------\r\n--train " + options_no_pass + " " + arguments + "\n-------------------------------------------\r\n";
+                result += "\n-------------------------------------------\r\n" + startInfo.FileName + " --train " + options_no_pass + " " + arguments + "\n-------------------------------------------\r\n";
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
-                result += File.ReadAllText("cml.log");
+                result += File.ReadAllText(logPath);
             }
             catch (Exception ex)
             {
@@ -154,6 +153,7 @@ namespace ssi
             string[] split = server.Split(':');
             string ip = split[0];
             string port = split[1];
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
 
             try
             {
@@ -166,7 +166,7 @@ namespace ssi
                         " -list " + sessions +
                         " -finished" +
                         ( complete ? " -cooperative" : "" ) +
-                        " -log cml.log";
+                        " -log " + logPath;
                 string options = options_no_pass + " -password " + password;
                 string arguments = "\"" + datapath + "\\" + database + "\" " +
                         ip + " " +
@@ -181,13 +181,13 @@ namespace ssi
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
-                startInfo.FileName = "cmltrain.exe";
+                startInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "\\cmltrain.exe";
                 startInfo.Arguments = "--forward " + options + " " + arguments;
-                result += "\n-------------------------------------------\r\n--forward " + options_no_pass + " " + arguments + "\n-------------------------------------------\r\n";
+                result += "\n-------------------------------------------\r\n" + startInfo.FileName + " --forward " + options_no_pass + " " + arguments + "\n-------------------------------------------\r\n";
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
-                result += File.ReadAllText("cml.log");
+                result += File.ReadAllText(logPath);
             }
             catch (Exception ex)
             {

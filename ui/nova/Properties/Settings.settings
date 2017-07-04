@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="MongoDBUser" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MongoDBUser</Value>
+      <Value Profile="(Default)">login</Value>
     </Setting>
     <Setting Name="MongoDBPass" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MongoDBPass</Value>
+      <Value Profile="(Default)">password</Value>
     </Setting>
     <Setting Name="DataServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">sftp.server.yeah</Value>
@@ -27,7 +27,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DatabaseAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">137.250.171.233:37317</Value>
+      <Value Profile="(Default)">localhost:27017</Value>
     </Setting>
     <Setting Name="DatabaseName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -42,7 +42,7 @@
       <Value Profile="(Default)">0.7</Value>
     </Setting>
     <Setting Name="Annotator" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Unknown</Value>
+      <Value Profile="(Default)">Annotator</Value>
     </Setting>
     <Setting Name="DefaultZoomInSeconds" Type="System.Double" Scope="User">
       <Value Profile="(Default)">30</Value>
@@ -104,7 +104,7 @@
     <Setting Name="ContinuousHotkeysNumber" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
-    <Setting Name="ContinuousDeactiveMouse" Type="System.Boolean" Scope="User">
+    <Setting Name="LiveModeActivateMouse" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ConvertToDiscreteClasses" Type="System.String" Scope="User">
