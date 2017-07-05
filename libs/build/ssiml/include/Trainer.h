@@ -182,6 +182,8 @@ public:
 	ssi_size_t getClassSize () { return _n_classes; } ;
 	const ssi_char_t *getClassName (ssi_size_t class_index) { return _class_names[class_index]; };
 	ssi_char_t *const *getClassNames () { return _class_names; };
+
+	std::map<String, String> Meta;
 	
 	static void SetLogLevel (int level) {
 		ssi_log_level = level;
@@ -248,7 +250,6 @@ protected:
 	ssi_size_t _seed;
 	BALANCE::Value _balance;
 
-	TiXmlNode *_metaNode;
 	TiXmlNode *_registerNode;
 };
 

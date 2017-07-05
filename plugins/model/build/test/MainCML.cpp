@@ -54,9 +54,9 @@ int main () {
 
 	ssi_random_seed ();
 
-	MongoURI uri("137.250.171.233", 3389, "system", "AriaSSI");
+	MongoURI uri("localhost", 27017, "admin", "mongo");
 	MongoClient client;
-	client.connect(uri, "definition", false, 1000);
+	client.connect(uri, "MyDB", false, 1000);
 
 	if (client.is_connected())
 	{
@@ -89,19 +89,19 @@ bool ex_read(void *args)
 	MongoClient *client = ssi_pcast(MongoClient, args);
 	Annotation anno;
 	
-	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Discrete", "system"))
+	if (!CMLAnnotation::Load(&anno, client, "Session", "User", "Discrete", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Continuous", "system"))
+	if (!CMLAnnotation::Load(&anno, client, "Session", "User", "Continuous", "system"))
 	{
 		return false;
 	}
 	anno.print();
 
-	if (!CMLAnnotation::Load(&anno, client, "Session01", "UserA", "Transcription", "system"))
+	if (!CMLAnnotation::Load(&anno, client, "Session", "User", "Transcription", "system"))
 	{
 		return false;
 	}
@@ -126,7 +126,7 @@ bool ex_write(void *args)
 	anno.add(3.0, 4.0, 1, 1.0f);
 	anno.add(4.0, 5.0, -1, 1.0f);
 	anno.add(5.0, 6.0, 1, 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Discrete", "system"))
+	if (!CMLAnnotation::Save(&anno, client, "Session", "User", "Discrete", "system"))
 	{
 		return false;
 	}
@@ -142,7 +142,7 @@ bool ex_write(void *args)
 	anno.add(0.25f, 1.0f);
 	anno.add(0.5f, 1.0f);
 	anno.add(1.0f, 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Continuous", "system"))
+	if (!CMLAnnotation::Save(&anno, client, "Session", "User", "Continuous", "system"))
 	{
 		return false;
 	}
@@ -158,7 +158,7 @@ bool ex_write(void *args)
 	anno.add(2.0, 3.0, "Lovè", 1.0f);
 	anno.add(3.0, 4.0, "Tobi", 1.0f);
 	anno.add(4.0, 5.0, "!", 1.0f);
-	if (!CMLAnnotation::Save(&anno, client, "Session01", "UserA", "Transcription", "system"))
+	if (!CMLAnnotation::Save(&anno, client, "Session", "User", "Transcription", "system"))
 	{
 		return false;
 	}
@@ -171,17 +171,17 @@ bool ex_remove(void *args)
 {
 	MongoClient *client = ssi_pcast(MongoClient, args);
 
-	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Discrete", "system"))
+	if (!CMLAnnotation::Remove(client, "Session", "User", "Discrete", "system"))
 	{
 		return false;
 	}
 
-	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Continuous", "system"))
+	if (!CMLAnnotation::Remove(client, "Session", "User", "Continuous", "system"))
 	{
 		return false;
 	}
 
-	if (!CMLAnnotation::Remove(client, "Session01", "UserA", "Transcription", "system"))
+	if (!CMLAnnotation::Remove(client, "Session", "User", "Transcription", "system"))
 	{
 		return false;
 	}

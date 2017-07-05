@@ -27,6 +27,8 @@
 #include "ssi.h"
 using namespace ssi;
 
+#include <vld.h>
+
 #ifdef USE_SSI_LEAK_DETECTOR
 #include "SSI_LeakWatcher.h"
 #ifdef _DEBUG
@@ -39,19 +41,32 @@ static char THIS_FILE[] = __FILE__;
 #include <unistd.h>
 #endif
 
-struct params_t {
+struct params_t {	
 	ssi_char_t *chainPath;
+	ssi_char_t chainPathAbsolute[SSI_MAX_CHAR];
 	ssi_char_t *inPath;
+	StringList inList;
 	ssi_char_t *outPath;
-	ssi_char_t *debugPath;
+	StringList outList;
+	bool list;
+	ssi_char_t *logPath;
 	ssi_char_t *srcUrl;
 	ssi_char_t *step;
 	ssi_char_t *left;
 	ssi_char_t *right;
+	int nParallel;
 };
 
-void Run(const ssi_char_t *exepath, params_t params);
+struct FeatureArguments
+{	
+	ssi_size_t n;
+	params_t *params;
+};
+
 bool Parse_and_Run(int argc, char **argv);
+void Run(const ssi_char_t *exepath, params_t params);
+bool Extract(params_t &params, FilePath &inPath, FilePath &outPath);
+bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out);
 
 int main(int argc, char **argv) {
 
@@ -87,7 +102,7 @@ bool Parse_and_Run(int argc, char **argv)
 	params.chainPath = 0;
 	params.inPath = 0;
 	params.outPath = 0;
-	params.debugPath = 0;
+	params.logPath = 0;
 	params.srcUrl = 0;
 	params.step = 0;
 	params.left = 0;
@@ -95,31 +110,33 @@ bool Parse_and_Run(int argc, char **argv)
 
 	cmd.addText("\nArguments:");
 	cmd.addSCmdArg("chain", &params.chainPath, "path to file defining the processing chain");
-	cmd.addSCmdArg("in", &params.inPath, "input path (to which chain is applied)");
-	cmd.addSCmdArg("out", &params.outPath, "output path");
+	cmd.addSCmdArg("in", &params.inPath, "input path (if several separate by ;)");
+	cmd.addSCmdArg("out", &params.outPath, "output path (if several separate by ;)");
 
 	cmd.addText("\nOptions:");
+	cmd.addBCmdOption("-list", &params.list, false, "read files from list (one file per line)");
 	cmd.addSCmdOption("-step", &params.step, "0", "set frame step (add ms/s for milli/seconds otherwise interpreted as number of samples)");
 	cmd.addSCmdOption("-left", &params.left, "0", "set left context (see frame)");
 	cmd.addSCmdOption("-right", &params.right, "0", "set right context (see frame)");
+	cmd.addICmdOption("-parallel", &params.nParallel, 1, "number of files processed in parallel (0 = all)");
 	cmd.addSCmdOption("-url", &params.srcUrl, default_source, "override default url for downloading missing dlls and dependencies");
-	cmd.addSCmdOption("-log", &params.debugPath, "", "debug to a file [""]");
+	cmd.addSCmdOption("-log", &params.logPath, "", "log to a file [""]");
 
 	if (!cmd.read(argc, argv))
 	{
 		return false;
 	}
 
-	if (params.debugPath[0] != '\0')
+	if (params.logPath[0] != '\0')
 	{
-		ssimsg = new FileMessage(params.debugPath);
+		ssimsg = new FileMessage(params.logPath);
 	}
 
 	ssi_print("%s", info);
 
 	Run(argv[0], params);
 
-	if (params.debugPath[0] != '\0') {
+	if (params.logPath[0] != '\0') {
 		delete ssimsg;
 		ssimsg = 0;
 	}
@@ -127,10 +144,33 @@ bool Parse_and_Run(int argc, char **argv)
 	delete[] params.chainPath;
 	delete[] params.inPath;
 	delete[] params.outPath;
-	delete[] params.debugPath;
+	delete[] params.logPath;
 	delete[] params.srcUrl;
+	delete[] params.left;
+	delete[] params.right;
+	delete[] params.step;
 
 	return true;
+}
+
+void splitFiles(const ssi_char_t *string, StringList &files, bool list)
+{
+	if (list)
+	{
+		FileTools::ReadFilesFromFile(files, string);
+	}
+	else
+	{
+		ssi_size_t n_tokens = ssi_split_string_count(string, ';');
+		ssi_char_t **tokens = new ssi_char_t *[n_tokens];
+		ssi_split_string(n_tokens, tokens, string, ';');
+		for (ssi_size_t i = 0; i < n_tokens; i++)
+		{
+			files.add(tokens[i]);
+			delete[] tokens[i];
+		}
+		delete[] tokens;
+	}
 }
 
 void Run(const ssi_char_t *exePath, params_t params) {
@@ -157,26 +197,90 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	Factory::RegisterDLL("ssiframe", ssiout, ssimsg);
 
 	// full chain path
-	FilePath chainPath_fp(params.chainPath);
-	ssi_char_t chainPath[SSI_MAX_CHAR];
+	FilePath chainPath_fp(params.chainPath);	
 	if (chainPath_fp.isRelative()) {
 #if _WIN32|_WIN64
-		ssi_sprint(chainPath, "%s\\%s", workDir, params.chainPath);
+		ssi_sprint(params.chainPathAbsolute, "%s\\%s", workDir, params.chainPath);
 #else
 		ssi_sprint(pipepath, "%s/%s", _workdir, params.chainPath);
 #endif
 	}
 	else {
-		strcpy(chainPath, params.chainPath);
+		strcpy(params.chainPathAbsolute, params.chainPath);
 	}
 
 	// set working directory to pipeline directory		
 	ssi_setcwd(chainPath_fp.getDir());
 
-	// in/out path
-	FilePath inPath(params.inPath);
-	FilePath outPath(params.outPath);
+	// fill lists
+	splitFiles(params.inPath, params.inList, params.list);
+	splitFiles(params.outPath, params.outList, params.list);
 
+	if (params.inList.size() != params.outList.size())
+	{
+		ssi_wrn("number of input files differs from number of output files");
+		return;
+	}
+
+	// start processing
+
+	ssi_size_t N = (ssi_size_t)params.inList.size();
+
+	ThreadPool pool("extract", params.nParallel <= 0 ? N : params.nParallel);
+
+	for (ssi_size_t n = 0; n < N; n++)
+	{
+		FilePath inPath(params.inList[n].str());
+		FilePath outPath(params.outList[n].str());
+
+		FeatureArguments *args = new FeatureArguments;
+		args->params = &params;
+		args->n = n;
+
+		ThreadPool::job_s job;
+		job.n_in = 1;
+		job.in = args;
+		job.n_out = 0;
+		job.out = 0;
+		job.job = ExtractJob;
+
+		pool.add(job);		
+	}	
+
+	if (!pool.work())
+	{
+		ssi_wrn("one or more jobs failed");
+	}
+
+	for (ssi_size_t m = 0; m < pool.size(); m++)
+	{
+		ThreadPool::job_s job = pool.get(m);
+		FeatureArguments *args = (FeatureArguments *)job.in;
+		delete args;
+	}
+
+	Factory::Clear();
+
+	ssi_setcwd(chainPath_fp.getDir());
+}
+
+bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out)
+{
+	FeatureArguments *args = ssi_pcast(FeatureArguments, in);
+	
+	params_t *params = args->params;
+	ssi_size_t n = args->n;
+
+	FilePath inPath(params->inList[n].str());
+	FilePath outPath(params->outList[n].str());
+
+	ssi_print_off("%s > %s\n", inPath.getPathFull(), outPath.getPathFull());
+
+	return Extract(*params, inPath, outPath);	
+}
+
+bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
+{	
 	ssi_char_t *toPath = 0;
 	if (ssi_strcmp(outPath.getExtension(), ".stream", false))
 	{
@@ -188,8 +292,7 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	}
 
 	Chain *chain = ssi_create_id(Chain, 0, "chain");
-	chain->getOptions()->set(chainPath);
-	//chain->SetRegisterXMLFptr (Factory::RegisterXML);
+	chain->getOptions()->set(params.chainPathAbsolute);	
 
 	ssi_stream_t from;
 	bool result = false;
@@ -205,6 +308,7 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	if (result)
 	{
 		ssi_stream_t to;
+
 		if (ssi_strcmp(params.step, "0"))
 		{
 			SignalTools::Transform(from, to, *chain, 0u);
@@ -212,16 +316,15 @@ void Run(const ssi_char_t *exePath, params_t params) {
 		else
 		{
 			SignalTools::Transform(from, to, *chain, params.step, params.left, params.right);
-		}				
-		FileTools::WriteStreamFile(File::BINARY, toPath, to);
+		}
+
+		result &= FileTools::WriteStreamFile(File::BINARY, toPath, to);
+
 		ssi_stream_destroy(from);
 		ssi_stream_destroy(to);
 	}
 
 	delete[] toPath;
 
-	Factory::Clear();
-
-	ssi_setcwd(chainPath_fp.getDir());
+	return result;
 }
-

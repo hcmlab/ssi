@@ -227,7 +227,7 @@ void run (const ssi_char_t *pipeline, const ssi_char_t *signal, const ssi_char_t
 		ssi_wrn ("could not create pipeline parser");
 		goto end;
 	}
-	xmlpipe->SetRegisterDllFptr(Factory::RegisterDLL);
+	//xmlpipe->SetRegisterDllFptr(Factory::RegisterDLL);
 	if (!xmlpipe->parse(pipeline)) {
 		ssi_wrn ("could not parse pipeline '%s'", pipeline);
 		goto end;
@@ -313,7 +313,7 @@ void train (const ssi_char_t *pipeline, const ssi_char_t *traindef, const ssi_ch
 		ssi_wrn ("could not create pipeline parser");
 		goto end;
 	}
-	xmlpipe->SetRegisterDllFptr(Factory::RegisterDLL);
+//	xmlpipe->SetRegisterDllFptr(Factory::RegisterDLL);
 	if (!xmlpipe->parse(pipeline)) {
 		ssi_wrn ("could not parse pipeline '%s'", pipeline);
 		goto end;

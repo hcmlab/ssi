@@ -1195,8 +1195,9 @@ void FileTools::ReadLinesFromFile(StringList &files,
 	while (file->ready())
 	{
 		file->readLine(SSI_MAX_CHAR, line);
+		ssi_strtrim(line);
 		if (line[0] != '\0')
-		{
+		{			
 			files.add(line);
 		}
 	}

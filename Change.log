@@ -1746,3 +1746,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 03.07.17 BUG : model/cmltrain : does not crash if empty an annotation is loaded : Johannes
 - 03.07.17 BUG : signal/SignalTools : left context has been ignored : Johannes
 - 03.07.17 BUG : xmltrain,xmlchain : options -log2socket and -log replace buggy -debug (failed on absolute path) : Johannes
+- 05.07.17 BUG : ioput/files/FileTools : ReadLinesFromFile() removes leading and trailing spaces from file names : Johannes

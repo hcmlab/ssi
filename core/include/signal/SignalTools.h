@@ -32,6 +32,7 @@
 #include "base/ITransformer.h"
 #include "base/IConsumer.h"
 #include "signal/SignalCons.h"
+#include "thread/Lock.h"
 
 namespace ssi {
 
@@ -131,6 +132,10 @@ public:
 
 	// sum series along dimension
 	static void Sum (ssi_stream_t &series);
+
+protected:
+
+	static Mutex mutex;
 };
 
 }

@@ -782,6 +782,9 @@ void train(params_t &params)
 
 		if (cmltrainer.train(&trainer))
 		{
+			trainer.Meta["leftContext"] = params.contextLeft;
+			trainer.Meta["rightContext"] = params.contextRight;
+			trainer.Meta["balance"] = params.balance;
 			trainer.save(string);
 		}
 
@@ -821,6 +824,9 @@ void train(params_t &params)
 
 				if (cmltrainer.train(&trainer))
 				{
+					trainer.Meta["leftContext"] = params.contextLeft;
+					trainer.Meta["rightContext"] = params.contextRight;
+					trainer.Meta["balance"] = params.balance;
 					trainer.save(params.trainer);
 				}
 			}

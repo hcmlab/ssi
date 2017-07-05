@@ -83,8 +83,7 @@ Trainer::Trainer()
 	_n_samplepaths(0),
 	_samplepaths(0),
 	_balance(BALANCE::NONE),
-	_registerNode(0),
-	_metaNode(0)
+	_registerNode(0)
 {
 	_seed = Random::Seed();
 }
@@ -120,8 +119,7 @@ Trainer::Trainer (IModel *model,
 	_n_samplepaths (0),
 	_samplepaths (0),
 	_balance(BALANCE::NONE),
-	_registerNode(0),
-	_metaNode(0)
+	_registerNode(0)
 {
 
 	_models = new IModel*[1];
@@ -162,8 +160,7 @@ Trainer::Trainer (ssi_size_t n_models,
 	_n_samplepaths (0),
 	_samplepaths (0),
 	_balance(BALANCE::NONE),
-	_registerNode(0),
-	_metaNode(0)
+	_registerNode(0)
 {
 
 	_models = new IModel*[_n_models];
@@ -203,8 +200,8 @@ void Trainer::release () {
 	_is_trained = false;
 	delete[] _stream_refs;
 	_stream_refs = 0;
-	delete[] _metaNode; _metaNode = 0;
 	delete[] _registerNode; _registerNode = 0;
+	Meta.clear();
 }
 
 void Trainer::release_samples () {
@@ -1377,8 +1374,11 @@ bool Trainer::Load_V5 (Trainer &trainer,
 
 	element = body->FirstChildElement("meta");
 	if (element)
-	{
-		trainer._metaNode = element->Clone();
+	{		
+		TiXmlAttribute *meta_attribute = element->FirstAttribute();
+		do {
+			trainer.Meta[meta_attribute->Name()] = meta_attribute->Value();
+		} while (meta_attribute = meta_attribute->Next());		
 	}
 
 	if (!is_trained) {
@@ -2604,10 +2604,14 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 	TiXmlElement info("info");
 	info.SetAttribute("trained", _is_trained ? "true" : "false");
 	body.InsertEndChild(info);
-
-	if (_metaNode)
-	{	
-		body.InsertEndChild(*_metaNode);
+	
+	if (Meta.size() > 0)
+	{
+		TiXmlElement meta("meta");
+		for (std::map<String, String>::iterator it = Meta.begin(); it != Meta.end(); it++) {
+			meta.SetAttribute(it->first.str(), it->second.str());
+		}		
+		body.InsertEndChild(meta);
 	}
 
 	if (_registerNode)
