@@ -122,6 +122,8 @@ public:
 		_features = features;
 		_load_from_file = false;
 	}
+	virtual void parse();
+	virtual void release();
 
 	const void *getMetaData (ssi_size_t &size) {
 		size = _meta_size;
@@ -160,8 +162,6 @@ protected:
 
 	static ssi_char_t *ssi_log_name;
 
-	void parse ();
-	void release ();
 	bool parseFilter (TiXmlElement *element);
 	bool parseFeature (TiXmlElement *element);
 

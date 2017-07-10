@@ -242,6 +242,13 @@ void Run(const ssi_char_t *exePath, params_t &params) {
 	}
 	else
 	{
+		// make sure dependecies are resolved
+		Chain *chain = ssi_create(Chain, 0, false);
+		chain->getOptions()->set(params.chainPathAbsolute);
+		chain->parse();
+		chain->release();
+		delete chain;
+
 		ThreadPool pool("extract", nThreads);
 
 		for (ssi_size_t n = 0; n < nFiles; n++)
