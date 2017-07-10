@@ -40,6 +40,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 struct params_t {	
+	ssi_char_t *exePath;
 	ssi_char_t *chainPath;
 	ssi_char_t chainPathAbsolute[SSI_MAX_CHAR];
 	ssi_char_t *inPath;
@@ -62,7 +63,7 @@ struct FeatureArguments
 };
 
 bool Parse_and_Run(int argc, char **argv);
-void Run(const ssi_char_t *exepath, params_t params);
+void Run(const ssi_char_t *exepath, params_t &params);
 bool Extract(params_t &params, FilePath &inPath, FilePath &outPath);
 bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out);
 
@@ -72,7 +73,7 @@ int main(int argc, char **argv) {
 	{
 #endif
 
-		Parse_and_Run(argc, argv);
+	Parse_and_Run(argc, argv);
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	}
@@ -97,6 +98,7 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.info(info);
 
 	params_t params;
+	params.exePath = 0;
 	params.chainPath = 0;
 	params.inPath = 0;
 	params.outPath = 0;
@@ -139,6 +141,7 @@ bool Parse_and_Run(int argc, char **argv)
 		ssimsg = 0;
 	}
 
+	delete[] params.exePath;
 	delete[] params.chainPath;
 	delete[] params.inPath;
 	delete[] params.outPath;
@@ -171,7 +174,7 @@ void splitFiles(const ssi_char_t *string, StringList &files, bool list)
 	}
 }
 
-void Run(const ssi_char_t *exePath, params_t params) {
+void Run(const ssi_char_t *exePath, params_t &params) {
 
 	// get directories
 	ssi_char_t workDir[SSI_MAX_CHAR];
@@ -191,7 +194,10 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	ssi_print("download source=%s\ndownload target=%s\n\n", params.srcUrl, exedir);
 	Factory::SetDownloadDirs(params.srcUrl, exedir);
 
-	// register frame and event dll
+	// set exe path
+	params.exePath = ssi_strcpy(exePath);
+
+	// register frame dll
 	Factory::RegisterDLL("ssiframe", ssiout, ssimsg);
 
 	// full chain path
@@ -222,39 +228,63 @@ void Run(const ssi_char_t *exePath, params_t params) {
 
 	// start processing
 
-	ssi_size_t N = (ssi_size_t)params.inList.size();
+	ssi_size_t nFiles = (ssi_size_t)params.inList.size();
+	ssi_size_t nThreads = params.nParallel <= 0 ? nFiles : params.nParallel;
 	
-	ThreadPool pool("extract", params.nParallel <= 0 ? N : params.nParallel);
-
-	for (ssi_size_t n = 0; n < N; n++)
+	if (nFiles == 1 || nThreads == 1)
 	{
-		FilePath inPath(params.inList[n].str());
-		FilePath outPath(params.outList[n].str());
-
-		FeatureArguments *args = new FeatureArguments;
-		args->params = &params;
-		args->n = n;
-
-		ThreadPool::job_s job;
-		job.n_in = 1;
-		job.in = args;
-		job.n_out = 0;
-		job.out = 0;
-		job.job = ExtractJob;
-
-		pool.add(job);		
-	}	
-
-	if (!pool.work())
-	{
-		ssi_wrn("one or more jobs failed");
+		for (ssi_size_t n = 0; n < nFiles; n++)
+		{
+			FilePath inPath(params.inList[n].str());
+			FilePath outPath(params.outList[n].str());
+			Extract(params, inPath, outPath);
+		}
 	}
-
-	for (ssi_size_t m = 0; m < pool.size(); m++)
+	else
 	{
-		ThreadPool::job_s job = pool.get(m);
-		FeatureArguments *args = (FeatureArguments *)job.in;
-		delete args;
+		ThreadPool pool("extract", nThreads);
+
+		for (ssi_size_t n = 0; n < nFiles; n++)
+		{
+			FilePath inPath(params.inList[n].str());
+			FilePath outPath(params.outList[n].str());
+
+			FeatureArguments *args = new FeatureArguments;
+			args->params = &params;
+			args->n = n;
+
+			ThreadPool::job_s job;
+			job.n_in = 1;
+			job.in = args;
+			job.n_out = 0;
+			job.out = 0;
+			job.job = ExtractJob;
+
+			pool.add(job);
+		}
+
+		if (!pool.work())
+		{
+			ssi_wrn("one or more jobs failed");
+		}
+
+		ssi_char_t logPath[SSI_MAX_CHAR];
+		for (ssi_size_t m = 0; m < pool.size(); m++)
+		{
+			ThreadPool::job_s job = pool.get(m);
+			FeatureArguments *args = (FeatureArguments *)job.in;
+			
+			ssi_sprint(logPath, "%s.%04u", params.logPath, args->n);
+			ssi_size_t len;
+			ssi_char_t *str;
+			if (str = FileTools::ReadAsciiFile(logPath, len))
+			{
+				ssi_print(str);
+			}
+			ssi_remove(logPath);
+
+			delete args;
+		}
 	}
 
 	Factory::Clear();
@@ -262,19 +292,40 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	ssi_setcwd(chainPath_fp.getDir());
 }
 
+String paramsToArgs(params_t *params, ssi_size_t n)
+{
+	ssi_char_t *inPath = params->inList[n].str();
+	ssi_char_t *outPath = params->inList[n].str();
+
+	ssi_char_t logPath[SSI_MAX_CHAR];
+	ssi_sprint(logPath, "%s.%04u", params->logPath, n);
+
+	String string = String("") +
+		"-step " + params->step +
+		" -left " + params->left +
+		" -right " + params->right +
+		" -url \"" + params->srcUrl + "\"" +
+		" -log \"" + logPath + "\" " +
+		"\"" + params->chainPath + "\" "
+		"\"" + inPath + "\" "
+		"\"" + outPath + "\"";
+
+	return string;
+}
+
 bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out)
 {
-	FeatureArguments *args = ssi_pcast(FeatureArguments, in);
+	FeatureArguments *featureArguments = ssi_pcast(FeatureArguments, in);
 	
-	params_t *params = args->params;
-	ssi_size_t n = args->n;
+	params_t *params = featureArguments->params;
+	ssi_size_t n = featureArguments->n;
 
-	FilePath inPath(params->inList[n].str());
-	FilePath outPath(params->outList[n].str());
+	String processArguments = paramsToArgs(params, n);
 
-	ssi_print_off("%s > %s\n", inPath.getPathFull(), outPath.getPathFull());
-
-	return Extract(*params, inPath, outPath);	
+	ssi_print_off("%s %s\n", params->exePath, processArguments.str());
+	
+	return ssi_execute(params->exePath, processArguments.str(), -1, false);
+	//return Extract(*params, inPath, outPath);	
 }
 
 bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)

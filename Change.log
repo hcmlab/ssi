@@ -1749,3 +1749,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 05.07.17 BUG : ioput/files/FileTools : ReadLinesFromFile() removes leading and trailing spaces from file names : Johannes
 - 05.07.17 CHG : xmlchain : supports parallel feature extraction : Johannes
 - 10.07.17 CHG : ioput/options/Options : option lists can be set read only : Johannes
+- 10.07.17 CHG : tools/xmlchain : files processed in parallel are now executed in separate processes : Johannes
