@@ -302,7 +302,7 @@ void Run(const ssi_char_t *exePath, params_t &params) {
 String paramsToArgs(params_t *params, ssi_size_t n)
 {
 	ssi_char_t *inPath = params->inList[n].str();
-	ssi_char_t *outPath = params->inList[n].str();
+	ssi_char_t *outPath = params->outList[n].str();
 
 	ssi_char_t logPath[SSI_MAX_CHAR];
 	ssi_sprint(logPath, "%s.%04u", params->logPath, n);

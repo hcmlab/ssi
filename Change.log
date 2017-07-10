@@ -1750,3 +1750,5 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 05.07.17 CHG : xmlchain : supports parallel feature extraction : Johannes
 - 10.07.17 CHG : ioput/options/Options : option lists can be set read only : Johannes
 - 10.07.17 CHG : tools/xmlchain : files processed in parallel are now executed in separate processes : Johannes
+- 10.07.17 BUG : tools/xmlchain : resolve dependencies before starting parallel execution : Johannes
+- 10.07.17 BUG : tools/xmlchain : correct output path : Johannes

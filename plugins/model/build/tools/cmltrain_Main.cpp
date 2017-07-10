@@ -97,17 +97,6 @@ int main (int argc, char **argv) {
 	{
 #endif
 
-	//--download -filter *Augsburg -log log.txt Z:\Korpora\aria-noxi 137.250.171.233 3389 aria-noxi novice wagjohan voiceactivity
-	//--cut -filter *Augsburg -log log.txt Z:\Korpora\aria-noxi voiceactivity.novice.wagjohan BREATH Novice_close.wav
-
-	//--extract -filter 066_2016-05-23_Augsburg -log log.txt D:\korpora\nova\aria-noxi expert close
-
-	//--train -under -leftContext 5 -rightContext 5 -username system -password AriaSSI -list 066_2016-05-23_Augsburg;067_2016-05-23_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer-template>
-	//--train -cooperative -under -leftContext 5 -rightContext 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer-template>
-
-	//--forward -leftContext 5 -rightContext 5 -assign systemcml -username system -password AriaSSI -filter *Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi novice;expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer>
-	//--forward -cooperative -leftContext 5 -rightContext 5 -username system -password AriaSSI -filter 084_2016-05-31_Augsburg -log log.txt D:\korpora\nova\aria-noxi 137.250.171.233 3389 aria-noxi expert voiceactivity gold "close.mfccdd[-f 0.04 -d 0]" <trainer>
-
 	char info[1024];
 	ssi_sprint (info, "\n%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
