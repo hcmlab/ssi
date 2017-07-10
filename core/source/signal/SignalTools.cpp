@@ -38,8 +38,6 @@
 
 namespace ssi {
 
-	Mutex SignalTools::mutex;
-
 	void SignalTools::Transform(ssi_stream_t &from,
 		ssi_stream_t &to,
 		ITransformer &transformer,
@@ -94,7 +92,6 @@ namespace ssi {
 			if (sample_number_out > 0) {
 				ssi_stream_adjust(to, sample_number_out);
 				if (call_enter) {
-					Lock lock(mutex);
 					transformer.transform_enter(from, to, 0, 0);
 				}
 				ITransformer::info tinfo;
@@ -113,7 +110,6 @@ namespace ssi {
 					transformer.transform(tinfo, from, to, 0, 0);
 				}
 				if (call_flush) {
-					Lock lock(mutex);
 					transformer.transform_flush(from, to, 0, 0);
 				}
 			}
@@ -158,7 +154,6 @@ namespace ssi {
 			to.tot = byte_shift_out;
 
 			if (call_enter) {
-				Lock lock(mutex);
 				transformer.transform_enter(from, to, 0, 0);
 			}
 			ITransformer::info tinfo;
@@ -188,7 +183,6 @@ namespace ssi {
 				}
 			}
 			if (call_flush) {
-				Lock lock(mutex);
 				transformer.transform_flush(from, to, 0, 0);
 			}				
 
@@ -331,7 +325,6 @@ namespace ssi {
 			if (sample_number_out > 0) {
 				ssi_stream_adjust(to, sample_number_out);
 				if (call_enter) {
-					Lock lock(mutex);
 					transformer.transform_enter(from, to, xtra_stream_in_num, xtra_stream_in);
 				}
 				ITransformer::info tinfo;
@@ -340,7 +333,6 @@ namespace ssi {
 				tinfo.time = 0;
 				transformer.transform(tinfo, from, to, xtra_stream_in_num, xtra_stream_in);
 				if (call_flush) {
-					Lock lock(mutex);
 					transformer.transform_flush(from, to, xtra_stream_in_num, xtra_stream_in);
 				}
 			}
@@ -424,7 +416,6 @@ namespace ssi {
 					xtra_stream_in[k - 1].tot = 0;
 				}
 
-				Lock lock(mutex);
 				transformer.transform_enter(from, to, xtra_stream_in_num, xtra_stream_in);
 
 			}
@@ -471,7 +462,6 @@ namespace ssi {
 					xtra_stream_in[k - 1].tot = 0;
 				}
 
-				Lock lock(mutex);
 				transformer.transform_flush(from, to, xtra_stream_in_num, xtra_stream_in);
 
 			}

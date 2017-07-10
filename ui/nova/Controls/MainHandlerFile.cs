@@ -272,6 +272,10 @@ namespace ssi
             {                                
                 mediaList.Add(trigger);
             }
+            foreach (Pipeline pipeline in annoList.Meta.Pipeline)
+            {
+                mediaList.Add(pipeline);
+            }
         }
 
         private void loadCSVAnnoFile(string filename, double samplerate = 1, string type = "semicolon", string filter = null)

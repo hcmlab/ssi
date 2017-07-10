@@ -14,6 +14,7 @@ namespace ssi
             {
                 if (e.KeyboardDevice.IsKeyDown(Key.Space))
                 {
+                   
                     if (IsPlaying())
                     {
                         Stop();

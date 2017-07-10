@@ -1506,9 +1506,7 @@ namespace ssi
             var collection = database.GetCollection<BsonDocument>(DatabaseDefinitionCollections.Streams);
             var builder = Builders<BsonDocument>.Filter;
             var filter = builder.Eq("name", name);
-            var update = Builders<BsonDocument>.Update.Set("isValid", false);
-            collection.UpdateOne(filter, update);
-
+            collection.DeleteOne(filter);
             streams = GetStreams();
 
             return true;

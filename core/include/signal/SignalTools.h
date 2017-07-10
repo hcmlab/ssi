@@ -132,10 +132,6 @@ public:
 
 	// sum series along dimension
 	static void Sum (ssi_stream_t &series);
-
-protected:
-
-	static Mutex mutex;
 };
 
 }

@@ -47,14 +47,18 @@ namespace ssi
         }
 
 
-        public string CMLExtractFeature(string chainPath, string fromPath, string toPath, string frameStep, string leftContext, string rightContext)
+        public string CMLExtractFeature(string chainPath, int nParallel, string fromPath, string toPath, string frameStep, string leftContext, string rightContext)
         {
             string result = "";
-            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml-extract.log";
+
+            File.Delete(logPath);
 
             try
             {
-                string arguments = " -step " + frameStep +
+                string arguments = "-list " +
+                    " -parallel " + nParallel +
+                    " -step " + frameStep +
                     " -left " + leftContext +
                     " -right " + rightContext +
                     " -log " + logPath + " " +
@@ -88,7 +92,9 @@ namespace ssi
             string[] split = server.Split(':');
             string ip = split[0];
             string port = split[1];
-            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml-train.log";
+
+            File.Delete(logPath);
 
             try
             {
@@ -153,7 +159,9 @@ namespace ssi
             string[] split = server.Split(':');
             string ip = split[0];
             string port = split[1];
-            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml.log";
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "\\cml-predict.log";
+
+            File.Delete(logPath);
 
             try
             {

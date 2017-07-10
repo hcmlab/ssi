@@ -217,6 +217,12 @@ bool OptionList::LoadXML (const ssi_char_t *filepath, IOptions &list) {
 
 bool OptionList::SaveXML (const ssi_char_t *filepath, IOptions &list) {
 
+	if (list.isReadOnly())
+	{
+		ssi_msg(SSI_LOG_LEVEL_WARNING, "skip save, list is readonly '%s'", filepath);
+		return false;
+	}
+
 	FilePath fp (filepath);
 	ssi_char_t *filepath_with_ext = 0;
 	if (strcmp (fp.getExtension (), SSI_FILE_TYPE_OPTION) != 0) {
@@ -299,6 +305,17 @@ bool OptionList::LoadXML (FILE *file, IOptions &list) {
 		ssi_wrn ("tag <options> missing");
 		return false;	
 	}
+
+	bool readOnly = false;
+	const ssi_char_t *readOnlyStr = 0;
+	if (readOnlyStr = body->Attribute("readOnly"))
+	{
+		if (ssi_strcmp(readOnlyStr, "true", false))
+		{
+			readOnly = true;
+		}
+	}
+	list.setReadOnly(readOnly);
 
 	TiXmlElement *item = body->FirstChildElement ();
 	for ( item; item; item = item->NextSiblingElement()) {
@@ -670,6 +687,16 @@ void OptionList::lock(){
 
 void OptionList::unlock(){
 	_mutex.release();
+}
+
+bool OptionList::isReadOnly()
+{
+	return _readOnly;
+}
+
+void OptionList::setReadOnly(bool toggle)
+{
+	_readOnly = toggle;
 }
 
 }

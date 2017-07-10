@@ -207,6 +207,10 @@ namespace ssi
             control.navigator.playButton.Click += navigatorPlay_Click;
             control.navigator.jumpEndButton.Click += navigatorJumpEnd_Click;
 
+            control.navigator.fastForwardButton.Click += fastForwardButton_Click;
+            control.navigator.fastBackwardButton.Click += fastBackwardButton_Click;
+
+
             // Timeline
 
             timeline = new Timeline();
@@ -216,6 +220,21 @@ namespace ssi
             control.timeLineControl.rangeSlider.OnTimeRangeChanged += control.timeLineControl.timeTrackSelection.TimeRangeChanged;
             control.timeLineControl.rangeSlider.OnTimeRangeChanged += Time.TimelineChanged;
             control.timeLineControl.rangeSlider.Update();
+
+
+
+            // Database
+
+            control.databaseConnectMenu.Click += DatabaseConnectMenu_Click;
+            if (Properties.Settings.Default.DatabaseAutoLogin)
+            {
+                databaseConnect();
+            }
+            else
+            {
+                updateNavigator();
+            }
+
 
             // Mouse
 
@@ -291,17 +310,6 @@ namespace ssi
             }
 
 
-            // Database
-
-            control.databaseConnectMenu.Click += DatabaseConnectMenu_Click;            
-            if (Properties.Settings.Default.DatabaseAutoLogin)
-            {
-                databaseConnect();
-            }            
-            else
-            {
-                updateNavigator();
-            }
 
             // Clear
 

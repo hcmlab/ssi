@@ -60,6 +60,9 @@ public:
 
 	virtual void lock() = 0;
 	virtual void unlock() = 0;
+
+	virtual bool isReadOnly() = 0;
+	virtual void setReadOnly(bool toggle) = 0;
 };
 
 }

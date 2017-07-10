@@ -86,6 +86,8 @@ public:
 
 	void lock();
 	void unlock();
+	bool isReadOnly();
+	void setReadOnly(bool toggle);
 
 	void print (FILE *file);
 
@@ -101,6 +103,7 @@ protected:
 	static ssi_char_t *ssi_log_name;
 
 	std::vector<ssi_option_t *> _list;	
+	bool _readOnly;
 
 	static ssi_char_t *Strcpy (const ssi_char_t *string);
 	static ssi_size_t GetTypeSize (ssi_type_t);

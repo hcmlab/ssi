@@ -27,8 +27,6 @@
 #include "ssi.h"
 using namespace ssi;
 
-#include <vld.h>
-
 #ifdef USE_SSI_LEAK_DETECTOR
 #include "SSI_LeakWatcher.h"
 #ifdef _DEBUG
@@ -225,7 +223,7 @@ void Run(const ssi_char_t *exePath, params_t params) {
 	// start processing
 
 	ssi_size_t N = (ssi_size_t)params.inList.size();
-
+	
 	ThreadPool pool("extract", params.nParallel <= 0 ? N : params.nParallel);
 
 	for (ssi_size_t n = 0; n < N; n++)
