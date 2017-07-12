@@ -33,8 +33,6 @@
 #include "signal/include/ssisignal.h"
 using namespace ssi;
 
-#include <vld.h>
-
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
 	#ifdef _DEBUG
