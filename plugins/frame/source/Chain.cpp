@@ -294,6 +294,8 @@ void Chain::parse () {
 		return;
 	}
 
+	// parse chain
+
 	ssi_msg (SSI_LOG_LEVEL_BASIC, "load '%s'", filepath_with_ext);
 
 	TiXmlDocument doc;

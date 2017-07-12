@@ -708,6 +708,33 @@ void cutStreamFromLabel(params_t &params)
 	}
 }
 
+bool train_h(params_t &params, Trainer &trainer, CMLTrainer &cmltrainer)
+{
+	ssi_print("\n-------------------------------------------\n");
+	ssi_print("TRAIN '%s'\n\n", params.trainer);
+
+	if (ssi_strcmp(params.balance, "under", false))
+	{
+		trainer.setBalance(Trainer::BALANCE::UNDER);
+	}
+	else if (ssi_strcmp(params.balance, "over", false))
+	{
+		trainer.setBalance(Trainer::BALANCE::OVER);
+	}
+
+	if (!cmltrainer.train(&trainer))
+	{
+		return false;
+	}
+	
+	trainer.Meta["leftContext"] = params.contextLeft;
+	trainer.Meta["rightContext"] = params.contextRight;
+	trainer.Meta["balance"] = params.balance;
+	trainer.save(params.trainer);
+	
+	return true;
+}
+
 void train(params_t &params)
 {
 	MongoURI uri(params.server, params.port, params.username, params.password);
@@ -752,29 +779,10 @@ void train(params_t &params)
 			}
 		}
 
-		ssi_char_t string[SSI_MAX_CHAR];
-		ssi_sprint(string, "%s", params.trainer);
-
-		ssi_print("\n-------------------------------------------\n");
-		ssi_print("TRAIN '%s'\n\n", string);
-
-		if (ssi_strcmp(params.balance, "under", false))
+		if (!train_h(params, trainer, cmltrainer))
 		{
-			trainer.setBalance(Trainer::BALANCE::UNDER);
+			ssi_wrn("ERROR: training failed");
 		}
-		else if (ssi_strcmp(params.balance, "over", false))
-		{
-			trainer.setBalance(Trainer::BALANCE::OVER);
-		}
-
-		if (cmltrainer.train(&trainer))
-		{
-			trainer.Meta["leftContext"] = params.contextLeft;
-			trainer.Meta["rightContext"] = params.contextRight;
-			trainer.Meta["balance"] = params.balance;
-			trainer.save(string);
-		}
-
 	}
 	else
 	{
@@ -797,28 +805,59 @@ void train(params_t &params)
 					continue;
 				}
 
-				ssi_print("\n-------------------------------------------\n");
-				ssi_print("TRAIN '%s'\n\n", params.trainer);
-
-				if (ssi_strcmp(params.balance, "under", false))
+				if (!train_h(params, trainer, cmltrainer))
 				{
-					trainer.setBalance(Trainer::BALANCE::UNDER);
-				}
-				else if (ssi_strcmp(params.balance, "over", false))
-				{
-					trainer.setBalance(Trainer::BALANCE::OVER);
-				}
-
-				if (cmltrainer.train(&trainer))
-				{
-					trainer.Meta["leftContext"] = params.contextLeft;
-					trainer.Meta["rightContext"] = params.contextRight;
-					trainer.Meta["balance"] = params.balance;
-					trainer.save(params.trainer);
+					ssi_wrn("ERROR: training failed");
 				}
 			}
 		}		
 	}
+}
+
+bool forward_h(params_t &params, MongoClient &client, Trainer &trainer, CMLTrainer &cmltrainer, const ssi_char_t *session, const ssi_char_t *role)
+{
+	ssi_print("\n-------------------------------------------\n");
+	ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
+
+	Annotation *anno = cmltrainer.forward(&trainer, session, role, params.annotator, params.cooperative);
+	if (!anno)
+	{
+		return false;
+	}
+
+	if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
+	{
+		anno->packClass(params.label_mingap);
+		if (params.label_mindur > 0)
+		{
+			anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
+		}
+		anno->packClass(params.label_mingap);
+	}
+
+	if (params.confidence >= 0)
+	{
+		anno->setConfidence((ssi_real_t)params.confidence);
+	}
+
+	if (params.annotator_new[0] != '\0')
+	{
+		if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator_new, params.finished, params.locked))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator, params.finished, params.locked))
+		{
+			return false;
+		}
+	}
+
+	delete anno;
+
+	return true;
 }
 
 void forward(params_t &params)
@@ -857,41 +896,10 @@ void forward(params_t &params)
 
 			for (StringList::iterator role = roles.begin(); role != roles.end(); role++)
 			{
-				ssi_print("\n-------------------------------------------\n");
-				ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
-
-				Annotation *anno = cmltrainer.forward(&trainer, session, role->str(), params.annotator, params.cooperative);
-				if (!anno)
+				if (!forward_h(params, client, trainer, cmltrainer, session, role->str()))
 				{
 					ssi_wrn("ERROR: could not create annotation");
-					continue;
 				}
-
-				if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
-				{
-					anno->packClass(params.label_mingap);
-					if (params.label_mindur > 0)
-					{
-						anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
-					}
-					anno->packClass(params.label_mingap);
-				}
-
-				if (params.confidence >= 0)
-				{
-					anno->setConfidence((ssi_real_t)params.confidence);
-				}
-
-				if (params.annotator_new[0] != '\0')
-				{
-					CMLAnnotation::Save(anno, &client, session, role->str(), params.scheme, params.annotator_new, params.finished, params.locked);
-				}
-				else
-				{
-					CMLAnnotation::Save(anno, &client, session, role->str(), params.scheme, params.annotator, params.finished, params.locked);
-				}
-
-				delete anno;
 			}
 		}
 	}
@@ -917,35 +925,10 @@ void forward(params_t &params)
 					continue;
 				}
 
-				Annotation *anno = cmltrainer.forward(&trainer, session, role->str(), params.annotator, params.cooperative);
-				if (!anno)
+				if (!forward_h(params, client, trainer, cmltrainer, session, role->str()))
 				{
 					ssi_wrn("ERROR: could not create annotation");
-					continue;
 				}
-
-				anno->packClass(params.label_mingap);
-				if (params.label_mindur > 0)
-				{
-					anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
-				}
-				anno->packClass(params.label_mingap);
-
-				if (params.confidence >= 0)
-				{
-					anno->setConfidence((ssi_real_t)params.confidence);
-				}
-
-				if (params.annotator_new[0] != '\0')
-				{
-					CMLAnnotation::Save(anno, &client, session, role->str(), params.scheme, params.annotator_new, params.finished, params.locked);
-				}
-				else
-				{
-					CMLAnnotation::Save(anno, &client, session, role->str(), params.scheme, params.annotator, params.finished, params.locked);
-				}
-
-				delete anno;
 			}
 		}	
 	}	

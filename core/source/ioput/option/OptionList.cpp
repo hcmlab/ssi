@@ -32,7 +32,8 @@ namespace ssi {
 ssi_char_t *OptionList::ssi_log_name = "options___";
 const ssi_char_t OptionList::SEPARATOR = ',';
 
-OptionList::OptionList () {
+OptionList::OptionList () 
+: _readOnly(false) {
 }
 
 OptionList::~OptionList () {

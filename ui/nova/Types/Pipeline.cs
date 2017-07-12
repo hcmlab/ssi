@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -34,7 +37,6 @@ namespace ssi
         //private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         AnnoList annoList;
-        bool pipelineExecuted = false;
         string pipelinepath;
         Process process = new Process();
 
@@ -44,6 +46,18 @@ namespace ssi
             this.pipelinepath = pipelinepath;
             client = new UdpClient("127.0.0.1", 1111);
 
+            //check if xmlpipe is available, else download it from git
+            string SSIbinaryGitPath = "https://github.com/hcmlab/ssi/raw/master/bin/x64/vc140/";
+            string xmlpipeexe = "xmlpipe.exe";
+            string xmlpipeexePath = AppDomain.CurrentDomain.BaseDirectory + xmlpipeexe;
+
+
+            if (!(File.Exists(xmlpipeexePath)))
+            {
+                DownloadFile(SSIbinaryGitPath + xmlpipeexe, xmlpipeexePath);
+            }
+
+            //call the pipeline in wait state
 
             CallXMLPipe(pipelinepath);
 
@@ -51,35 +65,10 @@ namespace ssi
         }
 
         ~Pipeline()
-        {
-            try
-            {
-                client.Close();
-
-            }
-            catch { }
-
+        { 
+            client.Close();
 
         }
-
-        private int findItem(double position)
-        {
-            if (annoList.Count == 0)
-            {
-                return -1;
-            }
-
-            for (int index = 0; index < annoList.Count; index++)
-            {
-                if (position <= annoList[index].Stop)
-                {
-                    return index;
-                }
-            }
-
-            return -1;
-        }
-
         public void move(double newPosition, double threshold)
         {
         }
@@ -91,12 +80,10 @@ namespace ssi
 
             try
             {
-
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
-                string folder = AppDomain.CurrentDomain.BaseDirectory + "xmlpipe\\";
-                startInfo.FileName = folder + "xmlpipe.exe";
-                startInfo.Arguments = folder + pipelinepath;
+                startInfo.FileName =  "xmlpipe.exe";
+                startInfo.Arguments = pipelinepath;
                 process.StartInfo = startInfo;
                 process.Start();
               
@@ -113,6 +100,7 @@ namespace ssi
 
         public void Clear()
         {
+            process.Kill();
         }
 
         public string GetDirectory()
@@ -204,28 +192,42 @@ namespace ssi
             byte[] bytes = Encoding.ASCII.GetBytes(message);
 
             client.Send(bytes, bytes.Length);
-
+            Thread.Sleep(3000); 
+            CallXMLPipe(pipelinepath);
         }
 
         public void Play()
         {
-            //here we make sure the pipeline is run only once. (to make sure data does not get overwritten on play/pause. This could be changed in the future. To run it again, reload the annotation
-            if (pipelineExecuted == false)
-            {
-                pipelineExecuted = true;
-
                 string message = "SSI:STRT:RUN1\0";
                 byte[] bytes = Encoding.ASCII.GetBytes(message);
 
                 client.Send(bytes, bytes.Length);
 
-            }
-
         }
 
         public void Stop()
         {
-           
+            process.Kill();
+        }
+
+        public void DownloadFile(string urlAddress, string location)
+        {
+            using (WebClient webClient = new WebClient())
+            {
+
+                Uri URL = new Uri(urlAddress);
+                // Start the stopwatch which we will be using to calculate the download speed
+
+                try
+                {
+                    // Start downloading the file
+                    webClient.DownloadFile(URL, location);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 }

@@ -303,11 +303,6 @@ namespace ssi
             return items;
         }
 
-        public static bool IsObjectID(ObjectId id)
-        {
-            return id != new ObjectId();
-        }
-
         public static bool GetObjectID(ref ObjectId id, string collection, string name)
         {
             var builder = Builders<BsonDocument>.Filter;
@@ -365,8 +360,7 @@ namespace ssi
                 return false;
             }
 
-            List<string> sessions = GetCollectionField(DatabaseDefinitionCollections.Sessions, "name", false);
-            return sessions.Any(s => name.Equals(s));
+            return Sessions.Exists(item => item.Name == name);
         }
 
         public static bool SchemeExists(string name)
@@ -381,8 +375,7 @@ namespace ssi
                 return false;
             }
 
-            List<string> schemes = GetSchemesAll();
-            return schemes.Any(s => name.Equals(s));
+            return Schemes.Exists(item => item.Name == name);
         }
 
         public static bool AnnotatorExists(string name)
@@ -429,8 +422,7 @@ namespace ssi
                 return false;
             }
 
-            List<string> roles = GetCollectionField(DatabaseDefinitionCollections.Roles, "name", false);
-            return roles.Any(s => name.Equals(s));
+            return Roles.Exists(item => item.Name == name);
         }
 
         public static bool StreamExists(string name)
@@ -445,24 +437,7 @@ namespace ssi
                 return false;
             }
 
-            List<string> roles = GetStreamAll();
-            return roles.Any(s => name.Equals(s));
-        }
-
-        public static bool SubjectExists(string name)
-        {
-            if (!IsConnected)
-            {
-                return false;
-            }
-
-            if (name == null || name == "")
-            {
-                return false;
-            }
-
-            List<string> subjects = GetSubjectsAll();
-            return subjects.Any(s => name.Equals(s));
+            return Streams.Exists(item => item.Name == name);
         }
 
         public static bool AnnotationExists(ObjectId annotatorId, ObjectId sessionId, ObjectId roleId, ObjectId schemeId)
@@ -484,14 +459,7 @@ namespace ssi
                 return false;
             }
 
-
             return true;
-            //List<BsonDocument> annotations = GetCollection(DatabaseDefinitionCollections.Annotations);
-
-            //return annotations.Any(s => annotatorId.Equals(s["annotator_id"].AsObjectId)
-            //    && sessionId.Equals(s["session_id"].AsObjectId)
-            //    && roleId.Equals(s["role_id"].AsObjectId)
-            //    && schemeId.Equals(s["scheme_id"].AsObjectId));
         }
 
         public static bool AnnotationExists(string annotator, string session, string role, string scheme)
@@ -638,11 +606,6 @@ namespace ssi
             return items.OrderBy(i => i.Name).ToList();
         }
 
-        public static List<string> GetSchemesAll()
-        {
-            return GetCollectionField(DatabaseDefinitionCollections.Schemes, "name", false);
-        }
-
         private static List<DatabaseRole> GetRoles(bool onlyValid = true)
         {
             List<BsonDocument> roles = GetCollection(DatabaseDefinitionCollections.Roles, onlyValid);
@@ -657,16 +620,6 @@ namespace ssi
             }
            
             return items.OrderBy(i => i.Name).ToList();
-        }
-
-        public static List<string> GetSubjects()
-        {
-            return GetCollectionField(DatabaseDefinitionCollections.Subjects, "name");
-        }
-
-        public static List<string> GetSubjectsAll()
-        {
-            return GetCollectionField(DatabaseDefinitionCollections.Subjects, "name", false);
         }
 
         private static List<DatabaseAnnotator> GetAnnotators(bool onlyValid = true)
@@ -689,11 +642,6 @@ namespace ssi
             }
 
             return items.OrderBy(i => i.FullName).ToList();
-        }
-
-        public static List<string> GetStreamAll()
-        {
-            return GetCollectionField(DatabaseDefinitionCollections.Streams, "name", false);
         }
 
         private static List<DatabaseStream> GetStreams(bool onlyValid = true)
@@ -772,7 +720,7 @@ namespace ssi
             return SelectCollectionField("Select annotator", DatabaseDefinitionCollections.Annotators, "name");
         }
 
-        public static string SelectStreamType()
+        public static string SelectStreams()
         {
             return SelectCollectionField("Select stream type", DatabaseDefinitionCollections.Streams, "name");
         }

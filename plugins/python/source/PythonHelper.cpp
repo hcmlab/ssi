@@ -83,7 +83,8 @@ namespace ssi {
 	PythonHelper::PythonHelper(ssi_char_t *script_name,
 		const ssi_char_t *optsfile,
 		const ssi_char_t *optsstr,
-		const ssi_char_t *syspath)
+		const ssi_char_t *syspath,
+		const ssi_char_t *workdir)
 		: _pModule(0),
 		_pBoard(0),
 		_pOptions(0),
@@ -104,7 +105,7 @@ namespace ssi {
 
 		GIL gil;
 
-		add_sys_path(syspath);
+		add_sys_path(syspath, workdir);
 
 		ssi_msg(SSI_LOG_LEVEL_BASIC, "loading script '%s.py'", _script_name);
 		_pModule = PyImport_ImportModule(_script_name);
@@ -172,12 +173,23 @@ namespace ssi {
 		return 0;
 	}
 
-	void PythonHelper::add_sys_path(const ssi_char_t *path)
+	void PythonHelper::add_sys_path(const ssi_char_t *path, const ssi_char_t *workdir)
 	{
 		if (!path || path[0] == '\0')
 		{
 			return;
 		}
+
+		// change working directory
+
+		ssi_char_t workdir_old[SSI_MAX_CHAR];
+		if (workdir != 0)
+		{		
+			ssi_getcwd(SSI_MAX_CHAR, workdir_old);			
+			ssi_setcwd(workdir);
+		}
+
+		// populate system path
 
 		PyObject* sysPath = PySys_GetObject((char*)"path");
 		bool changed = false;
@@ -224,6 +236,13 @@ namespace ssi {
 			ssi_msg(SSI_LOG_LEVEL_BASIC, "new sys path '%s'", PyUnicode_AsUTF8(pSysPathStr));
 			Py_DECREF(pSysPathStr);
 		}
+
+		// reset working directory
+		if (workdir != 0)
+		{
+			ssi_setcwd(workdir_old);
+		}
+
 	}
 
 	PyObject *PythonHelper::call_function(function_t function, PyObject *pArgs)

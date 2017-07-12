@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
 EndProject
@@ -115,6 +115,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "control", "plugins\control\
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "control", "plugins\control\build\test\test.v14.vcxproj", "{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}"
+	ProjectSection(ProjectDependencies) = postProject
+		{682E784C-BD4B-4EA1-BEF3-5B7297DCE20E} = {682E784C-BD4B-4EA1-BEF3-5B7297DCE20E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "plugins\python\build\test\python.v14.vcxproj", "{DBF54D98-E57B-4475-AD88-CD927258B75B}"
 	ProjectSection(ProjectDependencies) = postProject

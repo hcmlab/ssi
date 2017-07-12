@@ -92,7 +92,11 @@ static ssi_char_t *FUNCTION_NAMES[FUNCTIONS::NUM];
 
 public:
 
-	PythonHelper(ssi_char_t *script_name, const ssi_char_t *optsfile, const ssi_char_t *optsstr, const ssi_char_t *syspath);
+	PythonHelper(ssi_char_t *script_name, 
+		const ssi_char_t *optsfile, 
+		const ssi_char_t *optsstr, 
+		const ssi_char_t *syspath,
+		const ssi_char_t *workdir = 0);
 	~PythonHelper();
 
 	ssi_size_t getSampleNumberOut(ssi_size_t sample_number_in);
@@ -145,7 +149,7 @@ protected:
 	int register_function(const ssi_char_t *name, PyObject **function);
 	PyObject *call_function(function_t function, PyObject *args);
 
-	void add_sys_path(const ssi_char_t *path);
+	void add_sys_path(const ssi_char_t *path, const ssi_char_t *workdir);
 
 	void options_get(function_t function, const ssi_char_t *optsfile, const ssi_char_t *optsstr);
 	void options_parse(const ssi_char_t *string, char delim);
