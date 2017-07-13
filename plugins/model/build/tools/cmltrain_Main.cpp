@@ -62,6 +62,7 @@ struct params_t
 	ssi_char_t *list;
 	ssi_char_t *classname;
 	ssi_char_t *stream;
+	ssi_char_t *streamOut;
 	ssi_char_t *trainerTmp;
 	ssi_char_t *trainer;
 	//ssi_time_t frame;
@@ -74,7 +75,6 @@ struct params_t
 	double confidence;
 	double label_mingap;
 	double label_mindur;
-	bool overwrite;
 	bool force;
 };
 
@@ -88,6 +88,7 @@ void removeAnnotations(params_t &params);
 void cutStreamFromLabel(params_t &params);
 void train(params_t &params);
 void forward(params_t &params);
+void merge(params_t &params);
 
 int main (int argc, char **argv) {
 
@@ -125,6 +126,7 @@ int main (int argc, char **argv) {
 	params.list = 0;
 	params.classname = 0;
 	params.stream = 0;
+	params.streamOut = 0;
 	params.trainerTmp = 0;
 	params.trainer = 0;
 	params.finished = false;
@@ -135,7 +137,6 @@ int main (int argc, char **argv) {
 	params.contextLeft = 0;	
 	params.contextRight = 0;
 	params.balance = 0;
-	params.overwrite = false;
 
 	cmd.addMasterSwitch("--remove");
 
@@ -215,7 +216,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("server", &params.server, "server name");
 	cmd.addICmdArg("port", &params.port, "port number");
 	cmd.addSCmdArg("database", &params.database, "name of database");
-	cmd.addSCmdArg("role", &params.role, "name of role");
+	cmd.addSCmdArg("role", &params.role, "name of role (if several separate by ;)");
 	cmd.addSCmdArg("scheme", &params.scheme, "name of scheme");
 	cmd.addSCmdArg("annotator", &params.annotator, "name of annotator");
 	cmd.addSCmdArg("stream", &params.stream, "name of stream");	
@@ -242,7 +243,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("server", &params.server, "server name");
 	cmd.addICmdArg("port", &params.port, "port number");
 	cmd.addSCmdArg("database", &params.database, "name of database");
-	cmd.addSCmdArg("role", &params.role, "name of role");
+	cmd.addSCmdArg("role", &params.role, "name of role (if several separate by ;)");
 	cmd.addSCmdArg("scheme", &params.scheme, "name of scheme");
 	cmd.addSCmdArg("annotator", &params.annotator, "name of annotator");
 	cmd.addSCmdArg("stream", &params.stream, "name of stream");
@@ -264,6 +265,20 @@ int main (int argc, char **argv) {
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
+	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
+	cmd.addMasterSwitch("--merge");
+
+	cmd.addText("\nArguments:");
+	cmd.addSCmdArg("root", &params.root, "path to database on disk");
+	cmd.addSCmdArg("role", &params.role, "name of role (if several separate by ;)");
+	cmd.addSCmdArg("input", &params.stream, "name of streams separated by ;");
+	cmd.addSCmdArg("output", &params.streamOut, "name of output stream");
+
+	cmd.addText("\nOptions:");
+	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
+	cmd.addBCmdOption("-force", &params.force, false, "overwrite existing files");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 	
 	if (cmd.read (argc, argv)) {		
@@ -288,7 +303,7 @@ int main (int argc, char **argv) {
 		ssi_print("download source=%s\ndownload target=%s\n\n", params.srcurl, exedir);
 		Factory::SetDownloadDirs(params.srcurl, exedir);
 		
-		if (params.srcurl[0] != '\0')
+		if (params.srcurl != 0 && params.srcurl[0] != '\0')
 		{
 			ssi_char_t *depend[2] = { "libbson-1.0.dll", "libmongoc-1.0.dll" };
 			for (ssi_size_t i = 0; i < 2; i++)
@@ -373,6 +388,13 @@ int main (int argc, char **argv) {
 			break;
 		}
 
+		case 7: {
+
+			merge(params);
+
+			break;
+		}
+
 		}
 
 		if (params.logpath && params.logpath[0] != '\0') {
@@ -398,6 +420,7 @@ int main (int argc, char **argv) {
 	delete[] params.filter;
 	delete[] params.list;
 	delete[] params.stream;
+	delete[] params.streamOut;
 	delete[] params.classname;
 	delete[] params.trainerTmp;
 	delete[] params.trainer;
@@ -932,4 +955,138 @@ void forward(params_t &params)
 			}
 		}	
 	}	
+}
+
+void merge(params_t &params)
+{
+	StringList roles;
+	roles.parse(params.role, ';');
+
+	StringList sessions;
+	getSessions(sessions, params);
+
+	StringList streams;
+	streams.parse(params.stream, ';');
+
+	ssi_size_t n_streams = streams.size();
+	if (n_streams <= 1)
+	{
+		return;
+	}
+
+	ssi_stream_t *inputStreams = new ssi_stream_t[n_streams];	
+	ssi_byte_t **inputPtrs = new ssi_byte_t *[n_streams];
+	ssi_stream_t outputStream;
+	ssi_byte_t *outputPtr = 0;
+	ssi_stream_init(outputStream, 0, 0, 0, SSI_UNDEF, 0, 0);
+
+	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
+	{
+		FilePath path(it->str());
+		const ssi_char_t *session = path.getName();
+
+		for (StringList::iterator role = roles.begin(); role != roles.end(); role++)
+		{
+			ssi_print("\n-------------------------------------------\n");
+			ssi_print("MERGE STREAMS '%s.%s.{%s}->%s'\n\n", session, role->str(), params.stream, params.streamOut);
+
+			String toFile = String(params.root) + "\\" + session + "\\" + role->str() + "." + params.streamOut + ".stream";
+
+			if (!params.force && ssi_exists(toFile.str()))
+			{
+				ssi_print("skip\n");
+				continue;
+			}
+
+			// read input streams			
+
+			bool foundFiles = true;
+			for (ssi_size_t i = 0; i < n_streams; i++)
+			{
+				String fromFile = String(params.root) + "\\" + session + "\\" + role->str() + "." + streams[i];
+				if (ssi_exists(fromFile.str()))
+				{
+					foundFiles = false;
+					continue;
+				}
+
+				if (!FileTools::ReadStreamFile(fromFile.str(), inputStreams[i]))
+				{
+					foundFiles = false;
+					continue;
+				}
+
+				inputPtrs[i] = inputStreams[i].ptr;
+ 			}
+
+			if (foundFiles)
+			{
+				// calculate ouput properties
+
+				ssi_type_t type = inputStreams[0].type;
+				ssi_size_t byte = inputStreams[0].byte;
+				ssi_size_t num = inputStreams[0].num;
+				ssi_size_t dim = inputStreams[0].dim;
+				ssi_time_t sr = inputStreams[0].sr;
+
+				bool compatible = true;
+				for (ssi_size_t i = 1; i < n_streams; i++)
+				{
+					num = min(num, inputStreams[i].num);
+					dim += inputStreams[i].dim;
+					if (type != inputStreams[i].type || byte != inputStreams[i].byte || sr != inputStreams[i].sr)
+					{
+						compatible = false;
+						break;
+					}
+				}
+
+				if (compatible)
+				{
+					ssi_stream_init(outputStream, num, dim, byte, type, sr, 0);
+					outputPtr = outputStream.ptr;
+
+					// merge streams
+
+					ssi_size_t bytes_to_copy;
+
+					for (ssi_size_t n = 0; n < num; n++)
+					{
+						for (ssi_size_t i = 0; i < n_streams; i++)
+						{
+							bytes_to_copy = inputStreams[i].dim * byte;
+							memcpy(outputPtr, inputPtrs[i], bytes_to_copy);
+							outputPtr += bytes_to_copy;
+							inputPtrs[i] += bytes_to_copy;
+						}
+
+					}
+
+					// save stream
+
+					FileTools::WriteStreamFile(File::BINARY, toFile.str(), outputStream);
+				}
+				else
+				{
+					ssi_wrn("ERROR: files not compatible");
+				}
+			}
+			else
+			{
+				ssi_wrn("ERROR: missing file(s)");
+			}
+
+			// clean up
+
+			ssi_stream_destroy(outputStream);
+			for (ssi_size_t i = 0; i < n_streams; i++)
+			{
+				ssi_stream_destroy(inputStreams[i]);
+			}
+		}
+
+	}
+
+	delete[] inputStreams;
+	delete[] inputPtrs;
 }
