@@ -1510,28 +1510,6 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;version&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'3'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;file version (0=V0, 1=V1, 2=V2(xml))&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;classes&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -1548,6 +1526,50 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;class names (separated by ;)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;defaultClassIndex&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'-1'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;default class index (applied if >= 0)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;streamClassIndex&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'-1'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;index of input stream holding class indices (applied if >= 0)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>

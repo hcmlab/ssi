@@ -309,7 +309,7 @@ int main (int argc, char **argv) {
 			for (ssi_size_t i = 0; i < 2; i++)
 			{
 				ssi_char_t *dlldst = ssi_strcat(exedir, "\\", depend[i]);
-				ssi_char_t *dllsrc = ssi_strcat(params.srcurl, "\\", depend[i]);
+				ssi_char_t *dllsrc = ssi_strcat(params.srcurl, "/", depend[i]);
 				if (!ssi_exists(dlldst))
 				{
 					WebTools::DownloadFile(dllsrc, dlldst);

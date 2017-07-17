@@ -47,16 +47,17 @@ public:
 	public:
 
 		Options ()
-			: mode(File::WRITE), type(File::BINARY), version(FileSamplesOut::DEFAULT_VERSION) {
+			: mode(File::WRITE), type(File::BINARY), streamClassIndex(-1), defaultClassIndex(-1) {
 
 			path[0] = '\0';
 			classes[0] = '\0';
 			user[0] = '\0';
 
 			addOption ("path", path, SSI_MAX_CHAR, SSI_CHAR, "file path (empty for stdout)");
-			addOption ("type", &type, 1, SSI_UCHAR, "file type (0=binary, 1=ascii)");																	
-			addOption("version", &version, 1, SSI_UCHAR, "file version (0=V0, 1=V1, 2=V2(xml))");
+			addOption ("type", &type, 1, SSI_UCHAR, "file type (0=binary, 1=ascii)");																				
 			addOption ("classes", classes, SSI_MAX_CHAR, SSI_CHAR, "class names (separated by ;)");
+			addOption ("defaultClassIndex", &defaultClassIndex, 1, SSI_INT, "default class index (applied if >= 0)");
+			addOption ("streamClassIndex", &streamClassIndex, 1, SSI_INT, "index of input stream holding class indices (applied if >= 0)");
 			addOption ("user", user, SSI_MAX_CHAR, SSI_CHAR, "user name");
 		};
 
@@ -82,8 +83,9 @@ public:
 		ssi_char_t path[SSI_MAX_CHAR];
 		File::TYPE type;
 		File::MODE mode;
-		File::VERSION version;
 		ssi_char_t classes[SSI_MAX_CHAR];
+		int streamClassIndex;
+		int defaultClassIndex;
 		ssi_char_t user[SSI_MAX_CHAR];
 	};
 
@@ -121,6 +123,7 @@ protected:
 	int ssi_log_level;
 	
 	bool classFromEvent(ssi_event_t *e);
+	void FileSampleWriter::classFromStream(ssi_stream_t &s);
 	ssi_size_t _class_id;
 	ssi_sample_t *_sample;
 	FileSamplesOut _out;

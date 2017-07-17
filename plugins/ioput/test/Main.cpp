@@ -629,7 +629,9 @@ bool ex_samples(void *arg) {
 	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 
-	FileSampleWriter *writer = ssi_create(FileSampleWriter, 0, true);
+	FileSampleWriter *writer = 0;
+	
+	writer = ssi_create(FileSampleWriter, 0, true);
 	writer->getOptions()->type = File::ASCII;
 	writer->getOptions()->setClasses("A;B");
 	writer->getOptions()->setUser("user");
@@ -644,10 +646,19 @@ bool ex_samples(void *arg) {
 	frame->AddConsumer(cursor_p, writer, "1.0s");
 	board->RegisterListener(*writer, "class@");
 
+	writer = ssi_create(FileSampleWriter, 0, true);
+	writer->getOptions()->type = File::ASCII;
+	writer->getOptions()->setClasses("A;B");
+	writer->getOptions()->setUser("user");
+	writer->getOptions()->streamClassIndex = 1;
+	ITransformable *input[2] = { cursor_p, cursor_p };
+	frame->AddConsumer(2, input, writer, "1.0s");
+
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 400);
 	decorator->add("monitor*", 650, 400, 400, 400);
 
+	board->Start();
 	frame->Start();
 
 	Sleep(2000);

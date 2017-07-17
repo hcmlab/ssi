@@ -1754,3 +1754,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 10.07.17 BUG : tools/xmlchain : correct output path : Johannes
 - 12.07.17 BUG : ioput/options/Options : by default readonly is set to false : Johannes
 - 17.07.17 CHG : frame/Merge : supports all types : Johannes
+- 17.07.17 CHG : ioput/FileSampleWriter : classes can be provided through a stream 'streamClassIndex' : Johannes
