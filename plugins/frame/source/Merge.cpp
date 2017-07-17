@@ -64,11 +64,15 @@ void Merge::transform_enter (ssi_stream_t &stream_in,
 
 	ssi_size_t sum = 0;
 	for (ssi_size_t i = 0; i < xtra_stream_in_num; i++) {
+		if (xtra_stream_in[i].type != stream_in.type)
+		{
+			ssi_err("#type mismatch in extra stream '%u' (%s != %s)", i, SSI_TYPE_NAMES[xtra_stream_in[i].type], SSI_TYPE_NAMES[stream_in.type]);
+		}
 		sum += xtra_stream_in[i].dim;
 	}
 
 	if (sum != _options.dims) {
-		ssi_err ("#dimension (%u) of additional streams does not fit #dimension (%u) set in options", sum, _options.dims);
+		ssi_err ("#dimension (%u) of extra streams does not fit #dimension (%u) set in options", sum, _options.dims);
 	}
 }
 
@@ -86,24 +90,33 @@ void Merge::transform (ITransformer::info info,
 		}
 	}
 
-	ssi_real_t **srcptr = new ssi_real_t *[1 + xtra_stream_in_num];
+	ssi_byte_t **srcptr = new ssi_byte_t *[1 + xtra_stream_in_num];
 	ssi_size_t *srcnum = new ssi_size_t[1 + xtra_stream_in_num];
 	ssi_size_t *srcdim = new ssi_size_t[1 + xtra_stream_in_num];
-	srcptr[0] = ssi_pcast (ssi_real_t, stream_in.ptr);
+	srcptr[0] = stream_in.ptr;
 	srcnum[0] = stream_in.num;
 	srcdim[0] = stream_in.dim;
 	for (ssi_size_t i = 0; i < xtra_stream_in_num; i++) {
-		srcptr[i+1] = ssi_pcast (ssi_real_t, xtra_stream_in[i].ptr);
+		srcptr[i+1] = xtra_stream_in[i].ptr;
 		srcnum[i+1] = xtra_stream_in[i].num;
 		srcdim[i+1] = xtra_stream_in[i].dim;
 	}
-	ssi_real_t *dstptr = ssi_pcast (ssi_real_t, stream_out.ptr);
+	ssi_byte_t *dstptr = stream_out.ptr;
 	
-	for (ssi_size_t i = 0; i < stream_out.num; i++) {
+	ssi_size_t n_bytes_to_copy = 0;
+	for (ssi_size_t i = 0; i < stream_out.num; i++) {			
 		for (ssi_size_t j = 0; j < 1 + xtra_stream_in_num; j++) {
-			for (ssi_size_t k = 0; k < srcdim[j]; k++) {
-				*dstptr++ = i < srcnum[j] ? *(srcptr[j])++ : 0;
+			n_bytes_to_copy = srcdim[j] * stream_out.byte;
+			if (srcnum[j] > i)
+			{
+				memcpy(dstptr, srcptr[j], n_bytes_to_copy);
 			}
+			else
+			{
+				memset(dstptr, 0, n_bytes_to_copy);
+			}
+			dstptr += n_bytes_to_copy;
+			srcptr[j] += n_bytes_to_copy;
 		}
 	}
 
