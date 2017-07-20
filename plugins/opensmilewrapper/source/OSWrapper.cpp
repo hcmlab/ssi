@@ -59,8 +59,8 @@ OSWrapper::OSWrapper (const ssi_char_t *file)
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_option_file = ssi_strcpy (file);
 	}
@@ -69,7 +69,7 @@ OSWrapper::OSWrapper (const ssi_char_t *file)
 OSWrapper::~OSWrapper () {
 
 	if (_option_file) {
-		OptionList::SaveXML (_option_file, _options);
+		OptionList::SaveXML (_option_file, &_options);
 		delete[] _option_file;
 	}
 }

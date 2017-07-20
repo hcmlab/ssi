@@ -356,7 +356,7 @@ bool ex_hierarchical(void *arg) {
 		trainer.eval(sdevel);
 		trainer.cluster(stest);
 		ModelTools::PlotSamples(stest, "svm", ssi_rect(650, 0, 400, 400));
-		OptionList::SaveXML("svm", *model->getOptions());
+		OptionList::SaveXML("svm", model->getOptions());
 	}
 
 	// hierarchical

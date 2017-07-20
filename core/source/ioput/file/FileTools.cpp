@@ -27,6 +27,8 @@
 #include "ioput/file/FileTools.h"
 #include "ioput/file/FileStreamOut.h"
 #include "ioput/file/FileStreamIn.h"
+#include "ioput/wav/WavTools.h"
+#include "ioput/file/FilePath.h"
 
 #if _WIN32|_WIN64
 #include <commdlg.h> // for file dialog
@@ -536,8 +538,7 @@ void FileTools::ReadStreamFile (File &file,
 	// read data
 	ssi_stream_t tmp;
 	
-	if(	  FileTools::ReadStreamHeader (file, tmp, version)
-	  )
+	if(FileTools::ReadStreamHeader (file, tmp, version))
 	{
 		ssi_stream_init (data, tot_sample_number, tmp.dim, tmp.byte, tmp.type, tmp.sr, tmp.time);
 		data.num = 0;
@@ -639,20 +640,30 @@ void FileTools::ReadStreamFile (File::TYPE type,
 bool FileTools::ReadStreamFile (const ssi_char_t *path,
 	ssi_stream_t &data) {
 
-	FileStreamIn file_in;	
-	if (!file_in.open (data, path)) {
-		return false;
+	FilePath fp(path);
+
+	if (ssi_strcmp(fp.getExtension(), SSI_FILE_TYPE_WAV, false))
+	{
+		return WavTools::ReadWavFile(path, data, true);
 	}
-	ssi_stream_adjust (data, file_in.getTotalSampleSize ());
-	ssi_size_t num = 0;
-	ssi_byte_t *ptr = data.ptr;
-	while (num = file_in.read (data, FileStreamIn::NEXT_CHUNK)) {
-		if (num == FileStreamIn::READ_ERROR) {
+	else
+	{
+		FileStreamIn file_in;
+		if (!file_in.open(data, path)) {
 			return false;
 		}
-		data.ptr += num * data.byte * data.dim;
+		ssi_stream_adjust(data, file_in.getTotalSampleSize());
+		ssi_size_t num = 0;
+		ssi_byte_t *ptr = data.ptr;
+		while (num = file_in.read(data, FileStreamIn::NEXT_CHUNK)) {
+			if (num == FileStreamIn::READ_ERROR) {
+				return false;
+			}
+			data.ptr += num * data.byte * data.dim;
+		}
+		data.ptr = ptr;
 	}
-	data.ptr = ptr;
+
 	return true;
 }
 

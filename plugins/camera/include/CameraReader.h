@@ -152,6 +152,11 @@ protected:
 	int ssi_log_level;
 	static int ssi_log_level_static;
 
+	HRESULT RunGraph();
+	void InitGraph();
+	void Flip();
+	void Mirror();
+
 	bool						_first_call;
 	bool						_isComInitialized;
 	int							_comInitCount;

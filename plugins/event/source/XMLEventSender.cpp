@@ -68,8 +68,8 @@ XMLEventSender::XMLEventSender (const ssi_char_t *file)
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -82,7 +82,7 @@ XMLEventSender::XMLEventSender (const ssi_char_t *file)
 XMLEventSender::~XMLEventSender () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 

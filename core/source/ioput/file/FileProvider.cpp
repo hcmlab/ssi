@@ -48,7 +48,10 @@ FileProvider::FileProvider (IConsumer *writer,
 
 FileProvider::~FileProvider () {	
 
-	_writer->consume_flush (1, &_stream);
+	if (_writer)
+	{
+		_writer->consume_flush(1, &_stream);
+	}
 
 	if (_transformer) {
 		_transformer->transform_flush (_stream, _stream_t);
@@ -69,11 +72,31 @@ void FileProvider::init (IChannel *channel) {
 	_info.time = 0;
 
 	if (_transformer) {
-		ssi_stream_init (_stream_t, 0, _transformer->getSampleDimensionOut (sample_dimension), _transformer->getSampleBytesOut (sample_bytes), _transformer->getSampleTypeOut (sample_type), ssi_cast (ssi_time_t, ssi_cast (ssi_size_t, sample_rate)) * (ssi_cast (ssi_time_t, ssi_cast (ssi_size_t, sample_rate)) /  ssi_cast (ssi_time_t, _transformer->getSampleNumberOut (ssi_cast (ssi_size_t, sample_rate))))); 
+
+		ssi_size_t sample_dimension_out = _transformer->getSampleDimensionOut(sample_dimension);
+		ssi_size_t sample_bytes_out = _transformer->getSampleBytesOut(sample_bytes);
+		ssi_type_t sample_type_out = _transformer->getSampleTypeOut(sample_type);
+		ssi_time_t sample_rate_out = sample_rate;
+
+		/*ssi_time_t sample_rate_cast = ssi_cast(ssi_time_t, ssi_cast(ssi_size_t, sample_rate));
+		ssi_size_t sample_number_out = _transformer->getSampleNumberOut(ssi_cast(ssi_size_t, sample_rate));
+
+		ssi_time_t sample_rate_out = 
+			sample_rate_cast
+			* (sample_rate_cast
+				/ ssi_cast(ssi_time_t, sample_number_out));*/
+
+		ssi_stream_init (_stream_t, 0, sample_dimension_out, sample_bytes_out, sample_type_out, sample_rate_out);
 		_transformer->transform_enter (_stream, _stream_t);
-		_writer->consume_enter (1, &_stream_t);		
+		if (_writer)
+		{
+			_writer->consume_enter(1, &_stream_t);
+		}
 	} else {
-		_writer->consume_enter (1, &_stream);
+		if (_writer)
+		{
+			_writer->consume_enter(1, &_stream);
+		}
 	}
 }
 
@@ -93,9 +116,15 @@ bool FileProvider::provide (ssi_byte_t *data,
 		info_t.frame_num = sample_number;
 		info_t.time = _info.time;
 		_transformer->transform (info_t, _stream, _stream_t);
-		_writer->consume (_info, 1, &_stream_t);
+		if (_writer)
+		{
+			_writer->consume(_info, 1, &_stream_t);
+		}
 	} else {
-		_writer->consume (_info, 1, &_stream);
+		if (_writer)
+		{
+			_writer->consume(_info, 1, &_stream);
+		}
 	}
 
 	_info.time += _info.dur;

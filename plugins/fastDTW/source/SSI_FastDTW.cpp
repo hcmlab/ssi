@@ -37,8 +37,8 @@ namespace ssi {
 		: _file(0), _elistener(0), inputdim(0){
 
 		if (file) {
-			if (!OptionList::LoadXML(file, _options)) {
-				OptionList::SaveXML(file, _options);
+			if (!OptionList::LoadXML(file, &_options)) {
+				OptionList::SaveXML(file, &_options);
 			}
 			_file = ssi_strcpy(file);
 		}
@@ -51,7 +51,7 @@ namespace ssi {
 	SSI_FastDTW::~SSI_FastDTW() {
 
 		if (_file) {
-			OptionList::SaveXML(_file, _options);
+			OptionList::SaveXML(_file, &_options);
 			delete[] _file;
 		}
 

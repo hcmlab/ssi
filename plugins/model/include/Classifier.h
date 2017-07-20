@@ -37,6 +37,7 @@
 #include "base/IEvents.h"
 #include "event/EventAddress.h"
 #include "thread/Lock.h"
+#include "ClassifierHelper.h"
 
 #define SSI_CLASSIFIER_MAXHANDLER 5
 
@@ -45,37 +46,6 @@ namespace ssi {
 class Trainer;
 
 class Classifier : public IConsumer {
-
-public:
-
-	class EventHandler {
-
-	public:
-
-		EventHandler(IEventListener *listener,
-			ssi_size_t sid,
-			ssi_size_t eid,
-			bool winner_only,
-			ssi_char_t *select);
-		virtual ~EventHandler();
-		void handle(ssi_time_t time,
-			ssi_time_t duration,
-			ssi_size_t n_classes,
-			ssi_size_t class_index,
-			const ssi_real_t *probs,
-			ssi_char_t *const*class_names,
-			ssi_size_t n_metas,
-			ssi_real_t *metas);
-
-	protected:
-
-		ssi_event_t _event;
-		IEventListener *_listener;
-		bool _winner_only;
-		ssi_size_t _n_select;
-		int *_select;
-		ssi_size_t *_class_ids;
-	};
 
 public:
 
@@ -96,18 +66,27 @@ public:
 			SSI_OPTIONLIST_ADD_ADDRESS(address);
 
 			addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender (if sent to event board) [deprecated, see address]");
-			addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event (if sent to event board) [deprecated, see address]");
-			addOption ("trainer", trainer, SSI_MAX_CHAR, SSI_CHAR, "filepath of trainer");			
-			addOption ("pthres", &pthres, 1, SSI_REAL, "probablity threshold");			
-			addOption ("merge", &merge, 1, SSI_BOOL, "in case of multiple streams merge to single stream");	
+			addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event (if sent to event board) [deprecated, see address]");			
+			addOption("path", trainer, SSI_MAX_CHAR, SSI_CHAR, "path to trainer <name:filepath> (if several separate by ;)");			
+			addOption("pthres", &pthres, 1, SSI_REAL, "probablity threshold");			
+			addOption("merge", &merge, 1, SSI_BOOL, "in case of multiple streams merge to single stream");	
 			addOption("flat", &flat, 1, SSI_BOOL, "in case of multiple samples merge to single sample");
-			addOption ("console", &console, 1, SSI_BOOL, "output classification to console");			
-			addOption ("winner", &winner, 1, SSI_BOOL, "send winning class only");		
-			addOption ("select", select, SSI_MAX_CHAR, SSI_CHAR, "foward only specific classes (indices separated by ',') [ignored if winner=true]");
+			addOption("console", &console, 1, SSI_BOOL, "output classification to console");			
+			addOption("winner", &winner, 1, SSI_BOOL, "send winning class only");		
+			addOption("select", select, SSI_MAX_CHAR, SSI_CHAR, "foward only specific classes (indices separated by ',') [ignored if winner=true]");
+
+			addOption("trainer", trainer, SSI_MAX_CHAR, SSI_CHAR, "filepath of trainer [deprecated use 'path']");
 		};
 
-		void setTrainer (const ssi_char_t *filepath) {
-			ssi_strcpy (trainer, filepath);
+		void addTrainer (const ssi_char_t *name, const ssi_char_t *path) {
+			if (trainer[0] == '\0')
+			{
+				ssi_sprint(trainer, "%s:%s", name, path);
+			}
+			else
+			{
+				ssi_sprint(trainer, "%s;%s:%s", trainer, name, path);
+			}
 		}
 		void setAddress(const ssi_char_t *address) {
 			if (address) {
@@ -162,7 +141,9 @@ public:
 		return _event_address.getAddress ();
 	}
 
-	virtual void setTrainer (Trainer *trainer);
+	bool Classifier::notify(INotify::COMMAND::List command, const ssi_char_t *message);
+
+	virtual void addTrainer (const ssi_char_t *name, Trainer *trainer);
 	void wait () {
 		fflush (stdin);
 		ssi_print("\n");
@@ -186,31 +167,22 @@ protected:
 	static ssi_char_t ssi_log_name[];
 	static ssi_char_t ssi_log_name_static[];
 
-	Trainer *_trainer;
-	bool _is_loaded;
-	bool _del_trainer;
-	ssi_size_t _n_classes;
-	ssi_real_t *_probs;
-	static void LoadTrainer(void *arg);
-	bool loadTrainer(Trainer *trainer = 0); // if 0 loaded from options
-	bool callTrainer(ssi_time_t time,
+	ClassifierHelper _helper;
+	bool loadTrainerFromOptions();
+	bool _loadedTrainerFromOptions;
+	bool predict(ssi_time_t time,
 		ssi_time_t dur,
 		ssi_size_t n_streams,
 		ssi_stream_t stream_in[]);
-	void releaseTrainer();
-	Mutex _mutex;
+	void release();
 
-	ssi_size_t _n_metas;
-	ssi_real_t *_metas;
+	ssi_event_t _event;
+	IEventListener *_listener;
+	bool _winner_only;
+	ssi_size_t _n_select;
+	int *_select;
 
 	ssi_size_t _merged_sample_dimension;
-	
-	EventHandler *_handler;
-
-	ssi_time_t _consumer_sr;
-	ssi_size_t _consumer_byte;
-	ssi_size_t _consumer_dim;;
-	ssi_size_t _consumer_num;	
 
 };
 

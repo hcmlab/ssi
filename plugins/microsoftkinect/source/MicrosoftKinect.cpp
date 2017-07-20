@@ -83,8 +83,8 @@ namespace ssi {
 		m_ZoomFactor = 1.0f;
 			
 		if (file) {
-			if (!OptionList::LoadXML (file, _options)) {
-				OptionList::SaveXML (file, _options);
+			if (!OptionList::LoadXML(file, &_options)) {
+				OptionList::SaveXML(file, &_options);
 			}
 			_file = ssi_strcpy (file);
 		}
@@ -93,7 +93,7 @@ namespace ssi {
 	MicrosoftKinect::~MicrosoftKinect () {
 
 		if (_file) {
-			OptionList::SaveXML (_file, _options);
+			OptionList::SaveXML(_file, &_options);
 			delete[] _file;
 		}
 	}

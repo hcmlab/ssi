@@ -25,6 +25,8 @@
 //*************************************************************************************************
 
 #include "ssi.h"
+#include "ffmpeg/include/ssiffmpeg.h"
+#include "ioput/include/ssiioput.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -40,9 +42,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 struct params_t {	
+	ssi_char_t *exeDir;
 	ssi_char_t *exePath;
+	ssi_char_t *chainDir;
 	ssi_char_t *chainPath;
-	ssi_char_t chainPathAbsolute[SSI_MAX_CHAR];
+	ssi_char_t *chainPathAbsolute;
 	ssi_char_t *inPath;
 	StringList inList;
 	ssi_char_t *outPath;
@@ -98,8 +102,11 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.info(info);
 
 	params_t params;
+	params.exeDir = 0;
 	params.exePath = 0;
+	params.chainDir = 0;
 	params.chainPath = 0;
+	params.chainPathAbsolute = 0;
 	params.inPath = 0;
 	params.outPath = 0;
 	params.logPath = 0;
@@ -141,8 +148,11 @@ bool Parse_and_Run(int argc, char **argv)
 		ssimsg = 0;
 	}
 
+	delete[] params.exeDir;
 	delete[] params.exePath;
+	delete[] params.chainDir;
 	delete[] params.chainPath;
+	delete[] params.chainPathAbsolute;
 	delete[] params.inPath;
 	delete[] params.outPath;
 	delete[] params.logPath;
@@ -154,7 +164,92 @@ bool Parse_and_Run(int argc, char **argv)
 	return true;
 }
 
-void splitFiles(const ssi_char_t *string, StringList &files, bool list)
+void GetDirectories(const ssi_char_t *exePath, params_t &params)
+{
+	// get directories
+	ssi_char_t workDir[SSI_MAX_CHAR];
+	FilePath exepath_fp(exePath);
+	ssi_getcwd(SSI_MAX_CHAR, workDir);
+	
+	// set exe path	
+	params.exePath = ssi_strcpy(exePath);
+	if (exepath_fp.isRelative()) 
+	{
+#if _WIN32|_WIN64
+		params.exeDir = ssi_strcat(workDir, "\\", exepath_fp.getDir());
+#else
+		params.exeDir = ssi_strcat(_workdir, "/", exepath_fp.getDir());
+#endif
+	}
+	else 
+	{
+		params.exeDir = ssi_strcpy(exepath_fp.getDir());
+	}
+
+	// download directories
+	ssi_print("download source=%s\ndownload target=%s\n\n", params.srcUrl, params.exeDir);
+	Factory::SetDownloadDirs(params.srcUrl, params.exeDir);
+
+	// set chain path
+	FilePath chainPath_fp(params.chainPath);
+	if (chainPath_fp.isRelative()) 
+	{
+#if _WIN32|_WIN64
+		params.chainPathAbsolute = ssi_strcat(workDir, "\\", params.chainPath);
+#else
+		params.chainPathAbsolute = ssi_strcat(_workdir, "/", params.chainPath);
+#endif
+	}
+	else
+	{
+		params.chainPathAbsolute = ssi_strcpy(params.chainPath);
+	}
+	params.chainDir = ssi_strcpy(FilePath(params.chainPathAbsolute).getDir());
+}
+
+bool IsVideoFile(const ssi_char_t *path)
+{
+	FilePath fp(path);
+	return (ssi_strcmp(fp.getExtension(), ".mp4", false)
+		|| ssi_strcmp(fp.getExtension(), ".avi", false));
+}
+
+void ResolveDependencies(params_t &params)
+{
+	Factory::RegisterDLL("frame", ssiout, ssimsg);
+	if (IsVideoFile(params.inList[0].str()))
+	{
+		Factory::RegisterDLL("ioput", ssiout, ssimsg);
+		Factory::RegisterDLL("ffmpeg", ssiout, ssimsg);
+
+		if (params.srcUrl != 0 && params.srcUrl[0] != '\0')
+		{
+			ssi_char_t *depend[8] = {
+				"avcodec-57.dll",
+				"avdevice-57.dll",
+				"avfilter-6.dll",
+				"avformat-57.dll",
+				"avutil-55.dll",
+				"postproc-54.dll",
+				"swresample-2.dll",
+				"swscale-4.dll",
+			};
+			for (ssi_size_t i = 0; i < 8; i++)
+			{
+				ssi_char_t *dlldst = ssi_strcat(params.exeDir, "\\", depend[i]);
+				ssi_char_t *dllsrc = ssi_strcat(params.srcUrl, "/", depend[i]);
+				if (!ssi_exists(dlldst))
+				{
+					WebTools::DownloadFile(dllsrc, dlldst);
+				}
+				delete[] dlldst;
+				delete[] dllsrc;
+			}
+		}
+	}
+}
+
+void SplitFiles(const ssi_char_t *string, StringList &files, bool list)
 {
 	if (list)
 	{
@@ -177,48 +272,14 @@ void splitFiles(const ssi_char_t *string, StringList &files, bool list)
 void Run(const ssi_char_t *exePath, params_t &params) {
 
 	// get directories
-	ssi_char_t workDir[SSI_MAX_CHAR];
-	FilePath exepath_fp(exePath);
-	ssi_getcwd(SSI_MAX_CHAR, workDir);
-	ssi_char_t exedir[SSI_MAX_CHAR];
-	if (exepath_fp.isRelative()) {
-#if _WIN32|_WIN64
-		ssi_sprint(exedir, "%s\\%s", workDir, exepath_fp.getDir());
-#else
-		ssi_sprint(exedir, "%s/%s", _workdir, exepath_fp.getDir());
-#endif
-	}
-	else {
-		strcpy(exedir, exepath_fp.getDir());
-	}
-	ssi_print("download source=%s\ndownload target=%s\n\n", params.srcUrl, exedir);
-	Factory::SetDownloadDirs(params.srcUrl, exedir);
+	GetDirectories(exePath, params);
 
-	// set exe path
-	params.exePath = ssi_strcpy(exePath);
-
-	// register frame dll
-	Factory::RegisterDLL("ssiframe", ssiout, ssimsg);
-
-	// full chain path
-	FilePath chainPath_fp(params.chainPath);	
-	if (chainPath_fp.isRelative()) {
-#if _WIN32|_WIN64
-		ssi_sprint(params.chainPathAbsolute, "%s\\%s", workDir, params.chainPath);
-#else
-		ssi_sprint(pipepath, "%s/%s", _workdir, params.chainPath);
-#endif
-	}
-	else {
-		strcpy(params.chainPathAbsolute, params.chainPath);
-	}
-
-	// set working directory to pipeline directory		
-	ssi_setcwd(chainPath_fp.getDir());
+	// set working directory to chain directory		
+	ssi_setcwd(params.chainDir);
 
 	// fill lists
-	splitFiles(params.inPath, params.inList, params.list);
-	splitFiles(params.outPath, params.outList, params.list);
+	SplitFiles(params.inPath, params.inList, params.list);
+	SplitFiles(params.outPath, params.outList, params.list);
 
 	if (params.inList.size() != params.outList.size())
 	{
@@ -230,73 +291,78 @@ void Run(const ssi_char_t *exePath, params_t &params) {
 
 	ssi_size_t nFiles = (ssi_size_t)params.inList.size();
 	ssi_size_t nThreads = params.nParallel <= 0 ? nFiles : params.nParallel;
-	
-	if (nFiles == 1 || nThreads == 1)
-	{
-		for (ssi_size_t n = 0; n < nFiles; n++)
+
+	if (nFiles != 0)
+	{		
+		// register dependencies
+		ResolveDependencies(params);		
+
+		if (nFiles == 1 || nThreads == 1)
 		{
-			FilePath inPath(params.inList[n].str());
-			FilePath outPath(params.outList[n].str());
-			Extract(params, inPath, outPath);
-		}
-	}
-	else
-	{
-		// make sure dependecies are resolved
-		Chain *chain = ssi_create(Chain, 0, false);
-		chain->getOptions()->set(params.chainPathAbsolute);
-		chain->parse();
-		chain->release();
-		delete chain;
-
-		ThreadPool pool("extract", nThreads);
-
-		for (ssi_size_t n = 0; n < nFiles; n++)
-		{
-			FilePath inPath(params.inList[n].str());
-			FilePath outPath(params.outList[n].str());
-
-			FeatureArguments *args = new FeatureArguments;
-			args->params = &params;
-			args->n = n;
-
-			ThreadPool::job_s job;
-			job.n_in = 1;
-			job.in = args;
-			job.n_out = 0;
-			job.out = 0;
-			job.job = ExtractJob;
-
-			pool.add(job);
-		}
-
-		if (!pool.work())
-		{
-			ssi_wrn("one or more jobs failed");
-		}
-
-		ssi_char_t logPath[SSI_MAX_CHAR];
-		for (ssi_size_t m = 0; m < pool.size(); m++)
-		{
-			ThreadPool::job_s job = pool.get(m);
-			FeatureArguments *args = (FeatureArguments *)job.in;
-			
-			ssi_sprint(logPath, "%s.%04u", params.logPath, args->n);
-			ssi_size_t len;
-			ssi_char_t *str;
-			if (str = FileTools::ReadAsciiFile(logPath, len))
+			for (ssi_size_t n = 0; n < nFiles; n++)
 			{
-				ssi_print(str);
+				FilePath inPath(params.inList[n].str());
+				FilePath outPath(params.outList[n].str());
+				Extract(params, inPath, outPath);
 			}
-			ssi_remove(logPath);
-
-			delete args;
 		}
+		else
+		{
+			// make sure dependecies are resolved
+			Chain *chain = ssi_create(Chain, 0, false);
+			chain->getOptions()->set(params.chainPathAbsolute);
+			chain->parse();
+			chain->release();
+			delete chain;
+
+			ThreadPool pool("extract", nThreads);
+
+			for (ssi_size_t n = 0; n < nFiles; n++)
+			{
+				FilePath inPath(params.inList[n].str());
+				FilePath outPath(params.outList[n].str());
+
+				FeatureArguments *args = new FeatureArguments;
+				args->params = &params;
+				args->n = n;
+
+				ThreadPool::job_s job;
+				job.n_in = 1;
+				job.in = args;
+				job.n_out = 0;
+				job.out = 0;
+				job.job = ExtractJob;
+
+				pool.add(job);
+			}
+
+			if (!pool.work())
+			{
+				ssi_wrn("one or more jobs failed");
+			}
+
+			ssi_char_t logPath[SSI_MAX_CHAR];
+			for (ssi_size_t m = 0; m < pool.size(); m++)
+			{
+				ThreadPool::job_s job = pool.get(m);
+				FeatureArguments *args = (FeatureArguments *)job.in;
+
+				ssi_sprint(logPath, "%s.%04u", params.logPath, args->n);
+				ssi_size_t len;
+				ssi_char_t *str;
+				if (str = FileTools::ReadAsciiFile(logPath, len))
+				{
+					ssi_print(str);
+				}
+				ssi_remove(logPath);
+
+				delete args;
+			}
+		}
+
 	}
-
+	
 	Factory::Clear();
-
-	ssi_setcwd(chainPath_fp.getDir());
 }
 
 String paramsToArgs(params_t *params, ssi_size_t n)
@@ -332,7 +398,6 @@ bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out)
 	ssi_print_off("%s %s\n", params->exePath, processArguments.str());
 	
 	return ssi_execute(params->exePath, processArguments.str(), -1, false);
-	//return Extract(*params, inPath, outPath);	
 }
 
 bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
@@ -352,13 +417,32 @@ bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
 
 	ssi_stream_t from;
 	bool result = false;
-	if (ssi_strcmp(inPath.getExtension(), ".wav", false))
-	{
-		result = WavTools::ReadWavFile(inPath.getPathFull(), from, true);
+	if (IsVideoFile(inPath.getNameFull()))
+	{				
+		FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
+		reader->getOptions()->setUrl(inPath.getPathFull());
+		reader->getOptions()->bestEffort = true;
+
+		FileWriter *writer = ssi_create(FileWriter, 0, false);
+		writer->getOptions()->setPath(toPath);
+		writer->getOptions()->type = File::BINARY;
+		
+		FileProvider *provider = new FileProvider(writer, chain);
+		reader->setProvider(SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME, provider);
+
+		reader->connect();
+		reader->start();
+		reader->wait();		
+		reader->stop();
+		reader->disconnect();
+		
+		delete provider;
+		delete reader;
+		delete writer;
 	}
 	else
 	{
-		result = FileTools::ReadStreamFile(inPath.getPath(), from);
+		result = FileTools::ReadStreamFile(inPath.getPathFull(), from);
 	}
 
 	if (result)

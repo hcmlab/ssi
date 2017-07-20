@@ -40,8 +40,8 @@ MicrosoftKinectSmileDetector::MicrosoftKinectSmileDetector (const ssi_char_t *fi
 	: _file (0) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -54,7 +54,7 @@ MicrosoftKinectSmileDetector::MicrosoftKinectSmileDetector (const ssi_char_t *fi
 MicrosoftKinectSmileDetector::~MicrosoftKinectSmileDetector () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

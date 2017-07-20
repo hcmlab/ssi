@@ -147,7 +147,6 @@ protected:
 	FFMPEGReaderClient *_client;
 	void setVideoProvider(IProvider *provider);
 	void setAudioProvider(IProvider *provider);
-	void setProvider (IProvider *provider);
 
 	IProvider *_video_provider, *_audio_provider;
 	ssi_video_params_t _video_format;

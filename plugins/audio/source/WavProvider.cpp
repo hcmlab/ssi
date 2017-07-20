@@ -51,8 +51,8 @@ WavProvider::WavProvider(const char *file)
 	_writer = ssi_pcast (WavWriter, WavWriter::Create (0));	
         #endif
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -65,7 +65,7 @@ WavProvider::~WavProvider() {
 	}
 #endif
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

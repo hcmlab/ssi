@@ -78,8 +78,8 @@ GenericSerial::GenericSerial (const ssi_char_t *file)
 	getOptions()->setDeviceInstanceId(0);
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -106,7 +106,7 @@ GenericSerial::GenericSerial (const ssi_char_t *file)
 GenericSerial::~GenericSerial () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 

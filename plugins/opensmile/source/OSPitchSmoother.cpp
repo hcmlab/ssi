@@ -84,8 +84,8 @@ OSPitchSmoother::OSPitchSmoother (const ssi_char_t *file)
 	lastVoice(NULL), lastFinalF0(0), pitchEnv(0.0) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -96,7 +96,7 @@ OSPitchSmoother::~OSPitchSmoother () {
 	release ();
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

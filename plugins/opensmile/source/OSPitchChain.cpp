@@ -92,8 +92,8 @@ OSPitchChain::OSPitchChain (const ssi_char_t *file)
 		_smooth = ssi_factory_create (OSPitchSmoother, string, false);
 		ssi_sprint (string, "%s.Deltas", file);
 
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	} else {
@@ -128,7 +128,7 @@ OSPitchChain::~OSPitchChain () {
 	delete _chain;	
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

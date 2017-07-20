@@ -47,8 +47,8 @@ LibsoxFilter::LibsoxFilter (const ssi_char_t *file)
 	ssi_sample_block_offset(0)
 {
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -57,7 +57,7 @@ LibsoxFilter::LibsoxFilter (const ssi_char_t *file)
 
 LibsoxFilter::~LibsoxFilter () {
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

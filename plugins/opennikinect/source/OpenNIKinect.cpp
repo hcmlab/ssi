@@ -77,8 +77,8 @@ int OpenNIKinect::ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
 		_currentCandidate = 0;	
 
 		if (file) {
-			if (!OptionList::LoadXML (file, _options)) {
-				OptionList::SaveXML (file, _options);
+			if (!OptionList::LoadXML(file, &_options)) {
+				OptionList::SaveXML(file, &_options);
 			}
 			_file = ssi_strcpy (file);
 		}
@@ -93,7 +93,7 @@ int OpenNIKinect::ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
 	OpenNIKinect::~OpenNIKinect () {
 
 		if (_file) {
-			OptionList::SaveXML (_file, _options);
+			OptionList::SaveXML(_file, &_options);
 			delete[] _file;
 		}
 	}

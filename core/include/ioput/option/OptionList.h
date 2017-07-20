@@ -91,12 +91,12 @@ public:
 
 	void print (FILE *file);
 
-	static bool LoadXML (const ssi_char_t *filename, IOptions &list);		
-	static bool SaveXML (const ssi_char_t *filename, IOptions &list);
-	static bool LoadXML (FILE *file, IOptions &list);
-	static bool LoadBinary (FILE *file, IOptions &list);
-	static bool SaveXML (FILE *file, IOptions &list);	
-	static bool SaveBinary (FILE *file, IOptions &list);	
+	static bool LoadXML (const ssi_char_t *filename, IOptions *list);		
+	static bool SaveXML (const ssi_char_t *filename, IOptions *list);
+	static bool LoadXML (FILE *file, IOptions *list);
+	static bool LoadBinary (FILE *file, IOptions *list);
+	static bool SaveXML (FILE *file, IOptions *list);	
+	static bool SaveBinary (FILE *file, IOptions *list);	
 
 protected:
 

@@ -101,8 +101,8 @@ CameraReader::CameraReader(const ssi_char_t *file)
 	}
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -111,7 +111,7 @@ CameraReader::CameraReader(const ssi_char_t *file)
 CameraReader::~CameraReader()
 {
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 
@@ -140,16 +140,12 @@ bool CameraReader::setProvider (const ssi_char_t *name, IProvider *provider) {
 	return false;
 }
 
-void CameraReader::setProvider (IProvider *provider) {
-
-	if (!provider) {
-		return;
-	}
-	_provider = provider;
-
+void CameraReader::InitGraph()
+{
 	_cbIH.pInfoHeader = &_bmpIH;
 	_cbIH.pDataOfBMP = NULL;
-	if(_options.path[0] == '\0')
+	
+	if (_options.path[0] == '\0')
 	{
 		ssi_char_t szFile[MAX_PATH];
 		OPENFILENAME fileName;
@@ -164,29 +160,29 @@ void CameraReader::setProvider (IProvider *provider) {
 		fileName.lpstrInitialDir = NULL;
 		fileName.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-		while(!GetOpenFileName(&fileName))
+		while (!GetOpenFileName(&fileName))
 		{
 			_options.path[0] = '\0';
 			//ssi_err("No File selected!");
 		}
 
 		size_t strLenVar = strnlen(fileName.lpstrFile, 1024);
-		strcpy_s(_options.path, strLenVar+1, fileName.lpstrFile);
+		strcpy_s(_options.path, strLenVar + 1, fileName.lpstrFile);
 	}
 	else
 	{
 		size_t strLenVar = strnlen(_options.path, 1024);
-		if(strLenVar == 1024)
+		if (strLenVar == 1024)
 		{
 			_options.path[0] = '\0';
 			ssi_err("String that indicated the File-Name was not NULL-Terminated!!!");
 		}
-		strcpy_s(_options.path, strLenVar+1, _options.path);
+		strcpy_s(_options.path, strLenVar + 1, _options.path);
 	}
 
-	if(_options.params.heightInPixels == 0 || _options.params.widthInPixels == 0 || _options.params.depthInBitsPerChannel == 0 || _options.params.numOfChannels == 0 || (std::abs(_options.forcefps) <= std::numeric_limits<ssi_time_t>::epsilon()))
+	if (_options.params.heightInPixels == 0 || _options.params.widthInPixels == 0 || _options.params.depthInBitsPerChannel == 0 || _options.params.numOfChannels == 0 || (std::abs(_options.forcefps) <= std::numeric_limits<ssi_time_t>::epsilon()))
 	{
-		if(!CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(_options.path, &_options.params))
+		if (!CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(_options.path, &_options.params))
 		{
 			ssi_err("Could not determine video file parameters");
 		}
@@ -196,12 +192,22 @@ void CameraReader::setProvider (IProvider *provider) {
 	{
 		memcpy(&_options.params, &_options.params, sizeof(ssi_video_params_t));
 	}
-	if(std::abs(_options.forcefps) > std::numeric_limits<ssi_time_t>::epsilon())
+	if (std::abs(_options.forcefps) > std::numeric_limits<ssi_time_t>::epsilon())
 	{
 		_options.forcefps = _options.forcefps;
 	}
 	_options.params.framesPerSecond = _options.forcefps;
 	_options.params.flipImage = _options.flip;
+}
+
+void CameraReader::setProvider (IProvider *provider) {
+
+	if (!provider) {
+		return;
+	}
+	_provider = provider;
+
+	InitGraph();
 
 	_provider->setMetaData (sizeof (_options.params), &_options.params);
 	ssi_stream_init (_video_channel.stream, 0, 1, ssi_video_size (_options.params), SSI_IMAGE, _options.forcefps);
@@ -568,37 +574,81 @@ bool CameraReader::disconnect()
 	return true;
 }
 
+HRESULT CameraReader::RunGraph()
+{
+	ssi_msg(SSI_LOG_LEVEL_DETAIL, "Running Graph...");
+
+	HRESULT hr = _pControl->Run();
+	if (!SUCCEEDED(hr)) {
+		SafeReleaseFJ(_pGrabInterface);
+		SafeReleaseFJ(_pGrabber);
+		SafeReleaseFJ(_pFileLoadFilter);
+		SafeReleaseFJ(_pFileSourceFilter);
+		SafeReleaseFJ(_pBasicVideo);
+		SafeReleaseFJ(_pControl);
+		SafeReleaseFJ(_pGraph);
+		if (_isComInitialized == true)
+		{
+
+			CoUninitialize();
+			--_comInitCount;
+		}
+		ssi_err("could not run graph");
+	}
+	ssi_msg(SSI_LOG_LEVEL_DETAIL, "run graph");
+
+	return hr;
+}
+
+void CameraReader::Flip()
+{
+	int stride = ssi_video_stride(_options.params);
+	int height = _options.params.heightInPixels;
+	int copyLength = _options.params.widthInPixels * 3;
+	BYTE *dstptr = _picDataTmp + (height - 1) * stride;
+	BYTE *srcptr = _picData;
+	for (int j = 0; j < height; ++j)
+	{
+		memcpy(dstptr, srcptr, copyLength);
+		dstptr -= stride;
+		srcptr += stride;
+	}
+	BYTE *tmp = _picDataTmp;
+	_picDataTmp = _picData;
+	_picData = tmp;
+}
+
+void CameraReader::Mirror()
+{
+	BYTE *dstptr = 0;
+	const BYTE *srcptr = 0;
+	int height = _options.params.heightInPixels;
+	int width = _options.params.widthInPixels;
+	int stride = ssi_video_stride(_options.params);
+	for (int j = 0; j < height; ++j)
+	{
+		dstptr = _picDataTmp + j * stride;
+		srcptr = _picData + j * stride + (width - 1) * 3;
+		for (int i = 0; i < width; i++)
+		{
+			memcpy(dstptr, srcptr, 3);
+			dstptr += 3;
+			srcptr -= 3;
+		}
+	}
+	BYTE *tmp = _picData;
+	_picData = _picDataTmp;
+	_picDataTmp = tmp;
+}
+
 void CameraReader::run()
 {
 	HRESULT hr;
 
 	if (_first_call) {
-
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "Running Graph...");
-	
-		hr = _pControl->Run();
-		if(!SUCCEEDED(hr))	{
-			SafeReleaseFJ(_pGrabInterface);
-			SafeReleaseFJ(_pGrabber);
-			SafeReleaseFJ(_pFileLoadFilter);
-			SafeReleaseFJ(_pFileSourceFilter);
-			SafeReleaseFJ(_pBasicVideo);
-			SafeReleaseFJ(_pControl);
-			SafeReleaseFJ(_pGraph);
-			if(_isComInitialized == true)
-			{
-			
-				CoUninitialize();
-				--_comInitCount;
-			}
-			ssi_err ("could not run graph");			
-		}
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "run graph");
+		hr = RunGraph();
 		_first_call = false;
 	}
-
-	bool flip = _options.flip;
-	bool mirror = _options.mirror;
 
 	int oldSizeOfPicData = _sizeOfPicData;
 	
@@ -615,48 +665,15 @@ void CameraReader::run()
 
 		case NOERROR:
 			
-			if (flip) {
-
-				int stride = ssi_video_stride (_options.params);
-				int height = _options.params.heightInPixels;
-				int copyLength = _options.params.widthInPixels * 3;
-				BYTE *dstptr = _picDataTmp + (height - 1) * stride;
-				BYTE *srcptr = _picData;
-				for(int j = 0; j < height; ++j)
-				{
-					memcpy(dstptr, srcptr, copyLength);
-					dstptr -= stride;
-					srcptr += stride;
-				}
-				BYTE *tmp = _picDataTmp;
-				_picDataTmp = _picData;
-				_picData = tmp;
+			if (_options.flip) {
+				Flip();
 			}
 
-			if (mirror) {
-				BYTE *dstptr = 0;
-				const BYTE *srcptr = 0;
-				int height = _options.params.heightInPixels;
-				int width = _options.params.widthInPixels;
-				int stride = ssi_video_stride (_options.params);
-				for(int j = 0; j < height; ++j)
-				{
-					dstptr = _picDataTmp + j * stride;
-					srcptr = _picData + j * stride + (width - 1) * 3;
-					for (int i = 0; i < width; i++)
-					{
-						memcpy(dstptr, srcptr, 3);
-						dstptr +=3;
-						srcptr -=3;
-					}
-				}
-				BYTE *tmp = _picData;
-				_picData = _picDataTmp;
-				_picDataTmp = tmp;
+			if (_options.mirror) {
+				Mirror();
 			}
 
 			_is_providing = _provider->provide(reinterpret_cast<char *>(_picData), SSI_CAMERA_SAMPLES_PER_STEP_TO_BUFFER);
-			//ssi_print ("_is_providing == %s\n", _is_providing ? "true" : "false");
 
 			OAFilterState state;
 			if (!_is_providing) {				

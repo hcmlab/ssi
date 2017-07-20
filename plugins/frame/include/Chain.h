@@ -133,6 +133,9 @@ public:
 	void setMetaData (ssi_size_t size, const void *meta) {
 		ssi_size_t meta_size = size;
 		const void *meta_data = meta;
+
+		parse();
+
 		for (ssi_size_t i = 0; i < _n_filters; i++) {
 			_filters[i]->setMetaData (meta_size, meta_data);
 			meta_data = _filters[i]->getMetaData (meta_size);

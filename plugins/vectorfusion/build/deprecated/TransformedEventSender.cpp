@@ -48,8 +48,8 @@ TransformedEventSender::TransformedEventSender (const ssi_char_t *file)
 	_transformer (0) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -63,7 +63,7 @@ TransformedEventSender::~TransformedEventSender () {
 	ssi_event_destroy (_event);
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

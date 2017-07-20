@@ -56,7 +56,7 @@ namespace ssi
             InitializeComponent();
 
             serverLogin.Text = Properties.Settings.Default.DataServerLogin;
-            serverPassword.Password = Properties.Settings.Default.DataServerPass;
+            serverPassword.Password = MainHandler.Decode(Properties.Settings.Default.DataServerPass);
             
             GetDatabases(DatabaseHandler.DatabaseName);
 
@@ -67,7 +67,7 @@ namespace ssi
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.DataServerLogin = serverLogin.Text;
-            Properties.Settings.Default.DataServerPass = serverPassword.Password;
+            Properties.Settings.Default.DataServerPass = MainHandler.Encode(serverPassword.Password);
             Properties.Settings.Default.Save();
             
             if (SessionsBox.SelectedItem != null)
@@ -254,24 +254,7 @@ namespace ssi
             List<DatabaseAnnotation> list = DatabaseHandler.GetAnnotations(filter, onlyme, onlyunfinished);
            
             AnnotationsBox.ItemsSource = list;
-            LoadingLabel.Visibility = Visibility.Collapsed;
-
-            //try
-            //{
-            //    CancellationToken ct = cancellation.Token;               
-            //    using (var cursor = await annotations.FindAsync(filter))
-            //    {
-            //        await cursor.ForEachAsync(d => addAnnoToList(d, session, onlyme, onlyunfinished), ct);
-            //    }
-            //    AnnotationsBox.ItemsSource = this.annotations;
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (!ex.Message.Contains("canceled"))
-            //    {
-            //        MessageBox.Show("At least one Database Entry seems to be corrupt. Entries have not been loaded.");
-            //    }
-            //}
+            LoadingLabel.Visibility = Visibility.Collapsed;          
         }
 
         //not used anymore
@@ -440,7 +423,7 @@ namespace ssi
 
                 for (int i = 0; i < AnnotationsBox.SelectedItems.Count; i++)
                 {
-                    if (DatabaseHandler.CheckAuthentication() > 2 || Properties.Settings.Default.MongoDBUser == ((DatabaseAnnotation)(AnnotationsBox.SelectedValue)).Annotator)
+                    if (DatabaseHandler.CheckAuthentication() > DatabaseAuthentication.READWRITE || Properties.Settings.Default.MongoDBUser == ((DatabaseAnnotation)(AnnotationsBox.SelectedValue)).Annotator)
                     {
                         DeleteAnnotation.Visibility = Visibility.Visible;
                         CopyAnnotation.Visibility = Visibility.Visible;                       

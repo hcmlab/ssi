@@ -101,8 +101,8 @@ OSVad::OSVad (const ssi_char_t *file)
 		spec_offset(0), e_offset(0), voiceProb_offset(0) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -121,7 +121,7 @@ OSVad::OSVad (const ssi_char_t *file)
 OSVad::~OSVad () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

@@ -94,11 +94,11 @@ bool ex_xml (void *arg) {
 
 	// save and load
 	opts.setReadOnly(true);
-	OptionList::SaveXML ("test.xml", opts);
+	OptionList::SaveXML ("test.xml", &opts);
 	opts.setReadOnly(false);
-	OptionList::SaveXML("test.xml", opts);
+	OptionList::SaveXML("test.xml", &opts);
 	ssi_print("\n\nLOAD FROM FILE\n\n");
-	OptionList::LoadXML ("test.xml", opts);
+	OptionList::LoadXML ("test.xml", &opts);
 
 	opts.print(ssiout);	
 

@@ -43,7 +43,7 @@ namespace ssi{
 	Statistics::~Statistics()
 	{
 		if (_file) {
-			OptionList::SaveXML(_file, _options);
+			OptionList::SaveXML(_file, &_options);
 			delete[] _file; _file = 0;
 		}
 	}
@@ -51,8 +51,8 @@ namespace ssi{
 	Statistics::Statistics(const ssi_char_t *file /*= 0*/) : _file(0), _res(0), _tmp_arr(0), _dim(0), _old_num_real(0), _running_stats(0)
 	{
 		if (file) {
-			if (!OptionList::LoadXML(file, _options)) {
-				OptionList::SaveXML(file, _options);
+			if (!OptionList::LoadXML(file, &_options)) {
+				OptionList::SaveXML(file, &_options);
 			}
 			_file = ssi_strcpy(file);
 		}

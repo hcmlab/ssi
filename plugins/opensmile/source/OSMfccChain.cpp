@@ -98,8 +98,8 @@ OSMfccChain::OSMfccChain (const ssi_char_t *file)
 			_deltas = ssi_factory_create (Deltas, string, false);
 		}
 
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	} 
@@ -135,7 +135,7 @@ OSMfccChain::~OSMfccChain () {
 	delete _chain;	
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

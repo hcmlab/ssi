@@ -140,8 +140,8 @@ namespace ssi {
 			m_faces[i].reader = NULL;
 
 		if (file) {
-			if (!OptionList::LoadXML (file, _options)) {
-				OptionList::SaveXML (file, _options);
+			if (!OptionList::LoadXML(file, &_options)) {
+				OptionList::SaveXML(file, &_options);
 			}
 			_file = ssi_strcpy (file);
 		}
@@ -156,7 +156,7 @@ namespace ssi {
 	MicrosoftKinect2::~MicrosoftKinect2 () {
 
 		if (_file) {
-			OptionList::SaveXML (_file, _options);
+			OptionList::SaveXML(_file, &_options);
 			delete[] _file;
 		}
 

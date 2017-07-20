@@ -2677,7 +2677,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 				if (_activity[n]->getOptions()) {
 
 					ssi_sprint(string, "%s%s.#%u.%s", filepath, SSI_FILE_TYPE_TRAINER, n, _activity[n]->getName());
-					OptionList::SaveXML(string, *_activity[n]->getOptions());
+					OptionList::SaveXML(string, _activity[n]->getOptions());
 					FilePath fp(filepath);
 					ssi_sprint(string, "%s%s.#%u.%s", fp.getName(), SSI_FILE_TYPE_TRAINER, n, _activity[n]->getName());
 					item.SetAttribute("option", string);
@@ -2702,7 +2702,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 				if (_transformer[n]->getOptions()) {
 					ssi_sprint(string, "%s%s.#%u.%s", filepath, SSI_FILE_TYPE_TRAINER, n, _transformer[n]->getName());
 
-					OptionList::SaveXML(string, *_transformer[n]->getOptions());
+					OptionList::SaveXML(string, _transformer[n]->getOptions());
 					FilePath fp(filepath);
 					ssi_sprint(string, "%s%s.#%u.%s", fp.getName(), SSI_FILE_TYPE_TRAINER, n, _transformer[n]->getName());
 					item.SetAttribute("option", string);
@@ -2766,7 +2766,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 		if (_fusion->getOptions()) {
 
 			FilePath fp(string);
-			OptionList::SaveXML(string, *_fusion->getOptions());
+			OptionList::SaveXML(string, _fusion->getOptions());
 			fusion.SetAttribute("option", fp.getName());
 
 		}
@@ -2787,7 +2787,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 			if (_models[n_model]->getOptions()) {
 
 				ssi_sprint(string, "%s%s.#%u.%s", filepath, SSI_FILE_TYPE_TRAINER, n_model, _models[n_model]->getName());
-				OptionList::SaveXML(string, *_models[n_model]->getOptions());
+				OptionList::SaveXML(string, _models[n_model]->getOptions());
 				FilePath fp(filepath);
 				ssi_sprint(string, "%s%s.#%u.%s", fp.getName(), SSI_FILE_TYPE_TRAINER, n_model, _models[n_model]->getName());
 				item.SetAttribute("option", string);
@@ -2817,7 +2817,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 		if (_models[0]->getOptions()) {
 
 			ssi_sprint(string, "%s%s.%s", filepath, SSI_FILE_TYPE_TRAINER, _models[0]->getName());
-			OptionList::SaveXML(string, *_models[0]->getOptions());
+			OptionList::SaveXML(string, _models[0]->getOptions());
 			FilePath fp(filepath);
 			ssi_sprint(string, "%s%s.%s", fp.getNameFull(), SSI_FILE_TYPE_TRAINER, _models[0]->getName());
 			model.SetAttribute("option", string);
@@ -2876,7 +2876,7 @@ bool Trainer::save_V4 (const ssi_char_t *filepath, TiXmlElement &body) {
 				if (_transformer[n]->getOptions ()) {
 
 					ssi_sprint (string, "%s.%02u.%s%s", filepath, n, _transformer[n]->getName (), SSI_FILE_TYPE_OPTION);
-					OptionList::SaveXML (string, *_transformer[n]->getOptions ());
+					OptionList::SaveXML (string, _transformer[n]->getOptions ());
 					FilePath fp (filepath);
 					ssi_sprint (string, "%s.%02u.%s%s", fp.getName (), n, _transformer[n]->getName (), SSI_FILE_TYPE_OPTION);
                     item.SetAttribute ("option", string);

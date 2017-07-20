@@ -46,23 +46,28 @@ Collector::Collector (const ssi_char_t *file)
 	_file (0) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
-	}
+	}	
 }
 
 Collector::~Collector () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }
 
 void Collector::consume_enter (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
+
+	if (!_sample_list)
+	{
+		ssi_err("no sample list");
+	}
 
 	_user_index = _sample_list->addUserName (_options.user);
 

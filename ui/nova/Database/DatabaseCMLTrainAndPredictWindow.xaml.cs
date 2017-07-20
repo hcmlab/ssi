@@ -132,9 +132,18 @@ namespace ssi
                 mode == Mode.PREDICT)
             {
                 string annotatorName = Properties.Settings.Default.MongoDBUser;
-                string annotatorFullName = DatabaseHandler.Annotators.Find(a => a.Name == annotatorName).FullName;
-                AnnotatorsBox.SelectedItem = annotatorFullName;                
-                AnnotatorsBox.IsEnabled = DatabaseHandler.CheckAuthentication() > 2;
+                if (DatabaseHandler.Annotators.Find(a => a.Name == annotatorName) != null)
+                {
+                    string annotatorFullName = DatabaseHandler.Annotators.Find(a => a.Name == annotatorName).FullName;
+                    AnnotatorsBox.SelectedItem = annotatorFullName;
+                }
+
+                            
+                AnnotatorsBox.IsEnabled = DatabaseHandler.CheckAuthentication() > DatabaseAuthentication.READWRITE;
+            }
+            else
+            {
+                AnnotatorsBox.SelectedItem = Defaults.CML.GoldStandardFullName;
             }
 
             GetSessions();
@@ -244,7 +253,7 @@ namespace ssi
                         Properties.Settings.Default.DatabaseDirectory,
                         Properties.Settings.Default.DatabaseAddress,
                         Properties.Settings.Default.MongoDBUser,
-                        Properties.Settings.Default.MongoDBPass,
+                        MainHandler.Decode(Properties.Settings.Default.MongoDBPass),
                         database,
                         sessionList,
                         scheme.Name,
@@ -291,7 +300,7 @@ namespace ssi
                         Properties.Settings.Default.DatabaseDirectory,
                         Properties.Settings.Default.DatabaseAddress,
                         Properties.Settings.Default.MongoDBUser,
-                        Properties.Settings.Default.MongoDBPass,
+                        MainHandler.Decode(Properties.Settings.Default.MongoDBPass),
                         database,
                         sessionList,
                         scheme.Name,
@@ -622,6 +631,14 @@ namespace ssi
         {
             List<Trainer> trainers = new List<Trainer>();
 
+            if (scheme.Type == AnnoScheme.TYPE.CONTINUOUS)
+            {
+                if (stream.SampleRate != scheme.SampleRate)
+                {
+                    return trainers;
+                }
+            }
+
             string[] streamParts = stream.Name.Split('.');
             if (streamParts.Length <= 1)
             {
@@ -826,6 +843,15 @@ namespace ssi
             ForceCheckBox.IsEnabled = enable;
             TrainerPathComboBox.IsEnabled = enable;
 
+        }
+
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
     }
 }

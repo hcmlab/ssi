@@ -30,6 +30,7 @@
 #define SSI_IMAGE_ICVFEATURE_H
 
 #include "base/IFeature.h"
+
 typedef struct _IplImage IplImage;
 typedef struct CvRect CvRect;
 typedef struct CvMat CvMat;

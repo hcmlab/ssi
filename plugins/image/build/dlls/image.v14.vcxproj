@@ -15,6 +15,7 @@
     <ClInclude Include="..\..\include\CVColor.h" />
     <ClInclude Include="..\..\include\CVCrop.h" />
     <ClInclude Include="..\..\include\CVFlip.h" />
+    <ClInclude Include="..\..\include\CVMean.h" />
     <ClInclude Include="..\..\include\CVResize.h" />
     <ClInclude Include="..\..\include\CVSave.h" />
     <ClInclude Include="..\..\include\ICVConsumer.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="..\..\source\CVColor.cpp" />
     <ClCompile Include="..\..\source\CVCrop.cpp" />
     <ClCompile Include="..\..\source\CVFlip.cpp" />
+    <ClCompile Include="..\..\source\CVMean.cpp" />
     <ClCompile Include="..\..\source\CVResize.cpp" />
     <ClCompile Include="..\..\source\CVSave.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />

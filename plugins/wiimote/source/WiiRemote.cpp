@@ -73,8 +73,8 @@ WiiRemote::WiiRemote (const ssi_char_t *file)
 	_channels[SSI_WII_IRRAW_CHANNEL_NUM] = new IrRawChannel ();
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -87,7 +87,7 @@ WiiRemote::~WiiRemote () {
 	}
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }

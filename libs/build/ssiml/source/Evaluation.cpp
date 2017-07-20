@@ -342,6 +342,8 @@ void Evaluation::eval_h(ISamples &samples) {
 
 			_current_intermediate_user++;
 		}
+
+		delete[] probs;
 		
 	}
 	else

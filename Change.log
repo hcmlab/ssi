@@ -1755,3 +1755,6 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 12.07.17 BUG : ioput/options/Options : by default readonly is set to false : Johannes
 - 17.07.17 CHG : frame/Merge : supports all types : Johannes
 - 17.07.17 CHG : ioput/FileSampleWriter : classes can be provided through a stream 'streamClassIndex' : Johannes
+- 17.07.17 CHG : file/ioput/OptionList : in load and save functions IOptions is now passed as a pointer : Johannes
+- 18.07.17 CHG : model/Classifier : models can be switched at run-time : Johannes
+- 19.07.17 BUG : frame/Chain : meta information is correctly forwarded to chain components : Johannes

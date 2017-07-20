@@ -61,9 +61,9 @@ int main () {
 
 	Exsemble ex;
 	ex.console(0, 0, 650, 600);
-	ex.add(ex_cam, 0, "CAMERA", "Display");
-	ex.add(ex_camfile, 0, "CAMERA", "Write to file");
-	ex.add(ex_camscreen, 0, "CAMERA", "Capture screen");
+	ex.add(ex_cam, 0, "WRITE", "Write to a file");
+	ex.add(ex_camfile, 0, "READ", "From from a file");
+	ex.add(ex_camscreen, 0, "SCREEN", "Capture the screen");
 	ex.show();
 
 	ssi_print ("\n\n\tpress enter to quit\n");

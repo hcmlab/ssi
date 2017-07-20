@@ -50,8 +50,8 @@ WekaWrapper::WekaWrapper (const ssi_char_t *file)
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -61,7 +61,7 @@ WekaWrapper::~WekaWrapper () {
 
 	release ();
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }
@@ -113,7 +113,7 @@ bool WekaWrapper::forward (ssi_stream_t &stream,
 bool WekaWrapper::load (const ssi_char_t *filepath) {
 	
 	FILE *fp = fopen (filepath, "r");
-	OptionList::LoadXML (fp, _options);
+	OptionList::LoadXML (fp, &_options);
 	fclose (fp);
 
 	ssi_msg (SSI_LOG_LEVEL_BASIC, "weka model loaded");
@@ -124,7 +124,7 @@ bool WekaWrapper::load (const ssi_char_t *filepath) {
 bool WekaWrapper::save (const ssi_char_t *filepath) {
 
 	FILE *fp = fopen (filepath, "w");
-	OptionList::SaveXML  (fp, _options);
+	OptionList::SaveXML  (fp, &_options);
 	fclose (fp);
 
 	return true;

@@ -45,8 +45,8 @@ GSRRemoveBaseline::GSRRemoveBaseline (const ssi_char_t *file)
 		_mvgvar (0){
 
 	if (file) {
-		if (!OptionList::LoadXML (file, _options)) {
-			OptionList::SaveXML (file, _options);
+		if (!OptionList::LoadXML(file, &_options)) {
+			OptionList::SaveXML(file, &_options);
 		}
 		_file = ssi_strcpy (file);
 	}
@@ -55,7 +55,7 @@ GSRRemoveBaseline::GSRRemoveBaseline (const ssi_char_t *file)
 GSRRemoveBaseline::~GSRRemoveBaseline () {
 
 	if (_file) {
-		OptionList::SaveXML (_file, _options);
+		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
 }
