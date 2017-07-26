@@ -28,6 +28,7 @@
 #include "ioput/file/FilePath.h"
 #include "XMLPipeline.h"
 #include "base/Factory.h"
+#include "thread/ThreadSafe.h"
 
 namespace ssi {
 
@@ -45,7 +46,10 @@ Chain::Chain (const ssi_char_t *file)
 	_parsed (false),
 	_load_from_file(true),
 	_meta_size (0),
-	_meta_data (0) {
+	_meta_data (0),
+	_chain_path (0),
+	_chain_dir (0),
+	_work_dir (0) {
 
 	if (file) {
 		FilePath fp(file);
@@ -67,6 +71,10 @@ Chain::~Chain () {
 		OptionList::SaveXML(_file, &_options);
 		delete[] _file;
 	}
+
+	delete[] _chain_path;
+	delete[] _work_dir;
+	delete[] _chain_dir;
 }
 
 void Chain::transform_enter (ssi_stream_t &stream_in,
@@ -200,6 +208,8 @@ ssi_type_t Chain::getSampleTypeOut (ssi_type_t sample_type_in) {
 
 ssi_size_t Chain::calc_sample_bytes_out (ssi_size_t sample_bytes_in) {
 
+	changeWorkDir();
+
 	ssi_size_t result = sample_bytes_in;
 
 	if (_n_filters > 0) {
@@ -218,10 +228,14 @@ ssi_size_t Chain::calc_sample_bytes_out (ssi_size_t sample_bytes_in) {
 		}
 	}
 
+	resetWorkDir();
+
 	return result;
 }
 
 ssi_size_t Chain::calc_sample_dimension_out (ssi_size_t sample_dimension_in) {
+
+	changeWorkDir();
 
 	ssi_size_t result = sample_dimension_in;
 
@@ -239,21 +253,29 @@ ssi_size_t Chain::calc_sample_dimension_out (ssi_size_t sample_dimension_in) {
 		}
 	}
 
+	resetWorkDir();
+
 	return result;
 }
 
 ssi_size_t Chain::calc_sample_number_out (ssi_size_t sample_number_in) {
+
+	changeWorkDir();
 
 	ssi_size_t result = sample_number_in;
 
 	if (_n_features > 0) {
 		result = 1;
 	}
+
+	resetWorkDir();
 		
 	return result;
 }
 
 ssi_type_t Chain::calc_sample_type_out (ssi_type_t sample_type_in) {
+
+	changeWorkDir();
 
 	ssi_type_t result = sample_type_in;
 
@@ -264,7 +286,69 @@ ssi_type_t Chain::calc_sample_type_out (ssi_type_t sample_type_in) {
 		result = _features[i]->getSampleTypeOut (result);
 	}
 
+	resetWorkDir();
+
 	return result;
+}
+
+void Chain::changeWorkDir()
+{
+	if (!ssi_strcmp(_work_dir, _chain_dir, false))
+	{		
+		ThreadSafe::setcwd(_chain_dir);
+	}
+}
+
+void Chain::resetWorkDir()
+{
+	if (!ssi_strcmp(_work_dir, _chain_dir, false))
+	{		
+		ThreadSafe::setcwd(_work_dir);
+	}
+}
+
+bool Chain::getPath()
+{
+	// add file extension and check if file exists
+
+	FilePath fp(_options.path);
+	ssi_char_t *filepath_with_ext = 0;
+	if (strcmp(fp.getExtension(), SSI_FILE_TYPE_CHAIN) != 0) {
+		filepath_with_ext = ssi_strcat(_options.path, SSI_FILE_TYPE_CHAIN);
+	}
+	else {
+		filepath_with_ext = ssi_strcpy(_options.path);
+	}
+
+	if (!ssi_exists(filepath_with_ext)) {
+		ssi_wrn("file not found '%s", filepath_with_ext);
+		return false;
+	}
+
+	// get working directory
+
+	if (!_work_dir)
+	{
+		_work_dir = new ssi_char_t[SSI_MAX_CHAR];
+	}	
+	ThreadSafe::getcwd(SSI_MAX_CHAR, _work_dir);
+
+	// get absolute path
+
+	FilePath fp_ext(filepath_with_ext);	
+	if (fp_ext.isRelative())
+	{
+		_chain_path = ssi_strcat(_work_dir, "\\", filepath_with_ext);
+	}
+	else
+	{
+		_chain_path = ssi_strcpy(filepath_with_ext);
+	}
+	_chain_dir = ssi_strcpy(FilePath(_chain_path).getDir());
+
+	delete[] filepath_with_ext;
+
+	return true;
 }
 
 void Chain::parse () {
@@ -281,34 +365,28 @@ void Chain::parse () {
 		return;
 	}
 
-	FilePath fp (_options.path);
-	ssi_char_t *filepath_with_ext = 0;
-	if (strcmp (fp.getExtension (), SSI_FILE_TYPE_CHAIN) != 0) {
-		filepath_with_ext = ssi_strcat (_options.path, SSI_FILE_TYPE_CHAIN);
-	} else {
-		filepath_with_ext = ssi_strcpy (_options.path);
-	}
-
-	if (!ssi_exists (filepath_with_ext)) {
-		ssi_wrn ("file not found '%s", filepath_with_ext);
+	if (!getPath())
+	{
 		return;
 	}
 
+	// change working directory
+
+	changeWorkDir();
+
 	// parse chain
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "load '%s'", filepath_with_ext);
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "load '%s'", _chain_path);
 
 	TiXmlDocument doc;
-	if (!doc.LoadFile (filepath_with_ext)) {
-		ssi_wrn ("failed loading chain from file '%s'", filepath_with_ext);
-		delete[] filepath_with_ext;
+	if (!doc.LoadFile (_chain_path)) {
+		ssi_wrn ("failed loading chain from file '%s'", _chain_path);
 		return;
 	}
 
 	TiXmlElement *body = doc.FirstChildElement();	
 	if (!body || strcmp (body->Value (), "chain") != 0) {
-		ssi_wrn ("tag <chain> missing");
-		delete[] filepath_with_ext;
+		ssi_wrn ("tag <chain> missing");		
 		return;	
 	}
 
@@ -333,6 +411,10 @@ void Chain::parse () {
 			return;
 		}
 	}
+
+	// reset working directory
+
+	resetWorkDir();
 }
 
 bool Chain::parseFilter (TiXmlElement *element) {

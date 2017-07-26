@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\source\thread\RunAsThread.cpp" />
     <ClCompile Include="..\..\source\thread\Thread.cpp" />
     <ClCompile Include="..\..\source\thread\ThreadPool.cpp" />
+    <ClCompile Include="..\..\source\thread\ThreadSafe.cpp" />
     <ClCompile Include="..\..\source\thread\Timer.cpp" />
     <ClCompile Include="..\..\source\graphic\DialogLibGateway.cpp" />
     <ClCompile Include="..\..\source\signal\SignalTools.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="..\..\include\thread\Thread.h" />
     <ClInclude Include="..\..\include\thread\ThreadLibCons.h" />
     <ClInclude Include="..\..\include\thread\ThreadPool.h" />
+    <ClInclude Include="..\..\include\thread\ThreadSafe.h" />
     <ClInclude Include="..\..\include\thread\Timer.h" />
     <ClInclude Include="..\..\include\ioput\file\File.h" />
     <ClInclude Include="..\..\include\ioput\file\FileAscii.h" />

@@ -407,6 +407,9 @@
     <ClCompile Include="..\..\source\web\WebTools.cpp">
       <Filter>Source Files\web</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\thread\ThreadSafe.cpp">
+      <Filter>Source Files\thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\r250.h">
@@ -840,6 +843,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ioput\web\WebTools.h">
       <Filter>Header Files\ioput\web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\thread\ThreadSafe.h">
+      <Filter>Header Files\thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

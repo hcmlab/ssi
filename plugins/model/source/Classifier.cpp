@@ -50,6 +50,7 @@ Classifier::Classifier (const ssi_char_t *file)
 	_listener(0),	
 	_n_select(0),
 	_select(0),
+	_winner_only(false),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) 
 {	 
 
@@ -312,8 +313,7 @@ bool Classifier::predict(ssi_time_t time,
 	ssi_time_t dur,
 	ssi_size_t n_streams,
 	ssi_stream_t stream_in[]) 
-{
-
+{	
 	if (!_helper.hasTrainer())
 	{
 		return false;
@@ -323,7 +323,9 @@ bool Classifier::predict(ssi_time_t time,
 	bool result = _helper.predict(prediction, time, dur, n_streams, stream_in, _options.pthres);
 
 	if (result)
-	{		
+	{
+		_winner_only = _options.winner;
+
 		if (prediction.n_probabilites == 1)
 		{
 			ssi_msg(SSI_LOG_LEVEL_DETAIL, "%g", prediction.probabilites[0]);

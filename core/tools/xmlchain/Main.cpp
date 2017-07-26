@@ -27,6 +27,8 @@
 #include "ssi.h"
 #include "ffmpeg/include/ssiffmpeg.h"
 #include "ioput/include/ssiioput.h"
+#include "ssiml/include/ssiml.h"
+#include "ssiml/include/ISTransform.h"
 using namespace ssi;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -41,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 #include <unistd.h>
 #endif
 
-struct params_t {	
+struct params_t {
 	ssi_char_t *exeDir;
 	ssi_char_t *exePath;
 	ssi_char_t *chainDir;
@@ -58,6 +60,8 @@ struct params_t {
 	ssi_char_t *left;
 	ssi_char_t *right;
 	int nParallel;
+	ssi_char_t *annoPath;
+	StringList annoList;
 };
 
 struct FeatureArguments
@@ -68,7 +72,7 @@ struct FeatureArguments
 
 bool Parse_and_Run(int argc, char **argv);
 void Run(const ssi_char_t *exepath, params_t &params);
-bool Extract(params_t &params, FilePath &inPath, FilePath &outPath);
+bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *annoPath = 0);
 bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out);
 
 int main(int argc, char **argv) {
@@ -114,6 +118,7 @@ bool Parse_and_Run(int argc, char **argv)
 	params.step = 0;
 	params.left = 0;
 	params.right = 0;
+	params.annoPath = 0;
 
 	cmd.addText("\nArguments:");
 	cmd.addSCmdArg("chain", &params.chainPath, "path to file defining the processing chain");
@@ -123,8 +128,9 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.addText("\nOptions:");
 	cmd.addBCmdOption("-list", &params.list, false, "read files from list (one file per line)");
 	cmd.addSCmdOption("-step", &params.step, "0", "set frame step (add ms/s for milli/seconds otherwise interpreted as number of samples)");
-	cmd.addSCmdOption("-left", &params.left, "0", "set left context (see frame)");
-	cmd.addSCmdOption("-right", &params.right, "0", "set right context (see frame)");
+	cmd.addSCmdOption("-left", &params.left, "0", "set left context (see step)");
+	cmd.addSCmdOption("-right", &params.right, "0", "set right context (see step)");
+	cmd.addSCmdOption("-anno", &params.annoPath, "", "path to an annotation (features will be extracted over segments and stored as a sample list)");
 	cmd.addICmdOption("-parallel", &params.nParallel, 1, "number of files processed in parallel (0 = all)");
 	cmd.addSCmdOption("-url", &params.srcUrl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logPath, "", "log to a file [""]");
@@ -160,6 +166,7 @@ bool Parse_and_Run(int argc, char **argv)
 	delete[] params.left;
 	delete[] params.right;
 	delete[] params.step;
+	delete[] params.annoPath;
 
 	return true;
 }
@@ -280,10 +287,17 @@ void Run(const ssi_char_t *exePath, params_t &params) {
 	// fill lists
 	SplitFiles(params.inPath, params.inList, params.list);
 	SplitFiles(params.outPath, params.outList, params.list);
+	SplitFiles(params.annoPath, params.annoList, params.list);
 
 	if (params.inList.size() != params.outList.size())
 	{
 		ssi_wrn("number of input files differs from number of output files");
+		return;
+	}
+
+	if (params.annoList.size() > 0 && params.annoList.size() != params.inList.size())
+	{
+		ssi_wrn("number of annotation files differs from number of input/output files");
 		return;
 	}
 
@@ -303,7 +317,15 @@ void Run(const ssi_char_t *exePath, params_t &params) {
 			{
 				FilePath inPath(params.inList[n].str());
 				FilePath outPath(params.outList[n].str());
-				Extract(params, inPath, outPath);
+				if (params.annoList.size() > 0)
+				{
+					FilePath annoPath(params.annoList[n].str());
+					Extract(params, &inPath, &outPath, &annoPath);
+				}
+				else
+				{
+					Extract(params, &inPath, &outPath);
+				}
 			}
 		}
 		else
@@ -369,6 +391,11 @@ String paramsToArgs(params_t *params, ssi_size_t n)
 {
 	ssi_char_t *inPath = params->inList[n].str();
 	ssi_char_t *outPath = params->outList[n].str();
+	ssi_char_t *annoPath = 0;
+	if (params->annoList.size() > 0)
+	{
+		annoPath = params->annoList[n].str();
+	}
 
 	ssi_char_t logPath[SSI_MAX_CHAR];
 	ssi_sprint(logPath, "%s.%04u", params->logPath, n);
@@ -377,7 +404,8 @@ String paramsToArgs(params_t *params, ssi_size_t n)
 		"-step " + params->step +
 		" -left " + params->left +
 		" -right " + params->right +
-		" -url \"" + params->srcUrl + "\"" +
+		" -anno " + (annoPath ? annoPath : "") +
+		" -url \"\"" +
 		" -log \"" + logPath + "\" " +
 		"\"" + params->chainPath + "\" "
 		"\"" + inPath + "\" "
@@ -400,16 +428,16 @@ bool ExtractJob(ssi_size_t n_in, void *in, ssi_size_t n_out, void *out)
 	return ssi_execute(params->exePath, processArguments.str(), -1, false);
 }
 
-bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
+bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *annoPath)
 {	
 	ssi_char_t *toPath = 0;
-	if (ssi_strcmp(outPath.getExtension(), ".stream", false))
+	if (ssi_strcmp(outPath->getExtension(), annoPath ? SSI_FILE_TYPE_SAMPLES : SSI_FILE_TYPE_STREAM, false))
 	{
-		toPath = ssi_strcpy(outPath.getPath());
+		toPath = ssi_strcpy(outPath->getPath());
 	}
 	else
 	{
-		toPath = ssi_strcpy(outPath.getPathFull());
+		toPath = ssi_strcpy(outPath->getPathFull());
 	}
 
 	Chain *chain = ssi_create_id(Chain, 0, "chain");
@@ -417,10 +445,17 @@ bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
 
 	ssi_stream_t from;
 	bool result = false;
-	if (IsVideoFile(inPath.getNameFull()))
+
+	if (IsVideoFile(inPath->getNameFull()))
 	{				
+		if (annoPath)
+		{
+			ssi_wrn("cannot extract video features from an annotation");
+			return false;
+		}
+
 		FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
-		reader->getOptions()->setUrl(inPath.getPathFull());
+		reader->getOptions()->setUrl(inPath->getPathFull());
 		reader->getOptions()->bestEffort = true;
 
 		FileWriter *writer = ssi_create(FileWriter, 0, false);
@@ -442,26 +477,53 @@ bool Extract(params_t &params, FilePath &inPath, FilePath &outPath)
 	}
 	else
 	{
-		result = FileTools::ReadStreamFile(inPath.getPathFull(), from);
+		result = FileTools::ReadStreamFile(inPath->getPathFull(), from);
 	}
 
 	if (result)
 	{
 		ssi_stream_t to;
 
-		if (ssi_strcmp(params.step, "0"))
-		{
-			SignalTools::Transform(from, to, *chain, 0u);
+		if (annoPath)
+		{			
+			Annotation annotation;
+			if (result &= annotation.load(annoPath->getPathFull()))
+			{
+				if (annotation.getScheme()->type != SSI_SCHEME_TYPE::DISCRETE)
+				{
+					ssi_wrn("cannot extract features from a continuous annotation");
+					return false;
+				}
+
+				SampleList samples;
+
+				if (result &= annotation.extractSamples(from, &samples))
+				{
+					ISTransform samples_t(&samples);
+					samples_t.setTransformer(0, *chain); 
+					samples_t.callEnter();
+					result &= ModelTools::SaveSampleList(samples_t, toPath, File::BINARY);
+					samples_t.callFlush();
+				}
+			}			
 		}
 		else
 		{
-			SignalTools::Transform(from, to, *chain, params.step, params.left, params.right);
+			if (ssi_strcmp(params.step, "0"))
+			{
+				SignalTools::Transform(from, to, *chain, 0u);
+			}
+			else
+			{
+				SignalTools::Transform(from, to, *chain, params.step, params.left, params.right);
+			}
+
+			result &= FileTools::WriteStreamFile(File::BINARY, toPath, to);
+			
+			ssi_stream_destroy(to);
 		}
 
-		result &= FileTools::WriteStreamFile(File::BINARY, toPath, to);
-
 		ssi_stream_destroy(from);
-		ssi_stream_destroy(to);
 	}
 
 	delete[] toPath;

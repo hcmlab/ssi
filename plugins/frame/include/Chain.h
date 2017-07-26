@@ -158,6 +158,14 @@ protected:
 	Options _options;
 	ssi_char_t *_file;
 
+	bool getPath();	
+	ssi_char_t *_chain_path;
+	ssi_char_t *_chain_dir;
+	ssi_char_t *_work_dir;
+
+	void changeWorkDir();
+	void resetWorkDir();
+
 	ssi_size_t calc_sample_dimension_out (ssi_size_t sample_dimension_in);
 	ssi_size_t calc_sample_number_out (ssi_size_t sample_number_in);
 	ssi_size_t calc_sample_bytes_out (ssi_size_t sample_bytes_in);
@@ -181,7 +189,7 @@ protected:
 	ssi_size_t _feature_dim_out_tot;
 
 	ssi_size_t _meta_size;
-	ssi_byte_t *_meta_data;
+	ssi_byte_t *_meta_data;	
 };
 
 }

@@ -248,7 +248,7 @@ bool WavTools::ReadWavHeader (File &file,
 	}
 	buffer[4] = 0;
 	if (strcmp (buffer, "RIFF")!=0) {
-		ssi_err ("bad RIFF format");
+		ssi_wrn ("bad RIFF format");
 		return false;
 	}
 	for (int i = 0; i < 4; i++) {
@@ -256,7 +256,7 @@ bool WavTools::ReadWavHeader (File &file,
 	}
 	buffer[4] = 0;
 	if (strcmp (buffer, "WAVE") !=0) {
-		ssi_err ("bad WAVE format");
+		ssi_wrn("bad WAVE format");
 		return false;
 	}
 	for (int i = 0; i < 3; i++) {
@@ -264,11 +264,11 @@ bool WavTools::ReadWavHeader (File &file,
 	}
 	buffer[3] = 0;
 	if (strcmp (buffer, "fmt") != 0) {
-		ssi_err ("bad fmt format");
+		ssi_wrn("bad fmt format");
 		return false;
 	}
     if (header.compressionTag != 1) {
-		ssi_err ("compression not supported");
+		ssi_wrn("compression not supported");
 		return false;
 	}
 

@@ -41,6 +41,7 @@
 #include "struct/Queue.h"
 
 #include "thread/Thread.h"
+#include "thread/ThreadSafe.h"
 #include "thread/ClockThread.h"
 #include "thread/Event.h"
 #include "thread/Lock.h"

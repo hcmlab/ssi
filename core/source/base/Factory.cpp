@@ -625,12 +625,12 @@ IObject *Factory::create(const ssi_char_t *name, const ssi_char_t *file, bool au
 void Factory::setDownloadDirs(const ssi_char_t *srcdir, const ssi_char_t *dstdir)
 {
 	delete[] _srcdir; _srcdir = 0;
-	if (srcdir)
+	if (srcdir && srcdir[0] != '\0')
 	{
 		_srcdir = ssi_strcpy(srcdir);
 	}
 	delete[] _dstdir; _dstdir = 0;
-	if (dstdir)
+	if (dstdir && dstdir[0] != '\0')
 	{
 		_dstdir = ssi_strcpy(dstdir);
 	}

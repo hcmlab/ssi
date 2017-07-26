@@ -1758,3 +1758,8 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 17.07.17 CHG : file/ioput/OptionList : in load and save functions IOptions is now passed as a pointer : Johannes
 - 18.07.17 CHG : model/Classifier : models can be switched at run-time : Johannes
 - 19.07.17 BUG : frame/Chain : meta information is correctly forwarded to chain components : Johannes
+- 25.07.17 CHG : base/Factory : does not attempt to download files if source directory is an empty string : Johannes
+- 25.07.17 BUG : model/xmltrain : k-fold evaluation does not require a pre-trained model : Johannes
+- 26.07.17 BUG : model/Classifier : winner only option correctly applied : Johannes
+- 26.07.17 CHG : frame/Chain : options of components relative to chain : Johannes
+- 26.07.17 ADD : thread/ThreadSafe : a place for thread-safe ssi_* functions : Johannes

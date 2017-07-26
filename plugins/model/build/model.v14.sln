@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "model", "dlls\model.v14.vcxproj", "{11923F88-25B1-4657-97FE-779C2BDA9624}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -92,6 +92,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "model_cml", "test\model_cml
 	ProjectSection(ProjectDependencies) = postProject
 		{DDD07F07-AB2F-4F70-BD3F-C78716DD6874} = {DDD07F07-AB2F-4F70-BD3F-C78716DD6874}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bayestrain", "tools\bayestrain.v14.vcxproj", "{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -251,6 +253,14 @@ Global
 		{1148C05B-7352-4DE9-98CF-4E358C4D93D0}.Release|x64.Build.0 = Release|x64
 		{1148C05B-7352-4DE9-98CF-4E358C4D93D0}.Release|x86.ActiveCfg = Release|Win32
 		{1148C05B-7352-4DE9-98CF-4E358C4D93D0}.Release|x86.Build.0 = Release|Win32
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Debug|x64.ActiveCfg = Debug|x64
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Debug|x64.Build.0 = Debug|x64
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Debug|x86.ActiveCfg = Debug|Win32
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Debug|x86.Build.0 = Debug|Win32
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Release|x64.ActiveCfg = Release|x64
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Release|x64.Build.0 = Release|x64
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Release|x86.ActiveCfg = Release|Win32
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,5 +285,6 @@ Global
 		{DBE23EEA-D6F8-403F-87E5-D350F70BE6D7} = {01A7A006-16AB-4EF8-9BC0-BA59FEB87CE2}
 		{DDD07F07-AB2F-4F70-BD3F-C78716DD6874} = {42BFB6B6-D8E3-4120-A2BC-7AA44A147A03}
 		{1148C05B-7352-4DE9-98CF-4E358C4D93D0} = {667CB8FC-A432-4BD6-98F5-3FD5909E6627}
+		{5A3FAE8B-A5CC-4F51-A9E4-35B2F45EE084} = {01A7A006-16AB-4EF8-9BC0-BA59FEB87CE2}
 	EndGlobalSection
 EndGlobal

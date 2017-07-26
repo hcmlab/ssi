@@ -251,6 +251,8 @@ protected:
 	BALANCE::Value _balance;
 
 	TiXmlNode *_registerNode;
+
+	bool _preventWarningsSpam;
 };
 
 }

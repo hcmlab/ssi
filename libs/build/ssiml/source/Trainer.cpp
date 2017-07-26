@@ -83,7 +83,8 @@ Trainer::Trainer()
 	_n_samplepaths(0),
 	_samplepaths(0),
 	_balance(BALANCE::NONE),
-	_registerNode(0)
+	_registerNode(0),
+	_preventWarningsSpam(false)
 {
 	_seed = Random::Seed();
 }
@@ -119,7 +120,8 @@ Trainer::Trainer (IModel *model,
 	_n_samplepaths (0),
 	_samplepaths (0),
 	_balance(BALANCE::NONE),
-	_registerNode(0)
+	_registerNode(0),
+	_preventWarningsSpam(false)
 {
 
 	_models = new IModel*[1];
@@ -160,7 +162,8 @@ Trainer::Trainer (ssi_size_t n_models,
 	_n_samplepaths (0),
 	_samplepaths (0),
 	_balance(BALANCE::NONE),
-	_registerNode(0)
+	_registerNode(0),
+	_preventWarningsSpam(false)
 {
 
 	_models = new IModel*[_n_models];
@@ -188,6 +191,7 @@ Trainer::~Trainer () {
 
 void Trainer::release () {
 	
+	_preventWarningsSpam = false;
 	if (_fusion) {
 		_fusion->release ();		
 	}
@@ -720,16 +724,6 @@ bool Trainer::setNormalization(ssi_size_t n_streams,
 
 bool Trainer::train () {
 
-	if (_is_trained) {
-		ssi_wrn ("already trained, call release() first");
-		return false;
-	}	
-
-	if (_n_models == 0) {
-		ssi_wrn ("no models");
-		return false;
-	}
-
 	if (_n_samplepaths == 0) {
 		ssi_wrn ("no paths to samples found");
 		return false;
@@ -744,11 +738,15 @@ bool Trainer::train () {
 }
 
 bool Trainer::train (ISamples &samples) {	
-
-	if (_is_trained) {
-		ssi_wrn ("already trained, call release() first");
-		return false;
-	}	
+	
+	if (_is_trained)
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "start re-training");
+	}
+	else
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "start training");
+	}
 
 	if (_n_models == 0) {
 		ssi_wrn ("no models");
@@ -820,6 +818,8 @@ bool Trainer::train (ISamples &samples) {
 	delete samples_select;
 	delete samples_norm;
 
+	_preventWarningsSpam = false;
+
 	return result;
 }
 
@@ -844,24 +844,12 @@ void Trainer::eval(ISamples &samples, FILE *file, Evaluation::PRINT::List format
 
 void Trainer::evalSplit(ISamples &samples, ssi_real_t split, FILE *file, Evaluation::PRINT::List format) {
 
-	if (!_is_trained)
-	{
-		ssi_wrn("not trained");
-		return;
-	}
-
 	Evaluation eval;
 	eval.evalSplit (this, samples, split, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalKFold(ISamples &samples, ssi_size_t k, FILE *file, Evaluation::PRINT::List format) {
-
-	if (!_is_trained)
-	{
-		ssi_wrn("not trained");
-		return;
-	}
 
 	Evaluation eval;
 	eval.evalKFold (this, samples, k, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
@@ -870,24 +858,12 @@ void Trainer::evalKFold(ISamples &samples, ssi_size_t k, FILE *file, Evaluation:
 
 void Trainer::evalLOO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
-	if (!_is_trained)
-	{
-		ssi_wrn("not trained");
-		return;
-	}
-
 	Evaluation eval;
 	eval.evalLOO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
 	eval.print(file, format);
 }
 
 void Trainer::evalLOUO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
-
-	if (!_is_trained)
-	{
-		ssi_wrn("not trained");
-		return;
-	}
 
 	Evaluation eval;
 	eval.evalLOUO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
@@ -1088,12 +1064,20 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 	ssi_real_t *probs) {
 
 	if (!_is_trained) {
-		ssi_wrn ("not trained");
+		if (!_preventWarningsSpam)
+		{
+			ssi_wrn("prediction failed because model is not trained");
+			_preventWarningsSpam = true;
+		}
 		return false;
 	}
 
 	if (n_streams != _n_streams) {
-		ssi_wrn ("#streams not compatible (%u != %u)", n_streams, _n_streams);
+		if (!_preventWarningsSpam)
+		{
+			ssi_wrn("prediction failed because #streams not compatible (%u != %u)", n_streams, _n_streams);
+			_preventWarningsSpam = true;
+		}		
 		return false;
 	}
 
@@ -1104,11 +1088,15 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 	if (!_preproc_mode) {
 		for (ssi_size_t n_stream = 0; n_stream < n_streams; n_stream++) {		
 			if (streams[n_stream] && !ssi_stream_compare (*streams[n_stream], _stream_refs[n_stream])) {
-				ssi_wrn ("stream #%u not compatible", n_stream);
-				ssi_print ("received stream:\n");
-				ssi_stream_info (*streams[n_stream], ssiout);
-				ssi_print ("expected stream:\n");
-				ssi_stream_info (_stream_refs[n_stream], ssiout);
+				if (!_preventWarningsSpam)
+				{
+					ssi_wrn("prediction failed because stream #%u not compatible", n_stream);
+					ssi_print("received stream:\n");
+					ssi_stream_info(*streams[n_stream], ssiout);
+					ssi_print("expected stream:\n");
+					ssi_stream_info(_stream_refs[n_stream], ssiout);
+					_preventWarningsSpam = true;
+				}				
 				return false;			
 			}
 		}

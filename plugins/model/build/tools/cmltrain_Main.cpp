@@ -491,7 +491,7 @@ bool readCredentials(params_t &params)
 		params.username = ssi_strcpy(username);
 	}
 
-	if (params.username[0] == '\0')
+	if (params.password[0] == '\0')
 	{
 		printf("\npassword: ");
 		i = 0;

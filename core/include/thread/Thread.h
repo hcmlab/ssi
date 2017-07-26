@@ -42,9 +42,6 @@
 
 #define SSI_THREAD_MONITOR_MAX 256
 
-void myFunk();
-
-
 namespace ssi {
 
 //! \brief A thread class.
