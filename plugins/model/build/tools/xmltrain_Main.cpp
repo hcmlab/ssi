@@ -72,7 +72,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("trainer", &inpath, "path to trainer template");
 	
 	cmd.addText("\nOptions:");
-	cmd.addSCmdOption("-out", &outpath, "", "use a different path to save trainer after training");
+	cmd.addSCmdOption("-out", &outpath, "", "path to save trainer / evaluation result");
 	cmd.addBCmdOption("-overwrite", &overwrite, "", "overwrite existing model");
 	cmd.addSCmdOption("-dlls", &dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &srcurl, default_source, "override default url for downloading missing dlls and dependencies");
@@ -139,19 +139,33 @@ int main (int argc, char **argv) {
 		{
 			Trainer trainer;
 			if (Trainer::Load(trainer, inpath)) 
-			{
+			{	
+				FILE *result = ssiout;
+
+				if (outpath[0] != '\0')
+				{
+					FILE *fp = fopen(outpath, "w");
+					if (fp)
+					{
+						result = fp;
+					}
+					else
+					{
+						ssi_wrn("could not open file '%s'", outpath);
+					}
+				}
+
 				switch (eval) {
 				case 0:
-					trainer.evalKFold(kfolds, ssiout);
+					trainer.evalKFold(kfolds, result);
 					break;
 				case 1:
-					trainer.evalLOO(ssiout);
+					trainer.evalLOO(result);
 					break;
 				case 2:
-					trainer.evalLOUO(ssiout);
+					trainer.evalLOUO(result);
 					break;
 				case 3:
-
 					ssi_size_t n = ssi_split_string_count(tset, ';');
 					if (n > 0) {
 						ssi_char_t **files = new ssi_char_t *[n];
@@ -166,11 +180,19 @@ int main (int argc, char **argv) {
 						{
 							trainer.train();
 						}
-						trainer.eval(samples, ssiout);
+						trainer.eval(samples, result);
 					} else {
 						ssi_wrn("no test file provided, see -tset option");
 					}
 					break;
+				}
+
+				if (result != ssiout)
+				{
+					ssi_size_t n_content = 0;
+					ssi_char_t *content = FileTools::ReadAsciiFile(outpath, n_content);
+					ssi_print(content);
+					fclose(result);
 				}
 			}
 		}
