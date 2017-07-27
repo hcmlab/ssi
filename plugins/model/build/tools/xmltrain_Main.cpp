@@ -103,13 +103,13 @@ int main (int argc, char **argv) {
 		ssi_print("download source=%s\ndownload target=%s\n\n", srcurl, exedir);
 		Factory::SetDownloadDirs(srcurl, exedir);
 
-		// register model dll
-		Factory::RegisterDLL("model");
-
 		if (log[0] != '\0') 
 		{
-			ssi_log_file_begin (log);
+			ssimsg = new FileMessage(log);			
 		}
+
+		// register model dll
+		Factory::RegisterDLL("model", ssiout, ssimsg);
 
 		ssi_size_t n = ssi_split_string_count(dlls, ';');
 		if (n > 0) 
@@ -177,7 +177,7 @@ int main (int argc, char **argv) {
 
 		if (log[0] != '\0') 
 		{
-			ssi_log_file_end();
+			delete ssimsg; ssimsg = 0;
 		}
 
 		Factory::Clear ();
