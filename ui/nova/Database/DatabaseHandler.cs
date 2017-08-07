@@ -1821,16 +1821,6 @@ namespace ssi
                 return false;
             }
 
-            if (!SessionExists(name))
-            {
-                return false;
-            }
-
-            if (name != session.Name && SessionExists(session.Name))
-            {
-                return false;
-            }
-
             return AddOrUpdateSession(name, session);
         }
 

@@ -5,7 +5,7 @@
 		<item name="signal"/>
 	</register>
     <samples n_streams="1">
-		<item path="..\..\..\model\mouse\data\user\2011-12-23_14-14-14\cursor.button.dollar"/>
+		<item path="data\numbers_train"/>
     </samples>
     <transform>
         <item create="Functionals" stream="0" option="functionals"/>

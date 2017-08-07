@@ -293,17 +293,23 @@ ssi_type_t Chain::calc_sample_type_out (ssi_type_t sample_type_in) {
 
 void Chain::changeWorkDir()
 {
-	if (!ssi_strcmp(_work_dir, _chain_dir, false))
-	{		
-		ThreadSafe::setcwd(_chain_dir);
+	if (_work_dir && _chain_dir)
+	{
+		if (!ssi_strcmp(_work_dir, _chain_dir, false))
+		{
+			ThreadSafe::setcwd(_chain_dir);
+		}
 	}
 }
 
 void Chain::resetWorkDir()
 {
-	if (!ssi_strcmp(_work_dir, _chain_dir, false))
-	{		
-		ThreadSafe::setcwd(_work_dir);
+	if (_work_dir && _chain_dir)
+	{
+		if (!ssi_strcmp(_work_dir, _chain_dir, false))
+		{
+			ThreadSafe::setcwd(_work_dir);
+		}
 	}
 }
 

@@ -1763,3 +1763,7 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 26.07.17 BUG : model/Classifier : winner only option correctly applied : Johannes
 - 26.07.17 CHG : frame/Chain : options of components relative to chain : Johannes
 - 26.07.17 ADD : thread/ThreadSafe : a place for thread-safe ssi_* functions : Johannes
+- 27.07.17 CHG : model/xmltrain : now logs using ssimg : Johannes
+- 27.07.17 CHG : model/xmltrain : use -out to store evaluation result : Johannes
+- 07.08.17 CHG : ui/modelui : removed modelui : Johannes
+- 07.08.17 CHG : model/mlp* : removed modelui interace projects : Johannes

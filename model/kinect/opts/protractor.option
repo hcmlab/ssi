@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<options>
-    <item name="pathSize" type="INT" num="1" value="32" help="path size (32)" />
-    <item name="cubeSize" type="INT" num="1" value="100" help="cube size (100)" />
-    <item name="rotationIgnoreLimit" type="INT" num="1" value="45" help="max applied rotation in degrees +- (45)" />
-    <item name="indx" type="INT" num="1" value="0" help="dimension of x coordinate (0)" />
-    <item name="indy" type="INT" num="1" value="1" help="dimension of y coordinate (1)" />
-    <item name="indz" type="INT" num="1" value="2" help="dimension of z coordinate (2)" />
-</options>

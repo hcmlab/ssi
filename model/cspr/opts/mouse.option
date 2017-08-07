@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<options>
-    <item name="sr" type="DOUBLE" num="1" value="50.000000" help="sample rate in Hz" />
-    <item name="size" type="DOUBLE" num="1" value="0.200000" help="block size in seconds" />
-    <item name="scale" type="BOOL" num="1" value="true" help="scale cursor to interval [0..1]" />
-    <item name="flip" type="BOOL" num="1" value="true" help="flip cursor vertically" />
-    <item name="mask" type="INT" num="1" value="33" help="or'ed button mask (0=none, 1=left, 2=right, 4=middle)" />
-    <item name="single" type="BOOL" num="1" value="false" help="fire single event when button is pressed/released" />
-</options>

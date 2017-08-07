@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<options>
-    <item name="type" type="UCHAR" num="1" value="0" help="filter type (0=low, 1=high, 2=band)" />
-    <item name="order" type="UINT" num="1" value="1" help="filter order" />
-    <item name="low" type="DOUBLE" num="1" value="0.100000" help="low cutoff frequency in interval [0..1] where 1 is the nyquist frequency" />
-    <item name="high" type="DOUBLE" num="1" value="1.000000" help="high cutoff frequency in interval [0..1] where 1 is the nyquist frequency" />
-</options>

@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<options>
-    <item name="type" type="UCHAR" num="1" value="0" help="filter type (0=low, 1=high, 2=band)" />
-    <item name="order" type="UINT" num="1" value="1" help="filter order" />
-    <item name="norm" type="BOOL" num="1" value="false" help="frequency values are normalized in interval [0..1], where 1 is the nyquist frequency (=half the sample rate)" />
-    <item name="low" type="DOUBLE" num="1" value="10.000000" help="low cutoff frequency given either as normalized value in interval [0..1] or as an absolute value in Hz (see -norm)" />
-    <item name="high" type="DOUBLE" num="1" value="1.000000" help="high cutoff frequency given either as normalized value in interval [0..1] or as an absolute value in Hz (see -norm)" />
-    <item name="zero" type="BOOL" num="1" value="true" help="subtract first sample from signal to avoid artefacts at the beginning of the signal" />
-</options>
