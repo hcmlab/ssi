@@ -199,8 +199,16 @@ void XMLEventSender::consume (IConsumer::info consume_info,
 	ssi_size_t dur = ssi_sec2ms(consume_info.dur);
 
 	bool result = _helper->forward(stream_in_num, stream_in, time);
-	if (result && _options.update == 0) {
-		_helper->send(time, dur);
+	if (result)
+	{
+		if (_options.update == 0) 
+		{
+			_helper->send(time, dur);
+		}
+		else
+		{
+			_helper->setEventTimeDur(time, dur);
+		}
 	}
 }
 

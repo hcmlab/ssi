@@ -160,6 +160,7 @@ public:
 		ssi_size_t time);
 	void send(ssi_size_t time, 
 		ssi_size_t dur);
+	void setEventTimeDur(ssi_size_t time, ssi_size_t dur);
 
 	void enter();
 	void run();
@@ -194,12 +195,13 @@ protected:
 	bool parseSelect(Mapping &map, const ssi_char_t *string, ssi_size_t multiples);
 	bool parseField(Mapping &map, const ssi_char_t *string);	
 	bool parseFunction(Mapping &map, const ssi_char_t *string);
-	bool parsePrecision(Mapping &map, const ssi_char_t *string);
+	bool parsePrecision(Mapping &map, const ssi_char_t *string);	
 
 	std::vector < Mapping > mapping;
 	void resetMapping(ssi_size_t time);
 	void initMapping(Mapping &map);
 	void clearMapping();
+	
 	
 };
 

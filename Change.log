@@ -1767,3 +1767,5 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 27.07.17 CHG : model/xmltrain : use -out to store evaluation result : Johannes
 - 07.08.17 CHG : ui/modelui : removed modelui : Johannes
 - 07.08.17 CHG : model/mlp* : removed modelui interace projects : Johannes
+- 09.08.17 CHG : event/XMLEventSender : time and duration of an event is correctly set if used as consumer with an update rate > 0 : Johannes
+- 28.08.17 BUG : tools/xmlchain : annotation path is correctly passed in case of parallel processes : Johannes

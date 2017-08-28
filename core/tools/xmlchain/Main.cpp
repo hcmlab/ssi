@@ -404,7 +404,7 @@ String paramsToArgs(params_t *params, ssi_size_t n)
 		"-step " + params->step +
 		" -left " + params->left +
 		" -right " + params->right +
-		" -anno " + (annoPath ? annoPath : "") +
+		" -anno \"" + (annoPath ? annoPath : "") + "\"" +
 		" -url \"\"" +
 		" -log \"" + logPath + "\" " +
 		"\"" + params->chainPath + "\" "

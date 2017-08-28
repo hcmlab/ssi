@@ -964,6 +964,14 @@ void XMLEventHelper::flush() {
 	delete _timer; _timer = 0;
 }
 
+void XMLEventHelper::setEventTimeDur(ssi_size_t time, ssi_size_t dur)
+{
+	Lock lock(*_mutex);
+
+	_sender->_event.time = time;
+	_sender->_event.dur = dur;
+}
+
 void XMLEventHelper::run() {
 
 	{

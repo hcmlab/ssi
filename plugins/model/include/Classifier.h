@@ -67,7 +67,7 @@ public:
 
 			addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender (if sent to event board) [deprecated, see address]");
 			addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event (if sent to event board) [deprecated, see address]");			
-			addOption("path", trainer, SSI_MAX_CHAR, SSI_CHAR, "path to trainer <name:filepath> (if several separate by ;)");			
+			addOption("path", trainer, SSI_MAX_CHAR, SSI_CHAR, "path to trainer 'name:filepath' (if several separate by ;)");			
 			addOption("pthres", &pthres, 1, SSI_REAL, "probablity threshold");			
 			addOption("merge", &merge, 1, SSI_BOOL, "in case of multiple streams merge to single stream");	
 			addOption("flat", &flat, 1, SSI_BOOL, "in case of multiple samples merge to single sample");
