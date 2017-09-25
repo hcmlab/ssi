@@ -107,6 +107,7 @@ public:
 
 	ssi_size_t getSize();
 	ssi_label_t getLabel(ssi_size_t index);
+	bool add(Annotation &annotation);
 	bool add(const ssi_label_t &label);
 	bool add(ssi_time_t from, ssi_time_t to, ssi_int_t class_id, ssi_real_t conf);
 	bool add(ssi_time_t from, ssi_time_t to, const ssi_char_t *name, ssi_real_t conf);

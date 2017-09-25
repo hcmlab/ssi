@@ -293,26 +293,26 @@ bool File::seek (int64_t offset, File::ORIGIN origin) {
 		return false;
 	}
 
-	int res;
+    int res;
 
 	switch (origin) {
 		case File::BEGIN:
 #if __gnu_linux__			
-			res = lseek64(_file, offset, SEEK_SET);
+            res = lseek64(fileno(_file), offset, SEEK_SET);
 #else
 			res = _fseeki64(_file, offset, SEEK_SET);
 #endif
 			break;
 		case File::CURRENT:
 #if __gnu_linux__	
-			res = lseek64(_file, offset, SEEK_CUR);
+            res = lseek64(fileno(_file), offset, SEEK_CUR);
 #else
 			res = _fseeki64(_file, offset, SEEK_CUR);
 #endif
 			break;
 		case File::END:
 #if __gnu_linux__	
-			res = lseek64(_file, offset, SEEK_END);
+            res = lseek64(fileno(_file), offset, SEEK_END);
 #else
 			res = _fseeki64(_file, offset, SEEK_END);
 #endif

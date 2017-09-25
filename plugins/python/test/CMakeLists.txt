@@ -33,7 +33,7 @@ include_directories (
 	../../../core/include
 	../../../core/include/ioput/socket
 	../../../core/include/ioput
-	
+        ../../../libs/build/
         ../../../plugins/
 
 	
@@ -75,9 +75,9 @@ ENDIF(MINGW)
 add_executable(ssipython_test ${SRC_FILES})
 # link 
 if(UNIX)
-target_link_libraries(ssipython_test ssi  ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} ${X11} ${Xi})
+target_link_libraries(ssipython_test ssi ssiml ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} ${X11} ${Xi})
 else(UNIX)
-target_link_libraries(ssipython_test ssi  ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssipython_test ssi ssiml ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD})
 endif(UNIX)
 
 #rename targets if debug

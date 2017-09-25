@@ -35,6 +35,11 @@
 	#endif
 #endif
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 namespace ssi {
 
 SimpleKNN::SimpleKNN (const ssi_char_t *file) 

@@ -51,6 +51,7 @@ struct params_t
 	ssi_char_t *username;
 	ssi_char_t *password;
 	ssi_char_t *annotation;
+	ssi_char_t *annotation_new;
 	ssi_char_t *scheme;
 	ssi_char_t *annotator;
 	ssi_char_t *annotator_new;
@@ -61,6 +62,7 @@ struct params_t
 	ssi_char_t *filter;
 	ssi_char_t *list;
 	ssi_char_t *classname;
+	ssi_char_t *classname_new;
 	ssi_char_t *stream;
 	ssi_char_t *streamOut;
 	ssi_char_t *trainerTmp;
@@ -86,6 +88,7 @@ void uploadAnnotations(params_t &params);
 void downloadAnnotations(params_t &params);
 void removeAnnotations(params_t &params);
 void cutStreamFromLabel(params_t &params);
+void mapClassNames(params_t &params);
 void train(params_t &params);
 void forward(params_t &params);
 void merge(params_t &params);
@@ -115,6 +118,7 @@ int main (int argc, char **argv) {
 	params.password = 0;
 	params.database = 0;
 	params.annotation = 0;
+	params.annotation_new = 0;
 	params.scheme = 0;
 	params.annotator = 0;
 	params.annotator_new = 0;
@@ -125,6 +129,7 @@ int main (int argc, char **argv) {
 	params.filter = 0;
 	params.list = 0;
 	params.classname = 0;
+	params.classname_new = 0;
 	params.stream = 0;
 	params.streamOut = 0;
 	params.trainerTmp = 0;
@@ -154,6 +159,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");	
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--upload");
@@ -176,6 +182,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--download");
@@ -193,6 +200,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
 	cmd.addSCmdOption("-password", &params.password, "", "database password");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--cut");
@@ -205,8 +213,21 @@ int main (int argc, char **argv) {
 
 	cmd.addText("\nOptions:");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
-	cmd.addSCmdOption("-username", &params.username, "", "database username");
-	cmd.addSCmdOption("-password", &params.password, "", "database password");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
+	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
+	cmd.addMasterSwitch("--map");
+
+	cmd.addText("\nArguments:");
+	cmd.addSCmdArg("root", &params.root, "path to database on disk");
+	cmd.addSCmdArg("annotation", &params.annotation, "name of annotation");
+	cmd.addSCmdArg("newAnnotation", &params.annotation_new, "name of new annotation");
+	cmd.addSCmdArg("from", &params.classname, "original class names (separated by ;)");
+	cmd.addSCmdArg("to", &params.classname_new, "new class names (separated by ;)");
+
+	cmd.addText("\nOptions:");
+	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
 	cmd.addMasterSwitch("--train");
@@ -279,6 +300,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addBCmdOption("-force", &params.force, false, "overwrite existing files");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 	
 	if (cmd.read (argc, argv)) {		
@@ -376,19 +398,26 @@ int main (int argc, char **argv) {
 
 		case 5: {
 
+			mapClassNames(params);
+			
+			break;
+		}
+
+		case 6: {
+
 			train(params);
 
 			break;
 		}
 
-		case 6: {
+		case 7: {
 
 			forward(params);
 
 			break;
 		}
 
-		case 7: {
+		case 8: {
 
 			merge(params);
 
@@ -410,6 +439,7 @@ int main (int argc, char **argv) {
 	delete[] params.username;
 	delete[] params.password;	
 	delete[] params.annotation;
+	delete[] params.annotation_new;
 	delete[] params.annotator;
 	delete[] params.annotator_new;
 	delete[] params.scheme;
@@ -421,7 +451,8 @@ int main (int argc, char **argv) {
 	delete[] params.list;
 	delete[] params.stream;
 	delete[] params.streamOut;
-	delete[] params.classname;
+	delete[] params.classname; 
+	delete[] params.classname_new;
 	delete[] params.trainerTmp;
 	delete[] params.trainer;
 	delete[] params.balance;
@@ -722,6 +753,83 @@ void cutStreamFromLabel(params_t &params)
 				ssi_wrn("ERROR: stream file not found");
 				continue;
 			}
+		}
+		else
+		{
+			ssi_wrn("ERROR: annotation file not found");
+			continue;
+		}
+	}
+}
+
+void mapClassNames(params_t &params)
+{
+	ssi_char_t string[SSI_MAX_CHAR];
+
+	StringList from;
+	from.parse(params.classname, ';');
+	StringList to;
+	to.parse(params.classname_new, ';');	
+	StringList to_unique;
+	for (StringList::iterator it = to.begin(); it != to.end(); it++)
+	{
+		if (std::find(to_unique.begin(), to_unique.end(), *it) == to_unique.end())
+		{
+			to_unique.push_back(*it);
+		}
+	}
+
+	if (from.size() != to.size())
+	{
+		ssi_wrn("ERROR: number of classes differ");
+		return;
+	}
+
+	std::map<String, String> mapping;
+	for (ssi_size_t i = 0; i < from.size(); i++)
+	{
+		mapping[from[i]] = to[i];
+	}
+
+	StringList sessions;
+	getSessions(sessions, params);
+	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
+	{
+		ssi_sprint(string, "%s\\%s.annotation", it->str(), params.annotation);
+
+		ssi_print("\n-------------------------------------------\n");
+		ssi_print("MAP CLASS NAMES '%s:%s>%s:%s'\n\n", string, params.classname, params.annotation_new, params.classname_new);
+
+		if (ssi_exists(string))
+		{
+			Annotation anno;
+			if (!anno.load(string))
+			{
+				ssi_wrn("ERROR: could not load annotation from file");
+				continue;
+			}
+
+			if (anno.getScheme()->type != SSI_SCHEME_TYPE::DISCRETE)
+			{
+				ssi_wrn("ERROR: only discrete schemes are supported");
+				continue;
+			}			
+
+			Annotation anno_new;
+			anno_new.setDiscreteScheme(params.annotation_new, to_unique);
+
+			for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
+			{
+				map<String,String>::iterator pos = mapping.find(String(anno.getClassName(it->discrete.id)));
+				if (pos != mapping.end())
+				{
+					anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);				
+				}				
+			}
+
+			ssi_sprint(string, "%s\\%s.annotation", it->str(), params.annotation_new);
+			anno_new.packClass();
+			anno_new.save(string, File::ASCII);
 		}
 		else
 		{

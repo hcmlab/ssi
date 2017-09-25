@@ -30,6 +30,11 @@
 #include "thread/RunAsThread.h"
 #include "thread/Timer.h"
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 namespace ssi {
 
 char DecisionSmoother::ssi_log_name[] = "decsmooth_";

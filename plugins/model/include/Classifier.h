@@ -141,7 +141,7 @@ public:
 		return _event_address.getAddress ();
 	}
 
-	bool Classifier::notify(INotify::COMMAND::List command, const ssi_char_t *message);
+    bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
 
 	virtual void addTrainer (const ssi_char_t *name, Trainer *trainer);
 	void wait () {

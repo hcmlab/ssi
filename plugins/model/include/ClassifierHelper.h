@@ -80,7 +80,7 @@ namespace ssi
 
 	protected:		
 
-		static ssi_char_t ClassifierHelper::ssi_log_name[];
+        static ssi_char_t ssi_log_name[];
 
 		struct TrainerWrapper
 		{

@@ -37,7 +37,10 @@
 #include "base/IWindowManager.h"
 #include "base/Array1D.h"
 #include "thread/Mutex.h"
+
 #include "ioput/xml/tinyxml.h"
+
+
 #if __ANDROID__
 #define HEADLESS 1
 #include "base/AndroidApp.h"
@@ -105,7 +108,19 @@ public:
 	static bool ExportDlls (const ssi_char_t *target_dir) {
 		return GetFactory ()->exportDlls (target_dir);
 	}
-	static ssi_size_t GetDllNames (ssi_char_t ***names);
+/*
+        bool registerXML(TiXmlElement *element,
+                         FILE *logfile,
+                         IMessage *message);
+
+        IObject* CreateXML(TiXmlElement *element,
+                           bool auto_free);
+
+        ssi_char_t* fullDLLPath(const ssi_char_t *filepath);
+
+        void setDownloadDirs(const ssi_char_t *srcdir, const ssi_char_t *dstdir);
+*/
+        static ssi_size_t GetDllNames (ssi_char_t ***names);
 	static ssi_size_t GetObjectNames(ssi_char_t ***names); 
 	// filter: name1,name2,obj*
 	static ssi_size_t GetObjectIds(ssi_char_t ***names, const ssi_char_t *filter = 0);
@@ -114,6 +129,7 @@ public:
 		const ssi_char_t *file = 0,
 		bool auto_free = true,
 		const ssi_char_t *id = 0);
+		
 	static IObject *CreateXML(TiXmlElement *element,
 		bool auto_free = true);
 
@@ -183,6 +199,7 @@ protected:
 
 	static ssi_char_t *ssi_log_name;
 	static int ssi_log_level;
+  
 
 	static Factory *_factory;
 	

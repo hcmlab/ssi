@@ -338,8 +338,23 @@ protected:
 	SYSTEMTIME _system_time;
 	SYSTEMTIME _local_time;
 #else
-	uint64_t _system_time;
-	uint64_t _local_time;
+    /*
+        typedef struct _SYSTEMTIME {
+          uint32_t wYear;
+          uint32_t wMonth;
+          uint32_t wDayOfWeek;
+          uint32_t wDay;
+          uint32_t wHour;
+          uint32_t wMinute;
+          uint32_t wSecond;
+          uint32_t wMilliseconds;
+        } SYSTEMTIME;
+
+        SYSTEMTIME _system_time;
+        SYSTEMTIME _local_time;*/
+
+        uint64_t _system_time;
+        uint64_t _local_time;
 #endif
 	ssi_size_t _start_run_time;
 	ssi_size_t _last_run_time;

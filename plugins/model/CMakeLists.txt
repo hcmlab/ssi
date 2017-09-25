@@ -49,8 +49,8 @@ if(ANDROID)
 else(ANDROID)
 #add_subdirectory(tests)
 add_subdirectory(tools)
-add_subdirectory(MlpXml)
-add_dependencies(ssimlpxml ssi ssimodel)
+#add_subdirectory(MlpXml)
+#add_dependencies(ssimlpxml ssi ssimodel)
 endif(ANDROID)
 
 

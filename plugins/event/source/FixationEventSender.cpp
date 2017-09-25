@@ -36,6 +36,11 @@
 	#endif
 #endif
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 namespace ssi {
 
 char *FixationEventSender::ssi_log_name = "fixation__";

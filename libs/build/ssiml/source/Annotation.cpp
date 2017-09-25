@@ -38,6 +38,11 @@
 	#endif
 #endif
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 namespace ssi {
 
 ssi_char_t *Annotation::ssi_log_name = "annotation";
@@ -549,6 +554,23 @@ const ssi_char_t *Annotation::getMetaKey(ssi_size_t index)
 	return 0;
 }
 
+bool Annotation::add(Annotation &annotation)
+{
+	if (!_scheme)
+	{
+		return false;
+	}
+
+	bool result = true;
+	for (Annotation::iterator it = annotation.begin(); it != annotation.end(); it++)
+	{
+		result &= add(*it);
+	}
+
+	return result;
+}
+
+
 bool Annotation::add(const ssi_label_t &label)
 {
 	if (!_scheme)
@@ -755,7 +777,7 @@ bool Annotation::addCSV(FileCSV &file, ssi_size_t column_from, ssi_size_t column
 		return false;
 	}
 
-	ssi_size_t column_max = max(column_from, max(column_to, max(column_class, column_conf)));
+    ssi_size_t column_max = max(column_from, max(column_to, max(column_class, column_conf)));
 	if (column_max >= file.getColumnSize())
 	{
 		ssi_wrn("invalid column index '%u >= %u'", column_max, file.getColumnSize());
@@ -782,7 +804,7 @@ bool Annotation::addCSV(FileCSV &file, ssi_size_t column_from, ssi_size_t column
 		return false;
 	}
 
-	ssi_size_t column_max = max(column_from, max(column_to, column_class));
+    ssi_size_t column_max = max(column_from, max(column_to, column_class));
 	if (column_max >= file.getColumnSize())
 	{
 		ssi_wrn("invalid column index '%u >= %u'", column_max, file.getColumnSize());
@@ -859,7 +881,7 @@ bool Annotation::addCSV(FileCSV &file, ssi_size_t column_score, ssi_size_t colum
 		return false;
 	}
 
-	ssi_size_t column_max = max(column_score, column_conf);
+    ssi_size_t column_max = max(column_score, column_conf);
 	if (column_max >= file.getColumnSize())
 	{
 		ssi_wrn("invalid column index '%u >= %u'", column_max, file.getColumnSize());
@@ -1341,8 +1363,8 @@ bool Annotation::extractStream(const ssi_stream_t &from, ssi_stream_t &to)
 
 	for (Annotation::iterator it = begin(); it != end(); it++)
 	{
-		ssi_size_t start = ssi_cast(ssi_size_t, it->discrete.from * from.sr + 0.5);
-		ssi_size_t stop = max(start, ssi_cast(ssi_size_t, it->discrete.to * from.sr + 0.5));			
+        ssi_size_t start = ssi_cast(ssi_size_t, it->discrete.from * from.sr + 0.5);
+        ssi_size_t stop = max(start, ssi_cast(ssi_size_t, it->discrete.to * from.sr + 0.5));
 
 		if (stop >= from.num)
 		{
@@ -1577,8 +1599,8 @@ bool Annotation::convertToFrames(ssi_time_t frame_s,
 
 			// find all classes within the current frame
 			while (label != clone.end() && label->discrete.from < frame_to)
-			{
-				ssi_time_t dur = (min(frame_to, label->discrete.to) - max(frame_from, label->discrete.from)) / frame_dur;
+            {
+                ssi_time_t dur = (min(frame_to, label->discrete.to) - max(frame_from, label->discrete.from)) / frame_dur;
 				if (label->discrete.id < 0)
 				{
 					percent_garbage += dur;
@@ -1675,7 +1697,7 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 		ssi_wrn("sample rates do not fit '%g != %g'", stream.sr, _scheme->continuous.sr);
 	}
 
-	ssi_size_t n_samples = ssi_size_t(min(stream.num, size()));
+    ssi_size_t n_samples = ssi_size_t(min((int)stream.num, (int)size()));
 	if (n_samples <= context_left + context_right)
 	{
 		ssi_wrn("stream or annotation too short '%u'", n_samples);
@@ -1940,8 +1962,8 @@ bool Annotation::removeOverlap()
 	}
 
 	for (iterator it = begin(); it != end()-1; it++)
-	{
-		it->discrete.to = min(it->discrete.to, (it + 1)->discrete.from);
+    {
+        it->discrete.to = min(it->discrete.to, (it + 1)->discrete.from);
 	}
 
 	return true;

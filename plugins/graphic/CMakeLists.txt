@@ -41,6 +41,7 @@ include_directories(		include
 							../../core/include/ioput
 							../../core/include
 							../
+                                                        ../../libs/build/
 
 							${CAIRO_INCLUDE_DIRS}
 							${SDL2_INCLUDE_DIRS}

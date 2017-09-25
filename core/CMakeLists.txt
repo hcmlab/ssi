@@ -33,7 +33,7 @@ IF(SSI_GUI STREQUAL "SDL")
 	endif(UNIX)
 endif(SSI_GUI STREQUAL "SDL")
 
-include_directories(include include/ioput/socket include/ioput ../libs/shared/ ../plugins/ ${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
+include_directories(include include/ioput/socket include/ioput ../libs/build/ ../plugins/ ${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
 
 set(COMMON_SRC_FILES
 
@@ -116,6 +116,8 @@ source/ioput/option/CmdArgOption.cpp
 
 source/base/String.cpp
 source/base/StringList.cpp
+source/base/Random.cpp
+
 source/event/EventAddress.cpp
 #source/model/SampleList.cpp
 

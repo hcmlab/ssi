@@ -93,10 +93,10 @@ endif(OPENSSI_BUILD_GUI)
 
 #set compiler and linker flags
 IF(SSI_GUI STREQUAL "SDL")
-    SET(SSI_CFLAG "-std=c++11   -fPIC")
+    SET(SSI_CFLAG "-std=c++11 -ggdb  -fPIC")
     SET(SSI_LD_FLAG "-lrt")
 else(SSI_GUI STREQUAL "SDL")
-    SET(SSI_CFLAG "-std=c++11  -fPIC -DHEADLESS")
+    SET(SSI_CFLAG "-std=c++11 -ggdb -fPIC -DHEADLESS")
     SET(SSI_LD_FLAG "-lrt")
 endif(SSI_GUI STREQUAL "SDL")
 
@@ -111,5 +111,5 @@ add_subdirectory(libs)
 add_subdirectory(plugins)
 
 #IF(IS_DIRECTORY programms)
- #       add_subdirectory(programms)
+        #add_subdirectory(programms)
 #ENDIF(IS_DIRECTORY programms)

@@ -41,6 +41,11 @@
 #include "ISMissingData.h"
 #include "Evaluation.h"
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 namespace ssi {                                                           
 
 const ssi_char_t *Machine::ResampleTypeNames[3] = {"none", "under", "over"};

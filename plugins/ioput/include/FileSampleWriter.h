@@ -116,14 +116,14 @@ public:
 protected:
 
 	FileSampleWriter (const ssi_char_t *file = 0);
-	FileSampleWriter::Options _options;
+    Options _options;
 	ssi_char_t *_file;
 
 	static ssi_char_t *ssi_log_name;
 	int ssi_log_level;
 	
 	bool classFromEvent(ssi_event_t *e);
-	void FileSampleWriter::classFromStream(ssi_stream_t &s);
+    void classFromStream(ssi_stream_t &s);
 	ssi_size_t _class_id;
 	ssi_sample_t *_sample;
 	FileSamplesOut _out;

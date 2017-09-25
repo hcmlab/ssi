@@ -398,7 +398,7 @@ SSI_INLINE static void  ssi_sleep(int32_t ms)
 
 // min and max function
 #if __MINGW32__ || __GNUC__
-
+/*
 template <class T> const T& max (const T& a, const T& b) {
   return (a<b)?b:a;     // or: return comp(a,b)?b:a; for version (2)
 }
@@ -406,7 +406,7 @@ template <class T> const T& max (const T& a, const T& b) {
 template <class T> const T& min (const T& a, const T& b) {
   return (a<b)?a:b;     // or: return comp(a,b)?b:a; for version (2)
 }
-
+*/
 #else
 #ifndef min
 #define	min(a,b) ((a) > (b) ? (b) : (a))
@@ -515,7 +515,11 @@ SSI_INLINE bool ssi_strcmp (const ssi_char_t *s1, const ssi_char_t *s2, bool cas
 		}
 		n = n_s1;
 	} else {
+#if __gnu_linux__
+               n = std::min(n, std::max(n_s1, n_s2));
+#else
 		n = min(n, max(n_s1, n_s2));
+#endif
 	}
 
 	if (case_sensitive) {
@@ -922,7 +926,11 @@ SSI_INLINE void ssi_stream_select (const ssi_stream_t &from, ssi_stream_t &to, s
 	ssi_size_t k = 0;
 	for (ssi_size_t j = 0; j < n_iter; j++) {
 		for (ssi_size_t i = 0; i < n_dims; i++) {
+#if __gnu_linux__
+                        select[k++] = std::min(n_values - 1, dims[i] + j * multiples);
+#else
 			select[k++] = min(n_values - 1, dims[i] + j * multiples);
+#endif
 		}
 	}
 

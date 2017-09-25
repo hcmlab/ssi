@@ -199,7 +199,9 @@ bool Factory::registerDLL (const ssi_char_t *name,
 	{
 		ssi_char_t *url = ssi_strcat(_srcdir, "/", fullname);
 		ssi_msg(SSI_LOG_LEVEL_BASIC, "download '%s'", url);
+#if _WIN32||_WIN64
 		WebTools::DownloadFile(url, fullpath);
+#endif
 		delete[] url;
 	}
 
@@ -251,7 +253,7 @@ bool Factory::registerDLL (const ssi_char_t *name,
 	if (it == _dll_handle_map.end ()) {
 
 		void* hDLL=0;
-		hDLL=dlopen(filepath_x, RTLD_LAZY);
+        hDLL=dlopen(fullname, RTLD_LAZY);
 		dlerror();
 		
 		const char* error;
@@ -261,11 +263,11 @@ bool Factory::registerDLL (const ssi_char_t *name,
 			register_fptr_from_dll_t register_fptr = (register_fptr_from_dll_t) dlsym(hDLL, SSI_FACTORY_REGISTER_FUNCNAME);
 			
 			if (!((error = dlerror()) != NULL)) {
-				_dll_handle_map.insert (dll_handle_pair_t (String (filepath_x), hDLL));				
-				ssi_msg (SSI_LOG_LEVEL_DEFAULT, "register '%s'", filepath_x);
+                _dll_handle_map.insert (dll_handle_pair_t (String (fullname), hDLL));
+                ssi_msg (SSI_LOG_LEVEL_DEFAULT, "register '%s'", fullname);
 				succeeded = register_fptr (GetFactory (), logfile, message);
 			} else {
-				ssi_wrn ("Register() function not found '%s' '%s'", filepath_x, error);
+                ssi_wrn ("Register() function not found '%s' '%s'", fullname, error);
 				//char* loadLibraryError = dlerror();
 				if(!dlclose(hDLL))
 				{
@@ -275,10 +277,10 @@ bool Factory::registerDLL (const ssi_char_t *name,
 				hDLL = 0;
 			}
 		} else {
-			ssi_wrn ("not found '%s'", filepath_x);
+            ssi_wrn ("not found '%s'", fullname);
 		}
 	} else {
-		ssi_msg (SSI_LOG_LEVEL_DEFAULT, "already loaded '%s'", filepath_x);
+        ssi_msg (SSI_LOG_LEVEL_DEFAULT, "already loaded '%s'", fullname);
 	}
 
 	#endif
@@ -320,7 +322,9 @@ bool Factory::registerXML(TiXmlElement *element,
 							{
 								ssi_char_t *url = ssi_strcat(_srcdir, "/", fullname);
 								ssi_msg(SSI_LOG_LEVEL_BASIC, "download dependency '%s'", url);
+#if _WIN32||_WIN64
 								WebTools::DownloadFile(url, fullpath);
+#endif
 								delete[] url;
 							}
 							delete[] fullpath;
