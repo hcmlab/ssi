@@ -1769,3 +1769,16 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 07.08.17 CHG : model/mlp* : removed modelui interace projects : Johannes
 - 09.08.17 CHG : event/XMLEventSender : time and duration of an event is correctly set if used as consumer with an update rate > 0 : Johannes
 - 28.08.17 BUG : tools/xmlchain : annotation path is correctly passed in case of parallel processes : Johannes
+- 26.09.17 BUG : graphic/Window : thread with message loop properly terminated before window is destroyed : Johannes
+- 26.09.17 ADD : base/IWaitable : interface for objects that can stop the pipeline : Johannes
+- 26.09.17 CHG : frame/TheFramework : add method setWaitable(), wait object can also be set via option 'waitid' : Johannes
+- 26.09.17 ADD : control/WaitButton : a button that implements IWaitable (and hence can be used to stop the pipeline) : Johannes
+- 26.09.17 CHG : [camera/CameraReader,ioput/FileReader,ffmpeg/FFMPEGReader,avi/AviReader] : now implement IWaitable : Johannes
+- 26.09.17 CHG : tools/xmlpipe : new option -configstr : Johannes
+
+*** Version 1.0.2 *** 
+- 27.09.17 CHG : signal/Functionals : added 'global' option to extract functionals across all dimensions : Johannes
+- 29.09.17 BUG : core/ioput/option : fixed small bug in parsing options from string : Johnny
+- 29.09.17 BUG : plugins/model/ClassifierT : fixed bug with stream merging : Johnny
+- 04.10.17 CHG : core/ioput/option : add read-only flag again : Johannes
+- 04.10.17 CHG : nova : model evaluation : Johannes

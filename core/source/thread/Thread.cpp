@@ -27,8 +27,6 @@
 #include "thread/Thread.h"
 #include "thread/Lock.h"
 
-
-
 #if hasCXX11threads
     #include<thread>
 		//for thread killing
@@ -101,6 +99,7 @@ bool Thread::start () {
 
 	// we block the _event
 	_event.block ();
+
 	// create thread
 	#if hasCXX11threads
 
@@ -114,8 +113,6 @@ bool Thread::start () {
 		this,
 		0,
 		&_tid);
-
-
 
 	if (result == -1L || result == 0) {
 		switch (errno) {
@@ -155,8 +152,7 @@ bool Thread::start () {
 // stops the thread
 bool Thread::stop () {
 
-
-	ssi_msg (SSI_LOG_LEVEL_DEFAULT, "terminate%s'%s'", _single_execution ? " single execution " : " ", _name);
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "terminate '%s'%s", _name, _single_execution ? " (single run)" : "");	
 
 	// if not single execution signal run method to terminate
 
@@ -188,18 +184,15 @@ bool Thread::stop () {
     ).detach();;
     */
     
-    
 	_handle->join();
-
-
 
 	//todo interruptible threads
 	delete _handle;
 
 	#else
+
     DWORD result;
 	result = ::WaitForSingleObject((HANDLE) _handle, _timeout);
-
 
 	bool success = true;
 	if (result == WAIT_TIMEOUT) {
@@ -209,18 +202,16 @@ bool Thread::stop () {
 		ssi_wrn ("WaitForSingleObject() failed '%s' (error=%lu)", _name, ::GetLastError ());
 		success = false;
 	}
+
 	// close _handle
-
-
-
 	::CloseHandle ((HANDLE) _handle);
 	#endif // hasCXX11threads
-
 
 	ssi_char_t string[SSI_MAX_CHAR];
 	_stop_time = ssi_time_ms ();
 	ssi_time_sprint (_stop_time - _start_time, string);
-	ssi_msg (SSI_LOG_LEVEL_DEFAULT, "stop%safter %s '%s'", _single_execution ? " single execution " : " ", string, _name);
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "stop '%s' after %s%s", _name, string, _single_execution ? " (single run)" : "");	
 
 	return success;
 }
@@ -231,8 +222,6 @@ void Thread::threadFun (void * pArg) {
 #else
 unsigned int WINAPI Thread::threadFun (void * pArg) {
 #endif // hasCXX11threads
-
-
 
 	// get pointer to thread
 	Thread *pThread = (Thread *) pArg;
@@ -269,6 +258,7 @@ unsigned int WINAPI Thread::threadFun (void * pArg) {
 		Lock lock (pThread->_mutex);
 		pThread->_is_active = false;
 	}
+
 #if hasCXX11threads
 #else
     return 0;
@@ -300,7 +290,6 @@ void Thread::sleep_ms (ssi_size_t milliseconds) {
     #else
     ::Sleep (milliseconds);
     #endif // hasCXX11threads
-
 }
 
 void Thread::sleep_s (ssi_time_t seconds) {

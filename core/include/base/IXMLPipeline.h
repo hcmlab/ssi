@@ -42,7 +42,7 @@ public:
 
 	virtual ~IXMLPipeline () {};
 
-    virtual bool parse (const ssi_char_t *filepath, ssi_size_t n_confs = 0, ssi_char_t **confpaths = 0, bool savepipe = false, bool included = false) = 0;
+    virtual bool parse (const ssi_char_t *filepath, const ssi_char_t *confstr = 0, ssi_size_t n_confs = 0, ssi_char_t **confpaths = 0, bool savepipe = false, bool included = false) = 0;
 	virtual IObject *parseObject (TiXmlElement *element, bool auto_free = true) = 0;
 	virtual ITransformable *getTransformable (const ssi_char_t *name) = 0;
 	virtual IConsumer *getConsumer (const ssi_char_t *name) = 0;

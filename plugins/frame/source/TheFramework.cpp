@@ -29,6 +29,7 @@
 #include "TimeServer.h"
 #include "thread/Mutex.h"
 #include "Decorator.h"
+#include "base/Factory.h"
 
 #include <fstream>
 #include <iomanip>
@@ -96,6 +97,7 @@ TheFramework::TheFramework (const ssi_char_t *file)
 	 _sync_socket (0),
 	 _sync_msg_id(SYNC_MSG_ID::RUN_AND_QUIT),
 	 _cancel_wait(false),
+	 _waitable (0),
 	 ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 #if _WIN32|_WIN64
 	memset (&_system_time, 0, sizeof (_system_time));
@@ -406,6 +408,11 @@ void TheFramework::Start () {
 	}
 }
 
+void TheFramework::SetWaitable(IWaitable *waitable)
+{
+	_waitable = waitable;
+}
+
 void TheFramework::Wait () {
 
 #ifdef FRAMEWORK_LOG
@@ -423,7 +430,7 @@ void TheFramework::Wait () {
 	if (_options.sync && _options.slisten) 
 	{
 		ssi_print("\n");
-		ssi_print_off("waiting for sync message to stop\n\n\n");
+		ssi_print_off("waiting for stop message\n\n\n");
 		SYNC_MSG_TYPE::List type;
 		SYNC_MSG_ID::List id;
 		do
@@ -435,12 +442,32 @@ void TheFramework::Wait () {
 	} 
 	else 
 	{
-		if (_options.runtime > 0)
+		if (_options.waitid[0] != '\0')
+		{
+			IObject *object = Factory::GetObjectFromId(_options.waitid);
+			if (object)
+			{
+				_waitable = (IRunAndWaitableObject*) object;
+			}
+			else
+			{
+				ssi_wrn("invalid wait id '%s'", _options.waitid);
+			}
+		}
+
+		if (_waitable)
+		{
+			ssi_print("\n");
+			ssi_print_off("waiting for stop signal\n\n");
+
+			_waitable->wait();
+		}
+		else if (_options.runtime > 0)
 		{
 			int32_t runtime_ms = (int32_t) (_options.runtime * 1000);
 
 			ssi_print("\n");
-			ssi_print_off("pipeline stops after %d ms\n\n", runtime_ms);
+			ssi_print_off("pipeline will stop after %d ms\n\n", runtime_ms);
 
 			ssi_sleep(runtime_ms);
 		} 
@@ -467,7 +494,17 @@ void TheFramework::Wait () {
 }
 
 void TheFramework::CancelWait () {
-	_cancel_wait = true;
+
+	ssi_print_off("force pipeline to stop");
+
+	if (_waitable)
+	{
+		_waitable->cancel();
+	}
+	else
+	{
+		_cancel_wait = true;
+	}
 }
 
 void TheFramework::Stop () {
@@ -2069,6 +2106,8 @@ ITransformable *TheFramework::AddTransformer (ITransformable *source,
 
 	return transformer;
 };
+
+
 
 }
 #if __ANDROID__

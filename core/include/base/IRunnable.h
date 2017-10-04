@@ -29,15 +29,6 @@
 #ifndef SSI_IRUNNABLE_H
 #define SSI_IRUNNABLE_H
 
-#include "base/IObject.h"
-
-/**
- * \brief Interface for anything that can run and stop.  
- * 
- * @author Johannes Wagner
- * @date  Feb 2009
- */
-
 namespace ssi {
 
 class IRunnable {
@@ -48,9 +39,6 @@ public:
 
 	virtual bool start () = 0;
 	virtual bool stop () = 0;
-};
-
-class SSI_IRunnableObject : public IObject, public IRunnable { // SSI_ added, otherwise conflict with Windows SDK
 };
 
 }

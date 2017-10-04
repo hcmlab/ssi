@@ -57,11 +57,11 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL("ssiframe"); 
-	Factory::RegisterDLL("ssievent");
-	Factory::RegisterDLL("ssimouse");
-	Factory::RegisterDLL ("ssicontrol");
-	Factory::RegisterDLL("ssigraphic");
+	Factory::RegisterDLL("frame"); 
+	Factory::RegisterDLL("event");
+	Factory::RegisterDLL("mouse");
+	Factory::RegisterDLL ("control");
+	Factory::RegisterDLL("graphic");
 
 	Factory::Register(MyObject::GetCreateName(), MyObject::Create);
 
@@ -258,6 +258,8 @@ bool ex_button(void *arg) {
 
 	ITheFramework *frame = Factory::GetFramework();
 
+	Thread::SetLogLevel(SSI_LOG_LEVEL_DEBUG);
+
 	MyObject *o = ssi_create_id(MyObject, 0, "object1");
 	o->getOptions()->value = 0.0;
 
@@ -265,12 +267,18 @@ bool ex_button(void *arg) {
 	o->getOptions()->value = 0.0;
 
 	ControlButton *button = ssi_create(ControlButton, "button", true);	
-	button->getOptions()->setLabel("click to reset");
-	button->getOptions()->setTitle("BUTTON");
+	button->getOptions()->setLabel("click to reset objects");
+	button->getOptions()->setTitle("RESET");
 	button->getOptions()->setId("object*");
 	button->getOptions()->setMessage("reset");	
 	button->getOptions()->setPos(CONSOLE_WIDTH, 0, 200, 200);
 	frame->AddRunnable(button);
+
+	WaitButton *wait = ssi_create_id(WaitButton, 0, "wait");
+	wait->getOptions()->setPos(CONSOLE_WIDTH, 200, 200, 200);
+	wait->getOptions()->setLabel("click to stop pipeline");
+	frame->AddRunnable(wait);
+	frame->SetWaitable(wait);	
 
 	frame->Start();
 	frame->Wait();

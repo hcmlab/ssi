@@ -31,7 +31,7 @@
 
 #ifndef SSI_USE_SDL
 
-#include "base/IRunnable.h"
+#include "base/IObject.h"
 #include "ioput/option/OptionList.h"
 #include "event/EventAddress.h"
 #include "base/IWindow.h"

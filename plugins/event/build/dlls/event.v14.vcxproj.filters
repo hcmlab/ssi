@@ -66,6 +66,9 @@
     <ClInclude Include="..\..\include\TriggerEventSender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ThresTupleEventSender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp">
@@ -117,6 +120,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\TriggerEventSender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ThresTupleEventSender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

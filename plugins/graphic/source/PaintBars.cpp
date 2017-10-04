@@ -57,6 +57,7 @@ PaintBars::PaintBars(TYPE::List type)
 	_axis_captions (0),
 	_n_external_axis_captions(0),
 	_external_axis_captions(0),
+	_show_event_caption(true),
 	_event_caption(0),
 	_window_caption (0),
 	_p_perdim (0),
@@ -249,8 +250,11 @@ void PaintBars::setWindowCaption (ssi_char_t *caption) {
 }
 
 void PaintBars::setEventCaption(ssi_size_t event_id, ssi_size_t sender_id) {
-
 	_event_caption = ssi_strcat(Factory::GetString(event_id), "@", Factory::GetString(sender_id));
+}
+
+void PaintBars::showEventCaption(bool toggle) {
+	_show_event_caption = toggle;
 }
 
 void PaintBars::setPen(ssi_rgb_t color, IPainter::ITool::WIDTH width, IPainter::ITool::LINE_STYLES::List style) {
@@ -387,7 +391,7 @@ void PaintBars::paintGrid(ssi_handle_t context, ssi_rect_t area){
 
 	_painter->begin(context, area);
 
-	if (_event_caption) {
+	if (_show_event_caption && _event_caption) {
 		_painter->text(*_font, *_font_pen, *_font_brush, ssi_point(0, 0), _event_caption, IPainter::TEXT_ALIGN_HORZ::LEFT, IPainter::TEXT_ALIGN_VERT::TOP);
 	}
 

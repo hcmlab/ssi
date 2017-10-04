@@ -35,7 +35,7 @@
 
 namespace ssi {
 
-class ISensor : public IObject, public IRunnable {
+class ISensor : public SSI_IRunnableObject {
 
 public:
 
@@ -47,6 +47,8 @@ public:
 
 	ssi_object_t getType () { return SSI_SENSOR; };
 };
+
+class IWaitableSensor : public ISensor, public IWaitable {};
 
 }
 

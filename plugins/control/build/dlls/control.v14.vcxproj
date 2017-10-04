@@ -103,6 +103,7 @@
     <ClCompile Include="..\..\source\ControlSlider.cpp" />
     <ClCompile Include="..\..\source\ControlTextBox.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />
+    <ClCompile Include="..\..\source\WaitButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ControlButton.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="..\..\include\ControlSlider.h" />
     <ClInclude Include="..\..\include\ControlTextBox.h" />
     <ClInclude Include="..\..\include\ssicontrol.h" />
+    <ClInclude Include="..\..\include\WaitButton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

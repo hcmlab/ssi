@@ -473,6 +473,8 @@ void Window::close() {
 		::SendMessage((HWND)_hWnd, WM_CLOSE, 0, 0);
 	}
 
+	stop();
+
 	if (_client) {
 		_client->close();
 	}

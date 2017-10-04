@@ -130,8 +130,11 @@ public:
 			cpos[2] = 400;
 			cpos[3] = 400;	
 
+			waitid[0] = '\0';
+
 			addOption ("countdown", &countdown, 1, SSI_SIZE, "countdown in seconds before pipeline is started");		
 			addOption ("runtime", &runtime, 1, SSI_DOUBLE, "runtime in seconds until pipeline is stopped (if <= 0, pipeline will wait for key input)");
+			addOption ("waitid", &waitid, SSI_MAX_CHAR, SSI_CHAR, "call wait function of object with this id (has to implement IWaitable) [overrides 'runtime']");
 			
 			addOption ("console", &console, 1, SSI_BOOL, "move console window");	
 			addOption ("cpos", &cpos, 4, SSI_INT, "position of console window on screen [posx,posy,width,height]");
@@ -140,7 +143,7 @@ public:
 			addOption ("mupd", &mupd, 1, SSI_SIZE, "monitor update frequency in milliseconds");		
 			
 			addOption ("sync", &sync, 1, SSI_BOOL, "turn on sync mode: if not in listen mode send sync signal otherwise wait for such a signal");
-			addOption ("slisten", &slisten, 1, SSI_BOOL, "serve as client, i.e. wait for sync signal by server (only if sync option is turned on)");
+			addOption ("slisten", &slisten, 1, SSI_BOOL, "serve as client, i.e. wait for sync signal by server (only if 'sync' option is on) [overrides 'waitid' and 'runtime']");
 			addOption ("sport", &sport, 1, SSI_INT, "sync port number (-1 for any)");
 			addOption ("shost", &shost, SSI_MAX_CHAR, SSI_CHAR, "sync host (empty for any)");
 			addOption ("stype", &stype, 1, SSI_UCHAR, "sync protocol type (0=UDP, 1=TCP)");	
@@ -150,7 +153,7 @@ public:
 			addOption ("tport", &tport, 1, SSI_INT, "time server listening port");					
 			addOption ("info", &info, 1, SSI_BOOL, "create framework info file");
 			addOption ("loglevel", &loglevel, 1, SSI_INT, "log level (0=error only, 1=warnings, 2=basic, 3=detailed, 4=debug, 5=verbose");
-		}
+		}		
 
 		void setMonitorPos (int x, int y, int width, int height) {
 			monitor = true;
@@ -170,6 +173,7 @@ public:
 
 		ssi_size_t countdown;
 		double runtime;
+		ssi_char_t waitid[SSI_MAX_CHAR];
 
 		bool console;
 		int cpos[4];
@@ -281,6 +285,7 @@ public:
 	void AddDecorator(IObject *decorator);
 	int AddRunnable (IRunnable *runnable);
 	void AddExeJob (const ssi_char_t *exe, const ssi_char_t *args, EXECUTE::list type, int wait);
+	void SetWaitable(IWaitable *waitable);
 
 	bool IsBufferInUse (int buffer_id);
 
@@ -385,6 +390,9 @@ protected:
 
 	// decorator
 	std::vector<Decorator *> _decorators;
+
+	// waitable
+	IWaitable *_waitable;
 
 	// executable jobs 
 	struct job_s {

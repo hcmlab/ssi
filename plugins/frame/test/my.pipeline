@@ -1,15 +1,5 @@
 <?xml version="1.0" ?>
 <pipeline ssi-v="1">
-	
-	<!-- will be executed before the pipeline is started 			
-		when = pre, post, [now]
-		wait = milliseconds to wait, if < 0 until job is finished [-1] 
-	-->
-	<job path="job.bat" args="pre $(jobtime)" when="pre" wait="0"/>
-	<job path="mkdir.bat" args="$(date)" when="pre" wait="-1"/>
-	
-	<!-- will be executed after the pipeline is stopped -->
-	<job path="job.bat" args="post $(jobtime)" when="post" wait="-1"/>
 
 	<!-- register dlls -->
 	<register>
@@ -21,10 +11,21 @@
 		<item name="control"/>
 	</register>
 	
+	<!-- create a button and use it to stop the pipeline -->
+	<framework waitid="wait"/>
+	<runnable create="WaitButton:wait" label="Press to stop pipeline"/>
+	
+	<!-- will be executed before the pipeline is started 			
+		when = pre, post, [now]
+		wait = milliseconds to wait, if < 0 until job is finished [-1] 
+	-->
+	<job path="job.bat" args="pre $(jobtime)" when="pre" wait="0"/>
+	<job path="mkdir.bat" args="$(date)" when="pre" wait="-1"/>
+	
+	<!-- will be executed after the pipeline is stopped -->
+	<job path="job.bat" args="post $(jobtime)" when="post" wait="-1"/>	
+	
 	<!-- sensor + provider + filter -->
-	<!-- <option create="Mouse" option="mouse">
-		<set name="mask" value="2"/>
-	</option> -->
 	<sensor create="Mouse" option="mouse" mask="1">
 		<output channel="button" pin="button"/>
 		<output channel="cursor" pin="$(cursor_pin)" size="5000ms" watch="2.0s" sync="2.5s">
@@ -65,7 +66,7 @@
 	</gate>
 	
 	<!-- event -->	
-	<consumer create="TriggerEventSender" mindur="0.2" address="pressed@button" eager="true" triggerType="5">
+	<consumer create="TriggerEventSender" minDuration="0.2" address="pressed@button" sendStartEvent="true" triggerType="5">
 		<input pin="button" frame="0.25s"/>		
 	</consumer>		
 	
@@ -90,10 +91,11 @@
 	</object>
 	
 	<!-- set painter options -->
-	<object create="Decorator:decorator" origin="100,100" scale="1.0,1.5">	
+	<object create="Decorator:decorator" origin="100,100" scale="1.0,1.5" icon="true">	
 		<area pos="0,0,400,600">plot*</area>		
-		<area pos="400,0,400,600" nh="1">monitor,console</area>
-		<!--area pos="SCREEN">plot*,monitor,console</area-->
+		<area pos="400,0,400,300">monitor</area>
+		<area pos="400,300,400,300">console</area>		
+		<area pos="800,0,200,100">wait</area>
 	</object>
 
 	<!--runnable create="ControlGrid" pos="800,0,400,200" id="decorator"/-->

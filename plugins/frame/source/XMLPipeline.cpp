@@ -142,8 +142,12 @@ ssi_char_t *XMLPipeline::applyConfig (ssi_char_t *pipestr, const ssi_char_t *con
 	return pipestr;
 }
 
-bool XMLPipeline::parse (const ssi_char_t *filepath, ssi_size_t n_confs, ssi_char_t **confpaths, bool savepipe, bool included) {
-
+bool XMLPipeline::parse (const ssi_char_t *filepath, 
+	const ssi_char_t *confstr, 
+	ssi_size_t n_confs, 
+	ssi_char_t **confpaths, 
+	bool savepipe, 
+	bool included) {
 
 	FilePath fp (filepath);
 	ssi_char_t *filepath_with_ext = 0;
@@ -159,29 +163,45 @@ bool XMLPipeline::parse (const ssi_char_t *filepath, ssi_size_t n_confs, ssi_cha
 	ssi_char_t workdir_old[SSI_MAX_CHAR];
 
 	if (!included) {
+
+		// set working dir and date
+
 		ssi_getcwd(SSI_MAX_CHAR, workdir_old);
 		ssi_setcwd(fp.getDir());
 		ssi_now_friendly(_date);
-	}
 
-	if (!_global_confpaths && n_confs > 0) {
-		_n_global_confpaths = n_confs;
-		_global_confpaths = new ssi_char_t *[_n_global_confpaths];
-		ssi_char_t *global_confpath_with_ext = 0;
-		ssi_char_t *key, *value;
-		for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {
-			if (confpaths[i] != 0) {
+		// parse config string
 
-				if (ssi_parse_option(confpaths[i], &key, &value))
+		if (confstr != 0 && confstr[0] != '0')
+		{
+			ssi_size_t n_tokens = ssi_split_string_count(confstr, ';');
+			if (n_tokens > 0)
+			{
+				ssi_char_t **tokens = new ssi_char_t *[n_tokens];
+				ssi_split_string(n_tokens, tokens, confstr, ';');
+				ssi_char_t *key, *value;
+				for (ssi_size_t i = 0; i < n_tokens; i++)
 				{
-					_variables[String(key)] = String(value);
-					_global_confpaths[i] = 0;
-
-					delete[] key;
-					delete[] value;
+					if (ssi_parse_option(tokens[i], &key, &value))
+					{
+						_variables[String(key)] = String(value);					
+						delete[] key;
+						delete[] value;
+					}
+					delete tokens[i];
 				}
-				else
-				{
+				delete tokens;
+			}
+		}
+
+		// store global config files	
+
+		if (!_global_confpaths && n_confs > 0) {
+			_n_global_confpaths = n_confs;
+			_global_confpaths = new ssi_char_t *[_n_global_confpaths];
+			ssi_char_t *global_confpath_with_ext = 0;		
+			for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {
+				if (confpaths[i] != 0) {
 					FilePath fpc(confpaths[i]);
 					if (strcmp(fpc.getExtension(), SSI_FILE_TYPE_PCONFIG) != 0) {
 						global_confpath_with_ext = ssi_strcat(confpaths[i], SSI_FILE_TYPE_PCONFIG);
@@ -208,73 +228,65 @@ bool XMLPipeline::parse (const ssi_char_t *filepath, ssi_size_t n_confs, ssi_cha
 	ssi_msg (SSI_LOG_LEVEL_BASIC, "load '%s' (local config=%s, global config=%s)", filepath_with_ext, has_local_config ? "yes" : "no", _n_global_confpaths > 0 ? "yes" : "no");
 
 	TiXmlDocument doc;
-	//if (_n_global_confpaths > 0 || has_local_config) {
 
-		ssi_size_t n_pipestr = 0;
-		ssi_char_t *pipestr = FileTools::ReadAsciiFile (filepath_with_ext, n_pipestr);
-		if (!pipestr) {
-			ssi_wrn("failed reading pipeline '%s'", filepath_with_ext);
-			return false;
-		}
+	ssi_size_t n_pipestr = 0;
+	ssi_char_t *pipestr = FileTools::ReadAsciiFile (filepath_with_ext, n_pipestr);
+	if (!pipestr) {
+		ssi_wrn("failed reading pipeline '%s'", filepath_with_ext);
+		return false;
+	}	
 
-		// apply global variables
-		for (variables_map_t::iterator it = _variables.begin(); it != _variables.end(); it++)
-		{
-			ssi_char_t *old = pipestr;
-			ssi_char_t *search = ssi_strcat("$(", it->first.str(), ")");
-			pipestr = ssi_strrepl(pipestr, search, it->second.str());
-			delete[] search;
-			delete[] old;
-		}
+	// apply global variables
+	for (variables_map_t::iterator it = _variables.begin(); it != _variables.end(); it++)
+	{
+		ssi_char_t *old = pipestr;
+		ssi_char_t *search = ssi_strcat("$(", it->first.str(), ")");
+		pipestr = ssi_strrepl(pipestr, search, it->second.str());
+		delete[] search;
+		delete[] old;
+	}
 
-		// apply global config files
-		if (_n_global_confpaths > 0) {
-			for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {
-				if (_global_confpaths[i]) {
-					pipestr = applyConfig (pipestr, _global_confpaths[i]);
-					if (!pipestr) {
-						ssi_wrn ("failed applying config '%s' to pipeline '%s'", filepath_with_ext, _global_confpaths[i]);
-						return false;
-					}
+	// apply global config files
+	if (_n_global_confpaths > 0) {
+		for (ssi_size_t i = 0; i < _n_global_confpaths; i++) {
+			if (_global_confpaths[i]) {
+				pipestr = applyConfig (pipestr, _global_confpaths[i]);
+				if (!pipestr) {
+					ssi_wrn ("failed applying config '%s' to pipeline '%s'", filepath_with_ext, _global_confpaths[i]);
+					return false;
 				}
 			}
 		}
+	}
 
-		// apply local config file
-		if (has_local_config) {
-			pipestr = applyConfig (pipestr, local_confpath_with_ext);
-			if (!pipestr) {
-				ssi_wrn ("failed applying config '%s' to pipeline '%s'", filepath_with_ext, local_confpath_with_ext);
-				return false;
-			}
-		}
-
-		// apply timestamp
-		ssi_char_t *old = pipestr;
-		pipestr = ssi_strrepl(pipestr, DATE_VARIABLE_NAME, _date);
-		delete[] old;
-
-		if (_savepipe) {
-			const ssi_char_t *savepath = ssi_strcat (filepath_with_ext, "~");
-			FileTools::WriteAsciiFile (savepath, pipestr);
-			delete[] savepath;
-		}
-
-		doc.Parse (pipestr, 0, TIXML_ENCODING_UTF8);
-
-		if (doc.Error ()) {
-			ssi_wrn ("failed parsing pipeline from file '%s' (r:%d,c:%d)", filepath_with_ext, doc.ErrorRow (), doc.ErrorCol ());
+	// apply local config file
+	if (has_local_config) {
+		pipestr = applyConfig (pipestr, local_confpath_with_ext);
+		if (!pipestr) {
+			ssi_wrn ("failed applying config '%s' to pipeline '%s'", filepath_with_ext, local_confpath_with_ext);
 			return false;
 		}
+	}
 
-		delete[] pipestr;
+	// apply timestamp
+	ssi_char_t *old = pipestr;
+	pipestr = ssi_strrepl(pipestr, DATE_VARIABLE_NAME, _date);
+	delete[] old;
 
-	/*} else {
-		if (!doc.LoadFile (filepath_with_ext)) {
-			ssi_wrn ("failed loading pipeline from file '%s' (r:%d,c:%d)", filepath_with_ext, doc.ErrorRow (), doc.ErrorCol ());
-			return false;
-		}
-	}*/
+	if (_savepipe) {
+		const ssi_char_t *savepath = ssi_strcat (filepath_with_ext, "~");
+		FileTools::WriteAsciiFile (savepath, pipestr);
+		delete[] savepath;
+	}
+
+	doc.Parse (pipestr, 0, TIXML_ENCODING_UTF8);
+
+	if (doc.Error ()) {
+		ssi_wrn ("failed parsing pipeline from file '%s' (r:%d,c:%d)", filepath_with_ext, doc.ErrorRow (), doc.ErrorCol ());
+		return false;
+	}
+
+	delete[] pipestr;
 
 	TiXmlElement *body = doc.FirstChildElement();
 	if (!body || strcmp (body->Value (), "pipeline") != 0) {
@@ -511,7 +523,7 @@ bool XMLPipeline::parseInclude (TiXmlElement *element) {
 			strcpy (fullpath, path);
 		}
 
-		return parse (fullpath, _n_global_confpaths, _global_confpaths, _savepipe, true);
+		return parse (fullpath, 0, _n_global_confpaths, _global_confpaths, _savepipe, true);
 	}
 }
 

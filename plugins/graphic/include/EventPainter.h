@@ -43,7 +43,7 @@ public:
 	public:
 
 		Options ()
-			: type(PaintBars::TYPE::BAR), reset(false), global(false), autoscale(true), axisPrecision(2), fix(1.0f) {
+			: type(PaintBars::TYPE::BAR), reset(false), global(false), autoscale(true), axisPrecision(2), fix(1.0f), showEvent(false) {
 
 			name[0] = '\0';		
 			barNames[0] = '\0';
@@ -57,7 +57,8 @@ public:
 			addOption ("global", &global, 1, SSI_BOOL, "apply a global maximum (otherwise limits are calculated for each event dimension)");
 			addOption ("reset", &reset, 1, SSI_BOOL, "reset y axis to the current global maximum (only applied if global=true)");			
 			addOption ("fix", &fix, 1, SSI_REAL, "set a fixed maximum (only applied if global=true, reset=false and autoscale=false)");			
-			addOption ("axisPrecision", &axisPrecision, 1, SSI_SIZE, "precision for axis values");							
+			addOption ("axisPrecision", &axisPrecision, 1, SSI_SIZE, "precision for axis values");
+			addOption ("showEvent", &showEvent, 1, SSI_BOOL, "show event address");
 		};
 
 		void setTitle (const ssi_char_t *name) {
@@ -79,6 +80,7 @@ public:
 		bool global;
 		ssi_real_t fix;
 		ssi_size_t axisPrecision;
+		bool showEvent;
 	};
 
 public: 

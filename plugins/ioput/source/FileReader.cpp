@@ -47,6 +47,7 @@ FileReader::FileReader (const ssi_char_t *file)
 	_max_steps (0),
 	_timer (0),
 	_event (false, true),
+	_interrupted (false),
 	_is_providing (false),
 	_offset_in_bytes (0),
 	_offset_in_samples (0),
@@ -250,6 +251,7 @@ void FileReader::run () {
 		{
 			ssi_msg (SSI_LOG_LEVEL_DETAIL, "release 'path=%s'", _options.path);
 			_stopped = true;
+			_interrupted = false;
 			_event.release ();
 		}
 	
@@ -269,6 +271,31 @@ bool FileReader::disconnect () {
 	{
 		ssi_err("could not close stream '%s'", _options.path);
 	}
+
+	return true;
+}
+
+bool FileReader::wait()
+{
+	if (_options.loop) 
+	{
+		ssi_print("\n");
+		ssi_print_off("press enter to stop\n\n");
+
+		getchar(); 
+	}
+	else 
+	{		
+		_event.wait(); 
+	}
+
+	return !_interrupted;
+}
+
+bool FileReader::cancel()
+{
+	_interrupted = true;
+	_event.release();
 
 	return true;
 }

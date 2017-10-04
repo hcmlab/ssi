@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <HTML>
     <HEAD>
-        <TITLE>ssiframe.dll  - Social Signal Interpretation (SSI) API [v1.0.1]
+        <TITLE>ssiframe.dll  - Social Signal Interpretation (SSI) API [v1.0.2]
         </TITLE>
     </HEAD>
     <BODY>
@@ -266,6 +266,28 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;waitid&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;call wait function of object with this id (has to implement IWaitable) [overrides 'runtime']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;console&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -413,7 +435,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;serve as client, i.e. wait for sync signal by server (only if sync option is turned on)&nbsp;</CODE>
+                                <CODE>&nbsp;serve as client, i.e. wait for sync signal by server (only if 'sync' option is on) [overrides 'waitid' and 'runtime']&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1250,7 +1272,7 @@
         </TABLE>
         <HR />
         <FONT SIZE="-1">
-            <P>Built with Social Signal Interpretation (SSI) [v1.0.1]
+            <P>Built with Social Signal Interpretation (SSI) [v1.0.2]
                 <BR />(c) University of Augsburg
                 <BR />
                 <A HREF="http://openssi.net" TARGET="new">http://openssi.net</A>

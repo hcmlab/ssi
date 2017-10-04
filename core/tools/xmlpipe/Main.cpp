@@ -46,7 +46,8 @@ struct params_t {
 	ssi_char_t *filepath;
 	ssi_char_t *debug_path;
 	ssi_char_t *debug_socket;
-	ssi_char_t *config_paths;
+	ssi_char_t *config_str;
+	ssi_char_t *config_paths;	
 	ssi_char_t *srcurl;
 	bool init_only;
 	bool save_pipe;
@@ -153,6 +154,7 @@ bool Parse_and_Run(int argc, char **argv)
 	params_t params;
 	params.filepath = 0;
 	params.debug_path = 0;
+	params.config_str = 0;
 	params.config_paths = 0;
 	params.srcurl = 0;
 	params.init_only = false;
@@ -165,7 +167,8 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.addSCmdArg("filepath", &params.filepath, "path to pipeline");
 
 	cmd.addText("\nOptions:");
-	cmd.addSCmdOption("-config", &params.config_paths, "", "paths to global config files (seperated by ;) []");
+	cmd.addSCmdOption("-confstr", &params.config_str, "", "string with key=value pairs (seperated by ;) []");
+	cmd.addSCmdOption("-config", &params.config_paths, "", "paths to global config files (seperated by ;) []");	
 	cmd.addBCmdOption("-save", &params.save_pipe, false, "save pipeline after applying config files [false]");
 	cmd.addBCmdOption("-init", &params.init_only, false, "only initialize pipepline [false]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");	
@@ -218,6 +221,7 @@ bool Parse_and_Run(int argc, char **argv)
 	}
 
 	delete[] params.filepath;
+	delete[] params.config_str;
 	delete[] params.config_paths;
 	delete[] params.debug_path;
 	delete[] params.debug_socket;
@@ -282,10 +286,10 @@ void Run(const ssi_char_t *exepath, params_t params) {
 		n = ssi_split_string_count(params.config_paths, ';');
 		ssi_char_t **ns = new ssi_char_t *[n];
 		ssi_split_string(n, ns, params.config_paths, ';');
-		result = xmlpipe->parse(pipepath, n, ns, params.save_pipe);
+		result = xmlpipe->parse(pipepath, params.config_str, n, ns, params.save_pipe);
 	}
 	else {
-		result = xmlpipe->parse(pipepath, 0, 0, params.save_pipe);
+		result = xmlpipe->parse(pipepath, params.config_str, 0, 0, params.save_pipe);
 	}
 
 	if (!result) {

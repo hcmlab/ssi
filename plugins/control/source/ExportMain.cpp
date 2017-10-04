@@ -55,6 +55,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register(ssi::ControlButton::GetCreateName(), ssi::ControlButton::Create) && result;
 	result = ssi::Factory::Register(ssi::ControlGrid::GetCreateName(), ssi::ControlGrid::Create) && result;
 	result = ssi::Factory::Register(ssi::ControlEvent::GetCreateName(), ssi::ControlEvent::Create) && result;
+	result = ssi::Factory::Register(ssi::WaitButton::GetCreateName(), ssi::WaitButton::Create) && result;
 	
 #endif
 

@@ -30,6 +30,7 @@
 #define SSI_BASE_ITHEFRAMEWORK_H
 
 #include "base/IObject.h"
+#include "base/IWaitable.h"
 #include "base/ITransformable.h"
 #include "base/ISensor.h"
 #include "base/IConsumer.h"
@@ -131,6 +132,7 @@ public:
 	virtual int AddRunnable (IRunnable *runnable = 0) = 0;
 	// last paramter defines milliseconds to wait, if < 0 until job is finished [-1] 
 	virtual void AddExeJob (const ssi_char_t *exe, const ssi_char_t *args, EXECUTE::list type, int wait) = 0;
+	virtual void SetWaitable(IWaitable *waitable) = 0;
 
 	virtual bool IsBufferInUse (int buffer_id) = 0;
 	virtual int GetData (int buffer_id, ssi_byte_t **data, ssi_size_t &samples_in, ssi_size_t &samples_out, ssi_time_t start_time, ssi_time_t duration) = 0;

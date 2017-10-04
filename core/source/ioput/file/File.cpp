@@ -330,7 +330,11 @@ int64_t File::tell () {
 	}
 	
 #if __gnu_linux__
+#if __ANDROID__
+    return ftello(_file);
+#else
 	return ftello64(_file);
+#endif
 #else
 	return _ftelli64(_file);
 #endif

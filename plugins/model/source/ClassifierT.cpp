@@ -94,13 +94,16 @@ void ClassifierT::transform (ITransformer::info info,
 	ssi_size_t xtra_stream_in_num,
 	ssi_stream_t xtra_stream_in[]) {
 
-	ssi_real_t *dataptr = ssi_pcast (ssi_real_t, stream_in.ptr);
 	ssi_real_t *class_probs = ssi_pcast (ssi_real_t, stream_out.ptr);
 
 	if (xtra_stream_in_num > 0) {
 		ssi_stream_t tmp;
 		ssi_stream_init (tmp, stream_in.num, _merged_sample_dimension, stream_in.byte, stream_in.type, stream_in.sr);
 		ssi_byte_t *tmp_ptr = tmp.ptr;
+
+		memcpy (tmp_ptr, stream_in.ptr, stream_in.tot);
+		tmp_ptr += stream_in.tot;
+
 		for (ssi_size_t i = 0; i < xtra_stream_in_num; i++) {
 			memcpy (tmp_ptr, xtra_stream_in[i].ptr, xtra_stream_in[i].tot);
 			tmp_ptr += xtra_stream_in[i].tot;

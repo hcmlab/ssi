@@ -1,1 +1,1 @@
-xmlpipe -debug my.log -config global;global2;global3 -save my
+xmlpipe -url "" -debug my.log -confstr "title=SET BY CONFIG STRING" -config global;global2;global3 -save my

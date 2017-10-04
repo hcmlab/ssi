@@ -74,6 +74,7 @@ void EventPainter::listen_enter() {
 	if (_options.global && !_options.autoscale && !_options.reset){
 		_client->setFixedLimit(_options.fix);
 	}
+	_client->showEventCaption(_options.showEvent);
 
 	if (_options.barNames[0] != '\0') {
 		ssi_size_t n = ssi_split_string_count(_options.barNames, ',');

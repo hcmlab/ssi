@@ -1,4 +1,4 @@
-caption = CURSOR # a window caption
+caption = SET BY CONFIG FILE # a window caption
 cursor_pin = cursor
 
 

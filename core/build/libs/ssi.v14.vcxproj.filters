@@ -847,6 +847,9 @@
     <ClInclude Include="..\..\include\thread\ThreadSafe.h">
       <Filter>Header Files\thread</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\base\IWaitable.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ssi.rc" />

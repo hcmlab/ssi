@@ -35,5 +35,6 @@
 #include "ControlButton.h"
 #include "ControlGrid.h"
 #include "ControlEvent.h"
+#include "WaitButton.h"
 
 #endif

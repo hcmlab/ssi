@@ -31,11 +31,12 @@
 
 #ifndef SSI_USE_SDL
 
-#include "base/IRunnable.h"
+#include "base/IObject.h"
 #include "ioput/option/OptionList.h"
 #include "event/EventAddress.h"
 #include "base/IWindow.h"
 #include "graphic/Button.h"
+
 namespace ssi {
 
 class ControlButton : public SSI_IRunnableObject, public Button::ICallback {
@@ -112,7 +113,7 @@ public:
 
 	Options *getOptions() { return &_options; };
 	const ssi_char_t *getName() { return GetCreateName(); };
-	const ssi_char_t *getInfo() { return "CheckBox to control a boolean option of another object or turn an object on/off."; };
+	const ssi_char_t *getInfo() { return "Button to send messages to other objects."; };
 
 	bool start();
 	bool stop();

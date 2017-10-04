@@ -273,6 +273,7 @@
     <ClInclude Include="..\..\include\base\IMonitor.h" />
     <ClInclude Include="..\..\include\base\INotify.h" />
     <ClInclude Include="..\..\include\base\IPainter.h" />
+    <ClInclude Include="..\..\include\base\IWaitable.h" />
     <ClInclude Include="..\..\include\base\IWindow.h" />
     <ClInclude Include="..\..\include\base\IWindowManager.h" />
     <ClInclude Include="..\..\include\base\Random.h" />

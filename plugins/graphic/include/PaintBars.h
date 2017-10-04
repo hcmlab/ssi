@@ -58,6 +58,7 @@ public:
 	void setData (ssi_stream_t &s);
 	void reset();
 	void setWindowCaption (ssi_char_t *caption);
+	void showEventCaption(bool toggle);
 	void setExternalAxisCaptions(ssi_size_t n_captions, ssi_char_t **captions);
 	void setFixedLimit(ssi_real_t fix);
 	void setGlobalLimit(bool global);
@@ -97,6 +98,7 @@ protected:
 	bool _global_limit;
 	ssi_real_t _global_limit_value;
 	ssi_size_t _precision;
+	bool _show_event_caption;
 	ssi_char_t *_event_caption;	
 	ssi_char_t **_axis_captions;
 	ssi_size_t _n_external_axis_captions;

@@ -67,6 +67,7 @@ struct params_t
 	ssi_char_t *streamOut;
 	ssi_char_t *trainerTmp;
 	ssi_char_t *trainer;
+	ssi_char_t *evalpath;
 	//ssi_time_t frame;
 	bool cooperative;
 	ssi_char_t *balance;
@@ -78,6 +79,8 @@ struct params_t
 	double label_mingap;
 	double label_mindur;
 	bool force;
+	int scoreDim;
+	int confDim;
 };
 
 void getSessions(StringList &list, params_t &params);
@@ -89,7 +92,9 @@ void downloadAnnotations(params_t &params);
 void removeAnnotations(params_t &params);
 void cutStreamFromLabel(params_t &params);
 void mapClassNames(params_t &params);
+void convertStreamToAnnotation(params_t &params);
 void train(params_t &params);
+void eval(params_t &params);
 void forward(params_t &params);
 void merge(params_t &params);
 
@@ -134,6 +139,7 @@ int main (int argc, char **argv) {
 	params.streamOut = 0;
 	params.trainerTmp = 0;
 	params.trainer = 0;
+	params.evalpath = 0;
 	params.finished = false;
 	params.locked = false;
 	params.confidence = -1.0;
@@ -142,6 +148,8 @@ int main (int argc, char **argv) {
 	params.contextLeft = 0;	
 	params.contextRight = 0;
 	params.balance = 0;
+	params.scoreDim = 0;
+	params.confDim = -1;
 
 	cmd.addMasterSwitch("--remove");
 
@@ -216,6 +224,21 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
+	cmd.addMasterSwitch("--convert");
+
+	cmd.addText("\nArguments:");
+	cmd.addSCmdArg("root", &params.root, "path to database on disk");
+	cmd.addSCmdArg("stream", &params.stream, "name of stream");
+	cmd.addSCmdArg("scheme", &params.scheme, "path to scheme file");
+	cmd.addSCmdArg("annotation", &params.annotation, "name of annotation (will be generated)");
+
+	cmd.addText("\nOptions:");
+	cmd.addICmdOption("-scoreDim", &params.scoreDim, 0, "dimension of score values");
+	cmd.addICmdOption("-confDim", &params.confDim, -1, "dimension of confidence values (if -1 set to 1.0)");
+	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
+	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
 	cmd.addMasterSwitch("--map");
 
 	cmd.addText("\nArguments:");
@@ -253,6 +276,33 @@ int main (int argc, char **argv) {
 	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
 	cmd.addSCmdOption("-balance", &params.balance, "none", "set sample balancing strategy (none,under,over)");
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");	
+	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
+	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
+	cmd.addMasterSwitch("--eval");
+
+	cmd.addText("\nArguments:");
+	cmd.addSCmdArg("root", &params.root, "path to database on disk");
+	cmd.addSCmdArg("server", &params.server, "server name");
+	cmd.addICmdArg("port", &params.port, "port number");
+	cmd.addSCmdArg("database", &params.database, "name of database");
+	cmd.addSCmdArg("role", &params.role, "name of role (if several separate by ;)");
+	cmd.addSCmdArg("scheme", &params.scheme, "name of scheme");
+	cmd.addSCmdArg("annotator", &params.annotator, "name of annotator");
+	cmd.addSCmdArg("stream", &params.stream, "name of stream");	
+	cmd.addSCmdArg("trainer", &params.trainer, "trainer path");
+	cmd.addSCmdArg("result", &params.evalpath, "result path");
+
+	cmd.addText("\nOptions:");
+	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
+	cmd.addSCmdOption("-username", &params.username, "", "database username");
+	cmd.addSCmdOption("-password", &params.password, "", "database password");
+	cmd.addICmdOption("-left", &params.contextLeft, 0, "left context (number of frames added to the left of center frame)");
+	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
+	cmd.addSCmdOption("-balance", &params.balance, "none", "set sample balancing strategy (none,under,over)");
+	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
@@ -398,26 +448,40 @@ int main (int argc, char **argv) {
 
 		case 5: {
 
+			convertStreamToAnnotation(params);
+
+			break;
+		}
+
+		case 6: {
+
 			mapClassNames(params);
 			
 			break;
 		}
 
-		case 6: {
+		case 7: {
 
 			train(params);
 
 			break;
 		}
 
-		case 7: {
+		case 8: {
+
+			eval(params);
+
+			break;
+		}
+
+		case 9: {
 
 			forward(params);
 
 			break;
 		}
 
-		case 8: {
+		case 10: {
 
 			merge(params);
 
@@ -455,6 +519,7 @@ int main (int argc, char **argv) {
 	delete[] params.classname_new;
 	delete[] params.trainerTmp;
 	delete[] params.trainer;
+	delete[] params.evalpath;
 	delete[] params.balance;
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -762,6 +827,60 @@ void cutStreamFromLabel(params_t &params)
 	}
 }
 
+void convertStreamToAnnotation(params_t &params)
+{
+	ssi_char_t string[SSI_MAX_CHAR];
+	
+	StringList sessions;
+	getSessions(sessions, params);
+	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
+	{
+		ssi_sprint(string, "%s\\%s.stream", it->str(), params.stream);
+
+		ssi_print("\n-------------------------------------------\n");
+		ssi_print("CONVERT STREAM TO ANNOTATION '%s:%s>%s'\n\n", string, params.scheme, params.annotation);
+
+		if (ssi_exists(string))
+		{
+			ssi_stream_t stream;
+			if (!FileTools::ReadStreamFile(string, stream))
+			{
+				ssi_wrn("ERROR: could not load stream from file");
+				continue;
+			}
+
+			Annotation anno;			
+			if (!anno.loadScheme(params.scheme))
+			{
+				ssi_wrn("ERROR: could not load scheme from file");
+				continue;
+			}
+
+			if (anno.getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
+			{
+				ssi_wrn("ERROR: only continuous schemes are supported");
+				continue;
+			}
+
+			if (int(stream.dim) <= params.scoreDim || int(stream.dim) <= params.confDim)
+			{
+				ssi_wrn("ERROR: invalid dimension");
+				continue;
+			}
+
+			anno.addStream(stream, params.scoreDim, params.confDim >= 0 ? params.confDim : 1.0f);
+
+			ssi_sprint(string, "%s\\%s.annotation", it->str(), params.annotation);			
+			anno.save(string, File::ASCII);
+		}
+		else
+		{
+			ssi_wrn("ERROR: stream file not found");
+			continue;
+		}
+	}
+}
+
 void mapClassNames(params_t &params)
 {
 	ssi_char_t string[SSI_MAX_CHAR];
@@ -945,6 +1064,69 @@ void train(params_t &params)
 	}
 }
 
+bool eval_h(params_t &params, Trainer &trainer, CMLTrainer &cmltrainer)
+{
+	ssi_print("\n-------------------------------------------\n");
+	ssi_print("EVAL '%s'\n\n", params.trainer);
+	
+	if (!cmltrainer.eval(&trainer, params.evalpath))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void eval(params_t &params)
+{
+	MongoURI uri(params.server, params.port, params.username, params.password);
+	MongoClient client;
+	if (!client.connect(uri, params.database, false, 1000))
+	{
+		return;
+	}
+
+	Trainer trainer;
+	if (!Trainer::Load(trainer, params.trainer))
+	{
+		return;
+	}
+
+	StringList roles;
+	roles.parse(params.role, ';');
+
+	StringList sessions;
+	getSessions(sessions, params);
+
+	CMLTrainer cmltrainer;
+	cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
+
+	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
+	{
+		FilePath path(it->str());
+		const ssi_char_t *session = path.getName();
+
+		for (StringList::iterator role = roles.begin(); role != roles.end(); role++)
+		{
+			ssi_print("\n-------------------------------------------\n");
+			ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
+
+			if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative))
+			{
+				ssi_wrn("ERROR: could not load annotation from database");
+				continue;
+			}
+		}
+	}
+
+	if (!eval_h(params, trainer, cmltrainer))
+	{
+		ssi_wrn("ERROR: evaluation failed");
+	}
+
+}
+
+
 bool forward_h(params_t &params, MongoClient &client, Trainer &trainer, CMLTrainer &cmltrainer, const ssi_char_t *session, const ssi_char_t *role)
 {
 	ssi_print("\n-------------------------------------------\n");
@@ -999,8 +1181,6 @@ void forward(params_t &params)
 	{
 		return;
 	}
-
-	ssi_char_t string[SSI_MAX_CHAR];
 
 	StringList roles;
 	roles.parse(params.role, ';');

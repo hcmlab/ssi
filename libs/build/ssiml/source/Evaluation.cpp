@@ -808,7 +808,7 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 		ssi_fprint(file, "#features");
 		for (ssi_size_t i = 0; i < _n_streams; i++)
 		{
-			ssi_fprint(file, ";#%u", _n_features[i]);
+			ssi_fprint(file, ";%u", _n_features[i]);
 		}
 		ssi_fprint(file, "\n");
 		ssi_fprint(file, "#total;%u\n", _n_classified + _n_unclassified);
