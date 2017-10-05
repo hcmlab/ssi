@@ -342,6 +342,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         <li><a href="#xml-advanced-tags-variables"><span class="toc-section-number">4.2.1.1</span> Variables</a></li>
         <li><a href="#xml-advanced-tags-inclusion"><span class="toc-section-number">4.2.1.2</span> Inclusion</a></li>
         <li><a href="#xml-advanced-tags-scripts"><span class="toc-section-number">4.2.1.3</span> Scripts</a></li>
+        <li><a href="#xml-advanced-tags-wait"><span class="toc-section-number">4.2.1.4</span> Wait</a></li>
         </ul></li>
         <li><a href="#xml-advanced-network"><span class="toc-section-number">4.2.2</span> Network</a><ul>
         <li><a href="#xml-advanced-network-synchronization"><span class="toc-section-number">4.2.2.1</span> Synchronization</a></li>
@@ -847,8 +848,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Configuration files have the file ending <code>.pipeline-config</code> and can include an arbitrary number of variables (one per line). A configuration file which has the same name and is in the same folder as a pipeline is a <em>local</em> configuration file and implicitly applied when the according pipeline is started. However, the values defined in a <em>local</em> pipeline are possibly overwritten if one or more <em>global</em> configuration files are passed.</p>
 <pre><code>xmlpipe -config global1;global2 my</code></pre>
 <p>Here we call a pipeline with name <code>my.pipeline</code>. First, global configuration files will be applied in the order given by the string, i.e. <code>global1.pipeline-config</code> followed by <code>global2.pipeline-config</code>. As soon as a matching key is found its value is applied and can no longer be overwritten by following configuration files. After applying all global configuration files, remaining variables are replaced if a local configuration file (<code>my.pipeline-config</code>) exists. To make sure every key is assigned a value, you would usually want to a local configuration file, which assigns a default value to every variable. Global configuration files, on the other hand, are often used for fine-tuning to choose among different configurations.</p>
+<p>Note that it also possible to override variables using the <code>confstr</code> option. Since variables set via <code>confstr</code> are replaced before global or local configuration files are applied they have the highest priority:</p>
+<pre><code>xmlpipe -config global1;global2 -confstr &quot;plot:title=CONFSTR;mouse:sr=25.0&quot; my</code></pre>
 <p>To know how the pipeline looks after the configuration files were applied we can call <code>xmlpipe</code> with the option <code>save</code>, which creates a file <code>&lt;path&gt;.pipeline~</code>, e.g.:</p>
-<pre><code>xmlpipe -save -config global1;global2 my</code></pre>
+<pre><code>xmlpipe -save -config global1;global2 -confstr &quot;plot:title=CONFSTR;mouse:sr=25.0&quot; my</code></pre>
 <p>For convenience, on Windows the tool <code>xmlpipeui</code> comes with a graphical interface, which lists variables and allows automated parsing of all keys from a pipeline. Via drop-down one can quickly switch between available pipelines/configuration files and run them right off as we see <a href="#fig:xml-advanced-tags-variables">here</a>.</p>
 <div class="figure">
 <img src="pics/xml-advanced-tags-variables.png" alt="A graphical interface allows it to manage options and run pipelines with different configurations." id="fig:xml-advanced-tags-variables" style="width:80.0%" />
@@ -901,6 +904,27 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>executes script <code>job.cmd</code> with no arguments after the pipeline was stopped and waits until job is finished.</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;job</span><span class="ot"> path=</span><span class="st">&quot;job.cmd&quot;</span><span class="ot"> args=</span><span class="st">&quot;&quot;</span><span class="ot"> when=</span><span class="st">&quot;now&quot;</span><span class="ot"> wait=</span><span class="st">&quot;2000&quot;</span><span class="kw">/&gt;</span></code></pre></div>
 <p>immediately executes script <code>job.cmd</code> with no arguments and halts pipeline for 2 seconds (afterwards pipeline continues even if the job is not finished yet).</p>
+<h4 id="xml-advanced-tags-wait"><span class="header-section-number">4.2.1.4</span> Wait</h4>
+<p>By default, a pipeline runs until it is interrupted by the user. Alternatively, a pipeline can be stopped by an object, too. To tell the pipeline which object it should wait for, we use the <code>waitid</code> option:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;framework</span><span class="ot"> waitid=</span><span class="st">&quot;wait&quot;</span><span class="kw">/&gt;</span></code></pre></div>
+<p>If we add a <code>FileReader</code> with the according id the pipeline will automatically terminate when the stream file (here <code>signal.stream</code>) has been completely read (note that we put <code>loop=false</code>):</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;sensor</span><span class="ot"> create=</span><span class="st">&quot;FileReader:wait&quot;</span><span class="ot"> path=</span><span class="st">&quot;signal&quot;</span><span class="ot"> loop=</span><span class="st">&quot;false&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;output</span><span class="ot"> channel=</span><span class="st">&quot;file&quot;</span><span class="ot"> pin=</span><span class="st">&quot;cursor&quot;</span><span class="kw">/&gt;</span>       
+<span class="kw">&lt;/sensor&gt;</span></code></pre></div>
+<p>In combination with a variable, we can use this mechanism to sequentially run the same pipeline with different input files:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;sensor</span><span class="ot"> create=</span><span class="st">&quot;FileReader:wait&quot;</span><span class="ot"> path=</span><span class="st">&quot;$(file)&quot;</span><span class="ot"> loop=</span><span class="st">&quot;false&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;output</span><span class="ot"> channel=</span><span class="st">&quot;file&quot;</span><span class="ot"> pin=</span><span class="st">&quot;cursor&quot;</span><span class="kw">/&gt;</span>       
+<span class="kw">&lt;/sensor&gt;</span></code></pre></div>
+<p>To set the filename, we call <code>xmlpipe</code> and override the variable by setting the <code>confstr</code> option:</p>
+<pre><code>xmlpipe -confstr &quot;file=&lt;file-1&gt;&quot; &lt;pipeline&gt;
+xmlpipe -confstr &quot;file=&lt;file-2&gt;&quot; &lt;pipeline&gt;
+xmlpipe -confstr &quot;file=&lt;file-3&gt;&quot; &lt;pipeline&gt;
+...</code></pre>
+<p>Another examples is <code>WaitButton</code>, which allows the user to close the pipeline pressing a button instead of hitting a key in the console:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;WaitButton:button&quot;</span><span class="ot"> title=</span><span class="st">&quot;button&quot;</span><span class="ot"> label=</span><span class="st">&quot;Click to stop pipeline&quot;</span><span class="kw">/&gt;</span></code></pre></div>
+<blockquote>
+<p>Check out the <a href="code/xml/wait/reader.pipeline">reader</a> and the <a href="code/xml/wait/button.pipeline">button</a>.</p>
+</blockquote>
 <h3 id="xml-advanced-network"><span class="header-section-number">4.2.2</span> Network</h3>
 <p>Complex systems may require it to spread processing on several machines. If the machines are connected in a network it is possible to synchronize their behaviour and even share data between them.</p>
 <h4 id="xml-advanced-network-synchronization"><span class="header-section-number">4.2.2.1</span> Synchronization</h4>

@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ioput"/>		
+		<load name="graphic"/>
+		<load name="control"/>
+	</register>
+
+	<!-- stop pipeline after complete file was read -->
+	<framework waitid="button"/>
+	
+	<!-- wait button -->
+	<runnable create="WaitButton:button" title="button" label="Click to stop pipeline"/>
+	
+	<!-- file reader -->
+	<sensor create="FileReader:reader" path="signal" blockInSamples="5" loop="true">
+		<output channel="file" pin="cursor"/>		
+	</sensor>
+	
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>	
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>		
+		<area pos="800,0,400,600">button*</area>
+	</object>
+
+</pipeline>

@@ -671,10 +671,16 @@ xmlpipe -config global1;global2 my
 
 Here we call a pipeline with name ``my.pipeline``. First, global configuration files will be applied in the order given by the string, i.e. ``global1.pipeline-config`` followed by ``global2.pipeline-config``. As soon as a matching key is found its value is applied and can no longer be overwritten by following configuration files. After applying all global configuration files, remaining variables are replaced if a local configuration file (``my.pipeline-config``) exists. To make sure every key is assigned a value, you would usually want to a local configuration file, which assigns a default value to every variable. Global configuration files, on the other hand, are often used for fine-tuning to choose among different configurations.
 
+Note that it also possible to override variables using the ``confstr`` option. Since variables set via ``confstr`` are replaced before global or local configuration files are applied they have the highest priority:
+
+```
+xmlpipe -config global1;global2 -confstr "plot:title=CONFSTR;mouse:sr=25.0" my
+```
+
 To know how the pipeline looks after the configuration files were applied we can call ``xmlpipe`` with the option ``save``, which creates a file ``<path>.pipeline~``, e.g.:
 
 ```
-xmlpipe -save -config global1;global2 my
+xmlpipe -save -config global1;global2 -confstr "plot:title=CONFSTR;mouse:sr=25.0" my
 ```
 
 For convenience, on Windows the tool ``xmlpipeui`` comes with a graphical interface, which lists variables and allows automated parsing of all keys from a pipeline. Via drop-down one can quickly switch between available pipelines/configuration files and run them right off as we see [here](#fig:xml-advanced-tags-variables).
@@ -763,6 +769,47 @@ executes script ``job.cmd`` with no arguments after the pipeline was stopped and
 ```
 
 immediately executes script ``job.cmd`` with no arguments and halts pipeline for 2 seconds (afterwards pipeline continues even if the job is not finished yet).
+
+#### Wait {#xml-advanced-tags-wait}
+
+By default, a pipeline runs until it is interrupted by the user. Alternatively, a pipeline can be stopped by an object, too. To tell the pipeline which object it should wait for, we use the ``waitid`` option:
+
+``` xml
+<framework waitid="wait"/>
+```
+
+If we add a ``FileReader`` with the according id the pipeline will automatically terminate when the stream file (here ``signal.stream``) has been completely read (note that we put ``loop=false``):
+
+``` xml
+<sensor create="FileReader:wait" path="signal" loop="false">
+	<output channel="file" pin="cursor"/>		
+</sensor>
+```
+
+In combination with a variable, we can use this mechanism to sequentially run the same pipeline with different input files:
+
+``` xml
+<sensor create="FileReader:wait" path="$(file)" loop="false">
+	<output channel="file" pin="cursor"/>		
+</sensor>
+```
+
+To set the filename, we call ``xmlpipe`` and override the variable by setting the ``confstr`` option:
+
+```
+xmlpipe -confstr "file=<file-1>" <pipeline>
+xmlpipe -confstr "file=<file-2>" <pipeline>
+xmlpipe -confstr "file=<file-3>" <pipeline>
+...
+```
+
+Another examples is ``WaitButton``, which allows the user to close the pipeline pressing a button instead of hitting a key in the console:
+
+``` xml
+<runnable create="WaitButton:button" title="button" label="Click to stop pipeline"/>
+```
+
+> Check out the [reader](code/xml/wait/reader.pipeline) and the [button](code/xml/wait/button.pipeline).
 
 ### Network {#xml-advanced-network}
 

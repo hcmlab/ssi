@@ -1,1 +1,1 @@
-xmlpipe my
+xmlpipe -url "" my

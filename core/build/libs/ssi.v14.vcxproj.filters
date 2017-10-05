@@ -850,6 +850,9 @@
     <ClInclude Include="..\..\include\base\IWaitable.h">
       <Filter>Header Files\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\graphic\Console.h">
+      <Filter>Header Files\graphic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ssi.rc" />

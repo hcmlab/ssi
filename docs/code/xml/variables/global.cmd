@@ -1,1 +1,1 @@
-xmlpipe -config global my
+xmlpipe -url "" -config global my

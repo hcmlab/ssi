@@ -222,6 +222,7 @@
     <ClInclude Include="..\..\include\graphic\CheckBox.h" />
     <ClInclude Include="..\..\include\graphic\Colormap.h" />
     <ClInclude Include="..\..\include\graphic\ComboBox.h" />
+    <ClInclude Include="..\..\include\graphic\Console.h" />
     <ClInclude Include="..\..\include\graphic\GraphicTools.h" />
     <ClInclude Include="..\..\include\graphic\Grid.h" />
     <ClInclude Include="..\..\include\graphic\Monitor.h" />

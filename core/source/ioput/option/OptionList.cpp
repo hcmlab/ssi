@@ -522,13 +522,13 @@ bool OptionList::FromString (const ssi_char_t *str, ssi_option_t &option) {
 				ssi_wrn ("unkown option type '%d'", ssi_cast (int, option.type));
 				return false;
 		}
-
-		++token_end;
 		
 		if ((*token_end == '\0' && i != option.num-1) || (i == option.num-1 && *token_end != '\0'))  {
 			ssi_wrn ("number of tokens does not match '%s'", option.name);
 			return false;
-		}	
+		}
+
+		++token_end;
 	}
 
 	return true;
