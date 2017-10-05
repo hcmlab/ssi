@@ -290,7 +290,8 @@ void Evaluation::eval_h(ISamples &samples) {
 			real_index = sample->class_id;
 			*_result_vec_ptr = real_index;
 			_result_vec_ptr++;
-			if (_trainer->forward_probs(sample->num, sample->streams, n_probs, probs)) {
+			if (real_index != SSI_SAMPLE_GARBAGE_CLASS_ID &&
+				_trainer->forward_probs(sample->num, sample->streams, n_probs, probs)) {
 				index = 0;
 				max_probs = probs[0];
 				*_result_probs_ptr = probs[0];
@@ -308,7 +309,8 @@ void Evaluation::eval_h(ISamples &samples) {
 				_conf_mat_ptr[real_index][index]++;
 				_n_classified++;
 			}
-			else if (!_allow_unclassified) {
+			else if (real_index != SSI_SAMPLE_GARBAGE_CLASS_ID && 
+				!_allow_unclassified) {
 				index = _default_class_id;
 				*_result_vec_ptr = index;
 				_result_vec_ptr++;

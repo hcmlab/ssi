@@ -1782,3 +1782,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 29.09.17 BUG : plugins/model/ClassifierT : fixed bug with stream merging : Johnny
 - 04.10.17 CHG : core/ioput/option : add read-only flag again : Johannes
 - 04.10.17 CHG : nova : model evaluation : Johannes
+- 05.10.17 BUG : model/Evaluation : now handles garbage samples : Johannes
