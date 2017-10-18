@@ -46,23 +46,42 @@ public:
 	public:
 
 		Options()
-			: all(true), console(false), detail(true), chars(10000), update_ms(0), relative(false) {
+			: all(true), 
+			console(false),
+			detail(true),
+			chars(10000), 
+			update_ms(0),
+			relative(false), 
+			list(true), 
+			fontSize(SSI_DEFAULT_FONT_SIZE) {
 
 			screen[0] = 0;
 			screen[1] = 0;
 
 			setPos(0, 0, 100, 100);
 			setTitle ("EventBoard");
+			setFontName(SSI_DEFAULT_FONT_NAME);
 
 			addOption("title", title, SSI_MAX_CHAR, SSI_CHAR, "window caption");
-			addOption("pos", &pos, 4, SSI_INT, "window position (top, left, width, height) [deprecated use title]");			
-			addOption("all", &all, 1, SSI_BOOL, "output all events, otherwise only new events will be plotted");
+			addOption("pos", &pos, 4, SSI_INT, "window position (top, left, width, height)");			
+			addOption("fontSize", &fontSize, 1, SSI_SIZE, "font size");
+			addOption("fontName", fontName, SSI_MAX_CHAR, SSI_CHAR, "font name");
+			addOption("list", &list, 1, SSI_BOOL, "display a list of events (otherwise only the last event will be displayed)");
+
+			// list options
+			
+			addOption("all", &all, 1, SSI_BOOL, "display all events, otherwise only new events will be displayed");			
+			addOption("detail", &detail, 1, SSI_BOOL, "diplay event content (if list is on)");
 			addOption("console", &console, 1, SSI_BOOL, "output on console instead of window");
-			addOption("chars", &chars, 1, SSI_SIZE, "maximum number of chars displayed");
-			addOption("detail", &detail, 1, SSI_BOOL, "output detailed event content");
+			addOption("chars", &chars, 1, SSI_SIZE, "maximum number of chars displayed");			
 			addOption("update", &update_ms, 1, SSI_SIZE, "minimum update rate in ms");
 
 		};
+
+		void setFontName(ssi_char_t *name)
+		{
+			ssi_strcpy(fontName, name);
+		}
 
 		void setPos(int top, int left, int width, int height) {
 			pos[0] = top;
@@ -84,6 +103,9 @@ public:
 		bool detail;
 		ssi_size_t chars;
 		ssi_size_t update_ms;
+		ssi_char_t fontName[SSI_MAX_CHAR];
+		ssi_size_t fontSize;
+		bool list;
 	};
 
 public: 	

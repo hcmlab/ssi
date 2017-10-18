@@ -144,9 +144,9 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/libcurl.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
+      <PrecompiledHeaderOutputFile>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\libcurl.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -219,9 +219,9 @@
       <PreprocessorDefinitions>WIN32;USE_SSLEAY;USE_OPENSSL;_DEBUG;_WINDOWS;_USRDLL;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/libcurl.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
+      <PrecompiledHeaderOutputFile>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\libcurl.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>

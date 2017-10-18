@@ -445,6 +445,7 @@ bool OptionList::FromString (const ssi_char_t *str, ssi_option_t &option) {
 		while (*token_end != SEPARATOR && *token_end != '\0')
 			++token_end;
 
+		bool is_end = *token_end == '\0';
 		*token_end = '\0';
 		switch (option.type) {
 			case SSI_BOOL: {							
@@ -523,7 +524,7 @@ bool OptionList::FromString (const ssi_char_t *str, ssi_option_t &option) {
 				return false;
 		}
 		
-		if ((*token_end == '\0' && i != option.num-1) || (i == option.num-1 && *token_end != '\0'))  {
+		if ((is_end && i != option.num-1) || (i == option.num-1 && !is_end))  {
 			ssi_wrn ("number of tokens does not match '%s'", option.name);
 			return false;
 		}

@@ -10,13 +10,13 @@
 	</register>
 
 	<!-- mouse sensor -->
-	<sensor create="Mouse" mask="1">
+	<sensor create="Mouse" mask="1" sr="5">
 		<output channel="button" pin="button" />
 		<output channel="cursor" pin="cursor"/>
 	</sensor>
 	
 	<!-- detect button events -->
-	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0" incDuration="0.5" sendStartEvent="true">
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="5.0" sendStartEvent="true">
 		<input pin="button" frame="0.1s" />		
 	</consumer>		
 	
@@ -36,7 +36,7 @@
 		 3000 ms it will be blanked.
 	
 	-->
-	<consumer create="XMLEventSender:sender" path="event_xmlsender_template" address="xml@mouse" monitor="true">
+	<consumer create="XMLEventSender:sender" path="event_xmlsender_template" address="xml@mouse" monitor="true" update="1000">
 		<input pin="cursor;button" frame="1"/>		
 		<listen address=""/>
 	</consumer>

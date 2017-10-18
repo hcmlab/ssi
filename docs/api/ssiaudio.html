@@ -117,16 +117,6 @@
             </TR>
             <TR>
                 <TD ALIGN="right" VALIGN="top" WIDTH="1%">
-                    <CODE>OSLpc</CODE>
-                </TD>
-                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
-                    <CODE>
-                        <A HREF="#OSLpc">OSLpc</A>
-                    </CODE>
-                </TD>
-            </TR>
-            <TR>
-                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
                     <CODE>AudioPlayer</CODE>
                 </TD>
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
@@ -152,6 +142,16 @@
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
                     <CODE>
                         <A HREF="#AudioMono">AudioMono</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>AudioLpc</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#AudioLpc">AudioLpc</A>
                     </CODE>
                 </TD>
             </TR>
@@ -1553,281 +1553,6 @@
             <TR>
                 <TD ALIGN="right" VALIGN="top" WIDTH="1%">
                     <CODE SIZE="+2">
-                        <A NAME="OSLpc">OSLpc</A>
-                    </CODE>
-                </TD>
-                <TD>
-                    <!---->
-                    <!--========== CLASS ===========-->
-                    <!---->
-                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
-                        <TR>
-                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
-                                <B>OSLpc</B>&nbsp;
-                                <CODE>FEATURE</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="100%" COLSPAN="7">This component computes linear predictive coding (LPC) coefficients from PCM frames. Burg's algorithm and the standard ACF/Durbin based method are implemented for LPC coefficient computation. The output of LPC filter coefficients, reflection coefficients, residual signal, LP spectrum and LSP is supported.</TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;method&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;CHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1024&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'acf'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;This option sets the lpc method to use. Choose between: 'acf' acf (autocorrelation) method with Levinson-Durbin algorithm , 'burg' Burg method (N. Anderson (1978))&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;p&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UINT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'8'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;Predictor order (= number of lpc coefficients)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;saveLPCoeff&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'true'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = save LP coefficients to output&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;lpGain&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = save lpc gain (error) in output vector&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;saveRefCoeff&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = save reflection coefficients to output&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;residual&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = compute lpc residual signal and store in output frame&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;forwardFilter&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = apply forward instead of inverse filter when computing residual&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;lpSpectrum&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;true = compute lp spectrum using 'lpSpecDeltaF' as frequency resolution or 'lpSpecBins' bins&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;lpSpecDeltaF&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'10.00000'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;frequency resolution of lp spectrum (only applicable if 'lpSpectrum=true')&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;lpSpecBins&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UINT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'100'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;number of bins to compute lp spectrum for (overrides lpSpecDeltaF) (only applicable if 'lpSpectrum=true')&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;lsp&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;compute LSP (line spectral pairs) from LPC coefficients&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
-                        </TR>
-                    </TABLE>
-                </TD>
-            </TR>
-            <TR>
-                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
-                    <CODE SIZE="+2">
                         <A NAME="AudioPlayer">AudioPlayer</A>
                     </CODE>
                 </TD>
@@ -2180,6 +1905,281 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;Normalize sample values.&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="AudioLpc">AudioLpc</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>AudioLpc</B>&nbsp;
+                                <CODE>FEATURE</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">This component computes linear predictive coding (LPC) coefficients from PCM frames. Burg's algorithm and the standard ACF/Durbin based method are implemented for LPC coefficient computation. The output of LPC filter coefficients, reflection coefficients, residual signal, LP spectrum and LSP is supported.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;method&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'acf'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;This option sets the lpc method to use. Choose between: 'acf' acf (autocorrelation) method with Levinson-Durbin algorithm , 'burg' Burg method (N. Anderson (1978))&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;p&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UINT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'8'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Predictor order (= number of lpc coefficients)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;saveLPCoeff&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = save LP coefficients to output&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;lpGain&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = save lpc gain (error) in output vector&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;saveRefCoeff&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = save reflection coefficients to output&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;residual&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = compute lpc residual signal and store in output frame&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;forwardFilter&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = apply forward instead of inverse filter when computing residual&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;lpSpectrum&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;true = compute lp spectrum using 'lpSpecDeltaF' as frequency resolution or 'lpSpecBins' bins&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;lpSpecDeltaF&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'10.00000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;frequency resolution of lp spectrum (only applicable if 'lpSpectrum=true')&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;lpSpecBins&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UINT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'100'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;number of bins to compute lp spectrum for (overrides lpSpecDeltaF) (only applicable if 'lpSpectrum=true')&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;lsp&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;compute LSP (line spectral pairs) from LPC coefficients&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>

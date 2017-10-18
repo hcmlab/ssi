@@ -69,10 +69,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/libcurl.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\libcurl.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -106,10 +106,10 @@
       <PreprocessorDefinitions>WIN32;USE_SSLEAY;USE_OPENSSL;_DEBUG;_WINDOWS;_USRDLL;BUILDING_LIBCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/libcurl.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\libcurl.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>

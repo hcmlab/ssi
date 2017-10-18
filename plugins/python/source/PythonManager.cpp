@@ -51,17 +51,29 @@ PythonManager::~PythonManager()
 
 void PythonManager::Init()
 {
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "init");
 	Py_Initialize();
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "init threads");
 	PyEval_InitThreads();
 	//Py_DECREF(PyImport_ImportModule("threading"));
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "init ssi");
 	PyInit_ssipy();
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "save thread");
 	_state = PyEval_SaveThread();
 }
 
 void PythonManager::Quit()
 {
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "restore thread");
 	PyEval_RestoreThread(_state);
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "finalize");
 	Py_Finalize();
+
+	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "quit");
 }
 
 

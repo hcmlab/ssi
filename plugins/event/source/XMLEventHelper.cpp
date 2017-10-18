@@ -111,6 +111,8 @@ void XMLEventHelper::resetMapping(ssi_size_t time) {
 		case XMLEventHelper::MapTarget::ATTRIBUTE: {
 			if (it->span != -1 && time - it->last > it->span) {
 				ssi_pcast(TiXmlAttribute, it->node)->SetValue("");
+			} else if (it->field == XMLEventHelper::Field::ISNEW) {
+				ssi_pcast(TiXmlAttribute, it->node)->SetValue("0");
 			}
 			break;
 		}
@@ -118,6 +120,8 @@ void XMLEventHelper::resetMapping(ssi_size_t time) {
 			TiXmlNode *content = ssi_pcast(TiXmlElement, it->node)->FirstChild();
 			if (it->span != -1 && time - it->last > it->span) {
 				content->SetValue("");
+			} else if (it->field == XMLEventHelper::Field::ISNEW) {
+				content->SetValue("0");
 			}
 			break;
 		}
@@ -383,6 +387,8 @@ bool XMLEventHelper::parseField(Mapping &map, const ssi_char_t *string) {
 		map.field = Field::EVENT;
 	} else if (ssi_strcmp(string, FieldName(Field::SENDER), false)) {
 		map.field = Field::SENDER;
+	} else if (ssi_strcmp(string, FieldName(Field::ISNEW), false)) {
+		map.field = Field::ISNEW;
 	} else {
 		ssi_wrn("unkown field '%s', setting to 'value'", string);
 		map.field = Field::VALUE;
@@ -743,6 +749,13 @@ bool XMLEventHelper::applyEvent(Mapping &map, ssi_event_t &e) {
 		case Field::SENDER: {
 
 			ssi_sprint(_strbuf, "%s", Factory::GetString(e.sender_id));
+
+			break;
+		}
+
+		case Field::ISNEW: {
+			
+			ssi_sprint(_strbuf, "1");
 
 			break;
 		}

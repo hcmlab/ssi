@@ -35,13 +35,16 @@ namespace ssi
         }
 
         private string tempTrainerPath = Properties.Settings.Default.CMLDirectory + "\\" + Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+        int TrainerPathComboBoxindex = -1;
 
         public enum Mode
         {
             TRAIN,
+            EVALUATE,
             PREDICT,
             COMPLETE
         }
+
 
         public DatabaseCMLTrainAndPredictWindow(MainHandler handler, Mode mode)
         {
@@ -51,7 +54,7 @@ namespace ssi
             this.mode = mode;
 
             Loaded += DatabaseCMLTrainAndPredictWindow_Loaded;
-
+           
             HelpTrainLabel.Content = "To balance the number of samples per class samples can be removed ('under') or duplicated ('over').\r\n\r\nDuring training the current feature frame can be extended by adding left and / or right frames.\r\n\r\nThe default output name may be altered.";
             HelpPredictLabel.Content = "Apply thresholds to fill up gaps between segments of the same class\r\nand remove small segments (in seconds).\r\n\r\nSet confidence to a fixed value.";
             
@@ -87,6 +90,17 @@ namespace ssi
                     TrainOptionsPanel.Visibility = Visibility.Visible;
                     ForceCheckBox.Visibility = Visibility.Visible;  
                                       
+                    break;
+
+                case Mode.EVALUATE:
+
+                    Title = "Evaluate Models";
+                    ApplyButton.Content = "Evaluate";
+                    ShowAllSessionsCheckBox.Visibility = Visibility.Collapsed;
+                    PredictOptionsPanel.Visibility = Visibility.Collapsed;
+                    TrainOptionsPanel.Visibility = Visibility.Collapsed;
+                    ForceCheckBox.Visibility = Visibility.Collapsed;
+
                     break;
 
                 case Mode.PREDICT:
@@ -137,8 +151,7 @@ namespace ssi
                     string annotatorFullName = DatabaseHandler.Annotators.Find(a => a.Name == annotatorName).FullName;
                     AnnotatorsBox.SelectedItem = annotatorFullName;
                 }
-
-                            
+       
                 AnnotatorsBox.IsEnabled = DatabaseHandler.CheckAuthentication() > DatabaseAuthentication.READWRITE;
             }
             else
@@ -271,7 +284,7 @@ namespace ssi
                 }                
             }
 
-            if (mode == Mode.PREDICT
+            if (mode == Mode.PREDICT                
                 || mode == Mode.COMPLETE)
             {
                 if (true || force)
@@ -315,6 +328,32 @@ namespace ssi
                         mode == Mode.COMPLETE);
                 }
                 
+            }
+
+            if (mode == Mode.EVALUATE)
+            {
+                string evalOutPath = Properties.Settings.Default.CMLDirectory + "\\" + Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+
+                logTextBox.Text += handler.CMLEvaluateModel(evalOutPath, 
+                        trainer.Path,
+                        Properties.Settings.Default.DatabaseDirectory,
+                        Properties.Settings.Default.DatabaseAddress,
+                        Properties.Settings.Default.MongoDBUser,
+                        MainHandler.Decode(Properties.Settings.Default.MongoDBPass),
+                        database,
+                        sessionList,
+                        scheme.Name,
+                        rolesList,
+                        annotator,
+                        stream.Name);
+
+                if (File.Exists(evalOutPath))
+                {
+                    ConfmatWindow confmat = new ConfmatWindow(evalOutPath);
+                    confmat.ShowDialog();
+                    File.Delete(evalOutPath);
+                }
+
             }
 
             if (mode == Mode.COMPLETE)
@@ -404,7 +443,10 @@ namespace ssi
 
             if (SchemesBox.Items.Count > 0)
             {
-                SchemesBox.SelectedIndex = 0;
+                if (SchemesBox.SelectedItem == null)
+                {
+                    SchemesBox.SelectedIndex = 0;
+                }
                 SchemesBox.SelectedItem = Properties.Settings.Default.CMLDefaultScheme;
             }
         }
@@ -423,7 +465,11 @@ namespace ssi
 
             if (RolesBox.Items.Count > 0)
             {
-                RolesBox.SelectedIndex = 0;
+
+                if (RolesBox.SelectedItem == null)
+                {
+                    RolesBox.SelectedIndex = 0;
+                }
                 RolesBox.SelectedItem = Properties.Settings.Default.CMLDefaultRole;
             }
         }
@@ -456,7 +502,11 @@ namespace ssi
 
             if (StreamsBox.Items.Count > 0)
             {
-                StreamsBox.SelectedIndex = 0;
+                if(StreamsBox.SelectedItem == null)
+                {
+                    StreamsBox.SelectedIndex = 0;
+                }
+              
                 StreamsBox.SelectedItem = streamsValid.Find(item => item.Name == Properties.Settings.Default.CMLDefaultStream);
             }
         }
@@ -473,7 +523,11 @@ namespace ssi
 
             if (AnnotatorsBox.Items.Count > 0)
             {
-                AnnotatorsBox.SelectedIndex = 0;
+                if(AnnotatorsBox.SelectedItem == null)
+                {
+                    AnnotatorsBox.SelectedIndex = 0;
+                }
+                
                 AnnotatorsBox.SelectedItem = Properties.Settings.Default.CMLDefaultAnnotator;
             }
         }
@@ -498,7 +552,7 @@ namespace ssi
             if (mode != Mode.COMPLETE 
                 && (mode == Mode.TRAIN || !ShowAllSessionsCheckBox.IsChecked.Value))
             {
-                // show sessions for which an annotation exists or is missing
+                // show either sessions for which an annotation exists or sessions for which an annotion is missing
 
                 string schemeName = SchemesBox.SelectedItem.ToString();
                 ObjectId schemeID = new ObjectId();
@@ -522,12 +576,12 @@ namespace ssi
                 List<BsonDocument> annotations = new List<BsonDocument>();
                 foreach (ObjectId roleID in roleIDs)
                 {
-                    var filter = builder.Eq("scheme_id", schemeID) & builder.Eq("annotator_id", annotatorID) & builder.Eq("role_id", roleID);                    
+                    var filter = builder.Eq("scheme_id", schemeID) & builder.Eq("annotator_id", annotatorID) & builder.Eq("role_id", roleID) & builder.Eq("isFinished", true);                    
                     annotations.AddRange(DatabaseHandler.GetCollection(DatabaseDefinitionCollections.Annotations, true, filter));
                 }
 
                 List<string> sessionNames = new List<string>();
-                if (mode == Mode.TRAIN)
+                if (mode == Mode.TRAIN || mode == Mode.EVALUATE)
                 {
                     foreach (BsonDocument annotation in annotations)
                     {
@@ -576,7 +630,11 @@ namespace ssi
 
             if (SessionsBox.HasItems)
             {
-                SessionsBox.SelectedIndex = 0;
+                if(SessionsBox.SelectedItem == null)
+                {
+                    SessionsBox.SelectedIndex = 0;
+                }
+               
             }
         } 
 
@@ -700,6 +758,8 @@ namespace ssi
                 return;
             }
 
+            TrainerPathComboBoxindex = TrainerPathComboBox.SelectedIndex;
+
             TrainerPathComboBox.Items.Clear();
 
             if (StreamsBox.SelectedItem != null)
@@ -732,7 +792,17 @@ namespace ssi
             
             if (TrainerPathComboBox.Items.Count > 0)
             {
-                TrainerPathComboBox.SelectedIndex = 0;
+                if (TrainerPathComboBox.SelectedIndex == -1)
+                {
+
+                    TrainerPathComboBox.SelectedIndex = 0;
+                    TrainerPathComboBoxindex = TrainerPathComboBox.SelectedIndex;
+
+                }
+
+                else TrainerPathComboBox.SelectedIndex = TrainerPathComboBoxindex;
+
+
                 TrainerPathComboBox.SelectedItem = Properties.Settings.Default.CMLDefaultTrainer;
             }
 
@@ -806,6 +876,8 @@ namespace ssi
                 Trainer trainer = (Trainer)TrainerPathComboBox.SelectedItem;
                 LeftContextTextBox.Text = trainer.LeftContext;
                 RightContextTextBox.Text = trainer.RightContext;
+
+
                 BalanceComboBox.SelectedIndex = 0;
                 if (trainer.Balance.ToLower() == "under")
                 {

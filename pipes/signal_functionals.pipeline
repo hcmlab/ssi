@@ -18,6 +18,10 @@
 		<input pin="cursor" frame="1.0s"/>
 		<output pin="functionals"/>
 	</transformer>
+	<transformer create="Functionals" names="mean,std,min,max" global="true">
+		<input pin="cursor" frame="1.0s"/>
+		<output pin="functionals_global"/>
+	</transformer>
 
 	<!-- visualization -->
 	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
@@ -25,6 +29,9 @@
 	</consumer>
 	<consumer create="SignalPainter:plot" title="FUNCTIONALS" size="10.0">
 		<input pin="functionals" frame="1" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="FUNCTIONALS (GLOBAL)" size="10.0">
+		<input pin="functionals_global" frame="1" />		
 	</consumer>
 	
 	<!-- decoration -->

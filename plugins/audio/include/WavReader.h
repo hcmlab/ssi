@@ -39,7 +39,7 @@
 
 namespace ssi {
 
-class WavReader : public ISensor, public Thread {
+class WavReader : public IWaitableSensor, public Thread {
 
 	class AudioChannel : public IChannel {
 
@@ -121,7 +121,8 @@ public:
 	void run ();
 	bool disconnect ();
 
-	void wait () { _wait_event.wait (); };
+	bool wait();
+	bool cancel();	
 
 	WAVEFORMAT getFormat () { return _format; };
 
@@ -149,12 +150,14 @@ protected:
 	ssi_size_t _sample_bytes;
 	ssi_size_t _total_size, _frame_size, _frame_counter;
 	ssi_size_t _offset_in_bytes, _offset_in_samples;
-	Timer *_frame_timer;
-	Event _wait_event;
+	Timer *_frame_timer;	
 
 	WAVEFORMAT _format;
 	WavHeader _header;
 	WavChunkHeader _chunk;
+
+	bool _interrupted;
+	Event _wait_event;
 
 	static const ssi_char_t *ssi_log_name;
 };

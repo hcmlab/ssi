@@ -193,6 +193,7 @@ bool WavReader::connect () {
 	_wav_file->seek(_loop_pos, File::BEGIN);
 
 	// block wait event
+
 	_wait_event.block ();
 
 	// set providing=true to read first chunk
@@ -246,6 +247,7 @@ void WavReader::run () {
 			_wav_file->seek (_loop_pos, File::BEGIN);
 			_frame_counter = _total_size / _frame_size;
 		} else {		
+			_interrupted = false;
 			_wait_event.release ();			
 		}
 	}
@@ -270,5 +272,31 @@ bool WavReader::disconnect () {
 
 	return true;
 }
+
+bool WavReader::wait()
+{
+	if (_options.loop)
+	{
+		ssi_print("\n");
+		ssi_print_off("press enter to stop\n\n");
+
+		getchar();
+	}
+	else
+	{
+		_wait_event.wait();
+	}
+
+	return !_interrupted;
+}
+
+bool WavReader::cancel()
+{
+	_interrupted = true;
+	_wait_event.release();
+
+	return true;
+}
+
 
 }

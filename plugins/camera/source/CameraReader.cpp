@@ -87,7 +87,7 @@ CameraReader::CameraReader(const ssi_char_t *file)
 		}
 		else
 		{
-			ssi_err ("Could not initialize COM library in connect()");
+			ssi_wrn ("Could not initialize COM library in connect()");
 		}
     }
 	else 
@@ -163,7 +163,7 @@ void CameraReader::InitGraph()
 		while (!GetOpenFileName(&fileName))
 		{
 			_options.path[0] = '\0';
-			//ssi_err("No File selected!");
+			//ssi_wrn("No File selected!");
 		}
 
 		size_t strLenVar = strnlen(fileName.lpstrFile, 1024);
@@ -175,7 +175,7 @@ void CameraReader::InitGraph()
 		if (strLenVar == 1024)
 		{
 			_options.path[0] = '\0';
-			ssi_err("String that indicated the File-Name was not NULL-Terminated!!!");
+			ssi_wrn("String that indicated the File-Name was not NULL-Terminated!!!");
 		}
 		strcpy_s(_options.path, strLenVar + 1, _options.path);
 	}
@@ -184,7 +184,7 @@ void CameraReader::InitGraph()
 	{
 		if (!CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(_options.path, &_options.params))
 		{
-			ssi_err("Could not determine video file parameters");
+			ssi_wrn("Could not determine video file parameters");
 		}
 		_options.forcefps = _options.params.framesPerSecond;
 	}
@@ -217,9 +217,8 @@ void CameraReader::setProvider (IProvider *provider) {
 }
 
 bool CameraReader::connect()
-{
-	
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "try to connect sensor(file)...");
+{	
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "try to read from file '%s'", _options.path);
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "Calling InitFilterGraphManager...");
 
 	HRESULT hr = CameraTools::InitFilterGraphManager(&_pGraph);
@@ -234,7 +233,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("InitFilterGraphManager");
+		ssi_wrn ("could not init filter graph");
 		return false;
 	}
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "Calling QueryInterfaces...");
@@ -252,7 +251,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("QueryInterfaces");
+		ssi_wrn ("could not query interface");
 		return false;
 	}
 
@@ -273,7 +272,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err("AddFilterToGraphByCLSID");
+		ssi_wrn("could not add filter to graph");
 		return false;
 	}
 
@@ -295,7 +294,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FAILED!");
+		ssi_wrn ("could not query interface");
 		return false;
 	}
 
@@ -314,7 +313,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err("Character conversion to Unicode failed in BuildAndDestroyGraphToDetermineFileFPS");
+		ssi_wrn("could not convert path to unicode");
 		return false;
 	}
 
@@ -336,7 +335,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FAILED!");
+		ssi_wrn ("could not load source file '%s'", _options.path);
 		return false;
 	}
 
@@ -359,7 +358,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FAILED!");
+		ssi_wrn ("could not get pin");
 		return false;
 	}
 
@@ -383,7 +382,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FAILED");
+		ssi_wrn ("could not connect filter");
 		return false;
 	}
 
@@ -411,7 +410,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FindFilterByName with UAProxyForceGrabber");
+		ssi_wrn ("could not find grabber");
 		return false;
 	}
 
@@ -438,7 +437,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("Get Output Pin of Grabber Device" );
+		ssi_wrn ("Get Output Pin of Grabber Device" );
 		return false;
 	}
 
@@ -466,7 +465,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("Get Grabber Interface" );
+		ssi_wrn ("Get Grabber Interface" );
 		return false;
 	}
 
@@ -491,7 +490,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("FAILED!");
+		ssi_wrn ("could not connect renderer");
 		return false;
 	}
 
@@ -519,7 +518,7 @@ bool CameraReader::connect()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err ("Activation of FrameBuffering for Grabbing");
+		ssi_wrn ("Activation of FrameBuffering for Grabbing");
 		return false;
 	}		
 
@@ -593,7 +592,7 @@ HRESULT CameraReader::RunGraph()
 			CoUninitialize();
 			--_comInitCount;
 		}
-		ssi_err("could not run graph");
+		ssi_wrn("could not run graph");
 	}
 	ssi_msg(SSI_LOG_LEVEL_DETAIL, "run graph");
 
@@ -660,6 +659,7 @@ void CameraReader::run()
 	switch(hr)
 	{
 		case E_PENDING:
+			_interrupted = false;
 			_wait_event.release ();
 			break;
 
@@ -731,9 +731,21 @@ void CameraReader::run()
 	}
 }
 
-void CameraReader::wait () {
-	_wait_event.wait ();
+bool CameraReader::wait()
+{
+	_wait_event.wait();
+
+	return !_interrupted;
 }
+
+bool CameraReader::cancel()
+{
+	_interrupted = true;
+	_wait_event.release();
+
+	return true;
+}
+
 
 ssi_video_params_t CameraReader::getFormat (const ssi_char_t *filepath) { 
 	ssi_video_params_t video_format;

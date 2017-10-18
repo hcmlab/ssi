@@ -73,6 +73,7 @@ void EventMonitor::listen_enter () {
 		
 		_window = new Window();
 		_monitor = new Monitor(_options.chars);
+		_monitor->setFont(_options.fontName, _options.fontSize);
 		_window->setClient(_monitor);
 		_window->setPosition(ssi_rect(_options.pos[0], _options.pos[1], _options.pos[2], _options.pos[3]));
 		_window->setTitle(_options.title);
@@ -85,108 +86,185 @@ void EventMonitor::listen_enter () {
 
 bool EventMonitor::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
 
-	if (_update_counter * _options.update_ms >= time_ms) {
-		return true;
-	}
-	_update_counter++;
-	
-	if (_options.console) {
-
-		ssi_event_t *e = 0;
-		ssi_size_t i = 0;
-		ssi_print ("time=%u\n#   %-10.9s%-10.9s%-10.9s%-10.9s%-10.9s%-10.9s%-11.10s\r\n-------------------------------------------------------------------------------\n", time_ms, "type", "sender", "event", "time", "dur", "size", "state(gid)");
-		while (e = events.next ()) {
-			ssi_print ("%03u %-10.9s%-10.9s%-10.9s%-9u %-9u %-9u %s(%02u)\r\n", i++, SSI_ETYPE_NAMES[e->type], Factory::GetString (e->sender_id), Factory::GetString (e->event_id), e->time, e->dur, e->tot, e->state == SSI_ESTATE_CONTINUED ? "continued" : "completed", e->glue_id);
-			if (!_options.all && i >= n_new_events) {
-				break;
-			}
-		}
-
-	} else {
-
-		ssi_sprint (_string, "%s (%u ms)", _options.title, time_ms);		
-		_window->setTitle(_string);
-
-		if (_options.all || n_new_events > 0) {
-
-			ssi_event_t *e = 0;
-			ssi_size_t count = 0;
+	if (!_options.list)
+	{
+		if (n_new_events > 0)
+		{
+			ssi_event_t *e = events.next();
 
 			_monitor->clear();
 
-			ssi_sprint(_string, "#  %-22.21s%-8.7s%-6.5s%-11.10s\r\n---------------------------------------------\r\n", "address", "time", "dur", "state");
-			_monitor->print(_string);
+			ssi_char_t *address = ssi_strcat(Factory::GetString(e->event_id), "@", Factory::GetString(e->sender_id));
+			_monitor->print(address);
+			delete[] address;
+			_monitor->print("\r\n-------------------------------------------------------------------------------\r\n");
+
+			switch (e->type)
+			{
+
+			case SSI_ETYPE_EMPTY:
+				break;
+
+			case SSI_ETYPE_STRING:
+			{
+				ssi_char_t *str = ssi_pcast(ssi_char_t, e->ptr);
+				_monitor->print(str);
+				break;
+			}
+
+			case SSI_ETYPE_TUPLE:
+			{
+				ssi_size_t n = e->tot / sizeof(ssi_event_tuple_t);
+				ssi_event_tuple_t *p = ssi_pcast(ssi_event_tuple_t, e->ptr);
+				for (ssi_size_t i = 0; i < n; i++)
+				{
+					ssi_sprint(_string, "%.2f\r\n", p[i]);
+					_monitor->print(_string);
+				}
+				_monitor->print("\r\n");
+				break;
+			}
+
+			case SSI_ETYPE_MAP:
+			{
+				ssi_size_t n = e->tot / sizeof(ssi_event_map_t);
+				ssi_event_map_t *p = ssi_pcast(ssi_event_map_t, e->ptr);
+				for (ssi_size_t i = 0; i < n; i++)
+				{
+					ssi_sprint(_string, "%s = %.2f\r\n", Factory::GetString(p[i].id), p[i].value);
+					_monitor->print(_string);
+				}
+				_monitor->print("\r\n");
+				break;
+			}
+
+			default:
+			{
+				_monitor->print("<unkown event type>\r\n");
+			}
+
+			}
+
+			_monitor->update();
+		}
+	}
+	else
+	{
+
+		if (_update_counter * _options.update_ms >= time_ms)
+		{
+			return true;
+		}
+		_update_counter++;
+
+		if (_options.console)
+		{
+			ssi_event_t *e = 0;
+			ssi_size_t i = 0;
+			ssi_print("time=%u\n#   %-10.9s%-10.9s%-10.9s%-10.9s%-10.9s%-10.9s%-11.10s\r\n-------------------------------------------------------------------------------\r\n", time_ms, "type", "sender", "event", "time", "dur", "size", "state(gid)");
 			while (e = events.next()) {
-				ssi_char_t *address = ssi_strcat(Factory::GetString(e->event_id), "@", Factory::GetString(e->sender_id));
-				ssi_char_t glue[20];
-				if (e->glue_id > 0)
-				{
-					ssi_sprint(glue, " %u", e->glue_id);
-				}
-				else
-				{
-					glue[0] = '\0';
-				}
-				ssi_sprint(_string, "\r\n%02u %-22.21s%-7u %-5u %s%s\r\n", ++count, address, e->time, e->dur, e->state == SSI_ESTATE_CONTINUED ? "+" : " ", glue);
-				delete[] address;
-				_monitor->print(_string);
-				if (_options.detail) {
-					switch (e->type) {
-					case SSI_ETYPE_EMPTY:
-						//_monitor->print("   <empty>\r\n");
-						break;
-					case SSI_ETYPE_STRING: {
-						ssi_char_t *estr = ssi_pcast(ssi_char_t, e->ptr);
-						if (strlen(estr) > 100) {
-							ssi_char_t estr_short[101];
-							memcpy(estr_short, estr, 100);
-							estr_short[100] = '\0';
-							ssi_sprint(_string, "   %s...\r\n", estr_short);
-						}
-						else {
-							ssi_sprint(_string, "   %s\r\n", estr);
-						}
-						_monitor->print(_string);
-						break;
-					}
-					case SSI_ETYPE_TUPLE: {
-						ssi_size_t n = e->tot / sizeof(ssi_event_tuple_t);
-						ssi_event_tuple_t *p = ssi_pcast(ssi_event_tuple_t, e->ptr);
-						_monitor->print("   ");
-						for (ssi_size_t i = 0; i < n; i++) {
-							ssi_sprint(_string, "%.2f ", p[i]);
-							_monitor->print(_string);
-						}
-						_monitor->print("\r\n");
-					}
-						break;
-					case SSI_ETYPE_MAP: {
-						ssi_size_t n = e->tot / sizeof(ssi_event_map_t);
-						ssi_event_map_t *p = ssi_pcast(ssi_event_map_t, e->ptr);
-						_monitor->print("    ");
-						for (ssi_size_t i = 0; i < n; i++) {
-							ssi_sprint(_string, "%s:%.2f ", Factory::GetString(p[i].id), p[i].value);
-							_monitor->print(_string);
-						}
-						_monitor->print("\r\n");
-					}
-						break;
-					default:
-						_monitor->print("   <unkown event type>\r\n");
-					}
-				}
-				if (!_options.all && count >= n_new_events) {
+				ssi_print("%03u %-10.9s%-10.9s%-10.9s%-9u %-9u %-9u %s(%02u)\r\n", i++, SSI_ETYPE_NAMES[e->type], Factory::GetString(e->sender_id), Factory::GetString(e->event_id), e->time, e->dur, e->tot, e->state == SSI_ESTATE_CONTINUED ? "continued" : "completed", e->glue_id);
+				if (!_options.all && i >= n_new_events) {
 					break;
 				}
 			}
-			_monitor->update();
+
+		}
+		else
+		{
+
+			ssi_sprint(_string, "%s (%u ms)", _options.title, time_ms);
+			_window->setTitle(_string);
+
+			if (_options.list)
+			{
+
+				if (_options.all || n_new_events > 0)
+				{
+
+					ssi_event_t *e = 0;
+					ssi_size_t count = 0;
+
+					_monitor->clear();
+
+					ssi_sprint(_string, "#  %-22.21s%-8.7s%-6.5s%-11.10s\r\n---------------------------------------------\r\n", "address", "time", "dur", "state");
+					_monitor->print(_string);
+					while (e = events.next()) {
+						ssi_char_t *address = ssi_strcat(Factory::GetString(e->event_id), "@", Factory::GetString(e->sender_id));
+						ssi_char_t glue[20];
+						if (e->glue_id > 0)
+						{
+							ssi_sprint(glue, " %u", e->glue_id);
+						}
+						else
+						{
+							glue[0] = '\0';
+						}
+						ssi_sprint(_string, "\r\n%02u %-22.21s%-7u %-5u %s%s\r\n", ++count, address, e->time, e->dur, e->state == SSI_ESTATE_CONTINUED ? "+" : " ", glue);
+						delete[] address;
+						_monitor->print(_string);
+						if (_options.detail) {
+							switch (e->type) {
+							case SSI_ETYPE_EMPTY:
+								//_monitor->print("   <empty>\r\n");
+								break;
+							case SSI_ETYPE_STRING: {
+								ssi_char_t *estr = ssi_pcast(ssi_char_t, e->ptr);
+								if (strlen(estr) > 100) {
+									ssi_char_t estr_short[101];
+									memcpy(estr_short, estr, 100);
+									estr_short[100] = '\0';
+									ssi_sprint(_string, "   %s...\r\n", estr_short);
+								}
+								else {
+									ssi_sprint(_string, "   %s\r\n", estr);
+								}
+								_monitor->print(_string);
+								break;
+							}
+							case SSI_ETYPE_TUPLE: {
+								ssi_size_t n = e->tot / sizeof(ssi_event_tuple_t);
+								ssi_event_tuple_t *p = ssi_pcast(ssi_event_tuple_t, e->ptr);
+								_monitor->print("   ");
+								for (ssi_size_t i = 0; i < n; i++) {
+									ssi_sprint(_string, "%.2f ", p[i]);
+									_monitor->print(_string);
+								}
+								_monitor->print("\r\n");
+							}
+												  break;
+							case SSI_ETYPE_MAP: {
+								ssi_size_t n = e->tot / sizeof(ssi_event_map_t);
+								ssi_event_map_t *p = ssi_pcast(ssi_event_map_t, e->ptr);
+								_monitor->print("   ");
+								for (ssi_size_t i = 0; i < n; i++) {
+									ssi_sprint(_string, "%s:%.2f ", Factory::GetString(p[i].id), p[i].value);
+									_monitor->print(_string);
+								}
+								_monitor->print("\r\n");
+							}
+												break;
+							default:
+								_monitor->print("   <unkown event type>\r\n");
+							}
+						}
+						if (!_options.all && count >= n_new_events) {
+							break;
+						}
+					}
+
+					_monitor->update();
+
+				}
+			}
 		}
 	}
 
 	return true;
 }
 
-void EventMonitor::listen_flush () {
+void EventMonitor::listen_flush () 
+{
 
 	if (_monitor) {
 		_window->close ();

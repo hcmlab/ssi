@@ -47,8 +47,10 @@ namespace ssi{
 	{
 		if (_options.beep)
 		{
+#if _WIN32||_WIN64
 			Beep(1000, 250);
-		}
+#endif
+        }
 
 		if (!_elistener) {
 			return;

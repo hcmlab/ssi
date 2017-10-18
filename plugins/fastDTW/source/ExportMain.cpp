@@ -28,7 +28,11 @@
 #include "base/Factory.h"
 
 #ifndef DLLEXP
+#if _WIN32|_WIN64
 #define DLLEXP extern "C" __declspec( dllexport )
+#else
+#define DLLEXP extern "C" __attribute__((visibility("default")))
+#endif
 #endif
 
 DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *message) {

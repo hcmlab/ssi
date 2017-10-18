@@ -62,6 +62,8 @@ struct params_t {
 	int nParallel;
 	ssi_char_t *annoPath;
 	StringList annoList;
+	bool ascii;
+	ssi_char_t *restClassName;
 };
 
 struct FeatureArguments
@@ -119,6 +121,8 @@ bool Parse_and_Run(int argc, char **argv)
 	params.left = 0;
 	params.right = 0;
 	params.annoPath = 0;
+	params.ascii = false;
+	params.restClassName = 0;
 
 	cmd.addText("\nArguments:");
 	cmd.addSCmdArg("chain", &params.chainPath, "path to file defining the processing chain");
@@ -126,14 +130,17 @@ bool Parse_and_Run(int argc, char **argv)
 	cmd.addSCmdArg("out", &params.outPath, "output path (if several separate by ;)");
 
 	cmd.addText("\nOptions:");
+	cmd.addBCmdOption("-ascii", &params.ascii, false, "store output as ASCII");
 	cmd.addBCmdOption("-list", &params.list, false, "read files from list (one file per line)");
 	cmd.addSCmdOption("-step", &params.step, "0", "set frame step (add ms/s for milli/seconds otherwise interpreted as number of samples)");
 	cmd.addSCmdOption("-left", &params.left, "0", "set left context (see step)");
 	cmd.addSCmdOption("-right", &params.right, "0", "set right context (see step)");
 	cmd.addSCmdOption("-anno", &params.annoPath, "", "path to an annotation (features will be extracted over segments and stored as a sample list)");
+	cmd.addSCmdOption("-rest", &params.restClassName, SSI_SAMPLE_REST_CLASS_NAME, "name of restclass (if empty not added)");
 	cmd.addICmdOption("-parallel", &params.nParallel, 1, "number of files processed in parallel (0 = all)");
 	cmd.addSCmdOption("-url", &params.srcUrl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logPath, "", "log to a file [""]");
+
 
 	if (!cmd.read(argc, argv))
 	{
@@ -167,6 +174,7 @@ bool Parse_and_Run(int argc, char **argv)
 	delete[] params.right;
 	delete[] params.step;
 	delete[] params.annoPath;
+	delete[] params.restClassName;
 
 	return true;
 }
@@ -495,6 +503,36 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 					return false;
 				}
 
+				if (!ssi_strcmp(params.step, "0")) {
+					ssi_size_t step = 0, left = 0, right = 0;
+
+					if (!ssi_parse_samples(params.step, step, from.sr)) {
+						ssi_wrn("could not parse step size '%s'", params.step);
+						return false;
+					}
+
+					if (!ssi_parse_samples(params.left, left, from.sr)) {
+						ssi_wrn("could not parse left size '%s'", params.left);
+						return false;
+					}
+
+					if (!ssi_parse_samples(params.right, right, from.sr)) {
+						ssi_wrn("could not parse right size '%s'", params.right);
+						return false;
+					}
+
+					ssi_time_t step_t = step / from.sr;
+					ssi_time_t left_t = left / from.sr;
+					ssi_time_t right_t = right / from.sr;
+					
+					annotation.convertToFrames(step_t, params.restClassName[0] == '\0' ? 0 : params.restClassName);
+
+					if (left_t > 0.0 || right_t > 0.0)
+					{
+						annotation.addOffset(left_t, right_t);
+					}
+				}
+
 				SampleList samples;
 
 				if (result &= annotation.extractSamples(from, &samples))
@@ -502,7 +540,7 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 					ISTransform samples_t(&samples);
 					samples_t.setTransformer(0, *chain); 
 					samples_t.callEnter();
-					result &= ModelTools::SaveSampleList(samples_t, toPath, File::BINARY);
+					result &= ModelTools::SaveSampleList(samples_t, toPath, params.ascii ? File::ASCII : File::BINARY);
 					samples_t.callFlush();
 				}
 			}			
@@ -518,7 +556,7 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 				SignalTools::Transform(from, to, *chain, params.step, params.left, params.right);
 			}
 
-			result &= FileTools::WriteStreamFile(File::BINARY, toPath, to);
+			result &= FileTools::WriteStreamFile(params.ascii ? File::ASCII : File::BINARY, toPath, to);
 			
 			ssi_stream_destroy(to);
 		}

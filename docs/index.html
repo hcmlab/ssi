@@ -1037,7 +1037,7 @@ sock.sendto(<span class="bu">bytes</span>(MESSAGE, <span class="st">&quot;utf-8&
 <img src="pics/xml-advanced-network-xmlsender-1.png" alt="Options allow it to shape the display of the inserted information." id="fig:xml-advanced-network-xmlsender-1" style="width:80.0%" />
 <p class="caption"><em>Options allow it to shape the display of the inserted information.</em></p>
 </div>
-<p>For instance, the option <code>select=0</code> picks the first stream dimension of the stream and adding <code>function=mean</code> replaces a sequence of samples by their mean value.</p>
+<p>For instance, the option <code>select=0</code> picks the first stream dimension of the stream and adding <code>functional=mean</code> replaces a sequence of samples by their mean value.</p>
 <p>Options that apply to streams and tuple/map events:</p>
 <table>
 <colgroup>
@@ -1092,27 +1092,27 @@ Options that apply to streams only:</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>function=mean</code></td>
+<td align="left"><code>functional=mean</code></td>
 <td align="left">Calculates mean value.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>function=std</code></td>
+<td align="left"><code>functional=std</code></td>
 <td align="left">Calculates standard deviation.</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>function=min</code></td>
+<td align="left"><code>functional=min</code></td>
 <td align="left">Calculates minimum.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>function=max</code></td>
+<td align="left"><code>functional=max</code></td>
 <td align="left">Calculates maximum.</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>function=first</code></td>
+<td align="left"><code>functional=first</code></td>
 <td align="left">Select first sample (latest).</td>
 </tr>
 <tr class="even">
-<td align="left"><code>function=last</code></td>
+<td align="left"><code>functional=last</code></td>
 <td align="left">Select last sample (oldest).</td>
 </tr>
 </tbody>
@@ -1164,6 +1164,10 @@ Options that apply to events only:</p>
 <td align="left">Event key (map events only).</td>
 </tr>
 <tr class="odd">
+<td align="left"><code>field=isnew</code></td>
+<td align="left">1 if new event has arrived, 0 otherwise.</td>
+</tr>
+<tr class="even">
 <td align="left"><code>span=1000</code></td>
 <td align="left">Remove event after 1000 ms (if no new event arrives).</td>
 </tr>

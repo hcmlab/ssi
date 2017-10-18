@@ -92,6 +92,12 @@ void CVCrop::setFormat(ssi_video_params_t format) {
 		_region->height = ssi_cast(int, _options.region[3]);
 	}
 
+	if (_options.format == FORMAT::XYXY)
+	{
+		_region->width -= _region->x;
+		_region->height -= _region->y;
+	}
+
 	if (_options.width == 0)
 	{
 		_options.width = _region->width;
@@ -170,6 +176,12 @@ void CVCrop::transform (ssi_time_t frame_rate,
 		else
 		{
 			ssi_err("type '%s' in xstream not supported, float or int required", SSI_TYPE_NAMES[xtra_stream_in[0].type]);
+		}
+
+		if (_options.format == FORMAT::XYXY)
+		{
+			_region->width -= _region->x;
+			_region->height -= _region->y;
 		}
 	}
 

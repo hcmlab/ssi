@@ -343,7 +343,7 @@ void AviReader::run () {
 			ssi_stream_adjust (_audio_buffer, delta_sample);
 			int status = AVIStreamRead (_audio_stream, first_sample, delta_sample, _audio_buffer.ptr, _audio_buffer.tot, NULL, NULL);
 			if (status) {
-				ssi_wrn ("could not read audio chunk [ld..ld]", first_sample, last_sample);
+				ssi_wrn ("could not read audio chunk [%ld..%ld]", first_sample, last_sample);
 			} else {
 				_is_providing = _audio_provider->provide (_audio_buffer.ptr, delta_sample);
 			}
@@ -353,6 +353,7 @@ void AviReader::run () {
 
 	if (end_of_file) {
 		// release wait event
+		_interrupted = false;
 		_wait_event->release ();
 	}
 
@@ -377,9 +378,20 @@ bool AviReader::disconnect () {
 	return true;
 }
 
-void AviReader::wait () {
-	_wait_event->wait (); 
-};
+bool AviReader::wait()
+{
+	_wait_event->wait();
+
+	return !_interrupted;
+}
+
+bool AviReader::cancel()
+{
+	_interrupted = true;
+	_wait_event->release();
+
+	return true;
+}
 
 
 }

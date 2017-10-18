@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
+		<load name="python"/>
+	</register>
+
+	<!-- mouse sensor -->
+	<sensor create="Mouse" mask="1" sr="5">
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor"/>
+	</sensor>
+	
+	<!-- detect button events -->
+	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="5.0" sendStartEvent="true">
+		<input pin="button" frame="1.0s" />		
+	</consumer>		
+	
+	<!-- feature extraction -->
+	<consumer create="FunctionalsEventSender" address="features@cursor">
+		<input pin="cursor" address="pressed@button" />
+		<output pin="cursor_functs" />
+	</consumer>
+	
+	<!-- xml sender -->
+	<consumer create="XMLEventSender:sender" path="template" address="xml@mouse" monitor="true" update="1000">
+		<input pin="cursor;button" frame="1"/>		
+		<listen address=""/>
+	</consumer>
+	
+	<object create="PythonObject" script="xmltojson" optsstr="address=json@mouse;convert=True">	
+		<listen address="xml@mouse"/>		
+	</object>
+	
+	<!-- visualization -->
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="20000" />
+	</object>	
+	
+	<object create="FileEventWriter:writer" path="output">
+	<listen address="xml,json@mouse"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">sender</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

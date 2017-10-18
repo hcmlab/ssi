@@ -1549,7 +1549,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		}
 		else
 		{
-			ssi_err_static ("Could not initialize COM library in BuildAndDestroyGraphToDetermineFileFPS()");
+			ssi_wrn_static ("Could not initialize COM library in BuildAndDestroyGraphToDetermineFileFPS()");
 			return false;
 		}
     }
@@ -1577,7 +1577,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("InitFilterGraphManager");
+		ssi_wrn_static ("InitFilterGraphManager");
 		return false;
 	}
 
@@ -1596,7 +1596,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("QueryInterfaces");
+		ssi_wrn_static ("QueryInterfaces");
 		return false;
 	}
 
@@ -1617,7 +1617,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("AddFilterToGraphByCLSID");
+		ssi_wrn_static ("AddFilterToGraphByCLSID");
 		return false;
 	}
 
@@ -1639,7 +1639,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("FAILED!");
+		ssi_wrn_static ("FAILED!");
 		return false;
 	}
 
@@ -1658,7 +1658,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static("Character conversion to Unicode failed in BuildAndDestroyGraphToDetermineFileFPS");
+		ssi_wrn_static("Character conversion to Unicode failed in BuildAndDestroyGraphToDetermineFileFPS");
 		return false;
 	}
 
@@ -1680,7 +1680,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("FAILED!");
+		ssi_wrn_static ("FAILED!");
 		return false;
 	}
 
@@ -1704,7 +1704,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("FAILED!");
+		ssi_wrn_static ("FAILED!");
 		return false;
 	}
 
@@ -1729,7 +1729,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		{
 			CoUninitialize();
 		}
-		ssi_err_static ("FAILED");
+		ssi_wrn_static ("FAILED");
 		return false;
 	}
 
@@ -1758,7 +1758,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		{
 			CoUninitialize();
 		}
-		ssi_err_static ("FindFilterByName with UAProxyForceGrabber");
+		ssi_wrn_static ("FindFilterByName with UAProxyForceGrabber");
 		return false;
 	}
 
@@ -1786,7 +1786,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		{
 			CoUninitialize();
 		}
-		ssi_err_static ("Get Output Pin of Grabber Device" );
+		ssi_wrn_static ("Get Output Pin of Grabber Device" );
 		return false;
 	}
 
@@ -1814,7 +1814,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("FAILED!");
+		ssi_wrn_static ("FAILED!");
 		return false;
 	}
 
@@ -1839,7 +1839,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 			CoUninitialize();
 			--comInitCount;
 		}
-		ssi_err_static ("FAILED!");
+		ssi_wrn_static ("FAILED!");
 		return false;
 	}
 
@@ -1869,7 +1869,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 				CoUninitialize();
 				--comInitCount;
 			}
-			ssi_err_static ("FAILED!");
+			ssi_wrn_static ("FAILED!");
 		}
 		//Sleep(500);
 	//}
@@ -1909,7 +1909,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		SafeReleaseFJ(pBasicVideo);
 		SafeReleaseFJ(pControl);
 		SafeReleaseFJ(pGraph);
-		ssi_err_static("Unknown Stream Structure!");
+		ssi_wrn_static("Unknown Stream Structure!");
 		return false;
 	}
 	if((IsEqualGUID(mt->formattype, FORMAT_VideoInfo)) && (mt->cbFormat >= sizeof(VIDEOINFOHEADER)))
@@ -1945,7 +1945,7 @@ bool CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(const ssi_char_
 		SafeReleaseFJ(pBasicVideo);
 		SafeReleaseFJ(pControl);
 		SafeReleaseFJ(pGraph);
-		ssi_err_static("Unknown Stream Structure!");
+		ssi_wrn_static("Unknown Stream Structure!");
 		return false;
 	}
 
@@ -2034,7 +2034,7 @@ HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, Camera
 	}
 	else
 	{
-		ssi_err_static("In HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, CameraDeviceName *pDeviceName) try to CoCreateInstance with CLSID_SystemDeviceEnum failed with %ld", hr);
+		ssi_wrn_static("In HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, CameraDeviceName *pDeviceName) try to CoCreateInstance with CLSID_SystemDeviceEnum failed with %ld", hr);
 		return hr;
 	}
 	
@@ -2047,7 +2047,7 @@ HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, Camera
 			return hr;
 		}
 		SafeReleaseFJ(pSysDevEnum);
-		ssi_err_static("In HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, CameraDeviceName *pDeviceName) try to CreateClassEnumerator with CLSID_VideoInputDeviceCategory failed with %ld", hr);
+		ssi_wrn_static("In HRESULT CameraTools::FindAndBindToIBaseFilter(IBaseFilter **ppBaseFilter, CameraDeviceName *pDeviceName) try to CreateClassEnumerator with CLSID_VideoInputDeviceCategory failed with %ld", hr);
 		
 		return hr;
 	}

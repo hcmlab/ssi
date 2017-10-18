@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace ssi
@@ -268,8 +269,9 @@ namespace ssi
             DatabaseHandler.GetObjectName(ref schemeName, DatabaseDefinitionCollections.Schemes, annotation["scheme_id"].AsObjectId);
             string annotatorName = "";
             DatabaseHandler.GetObjectName(ref annotatorName, DatabaseDefinitionCollections.Annotators, annotation["annotator_id"].AsObjectId);
-            string annotatorFullName = "";
-            DatabaseHandler.GetObjectField(ref annotatorFullName, DatabaseDefinitionCollections.Annotators, annotation["annotator_id"].AsObjectId, "fullname");
+            string annotatorFullName = DatabaseHandler.GetUserInfo(annotatorName).Fullname;
+
+            //DatabaseHandler.GetObjectField(ref annotatorFullName, DatabaseDefinitionCollections.Annotators, annotation["annotator_id"].AsObjectId, "fullname");
 
             bool isFinished = false;
             try
@@ -426,7 +428,7 @@ namespace ssi
                     if (DatabaseHandler.CheckAuthentication() > DatabaseAuthentication.READWRITE || Properties.Settings.Default.MongoDBUser == ((DatabaseAnnotation)(AnnotationsBox.SelectedValue)).Annotator)
                     {
                         DeleteAnnotation.Visibility = Visibility.Visible;
-                        CopyAnnotation.Visibility = Visibility.Visible;                       
+                        //CopyAnnotation.Visibility = Visibility.Visible;                       
                     }
                 }
 
@@ -449,7 +451,7 @@ namespace ssi
                     BsonElement value;
                     if(StreamsBox.Items != null && annotation[0].TryGetElement("streams", out value))
                     {
-                        StreamsBox.SelectedItems.Clear();
+                        //StreamsBox.SelectedItems.Clear();
                         foreach (BsonString doc in annotation[0]["streams"].AsBsonArray)
                         {
                             string name = doc.AsString;                            
@@ -572,5 +574,33 @@ namespace ssi
             }
         }
 
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+
+        private bool UserFilter(object item)
+        {
+            if (String.IsNullOrEmpty(searchTextBox.Text))
+                return true;
+            else
+                return (((item as DatabaseAnnotation).Scheme.IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0) 
+                    || (item as DatabaseAnnotation).AnnotatorFullName.IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0 
+                    || (item as DatabaseAnnotation).Annotator.IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as DatabaseAnnotation).Role.IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (AnnotationsBox.ItemsSource != null)
+            {
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(AnnotationsBox.ItemsSource);
+                view.Filter = UserFilter;
+                CollectionViewSource.GetDefaultView(AnnotationsBox.ItemsSource).Refresh();
+            }
+        }
     }
 }

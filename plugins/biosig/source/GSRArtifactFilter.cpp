@@ -137,7 +137,7 @@ void GSRArtifactFilter::transform (ITransformer::info info,
 
 			ssi_real_t value = 0.0f;
 
-			if(sample_buffer[nsamp] != INFINITE && sample_buffer[nsamp + winsize_in_samp] != INFINITE){
+            if(std::isfinite(sample_buffer[nsamp])  && std::isfinite(sample_buffer[nsamp + winsize_in_samp] )){
 				value = abs(sample_buffer[nsamp] - sample_buffer[nsamp + winsize_in_samp]) * 100.0f;
 			}
 
@@ -176,7 +176,7 @@ void GSRArtifactFilter::transform (ITransformer::info info,
 	/* Write to Stream */
 	for(ssi_size_t nsamp = 0; nsamp < sample_frames; nsamp++){
 
-		if(sample_buffer[nsamp] != INFINITE){
+        if(std::isfinite(sample_buffer[nsamp] )){
 			*ptr_out = sample_buffer[nsamp];
 		}else{
 			*ptr_out = 0.0f;
@@ -199,7 +199,7 @@ void GSRArtifactFilter::interpolate(ITransformer::info &info, ssi_real_t* sample
 	
 
 	for(ssi_size_t nsamp = 0; nsamp < sample_frames; nsamp++){
-		if(sample_buffer[nsamp] == INFINITE){
+        if(!std::isfinite(sample_buffer[nsamp])){
 			sample_buffer[nsamp] = _last_valid_value;
 			interpolating = true;
 		}else{

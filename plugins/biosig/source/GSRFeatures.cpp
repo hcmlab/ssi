@@ -262,7 +262,7 @@ void GSRFeatures::transform( ITransformer::info info, ssi_stream_t &stream_in, s
 		if (maxima.size() > 0) avg_maxima /= ((float)maxima.size());
 		if (minima.size() > 0) avg_minima /= ((float) minima.size());
 		
-		f_p2pmv = std::fabsf(avg_maxima - avg_minima);
+        f_p2pmv = std::fabs(avg_maxima - avg_minima);
 
 	}
 	
@@ -528,7 +528,7 @@ float GSRFeatures::getStDev(std::vector<peakslopedrop> in, ssi_size_t attribute)
 
 		if (avg != 0){
 			var /= avg;
-			r = std::sqrtf(var);
+            r = std::sqrt(var);
 		}
 		else{
 			r = 0;

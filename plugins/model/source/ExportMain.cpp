@@ -57,6 +57,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::SimpleFusion::GetCreateName (),ssi::SimpleFusion::Create) && result;	
 	result = ssi::Factory::Register (ssi::SVM::GetCreateName (),ssi::SVM::Create) && result;	
 	result = ssi::Factory::Register (ssi::NaiveBayes::GetCreateName (),ssi::NaiveBayes::Create) && result;	
+	result = ssi::Factory::Register(ssi::OnlineNaiveBayes::GetCreateName(), ssi::OnlineNaiveBayes::Create) && result;
 	result = ssi::Factory::Register (ssi::Relief::GetCreateName (),ssi::Relief::Create) && result;	
 	result = ssi::Factory::Register (ssi::Rank::GetCreateName (),ssi::Rank::Create) && result;	
 	result = ssi::Factory::Register (ssi::FloatingSearch::GetCreateName (),ssi::FloatingSearch::Create) && result;

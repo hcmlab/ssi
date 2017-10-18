@@ -31,7 +31,7 @@
 #   define SSI_OPENCV_VERSION "310"
 #endif
 
-#include <opencv2\opencv.hpp>
+#include <opencv2/opencv.hpp>
 #ifdef _DEBUG
 #	pragma comment(lib, "opencv_world" SSI_OPENCV_VERSION "d.lib")
 #else

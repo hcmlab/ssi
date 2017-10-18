@@ -38,6 +38,13 @@ class CVCrop  : public ICVFilter {
 
 public:
 
+	struct FORMAT {
+		enum List {
+			XYWH = 0,
+			XYXY = 1
+		};
+	};
+
 	struct ORIGIN {
 		enum List {
 			LEFTTOP = 0,
@@ -59,17 +66,18 @@ public:
 
 	public:
 
-		Options () : width (0), height (0), method (METHOD::LINEAR), origin (ORIGIN::LEFTTOP), scaled (true), flip (false), keep (false) {
+		Options () : format(FORMAT::XYWH), width (0), height (0), method (METHOD::LINEAR), origin (ORIGIN::LEFTTOP), scaled (true), flip (false), keep (false) {
 
 			region[0] = 0.0f;
 			region[1] = 0.0f;
 			region[2] = 1.0f;
 			region[3] = 1.0f;
 
+			addOption ("format", &format, 1, SSI_INT, "region format (0=[x,y,width,height],1=[x,y,x2,y2])");
 			addOption ("flip", &flip, 1, SSI_BOOL, "flip coordinate system to left upper corner");
 			addOption ("keep", &keep, 1, SSI_BOOL, "keep last cropped image if region out of range");			
-			addOption ("origin", &origin, 1, SSI_INT, "origin (0=left top, 1=center)");
-			addOption ("region", region, 4, SSI_REAL, "crop region if not provided in an extra stream (x, y, width, height)");
+			addOption ("origin", &origin, 1, SSI_INT, "origin (0=left top, 1=center)");			
+			addOption ("region", region, 4, SSI_REAL, "crop region if not provided in an extra stream");			
 			addOption ("scaled", &scaled, 1, SSI_BOOL, "coordinates are scaled to [0..1]");
 			addOption ("width", &width, 1, SSI_SIZE, "rescale to width in pixels (ignored if 0)");
 			addOption ("height", &height, 1, SSI_SIZE, "rescale to height in pixels (ignored if 0)");
@@ -82,6 +90,7 @@ public:
 			this->method = method;
 		}
 
+		FORMAT::List format;
 		ssi_size_t width, height;
 		METHOD::List method;
 		ORIGIN::List origin;

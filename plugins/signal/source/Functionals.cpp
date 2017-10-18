@@ -137,7 +137,7 @@ void Functionals::transform_enter(ssi_stream_t &stream_in,
 	_format = Names2Format(_options.names);
 	_delta = _options.delta;
 
-	ssi_size_t sample_dimension = stream_in.dim;
+	ssi_size_t sample_dimension = _options.global ? 1 : stream_in.dim;
 
 	_mean_val = new ssi_real_t[sample_dimension];
 	_energy_val = new ssi_real_t[sample_dimension];
@@ -160,8 +160,8 @@ void Functionals::transform(ITransformer::info info,
 	ssi_size_t xtra_stream_in_num,
 	ssi_stream_t xtra_stream_in[]) {
 
-	ssi_size_t sample_dimension = stream_in.dim;
-	ssi_size_t sample_number = stream_in.num;
+	ssi_size_t sample_dimension = _options.global ? 1 : stream_in.dim;
+	ssi_size_t sample_number = _options.global ? stream_in.num * stream_in.dim : stream_in.num;
 
 	ssi_real_t *srcptr = ssi_pcast(ssi_real_t, stream_in.ptr);
 	ssi_real_t *dstptr = ssi_pcast(ssi_real_t, stream_out.ptr);

@@ -36,7 +36,10 @@
 		static char THIS_FILE[] = __FILE__;
 	#endif
 #endif
-
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
 namespace ssi {
 Multiply::Multiply (const ssi_char_t *file) 
 	: _factors (0),

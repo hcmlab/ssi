@@ -43,7 +43,7 @@ namespace ssi {
 
 class FFMPEGReaderClient;
 
-class FFMPEGReader :  public ISensor, public Thread {
+class FFMPEGReader :  public IWaitableSensor, public Thread {
 
 friend class FFMPEGReaderClient;
 
@@ -126,7 +126,8 @@ public:
 	bool pushAudioChunk (ssi_size_t n_samples, ssi_real_t *chunk);
 	bool disconnect();
 
-	virtual void wait();
+	bool wait();
+	bool cancel();
 		
 	void setLogLevel (int level) {
 		ssi_log_level = level;
@@ -156,9 +157,9 @@ protected:
 	FFMPEGVideoBuffer *_video_buffer;
 	FFMPEGAudioBuffer *_audio_buffer;
 
-	bool			_is_running;
-	Event			_wait_event;
-	
+	bool _is_running;
+	Event _wait_event;
+	bool _interrupted;
 };
 
 };

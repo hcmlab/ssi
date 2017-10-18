@@ -26,11 +26,11 @@
 
 #include "EMGFeaturesTime.h"
 #include "base/Factory.h"
-#include "..\..\signal\include\Spectrogram.h"
-#include "frame\include\Selector.h"
+#include "../../signal/include/Spectrogram.h"
+#include "frame/include/Selector.h"
 
 #include <stdio.h>
-#include <ssiocv.h>
+#include "ssiocv.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -602,7 +602,7 @@ int EMGFeaturesTime::findfirst(float* in, int n_in, float val) {
 }
 
 bool EMGFeaturesTime::feq(float a, float b) { //float equals
-	if (std::fabsf(a - b) < FLT_EPSILON) return true;
+    if (std::abs(a - b) < FLT_EPSILON) return true;
 	return false;
 }
 
@@ -678,7 +678,7 @@ float EMGFeaturesTime::getStDev(float* in, int n_in) {
 
 		if (avg != 0) {
 			var /= avg;
-			r = std::sqrtf(var);
+            r = std::sqrt(var);
 		}
 		else {
 			r = 0;

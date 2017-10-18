@@ -66,7 +66,54 @@ namespace ssi
             databaseConnect();
         }
 
-       
+
+        private void DatabasePassMenu_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseUser blankuser = new DatabaseUser()
+            {
+                Name = Properties.Settings.Default.MongoDBUser
+            };
+
+            blankuser = DatabaseHandler.GetUserInfo(blankuser);
+
+
+
+
+            DatabaseUserManageWindow dialog = new DatabaseUserManageWindow(blankuser.Name, blankuser.Fullname, blankuser.Email, blankuser.Expertise);
+            dialog.ShowDialog();
+
+            if (dialog.DialogResult == true)
+            {
+                DatabaseUser user = new DatabaseUser()
+                {
+                    Name = dialog.GetName(),
+                    Fullname = dialog.GetFullName(),
+                    Password = dialog.GetPassword(),
+                    Email = dialog.Getemail(),
+                    Expertise = dialog.GetExpertise()
+                };
+
+
+                DatabaseHandler.ChangeUserCustomData(user);
+                   
+
+                if (user.Password != "" && user.Password != null)
+                {
+                    if (DatabaseHandler.ChangeUserPassword(user))
+                    {
+                        MessageBox.Show("Password Change successful!");
+                        Properties.Settings.Default.MongoDBPass = MainHandler.Encode(user.Password);
+                        databaseConnect();
+                    }
+                }
+
+               
+            }
+           
+        }
+        
+
+
 
         private void databaseManageDBs()
         {           
@@ -146,6 +193,12 @@ namespace ssi
                         foreach (string stream in streamsAll)
                         {
                             string localPath = Properties.Settings.Default.DatabaseDirectory + "\\" + DatabaseHandler.DatabaseName + "\\" + DatabaseHandler.SessionName + "\\" + stream;
+                            if (File.Exists(localPath))
+                            {
+                                loadFile(localPath);
+                                continue;
+                            }
+
                             string url = "";
                             bool requiresAuth = false;
 
@@ -162,6 +215,14 @@ namespace ssi
                                 continue;
                             }
                            
+
+
+                            if(File.Exists(localPath))
+                            {
+
+                            }
+
+
                             //In case we host our files on nextcloud, the file format is special. For now we only allow self-hosted, but in the future we add an option for nextcloud in general.
                             if(meta.Server.Contains("https://hcm-lab.de/cloud"))
                             {
@@ -189,6 +250,11 @@ namespace ssi
                             else if (connection == "http" || connection == "https" && requiresAuth == true)
                             {
                                 httpPost(url, localPath);
+                            }
+
+                            else
+                            {
+                                loadFile(localPath);
                             }
                         }
                     }
@@ -278,7 +344,9 @@ namespace ssi
 
                 ObjectId annotatid = DatabaseHandler.GetObjectID(DatabaseDefinitionCollections.Annotators, "name", Properties.Settings.Default.MongoDBUser);
                 string annotator = Properties.Settings.Default.MongoDBUser;
-                string annotatorFullName = DatabaseHandler.FetchDBRef(DatabaseDefinitionCollections.Annotators, "fullname", annotatid);
+               
+
+               // DatabaseHandler.FetchDBRef(DatabaseDefinitionCollections.Annotators, "fullname", annotatid);
 
                 AnnoList annoList;
                 if (DatabaseHandler.AnnotationExists(annotator, DatabaseHandler.SessionName, role, scheme.Name))
@@ -298,6 +366,7 @@ namespace ssi
                     annoList = new AnnoList();
                     annoList.Meta.Role = role;
                     annoList.Meta.Annotator = annotator;
+                    string annotatorFullName = DatabaseHandler.GetUserInfo(annotator).Fullname;
                     annoList.Meta.AnnotatorFullName = annotatorFullName;
                     annoList.Scheme = scheme;
                     annoList.Source.StoreToDatabase = true;
@@ -350,27 +419,7 @@ namespace ssi
             DatabaseAnnoMergeWindow window = new DatabaseAnnoMergeWindow();
             window.ShowDialog();
 
-            if(window.DialogResult == true)
-            { 
-
-                AnnoList rms = window.RMS();
-                AnnoList median = window.Mean();
-                AnnoList merge = window.Merge();
-                if (rms != null)
-                {
-                    rms.Save();
-                }
-                if (median != null)
-                {
-                    median.Save();
-                }
-
-                if (merge != null)
-                {
-                    merge.Save();
-                }
-
-            }
+         
         }
 
 

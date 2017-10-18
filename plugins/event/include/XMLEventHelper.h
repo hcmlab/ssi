@@ -74,7 +74,8 @@ public:
 			DURATION,
 			STATE,
 			EVENT,
-			SENDER
+			SENDER,
+			ISNEW
 		};
 	};
 
@@ -90,6 +91,7 @@ public:
 			case Field::STATE: return "state";
 			case Field::EVENT: return "event";
 			case Field::SENDER: return "sender";
+			case Field::ISNEW: return "isnew";
 		}
 
 		return 0;

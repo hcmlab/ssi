@@ -967,7 +967,7 @@ generates the following [output](#fig:xml-advanced-network-xmlsender-1):
 
 ![*Options allow it to shape the display of the inserted information.*](pics/xml-advanced-network-xmlsender-1.png){#fig:xml-advanced-network-xmlsender-1 width=80%}
 
-For instance, the option ``select=0`` picks the first stream dimension of the stream and adding ``function=mean`` replaces a sequence of samples by their mean value. 
+For instance, the option ``select=0`` picks the first stream dimension of the stream and adding ``functional=mean`` replaces a sequence of samples by their mean value. 
 
 Options that apply to streams and tuple/map events:
 
@@ -993,17 +993,17 @@ Options that apply to streams only:
 ----------------------------------------------------------------------------
 Example						Description
 --------------------------	------------------------------------------------
-``function=mean``			Calculates mean value.
+``functional=mean``			Calculates mean value.
 
-``function=std``			Calculates standard deviation.
+``functional=std``			Calculates standard deviation.
 
-``function=min``			Calculates minimum.
+``functional=min``			Calculates minimum.
 
-``function=max``			Calculates maximum.
+``functional=max``			Calculates maximum.
 
-``function=first``			Select first sample (latest).
+``functional=first``		Select first sample (latest).
 
-``function=last``			Select last sample (oldest).
+``functional=last``			Select last sample (oldest).
 ----------------------------------------------------------------------------
 \
 Options that apply to events only:
@@ -1029,6 +1029,8 @@ Example						Description
 ``field=state``				Event state (0=completed, 1=continued).
 
 ``field=name``				Event key (map events only).
+
+``field=isnew``				1 if new event has arrived, 0 otherwise.
 
 ``span=1000``				Remove event after 1000 ms (if no new event arrives).
 ----------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 		<ypos>$(0{select=1})</ypos>			
 	</mouse>
 	<features>$(features@cursor{select=0,3,4;span=3000})</features>
-	<features time="$(features@cursor{field=time)" system-time="$features@cursor{field=time_system})" duration="$(features@cursor{field=duration})">
+	<features isnew="$(features@cursor{field=isnew})" time="$(features@cursor{field=time})" system-time="$features@cursor{field=time_system})" duration="$(features@cursor{field=duration})">
 		<mean>
 		$( 
 			features@cursor

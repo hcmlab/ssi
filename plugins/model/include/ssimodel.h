@@ -38,6 +38,7 @@
 #include "SimpleFusion.h"
 #include "SVM.h"
 #include "NaiveBayes.h"
+#include "OnlineNaiveBayes.h"
 #include "Relief.h"
 #include "Rank.h"
 #include "FloatingSearch.h"

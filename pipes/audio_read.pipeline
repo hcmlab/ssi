@@ -8,12 +8,15 @@
 	-->	
 	
 	<register>
-		<load name="ssigraphic" />
-		<load name="ssiaudio"/>
-		<load name="ssiioput"/>
+		<load name="graphic" />
+		<load name="audio"/>
+		<load name="ioput"/>
 	</register>
+	
+	<!-- stop pipeline after complete file was read -->
+	<framework waitid="reader"/>	
 	<!-- audio sensor -->
-	<sensor create="WavReader" path="audio.wav" blockInSamples="512">
+	<sensor create="WavReader:reader" path="audio.wav" blockInSamples="512" loop="false">
 		<output channel="audio" pin="audio"/>
 	</sensor>
 	

@@ -213,12 +213,14 @@ bool ex_sender (void *arg) {
 	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);	
 	frame->AddSensor(mouse);
 	
-	ZeroEventSender *ezero = ssi_create (ZeroEventSender, "ezero", true);
-	ezero->getOptions()->mindur = 0.2;	
-	ezero->getOptions()->maxdur = 5.0;
-	ezero->getOptions()->incdur = 1.0;
+	TriggerEventSender *ezero = ssi_create (TriggerEventSender, "ezero", true);
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	ezero->getOptions()->thresholdIn = 0;
+	ezero->getOptions()->minDuration = 0.1;	
+	ezero->getOptions()->maxDuration = 5.0;
+	ezero->getOptions()->incDuration = 1.0;
 	ezero->getOptions()->setAddress("mouse@click");	
-	ezero->getOptions()->eager = true;
+	ezero->getOptions()->sendStartEvent = true;
 	frame->AddConsumer(button_p, ezero, "0.25s");
 	board->RegisterSender(*ezero);
 	
@@ -230,8 +232,8 @@ bool ex_sender (void *arg) {
 	MapEventSender *map_sender = ssi_create(MapEventSender, "map_sender", true);
 	map_sender->getOptions()->setAddress("pos-tuples@mouse");
 	map_sender->getOptions()->setKeys("x,y");
-	frame->AddEventConsumer(cursor_p, tuple_sender, board, ezero->getEventAddress());
-	board->RegisterSender(*tuple_sender);
+	frame->AddEventConsumer(cursor_p, map_sender, board, ezero->getEventAddress());
+	board->RegisterSender(*map_sender);
 
 	StringEventSender *string_sender = ssi_create(StringEventSender, "string_sender", true);
 	string_sender->getOptions()->setAddress("pos-string@mouse");
@@ -240,11 +242,20 @@ bool ex_sender (void *arg) {
 	frame->AddEventConsumer(cursor_p, string_sender, board, ezero->getEventAddress());
 	board->RegisterSender(*string_sender);
     
-	EventMonitor *monitor = ssi_create_id (EventMonitor, 0, "monitor");
+	EventMonitor *monitor = 0;
+	
+	monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	monitor->getOptions()->all = true;
 	monitor->getOptions()->chars = 10000;
 	monitor->getOptions()->update_ms = 100;
 	board->RegisterListener(*monitor, 0, 60000, IEvents::EVENT_STATE_FILTER::ALL);
+
+	monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	monitor->getOptions()->list = false;
+	monitor->getOptions()->chars = 10000;
+	monitor->getOptions()->update_ms = 100;
+	monitor->getOptions()->fontSize = 12;
+	board->RegisterListener(*monitor, 0);
 
 	decorator->add("monitor*", CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
 

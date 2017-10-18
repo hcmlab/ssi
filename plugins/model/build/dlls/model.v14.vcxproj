@@ -264,6 +264,8 @@
     <ClInclude Include="..\..\include\LDA.h" />
     <ClInclude Include="..\..\include\libsvm-3.20.h" />
     <ClInclude Include="..\..\include\NaiveBayes.h" />
+    <ClInclude Include="..\..\include\OnlineClassifier.h" />
+    <ClInclude Include="..\..\include\OnlineNaiveBayes.h" />
     <ClInclude Include="..\..\include\PCA.h" />
     <ClInclude Include="..\..\include\RandomFusion.h" />
     <ClInclude Include="..\..\include\Rank.h" />
@@ -295,6 +297,8 @@
     <ClCompile Include="..\..\source\LDA.cpp" />
     <ClCompile Include="..\..\source\libsvm-3.20.cpp" />
     <ClCompile Include="..\..\source\NaiveBayes.cpp" />
+    <ClCompile Include="..\..\source\OnlineClassifier.cpp" />
+    <ClCompile Include="..\..\source\OnlineNaiveBayes.cpp" />
     <ClCompile Include="..\..\source\PCA.cpp" />
     <ClCompile Include="..\..\source\RandomFusion.cpp" />
     <ClCompile Include="..\..\source\Rank.cpp" />

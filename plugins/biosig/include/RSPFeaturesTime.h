@@ -117,7 +117,7 @@ public:
 		return 18;
 	}
 
-	void RSPFeaturesTime::printFeatures();
+    void printFeatures();
 
 protected:
 
@@ -144,18 +144,18 @@ protected:
 
 	ssi_real_t ptr_prev;
 	int state;
-	void RSPFeaturesTime::printFeatureStat(int st);
+    void printFeatureStat(int st);
 
-	void RSPFeaturesTime::getBreathByBreathCorreleation(ssi_real_t* in, std::vector<peaktrough> troughs, ssi_real_t* bbc, ssi_real_t* bbc_sd);
-	float RSPFeaturesTime::getMaxCrossCorrelation(float* x, float* y, int n);
+    void getBreathByBreathCorreleation(ssi_real_t* in, std::vector<peaktrough> troughs, ssi_real_t* bbc, ssi_real_t* bbc_sd);
+    float getMaxCrossCorrelation(float* x, float* y, int n);
 
-	void RSPFeaturesTime::getSampleEntropy(ssi_real_t* in, std::vector<peaktrough> _ptz, ssi_real_t* se_peaks, ssi_real_t* se_troughs);
-	void RSPFeaturesTime::getVolumeBasedFeatures(ssi_real_t* in, std::vector<peaktrough> _pt, ssi_real_t* f_vol_br_median, ssi_real_t* f_vol_in_median, ssi_real_t* f_vol_ex_median, ssi_real_t* f_fr_br_median, ssi_real_t* f_fr_in_median, ssi_real_t* f_fr_ex_median);
+    void getSampleEntropy(ssi_real_t* in, std::vector<peaktrough> _ptz, ssi_real_t* se_peaks, ssi_real_t* se_troughs);
+    void getVolumeBasedFeatures(ssi_real_t* in, std::vector<peaktrough> _pt, ssi_real_t* f_vol_br_median, ssi_real_t* f_vol_in_median, ssi_real_t* f_vol_ex_median, ssi_real_t* f_fr_br_median, ssi_real_t* f_fr_in_median, ssi_real_t* f_fr_ex_median);
 
 	ssi_real_t getVolume(ssi_real_t* in, ssi_size_t from, ssi_size_t to);
 	ssi_real_t getFlowRate(ssi_real_t* in, ssi_size_t from, ssi_size_t to);
 
-	ssi_real_t RSPFeaturesTime::sampen(double *y, int M, double r, int n);
+    ssi_real_t sampen(double *y, int M, double r, int n);
 
 };
 

@@ -1784,3 +1784,7 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 04.10.17 CHG : nova : model evaluation : Johannes
 - 05.10.17 BUG : model/Evaluation : now handles garbage samples : Johannes
 - 04.10.17 BUG : core/ioput/option : applied previous fix again : Johannes
+- 06.10.17 BUG : nova : loads local files if no server string is set : Johannes
+- 17.10.17 CHG : event/EventMonitor : option to show only last event : Johannes
+- 17.10.17 CHG : event/EventMonitor : options to set font name and size : Johannes
+- 04.10.17 BUG : core/ioput/option : correctly reads options with multiple values : Johannes

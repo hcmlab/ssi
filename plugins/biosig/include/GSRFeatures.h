@@ -173,7 +173,7 @@ public:
 		return dim;
 	}
 
-	virtual void GSRFeatures::printFeatures();
+    virtual void printFeatures();
 
 	virtual void setReferenceStream(ssi_stream_t* ref) {
 		_reference_stream = ref;
@@ -213,16 +213,16 @@ protected:
 	std::vector<peakslopedrop> drops;
 	std::vector<peakslopedrop> psd_combo;
 
-	float GSRFeatures::getMin(std::vector<peakslopedrop> in, ssi_size_t attribute);
-	float GSRFeatures::getMax(std::vector<peakslopedrop> in, ssi_size_t attribute);
-	float GSRFeatures::getAvg(std::vector<peakslopedrop> in, ssi_size_t attribute);
-	float GSRFeatures::getVar(std::vector<peakslopedrop> in, ssi_size_t attribute);
-	float GSRFeatures::getStDev(std::vector<peakslopedrop> in, ssi_size_t attribute);
-	float GSRFeatures::getAttribute(peakslopedrop e, ssi_size_t att);
+    float getMin(std::vector<peakslopedrop> in, ssi_size_t attribute);
+    float getMax(std::vector<peakslopedrop> in, ssi_size_t attribute);
+    float getAvg(std::vector<peakslopedrop> in, ssi_size_t attribute);
+    float getVar(std::vector<peakslopedrop> in, ssi_size_t attribute);
+    float getStDev(std::vector<peakslopedrop> in, ssi_size_t attribute);
+    float getAttribute(peakslopedrop e, ssi_size_t att);
 
-	void GSRFeatures::printFeatureStat(int st);
-	void GSRFeatures::printFeatureAttribute(int at, std::string str_stat);
-	void GSRFeatures::printFeatureType(int ft, std::string str_stat, std::string str_att);
+    void printFeatureStat(int st);
+    void printFeatureAttribute(int at, std::string str_stat);
+    void printFeatureType(int ft, std::string str_stat, std::string str_att);
 
 	ssi_stream_t* _reference_stream;
 

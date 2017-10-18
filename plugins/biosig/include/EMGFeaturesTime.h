@@ -124,7 +124,7 @@ public:
 		return d;
 	}
 
-	virtual void EMGFeaturesTime::printFeatures();
+    virtual void printFeatures();
 
 	virtual void setReferenceStream(ssi_stream_t* ref) {
 		_reference_stream = ref;

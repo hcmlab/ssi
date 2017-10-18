@@ -8,11 +8,14 @@
 	-->
 
 	<register>
-		<load name="ssigraphic" />
-		<load name="ssicamera" />
+		<load name="graphic" />
+		<load name="camera" />
 	</register>
+	
+	<!-- stop pipeline after complete file was read -->
+	<framework waitid="reader"/>	
 	<!-- camera sensor -->
-	<sensor create="CameraReader" path="camera.avi">
+	<sensor create="CameraReader:reader" path="camera.avi">
 		<output channel="video" pin="camera" size="2.0s"/>
 	</sensor>
 	

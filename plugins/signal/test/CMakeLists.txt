@@ -35,7 +35,7 @@ include_directories (
 	../../../core/include/ioput
 	
         ../../../plugins/
-        ../../../libs/shared/kissfft/include
+        ../../../libs/build/kissfft/include
 	
 )
 

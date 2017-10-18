@@ -23,9 +23,11 @@
     <ClInclude Include="..\..\include\CVColor.h" />
     <ClInclude Include="..\..\include\CVCrop.h" />
     <ClInclude Include="..\..\include\CVFlip.h" />
+    <ClInclude Include="..\..\include\CVMean.h" />
     <ClInclude Include="..\..\include\CVResize.h" />
     <ClInclude Include="..\..\include\CVSave.h" />
     <ClInclude Include="..\..\include\ICVConsumer.h" />
+    <ClInclude Include="..\..\include\ICVFeature.h" />
     <ClInclude Include="..\..\include\ICVFilter.h" />
     <ClInclude Include="..\..\include\ssiimage.h" />
   </ItemGroup>
@@ -34,10 +36,12 @@
     <ClCompile Include="..\..\source\CVColor.cpp" />
     <ClCompile Include="..\..\source\CVCrop.cpp" />
     <ClCompile Include="..\..\source\CVFlip.cpp" />
+    <ClCompile Include="..\..\source\CVMean.cpp" />
     <ClCompile Include="..\..\source\CVResize.cpp" />
     <ClCompile Include="..\..\source\CVSave.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\ICVConsumer.cpp" />
+    <ClCompile Include="..\..\source\ICVFeature.cpp" />
     <ClCompile Include="..\..\source\ICVFilter.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -21,7 +21,7 @@
 	</consumer>
 
 	<!-- visualization -->
-	<consumer create="SignalPainter:plot" title="CURSOR">
+	<consumer create="SignalPainter:plot" title="CURSOR" type="3">
 		<input pin="cursor" address="pressed@button"/>		
 	</consumer>
 	<object create="EventMonitor:monitor">

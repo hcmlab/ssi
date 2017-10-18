@@ -14,8 +14,11 @@
 		<load name="ssisignal"/>
 	</register>
 
+	<!-- stop pipeline after complete file was read -->
+	<framework waitid="reader"/>
+	
 	<!-- file reader -->
-	<sensor create="FileReader" path="cursor" blockInSamples="5" offsetInSamples="0" cutoffInSamples="0">
+	<sensor create="FileReader:reader" path="cursor" blockInSamples="5" offsetInSamples="0" cutoffInSamples="0" loop="false">
 		<output channel="file" pin="cursor" sync="0" watch="0"/>		
 	</sensor>
 	

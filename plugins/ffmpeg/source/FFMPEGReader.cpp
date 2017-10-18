@@ -229,10 +229,15 @@ void FFMPEGReader::run () {
 	}
 
 	if (_client->getState() == FFMPEGReaderClient::STATE::IDLE || _client->getState() == FFMPEGReaderClient::STATE::TERMINATE)
+	{
+		_interrupted = false;
 		_wait_event.release();
+	}
 
 	if (!_options.bestEffort)
-		_timer->wait ();
+	{
+		_timer->wait();
+	}
 }
 
 void FFMPEGReader::flush () {
@@ -262,8 +267,19 @@ bool FFMPEGReader::pushAudioChunk (ssi_size_t n_samples, ssi_real_t *chunk) {
 	return _audio_buffer->push (n_samples, chunk);
 }
 
-void FFMPEGReader::wait() {
+bool FFMPEGReader::wait()
+{
 	_wait_event.wait();
+
+	return !_interrupted;
+}
+
+bool FFMPEGReader::cancel()
+{
+	_interrupted = true;
+	_wait_event.release();
+
+	return true;
 }
 
 }

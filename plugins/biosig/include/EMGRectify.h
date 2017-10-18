@@ -108,7 +108,7 @@ public:
 		return sample_number_in;
 	}
 
-	void EMGRectify::printFeatures();
+    void printFeatures();
 
 protected:
 

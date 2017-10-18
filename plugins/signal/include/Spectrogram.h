@@ -47,7 +47,7 @@ public:
 	public:
 
 		Options ()
-			: nfft (512), nbanks (50), minfreq (0.0), maxfreq (0.0), wintype (WINDOW_TYPE_HAMMING), dolog (true) {
+			: nfft (512), nbanks (50), minfreq (0.0), maxfreq (0.0), wintype (WINDOW_TYPE_HAMMING), dolog (true), dopower(false) {
 
 			file[0] = '\0';
 			banks[0] = '\0';
@@ -58,6 +58,7 @@ public:
 			addOption ("maxfreq", &maxfreq, 1, SSI_TIME, "maximum frequency (nyquist if 0)");
 			addOption ("wintype", &wintype, 1, SSI_INT, "window type (0=rectangle,1=triangle,2=gauss,3=hamming");
 			addOption ("dolog", &dolog, 1, SSI_BOOL, "apply logarithm");
+			addOption("dopower", &dolog, 1, SSI_BOOL, "compute the PSD for every bank");
 			addOption("file", &file, SSI_MAX_CHAR, SSI_CHAR, "file with filter banks (plain text file with each line defining one band {<start in hz> <stop in hz>})");
 			addOption("banks", &banks, SSI_MAX_CHAR, SSI_CHAR, "string with filter banks that gets applied if no file was set (example: \"0.003 0.040\n0.040 0.150\n0.150 0.400\").");
 		};
@@ -67,7 +68,7 @@ public:
 		ssi_time_t minfreq;
 		ssi_time_t maxfreq;
 		WINDOW_TYPE wintype;
-		bool dolog;
+		bool dolog, dopower;
 		ssi_char_t file[SSI_MAX_CHAR];
 		ssi_char_t banks[SSI_MAX_CHAR];
 	};

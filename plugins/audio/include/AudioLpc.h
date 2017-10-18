@@ -131,7 +131,7 @@ public:
 
 public:
 
-	static const ssi_char_t *GetCreateName () { return "OSLpc"; };
+	static const ssi_char_t *GetCreateName () { return "AudioLpc"; };
 	static IObject *Create (const ssi_char_t *file) { return new AudioLpc (file); };
 	~AudioLpc ();
 

@@ -115,12 +115,12 @@ public:
 		return _options.n_ar_coeffs + 5;
 	}
 
-	void EMGFeaturesSpectral::printFeatures();
+    void printFeatures();
 
 protected:
 
 	EMGFeaturesSpectral (const ssi_char_t *file = 0);
-	EMGFeaturesSpectral::Options _options;
+    Options _options;
 	ssi_char_t *_file;
 
 	static ssi_char_t *ssi_log_name;

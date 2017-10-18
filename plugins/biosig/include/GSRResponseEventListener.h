@@ -186,8 +186,8 @@ namespace ssi{
 		bool connect();
 		bool disconnect();
 
-		bool ISensor::start();
-		bool ISensor::stop();
+        bool start();
+        bool stop();
 
 		Options *getOptions() { return &_options; };
 

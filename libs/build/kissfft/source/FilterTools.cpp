@@ -230,8 +230,11 @@ Matrix<ssi_real_t> *FilterTools::Filterbank (int size,
 
         int maxind = static_cast<int> ((*intervalsptr / sample_rate) * size + static_cast<ssi_real_t> (0.5));
         intervalsptr++;
-
+#if __gnu_linux__
+        maxind = std::min (maxind, size-1);
+#else
         maxind = min (maxind, size-1);
+#endif
 		Matrix<ssi_real_t> *winmat = Window (1 + (maxind - minind), type, MATRIX_DIMENSION_ROW);
 		MatrixOps<ssi_real_t>::Div (winmat, MatrixOps<ssi_real_t>::Sum (winmat));
 		MatrixOps<ssi_real_t>::SetSubMatrix (filterbank, i, minind, winmat);

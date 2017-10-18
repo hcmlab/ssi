@@ -56,7 +56,7 @@ namespace ssi {
 #define SafeReleaseFJ(p) { if( (p) != 0 ) { (p)->Release(); (p)= 0; } }
 #endif
 
-class CameraReader : public ISensor, public Thread {
+class CameraReader : public IWaitableSensor, public Thread {
 
 	class VideoChannel : public IChannel {
 
@@ -125,7 +125,8 @@ public:
 	bool stop () { return Thread::stop (); };
 	bool disconnect ();
 
-	virtual void wait ();
+	bool wait();
+	bool cancel();
 
 	ssi_video_params_t getFormat () { return _options.params; };
 	const void *getMetaData (ssi_size_t &size) { size = sizeof (_options.params); return &_options.params; };
@@ -182,6 +183,7 @@ protected:
 
 	bool						_is_running;
 	Event						_wait_event;
+	bool						_interrupted;
 
 };
 

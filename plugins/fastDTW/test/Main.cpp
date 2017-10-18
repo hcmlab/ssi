@@ -28,7 +28,7 @@
 #define SIMULATE
 
 #include "ssi.h"
-#include "SSI_fastDTW.h"
+#include "SSI_FastDTW.h"
 #include "eventinterpreter/include/MyEventinterpreter.h"
 #include "signal/include/Relative.h"
 #include "audio/include/ssiaudio.h"
@@ -59,9 +59,13 @@ int main () {
 	
 	Exsemble ex;
 	ex.add(ex_stream_mouse, 0, "Recognize: Mouse 2D", "Demonstrates the use of fastDTW with 2D data.");
-	ex.add(ex_record_mouse, 0, "Record: Mouse 2D",	  "Record data for fastDTW with 2D data.");
+#if _WIN32
+    ex.add(ex_record_mouse, 0, "Record: Mouse 2D",	  "Record data for fastDTW with 2D data.");
+
 	ex.add(ex_stream_audio, 0, "Recognize: Audio 1D", "Demonstrates the use of fastDTW with 1D data.");
-	ex.add(ex_record_audio, 0, "Record: Audio 1D",	  "Record data for fastDTW with 1D data.");
+
+    ex.add(ex_record_audio, 0, "Record: Audio 1D",	  "Record data for fastDTW with 1D data.");
+    #endif
 	ex.show();
 
 
@@ -73,7 +77,7 @@ int main () {
 	return 0;
 }
 
-
+#if _WIN32
 bool ex_record_mouse(void *arg) {
 
 	Factory::RegisterDLL("ssiframe");
@@ -152,22 +156,23 @@ bool ex_record_mouse(void *arg) {
 	return true;
 }
 
-
+#endif
 
 bool ex_stream_mouse(void *arg) {
 
 	Factory::RegisterDLL("ssiframe");
 	Factory::RegisterDLL("ssievent");
 	Factory::RegisterDLL("ssimouse");
+    Factory::RegisterDLL("ssiioput");
 	Factory::RegisterDLL("ssigraphic");
 	Factory::RegisterDLL("ssisignal");
 	Factory::RegisterDLL("fastDTW");
 
 	ITheFramework *frame = Factory::GetFramework();
-
+#if _WIN32
 	Decorator *decorator = ssi_create(Decorator, 0, true);
 	frame->AddDecorator(decorator);
-
+#endif
 	ITheEventBoard *board = Factory::GetEventBoard();
 
 
@@ -200,7 +205,7 @@ bool ex_stream_mouse(void *arg) {
 	frame->AddEventConsumer(rel_t, fastDTW, board, ezero->getEventAddress());
 	board->RegisterSender(*fastDTW);
 
-
+#if _WIN32
 	SignalPainter *plot = ssi_create_id(SignalPainter, 0, "plot");
 	plot->getOptions()->setTitle("mouse(tr)");
 	frame->AddEventConsumer(rel_t, plot, board, ezero->getEventAddress());
@@ -212,7 +217,12 @@ bool ex_stream_mouse(void *arg) {
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 400);
 	decorator->add("monitor*", 650, 400, 400, 400);
+#else
+    FileEventWriter* ew = ssi_create(FileEventWriter, 0, true);
+    ew->getOptions()->setPath("sensor_data");
+    board->RegisterListener(*ew);
 
+#endif
 	board->Start();
 	frame->Start();
 
@@ -223,7 +233,7 @@ bool ex_stream_mouse(void *arg) {
 
 	return true;
 }
-
+#if _WIN32
 
 bool ex_record_audio(void *arg) {
 
@@ -330,6 +340,8 @@ bool ex_record_audio(void *arg) {
 	return true;
 }
 
+
+
 bool ex_stream_audio(void *arg) {
 	Factory::RegisterDLL("ssiframe");
 	Factory::RegisterDLL("ssievent");
@@ -425,3 +437,4 @@ bool ex_stream_audio(void *arg) {
 
 	return true;
 }
+#endif

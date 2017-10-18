@@ -243,6 +243,13 @@ void Spectrogram::transform (Matrix<ssi_real_t> *matrix_in,
 	}
 
 	_fft->transform (matrix_in, _fftmag);
+
+	ssi_real_t* fftptr = _fftmag->data;
+	if (_options.dopower)
+	{
+		for (ssi_size_t i = 0; i < _fft->rfft; ++i)
+			*(fftptr++) = (*fftptr * *fftptr) / _fft->rfft;
+	}
 	
 	MatrixOps<ssi_real_t>::MultM (_fftmag, _filterbank, matrix_out);
 

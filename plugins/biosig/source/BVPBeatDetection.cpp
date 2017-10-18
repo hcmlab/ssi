@@ -56,7 +56,7 @@ namespace ssi{
 			mean_window_current = 0;
 			mean_window_max = REAL_MIN;
 			mean_window_min = REAL_MAX;
-			for each (ssi_real_t val in mean_samples_buffer){
+            for (auto val : mean_samples_buffer){
 				mean_window_current += val;
 				mean_window_max = val > mean_window_max ? val : mean_window_max;
 				mean_window_min = val < mean_window_min ? val : mean_window_min;

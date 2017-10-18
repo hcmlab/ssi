@@ -77,11 +77,12 @@ public:
 	public:
 
 		Options()
-			: delta(2) {
+			: delta(2), global(false) {
 
 			names[0] = '\0';
 			addOption("names", names, SSI_MAX_CHAR, SSI_CHAR, "names of functionals separated by comma (mean,energy,std,min,max,range,minpos,maxpos,zeros,peaks,len,path) or leave empty to select all except path");
 			addOption("delta", &delta, 1, SSI_UCHAR, "zero/peaks search offset");
+			addOption("global", &global, 1, SSI_BOOL, "calculate over all dimensions");
 		};
 
 		void addName(const ssi_char_t *name) {
@@ -103,6 +104,7 @@ public:
 
 		ssi_char_t names[SSI_MAX_CHAR];
 		ssi_size_t delta;
+		bool global;
 	};
 
 public:
@@ -130,7 +132,7 @@ public:
 		ssi_stream_t xtra_stream_in[] = 0);
 
 	ssi_size_t getSampleDimensionOut(ssi_size_t sample_dimension_in) {
-		return sample_dimension_in * getSize();
+		return _options.global ? getSize() : sample_dimension_in * getSize();
 	}
 	ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {
 		return sample_bytes_in;

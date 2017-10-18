@@ -41,7 +41,7 @@
 
 namespace ssi {
 
-class AviReader : public ISensor, public Thread {
+class AviReader : public IWaitableSensor, public Thread {
 
 	class VideoChannel : public IChannel {
 
@@ -139,7 +139,8 @@ public:
 	void run ();
 	bool disconnect ();
 
-	virtual void wait ();
+	bool wait ();
+	bool cancel();
 
 	WAVEFORMAT getAudioFormat () { return _audio_format; };
 	ssi_video_params_t getVideoFormat () { 
@@ -186,6 +187,7 @@ protected:
 	ssi_size_t _offset_in_frames, _offset_in_samples;
 	Timer *_frame_timer;
 	Event *_wait_event;
+	bool _interrupted;
 
 	bool _is_providing;
 

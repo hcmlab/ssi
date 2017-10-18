@@ -2,14 +2,17 @@
 <pipeline>
 
 	<register>
-		<load name="ssigraphic" />
-		<load name="ssiioput" />
-		<load name="ssiffmpeg" />
-		<load name="ssiaudio" />
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="ffmpeg" />
+		<load name="audio" />
 	</register>
+	
+	<!-- stop pipeline after complete file was read -->
+	<framework waitid="reader"/>		
 
 	<!-- read -->
-	<sensor create="FFMPEGReader" url="dummy.mp4" wait="true">		
+	<sensor create="FFMPEGReader:reader" url="dummy.mp4">		
 		<output channel="video" pin="video" size="2.0s"/>
 		<output channel="audio" pin="audio" size="2.0s"/>
 	</sensor>

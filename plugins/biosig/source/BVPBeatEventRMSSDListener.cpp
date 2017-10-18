@@ -109,7 +109,18 @@ namespace ssi {
 	{
 		{
 			Lock lock(_mutex);
-			_clock_thread_time = ::timeGetTime();
+
+#if _WIN32||_WIN64
+            _clock_thread_time = ::timeGetTime();
+#else
+
+            timespec ts;
+            clock_gettime (CLOCK_MONOTONIC_RAW, &ts);
+
+
+
+            _clock_thread_time= ts.tv_sec*1000+ (uint64_t)(ts.tv_nsec/1000000L);
+#endif
 			clockUpdate();
 		}
 		ssi_real_t tmp[1];

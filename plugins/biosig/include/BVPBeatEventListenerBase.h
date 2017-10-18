@@ -143,8 +143,8 @@ namespace ssi{
 		bool connect();
 		bool disconnect();
 
-		bool ISensor::start();
-		bool ISensor::stop();
+        bool start();
+        bool stop();
 
 		virtual IOptions *getOptions() = 0;
 
@@ -183,7 +183,7 @@ namespace ssi{
 		/// Gives a result with the channel index of the beats 
 		virtual ssi_real_t calculateResult(ssi_size_t channel_idx) = 0;
 		virtual ssi_time_t getSampleRate() = 0;
-		unsigned long  _clock_thread_time;
+        uint64_t  _clock_thread_time;
 	private:
 		
 	};

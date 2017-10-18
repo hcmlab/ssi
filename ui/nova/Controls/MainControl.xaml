@@ -5,7 +5,7 @@
     Width="Auto"
     Height="Auto"
     Loaded="ControlLoaded"
-    Background="White" >
+    Background="White">
 
     <Grid>
 
@@ -44,14 +44,19 @@
                     <MenuItem Header="Manage Sessions" Name="databaseManageSessionsMenu" />
                     <MenuItem Header="Manage Annotations" Name="databaseManageAnnotationsMenu" />
                 </MenuItem>
+                <MenuItem Header="Manage Account" Name="databasePasswordMenu" />
                 <MenuItem Header="Connect" Name="databaseConnectMenu" />
+
+
             </MenuItem>
             <MenuItem Header="ANNOTATION">
                 <MenuItem Header="Save" Name="annoSaveMenu" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save As Finished" Name="annoSaveAsFinishedMenu"/>
                 <MenuItem Header="Save All" Name="annoSaveAllMenu" />
                 <MenuItem Header="Reload" Name="annoReloadMenu" InputGestureText="Ctrl+R"/>
                 <MenuItem Header="Reload From Backup" Name="annoReloadBackupMenu" />
                 <MenuItem Header="Export As" Name="annoExportMenu" />
+                <MenuItem Header="Remove Segments Right of Marker" Name="removeRemainingSegmentsMenu" InputGestureText="Ctrl+K"/>
                 <MenuItem Header="Convert Annotation" Name="convertSelectedTierMenu">
                     <MenuItem Header="To Discrete Annotation" Name="convertAnnoContinuousToDiscreteMenu" />
                     <MenuItem Header="To Signal" Name="convertAnnoToSignalMenu" />
@@ -61,17 +66,19 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="LEARNING" Name="databaseCMLMenu">
-                <MenuItem Header="Merge Annotations" Name="databaseCMLMergeAnnotationsMenu" />
                 <MenuItem Header="Extract Features" Name="databaseCMLExtractFeaturesMenu"/>
                 <MenuItem Header="Merge Features" Name="databaseCMLMergeFeaturesMenu"/>
                 <MenuItem Header="Train Models" Name="databaseCMLTrainMenu"/>
+                <MenuItem Header="Evaluate Models" Name="databaseCMLEvaluateMenu"/>
                 <MenuItem Header="Fusion" Name="fusionmenu">
                     <MenuItem Header="Train Bayesian Network" Name="databaseCMLFusionMenu"/>
                 </MenuItem>
+                <MenuItem Header="Merge / Copy Annotations" Name="databaseCMLMergeAnnotationsMenu" />                
                 <MenuItem Header="Predict Annotations" Name="databaseCMLPredictMenu"/>
-                <MenuItem Header="Complete Current Annotation" Name="databaseCMLCompleteStepMenu"/>
+                <MenuItem Header="Complete Current Annotation" Name="databaseCMLCompleteStepMenu" InputGestureText="Ctrl+L"/>
             </MenuItem>
             <MenuItem Header="?">
+                <MenuItem Header="About"  Name="aboutMenu" />
                 <MenuItem Header="Documentation"  Name="helpDocumentationMenu" />
                 <MenuItem Header="Shortcuts"  Name="helpShortcutsMenu" />
                 <MenuItem Header="Update CML Tools" Name="updateCMLMenu" />
