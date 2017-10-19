@@ -1787,4 +1787,7 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 06.10.17 BUG : nova : loads local files if no server string is set : Johannes
 - 17.10.17 CHG : event/EventMonitor : option to show only last event : Johannes
 - 17.10.17 CHG : event/EventMonitor : options to set font name and size : Johannes
-- 04.10.17 BUG : core/ioput/option : correctly reads options with multiple values : Johannes
+- 17.10.17 BUG : core/ioput/option : correctly reads options with multiple values : Johannes
+- 18.10.17 CHG : ioput/XMLEventSender : added new field option 'isnew' : Johannes
+- 19.10.17 CHG : nova : export signals to csv : Johannes
+- 19.10.17 CHG : ioput/XMLEventSender, activemq/ActiveMQEvent : can be paused by sending an SLEEP notification : Johannes

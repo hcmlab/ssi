@@ -109,11 +109,12 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe");
-	Factory::RegisterDLL ("ssievent");
-	Factory::RegisterDLL ("ssigraphic");
-	Factory::RegisterDLL ("ssimouse");
-	Factory::RegisterDLL ("ssisignal");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("mouse");
+	Factory::RegisterDLL ("signal");
+	Factory::RegisterDLL ("control");
 
 #if SSI_RANDOM_LEGACY_FLAG	
 	ssi_random_seed();
@@ -518,8 +519,9 @@ bool ex_xmlsender(void *arg) {
 	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME, button_cast);
 	frame->AddSensor(mouse);
 
-	ZeroEventSender *ezero = ssi_create(ZeroEventSender, 0, true);
-	ezero->getOptions()->mindur = 0.5;
+	TriggerEventSender *ezero = ssi_create(TriggerEventSender, 0, true);
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	ezero->getOptions()->minDuration = 0.5;
 	ezero->getOptions()->setAddress("click@mouse");	
 	frame->AddConsumer(button_p, ezero, "5");
 	board->RegisterSender(*ezero);
@@ -529,7 +531,7 @@ bool ex_xmlsender(void *arg) {
 	frame->AddEventConsumer(cursor_p, tuple_sender, board, ezero->getEventAddress());
 	board->RegisterSender(*tuple_sender);
 	
-	XMLEventSender *xmlsender = ssi_create_id(XMLEventSender, 0, "monitor");
+	XMLEventSender *xmlsender = ssi_create_id(XMLEventSender, 0, "sender");
 	xmlsender->getOptions()->setPath("template");
 	xmlsender->getOptions()->monitor = true;
 	xmlsender->getOptions()->console = false;
@@ -544,7 +546,13 @@ bool ex_xmlsender(void *arg) {
 	EventMonitor *monitor = ssi_create_id (EventMonitor, 0, "monitor");
 	board->RegisterListener(*monitor, "click,features@mouse");
 
-	decorator->add("monitor*", CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
+	ControlCheckBox *control = ssi_create_id(ControlCheckBox, 0, "control");
+	control->getOptions()->value = false;
+	control->getOptions()->setId("sender");
+	control->getOptions()->setLabel("toggle");
+	frame->AddRunnable(control);
+
+	decorator->add("sender,monitor", CONSOLE_WIDTH, 0, 400, CONSOLE_HEIGHT);
 
 	board->Start();
 	frame->Start();

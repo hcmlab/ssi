@@ -134,6 +134,8 @@ bool ControlCheckBox::start () {
 	_window->create();
 	_window->show();	
 
+	update(value);
+
 	return true;
 }
 
