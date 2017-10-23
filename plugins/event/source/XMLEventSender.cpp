@@ -65,7 +65,6 @@ XMLEventSender::XMLEventSender (const ssi_char_t *file)
 	_listener(0),
 	_address(0),
 	_loaded(false),
-	_isSleeping(false),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
@@ -192,11 +191,6 @@ void XMLEventSender::consume (IConsumer::info consume_info,
 	ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
-	if (_isSleeping)
-	{
-		return;
-	}
-
 	if (!_loaded) {
 		return;
 	}
@@ -241,11 +235,6 @@ void XMLEventSender::listen_enter() {
 }
 
 bool XMLEventSender::update(IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
-
-	if (_isSleeping)
-	{
-		return true;
-	}
 
 	if (n_new_events == 0) {
 		return true;
@@ -310,6 +299,7 @@ const ssi_char_t *XMLEventSender::getEventAddress() {
 	return _address->getAddress();
 }
 
+
 bool XMLEventSender::notify(INotify::COMMAND::List command, const ssi_char_t *message) {
 
 	switch (command) {
@@ -334,16 +324,6 @@ bool XMLEventSender::notify(INotify::COMMAND::List command, const ssi_char_t *me
 		if (_window) {
 			return _window->setPosition(message);
 		}
-		break;
-	}
-	case INotify::COMMAND::SLEEP_POST:
-	{
-		_isSleeping = true;
-		break;
-	}
-	case INotify::COMMAND::WAKE_POST:
-	{
-		_isSleeping = false;
 		break;
 	}
 	}

@@ -107,7 +107,7 @@ void FilePath::parse () {
 
 	len = strlen (_filepathfull);
 	_is_relative = true;
-	if (len >= 2 && _filepathfull[1] == ':') {
+    if ((len >= 2 && _filepathfull[1] == ':') ||_filepathfull[0]=='/') {
 		_is_relative = false;
 	}
 }

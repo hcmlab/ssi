@@ -31,7 +31,7 @@ include_directories(include include/ioput include/ioput/socket ../../core/includ
 #add_dependencies(ssiioput_test ssi ssiioput)
 
 set(COMMON_SRC_FILES
-
+source/FileAnnotationWriter.cpp
 source/FileEventWriter.cpp
 source/FileReader.cpp
 source/FileSampleWriter.cpp
@@ -82,7 +82,7 @@ ENDIF(MINGW)
 
 
 add_library(ssiioput SHARED ${SRC_FILES} )
-target_link_libraries(ssiioput ssi  ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssiioput ssi ssiml ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
 #add_executable(myapp main.c)
 
 #rename targets if debug

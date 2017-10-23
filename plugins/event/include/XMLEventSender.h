@@ -197,7 +197,6 @@ protected:
 	ssi_char_t *_path;
 	TiXmlDocument *_doc;
 	XMLEventHelper *_helper;	
-	bool _isSleeping;
 
 	Monitor *_monitor;
 	Window *_window;

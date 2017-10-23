@@ -349,7 +349,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         <li><a href="#xml-advanced-network-sharing"><span class="toc-section-number">4.2.2.2</span> Stream and Event Sharing</a></li>
         <li><a href="#xml-advanced-network-xmlsender"><span class="toc-section-number">4.2.2.3</span> XML Sender</a></li>
         </ul></li>
-        <li><a href="#xml-advanced-options"><span class="toc-section-number">4.2.3</span> Options</a></li>
+        <li><a href="#xml-advanced-control"><span class="toc-section-number">4.2.3</span> More Control</a></li>
         </ul></li>
         </ul></li>
         <li><a href="#python"><span class="toc-section-number">5</span> Python</a><ul>
@@ -844,7 +844,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   <span class="kw">&lt;provider</span><span class="ot"> channel=</span><span class="st">&quot;cursor&quot;</span><span class="ot"> pin=</span><span class="st">&quot;pos&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;/sensor&gt;</span></code></pre></div>
 <p>and define the value in a separate file (configuration):</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">mouse</span>:sr = 50.0  # sample rate</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mouse</span>:sr = 50.0  <span class="co"># sample rate</span></code></pre></div>
 <p>Configuration files have the file ending <code>.pipeline-config</code> and can include an arbitrary number of variables (one per line). A configuration file which has the same name and is in the same folder as a pipeline is a <em>local</em> configuration file and implicitly applied when the according pipeline is started. However, the values defined in a <em>local</em> pipeline are possibly overwritten if one or more <em>global</em> configuration files are passed.</p>
 <pre><code>xmlpipe -config global1;global2 my</code></pre>
 <p>Here we call a pipeline with name <code>my.pipeline</code>. First, global configuration files will be applied in the order given by the string, i.e. <code>global1.pipeline-config</code> followed by <code>global2.pipeline-config</code>. As soon as a matching key is found its value is applied and can no longer be overwritten by following configuration files. After applying all global configuration files, remaining variables are replaced if a local configuration file (<code>my.pipeline-config</code>) exists. To make sure every key is assigned a value, you would usually want to a local configuration file, which assigns a default value to every variable. Global configuration files, on the other hand, are often used for fine-tuning to choose among different configurations.</p>
@@ -858,20 +858,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p class="caption"><em>A graphical interface allows it to manage options and run pipelines with different configurations.</em></p>
 </div>
 <p>To assign a checkbox or a drop-down menu to a variable one has to add the <code>$(bool)</code> or <code>$(select)</code> keyword in a comment after the key/value pair, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">decorator</span>:icon = true <span class="co"># $(bool) show icon</span>
-<span class="ex">mouse</span>:sr = 50.0 <span class="co"># $(select{20.0,50.0,100.0}) sample rate</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">decorator</span>:icon = true <span class="co"># $(bool) show icon</span>
+<span class="kw">mouse</span>:sr = 50.0 <span class="co"># $(select{20.0,50.0,100.0}) sample rate</span></code></pre></div>
 <p>By default <code>xmlpipe.exe</code> will be searched in the same folder as the <code>xmlpipeui.exe</code> or if it is not found in the system path (<code>%PATH%</code>). The default path, however, can be changed in the GUI (<code>Pick</code> button) or by creating a file <code>xmlpipeui.ini</code>. The latter also allows it to set alternate search paths for pipeline and configuration files.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">[<span class="ex">exe</span>]
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">exe</span>]
 <span class="co"># path to executable</span>
-<span class="ex">path</span> = bin\xmlpipe.exe
+<span class="kw">path</span> = bin\xmlpipe.exe
 
-[<span class="ex">pipe</span>]
+[<span class="kw">pipe</span>]
 <span class="co"># search path for pipelines</span>
-<span class="ex">path</span> = .
+<span class="kw">path</span> = .
 
-[<span class="ex">config</span>]
+[<span class="kw">config</span>]
 <span class="co"># search path for config files</span>
-<span class="ex">path</span> = .</code></pre></div>
+<span class="kw">path</span> = .</code></pre></div>
 <p>Note that The variable <code>$(date)</code> is reserved and will be replaced with a time-stamp in the format <code>yyyy-mm-dd_hh-mm-ss</code> that stores when the pipeline was started.</p>
 <blockquote>
 <p>Check out the full <a href="code/xml/variables/my.pipeline">pipeline</a> with a corresponding <a href="code/xml/variables/my.pipeline-config">local</a> and <a href="code/xml/variables/global.pipeline-config">global</a> configuration file.</p>
@@ -979,12 +979,12 @@ sock <span class="op">=</span> socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 <span class="bu">input</span>(<span class="st">&quot;</span><span class="ch">\n\t</span><span class="st">press enter to start pipeline</span><span class="ch">\n</span><span class="st">&quot;</span>)
 
-MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STRT:RUN1</span><span class="ch">\0</span><span class="st">&quot;</span>
+MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STRT:RUN1\0&quot;</span>
 sock.sendto(<span class="bu">bytes</span>(MESSAGE, <span class="st">&quot;utf-8&quot;</span>), (UDP_IP, UDP_PORT))
 
 <span class="bu">input</span>(<span class="st">&quot;</span><span class="ch">\n\t</span><span class="st">press enter to stop pipeline</span><span class="ch">\n</span><span class="st">&quot;</span>)
 
-MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STOP:RUN1</span><span class="ch">\0</span><span class="st">&quot;</span>
+MESSAGE <span class="op">=</span> <span class="st">&quot;SSI:STOP:RUN1\0&quot;</span>
 sock.sendto(<span class="bu">bytes</span>(MESSAGE, <span class="st">&quot;utf-8&quot;</span>), (UDP_IP, UDP_PORT))</code></pre></div>
 <h4 id="xml-advanced-network-sharing"><span class="header-section-number">4.2.2.2</span> Stream and Event Sharing</h4>
 <p>To share a stream between two pipelines we use <code>StreamWriter</code> and <code>StreamReader</code> (from the <code>ioput</code> plug-in). The sender connects the <code>StreamWriter</code> with the pin of the stream it wants to share and sets a port, as well as the host of the receiving machines:</p>
@@ -1181,10 +1181,10 @@ To share the xml string with an external application, we use <code>SocketEventWr
 <blockquote>
 <p>Check out the full <a href="code/xml/network/xmlsender.pipeline">pipeline</a> and the according <a href="code/xml/network/xmlsender.xml">template</a>.</p>
 </blockquote>
-<h3 id="xml-advanced-options"><span class="header-section-number">4.2.3</span> Options</h3>
-<p>So far, we have learned about <a href="#xml-basics-component">options</a> as a way to configure the behaviour of a component before the execution of a pipeline. However, some options also allow it to change the behaviour of a component <em>at</em> run-time. We can read this from the API when an option is marked as <code>FREE</code> (see <a href="#fig:xml-advanced-options-0">here</a>).</p>
+<h3 id="xml-advanced-control"><span class="header-section-number">4.2.3</span> More Control</h3>
+<p>So far, we have learned about <a href="#xml-basics-component">options</a> as a way to configure the behaviour of a component before the execution of a pipeline. However, some options can be changed <em>at</em> run-time, too. We can read this from the API when an option is marked as <code>FREE</code> (see <a href="#fig:xml-advanced-control-0">here</a>).</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-0.png" alt="Options marked as FREE can be changed at run-time." id="fig:xml-advanced-options-0" style="width:80.0%" />
+<img src="pics/xml-advanced-control-0.png" alt="Options marked as FREE can be changed at run-time." id="fig:xml-advanced-control-0" style="width:80.0%" />
 <p class="caption"><em>Options marked as <code>FREE</code> can be changed at run-time.</em></p>
 </div>
 <p>First, we add an instance of <code>Limits</code>, which keeps stream values in a certain range. The range is defined by options <code>min</code> and <code>max</code>, which we initialize with default values:</p>
@@ -1196,27 +1196,35 @@ To share the xml string with an external application, we use <code>SocketEventWr
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlGrid:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="kw">/&gt;</span>    </code></pre></div>
 <p>When the pipeline is started editable options are listed and can be changed (press enter to confirm) as shown <a href="#fig:xml-advanced-options-1">here</a>. Note that we used the <code>runnable</code> tag to include the component. We do this because GUI elements have their own thread and this way we make sure it will be started.</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-1.png" alt="ControlGrid lists options that are editable at run-time." id="fig:xml-advanced-options-1" style="width:80.0%" />
+<img src="pics/xml-advanced-control-1.png" alt="ControlGrid lists options that are editable at run-time." id="fig:xml-advanced-control-1" style="width:80.0%" />
 <p class="caption"><em><code>ControlGrid</code> lists options that are editable at run-time.</em></p>
 </div>
 <p>To target a specific option we can use <code>ControlTextBox</code>:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlTextBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;min&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlTextBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;max&quot;</span><span class="kw">/&gt;</span></code></pre></div>
-<p>It gives us an individual text box for each option as shown <a href="#fig:xml-advanced-options-2">here</a>:</p>
+<p>It gives us an individual text box for each option as shown <a href="#fig:xml-advanced-control-2">here</a>:</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-2.png" alt="ContolTextBox allows it to target specific options." id="fig:xml-advanced-options-2" style="width:80.0%" />
+<img src="pics/xml-advanced-control-2.png" alt="ContolTextBox allows it to target specific options." id="fig:xml-advanced-control-2" style="width:80.0%" />
 <p class="caption"><em><code>ContolTextBox</code> allows it to target specific options.</em></p>
 </div>
 <p>Or in case of a floating point option (single value) we can use <code>ControlSlider</code>:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlSlider:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;min&quot;</span><span class="ot"> defval=</span><span class="st">&quot;0.0&quot;</span><span class="ot"> minval=</span><span class="st">&quot;0.0&quot;</span><span class="ot"> maxval=</span><span class="st">&quot;0.5&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlSlider:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;max&quot;</span><span class="ot"> defval=</span><span class="st">&quot;0.5&quot;</span><span class="ot"> minval=</span><span class="st">&quot;0.5&quot;</span><span class="ot"> maxval=</span><span class="st">&quot;1.0&quot;</span><span class="kw">/&gt;</span></code></pre></div>
-<p>It creates a slider for each option as shown <a href="#fig:xml-advanced-options-3">here</a>:</p>
+<p>It creates a slider for each option as shown <a href="#fig:xml-advanced-control-3">here</a>:</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-3.png" alt="ControlSlider adds a slider to floating point options." id="fig:xml-advanced-options-3" style="width:80.0%" />
+<img src="pics/xml-advanced-control-3.png" alt="ControlSlider adds a slider to floating point options." id="fig:xml-advanced-control-3" style="width:80.0%" />
 <p class="caption"><em><code>ControlSlider</code> adds a slider to floating point options.</em></p>
 </div>
+<p>Finally, any component that is not a <code>Transformer</code> or a <code>Sensor</code> can be turned on and off at run-time. Therefore, we add a <code>ControlCheckBox</code>.</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlCheckBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;plot&quot;</span><span class="ot"> name=</span><span class="st">&quot;&quot;</span><span class="ot"> title=</span><span class="st">&quot;CONTROL&quot;</span><span class="ot"> label=</span><span class="st">&quot;PLOTTING ON/OFF&quot;</span><span class="kw">/&gt;</span>      </code></pre></div>
+<p>It creates a check box to turn the component with the id <code>plot</code> on and off as shown <a href="#fig:xml-advanced-control-4">here</a>:</p>
+<div class="figure">
+<img src="pics/xml-advanced-control-4.png" alt="Use a ControlCheckBox to turn a component on/off." id="fig:xml-advanced-control-4" style="width:80.0%" />
+<p class="caption"><em>Use a <code>ControlCheckBox</code> to turn a component on/off.</em></p>
+</div>
+<p>Note that a <code>ControlCheckBox</code> can also be used to control a boolean option. Therefore, the <code>name</code> option has to be set to the name of the option.</p>
 <blockquote>
-<p>Check out the full code: <a href="code/xml/options/controller.pipeline">controller</a>, <a href="code/xml/options/textbox.pipeline">textbox</a>, <a href="code/xml/options/slider.pipeline">slider</a>.</p>
+<p>Check out the full code: <a href="code/xml/control/controller.pipeline">controller</a>, <a href="code/xml/control/textbox.pipeline">textbox</a>, <a href="code/xml/control/slider.pipeline">slider</a>, <a href="code/xml/control/component.pipeline">component</a>.</p>
 </blockquote>
 <h1 id="python"><span class="header-section-number">5</span> Python</h1>
 <p>SSI allows it to develop new components with <a href="https://www.Python.org/">Python</a>. If the aim is to write extensions to SSI without having to use Visual Studio or some other C++ developing environment Python is a good choice. In this chapter we will learn how to write and use Python components in SSI.</p>
@@ -1342,13 +1350,13 @@ To share the xml string with an external application, we use <code>SocketEventWr
 To access the n'th value of a stream we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">value <span class="op">=</span> stream[n]</code></pre></div>
 <p>To access all values one by one we can use an interator:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> s <span class="kw">in</span> stream:
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> s <span class="op">in</span> stream:
     <span class="bu">print</span>(s)</code></pre></div>
 <p>To access the m'th dimension value of the n'th samples we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">value <span class="op">=</span> stream[n,m]</code></pre></div>
 <p>Hence, another way to access every value is:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(stream.num):
-    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(stream.dim):     
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(stream.num):
+    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(stream.dim):     
         <span class="bu">print</span>(stream[n,d])</code></pre></div>
 <p>To print a stream we write:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="bu">print</span> (stream)</code></pre></div>
@@ -1396,7 +1404,12 @@ npimg <span class="op">=</span> numpy.asarray(image)</code></pre></div>
 <ul>
 <li><strong>time</strong> [<em>int</em>]: Time in milliseconds</li>
 <li><strong>dur</strong> [<em>int</em>]: Duration in milliseconds</li>
-<li><strong>address</strong> [<em>string</em>]: Address <a href="mailto:event@sender">event@sender</a></li>
+<li><strong>address</strong> [<em>string</em>]: Address <script type="text/javascript">
+<!--
+h='&#x73;&#x65;&#110;&#100;&#x65;&#114;';a='&#64;';n='&#x65;&#118;&#x65;&#110;&#116;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x65;&#118;&#x65;&#110;&#116;&#32;&#x61;&#116;&#32;&#x73;&#x65;&#110;&#100;&#x65;&#114;</noscript></li>
 <li><strong>state</strong> [<em>int</em>]: Event state (0=completed, 1=continued)</li>
 <li><strong>glue</strong> [<em>int</em>]: Glue id (to mark events that belong to each other)</li>
 <li><strong>prob</strong> [<em>int</em>]: Confidence value</li>
@@ -1430,7 +1443,7 @@ pi = 3.14159</code></pre>
 <p>Next, we implement <code>getChannelNames()</code> to define the channels names:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> getChannelNames(opts, <span class="bu">vars</span>):
     <span class="cf">return</span> {<span class="st">&#39;saw&#39;</span>:<span class="st">&#39;a saw wave&#39;</span>, 
-            <span class="st">&#39;sine&#39;</span>:<span class="st">&#39;a sine wave&#39;</span>}</code></pre></div>
+            <span class="co">&#39;sine&#39;</span>:<span class="st">&#39;a sine wave&#39;</span>}</code></pre></div>
 <p>The function returns a dictionary with pairs of strings. Each pair defines a channel name (key) and adds a description (value). Now, we need to describe the channel streams, which we do by adding a function <code>initChannel()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> initChannel(name, channel, types, opts, <span class="bu">vars</span>):
     <span class="cf">if</span> name <span class="op">==</span> <span class="st">&#39;saw&#39;</span>:
@@ -1454,14 +1467,14 @@ pi = 3.14159</code></pre>
     delta <span class="op">=</span> <span class="fl">1.0</span> <span class="op">/</span> sout.sr
 
     <span class="cf">if</span> name <span class="op">==</span> <span class="st">&#39;saw&#39;</span>:
-        <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sout.num):
-            <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sout.dim):
+        <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sout.num):
+            <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sout.dim):
                 sout[n,d] <span class="op">=</span> time <span class="op">-</span> math.floor(time)
             time <span class="op">+=</span> delta
 
     <span class="cf">elif</span> name <span class="op">==</span> <span class="st">&#39;sine&#39;</span>:
-        <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sout.num):
-            <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sout.dim):
+        <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sout.num):
+            <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sout.dim):
                 sout[n,d] <span class="op">=</span> math.sin(<span class="dv">2</span><span class="op">*</span>math.pi<span class="op">*</span>time)
             time <span class="op">+=</span> delta
 
@@ -1483,7 +1496,7 @@ pi = 3.14159</code></pre>
 <h2 id="python-consumer"><span class="header-section-number">5.5</span> Consumer</h2>
 <p>To implement a <a href="#basics-pipelines-components">consumer</a> we add a function <code>consume()</code>, e.g.:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
-    <span class="cf">for</span> s <span class="kw">in</span> sins:
+    <span class="cf">for</span> s <span class="op">in</span> sins:
         <span class="bu">print</span>(s)</code></pre></div>
 <p>Since a consumer may receive multiple streams we receive a <code>tuple</code> of streams. In Python a <code>tuple</code> represents a an immutable sequence of objects. This is appropriate since the number of streams will not change between successive calls.</p>
 <p>When <code>consume()</code> is called for the first time it will already deliver the first chunks of data. However, sometimes we would like to know how many streams and what kind of streams we will receive (e.g. to initialize temporal variables). To this end, we can add a function <code>consume_enter()</code>, which is called once before the actual processing starts. Likewise, the function <code>consume_flush()</code> is called when the processing was stopped (e.g. to clean up). The following example uses the <code>consume_enter</code> and <code>consume_flush</code> to create and close a file. Note how the file pointer is stored in the variable dictionary.</p>
@@ -1491,7 +1504,7 @@ pi = 3.14159</code></pre>
     <span class="bu">vars</span>[<span class="st">&#39;fp&#39;</span>] <span class="op">=</span> <span class="bu">open</span>(<span class="st">&#39;output.txt&#39;</span>, <span class="st">&#39;w&#39;</span>)
     
 <span class="kw">def</span> consume(info, sins, board, opts, <span class="bu">vars</span>): 
-    <span class="cf">for</span> s <span class="kw">in</span> sins:
+    <span class="cf">for</span> s <span class="op">in</span> sins:
         <span class="bu">vars</span>[<span class="st">&#39;fp&#39;</span>].write(<span class="bu">str</span>(s) <span class="op">+</span> <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)
 
 <span class="kw">def</span> consume_flush(sins, board, opts, <span class="bu">vars</span>):
@@ -1531,9 +1544,9 @@ pi = 3.14159</code></pre>
     <span class="cf">return</span> <span class="dv">1</span>    </code></pre></div>
 <p>When the pipeline is started, the function <code>transform()</code> is continuously called:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
-    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sin.num):
+    <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sin.num):
         sout[n] <span class="op">=</span> <span class="dv">0</span>
-        <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
+        <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
             sout[n] <span class="op">+=</span> sin[n,d]</code></pre></div>
 <p>The first argument is a variable of type <code>ssitypeinfo</code> (see <a href="#python-types">here</a>) including the current time stamp and duration in seconds, as well as, the number of frame and delta samples. The next two arguments are the input stream and the pre-allocated output stream. Additional streams are passed in a tuple <code>sxtra</code> followed by event board, options and variables. We use the outer loop to iterate over all samples and initialize the output sample with 0. The inner loop iterates over the dimensions and sums up the sample values.</p>
 <p>With NumPy we can rewrite above statement as follows:</p>
@@ -1548,13 +1561,13 @@ pi = 3.14159</code></pre>
 <h3 id="python-transformer-feature"><span class="header-section-number">5.6.2</span> Feature</h3>
 <p>The feature we want to implement returns the energy in each dimension. Since this does not change the number of dimensions we do not need to implement <code>getSampleDimensionOut()</code>. In fact, for our purpose it is sufficient to implement <code>transform()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> transform(info, sin, sout, sxtras, board, opts, <span class="bu">vars</span>):   
-    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
+    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
         sout[d] <span class="op">=</span> <span class="dv">0</span>
-    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(sin.num):
-        <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
+    <span class="cf">for</span> n <span class="op">in</span> <span class="bu">range</span>(sin.num):
+        <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
             val <span class="op">=</span> sin[n,d]
             sout[d] <span class="op">+=</span> val<span class="op">*</span>val
-    <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(sin.dim):
+    <span class="cf">for</span> d <span class="op">in</span> <span class="bu">range</span>(sin.dim):
         sout[d] <span class="op">=</span> math.sqrt(sout[d] <span class="op">/</span> sin.num)  </code></pre></div>
 <p>The first loop initializes the output stream with zeros. Then we square the elements in the input stream and sum up samples per dimension. Finally, we take the square root on the output stream.</p>
 <p>Again, we can rewrite the code with NumPy to get a more compact (and more efficient) version:</p>
@@ -1768,7 +1781,7 @@ The following example shows all four versions. Note that we use a <code>OrderedD
     
     recognizer <span class="op">=</span> dollar.Recognizer ()
 
-    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(xs)):
+    <span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(<span class="bu">len</span>(xs)):
         points <span class="op">=</span> x2p(xs[i])
         label <span class="op">=</span> <span class="bu">str</span>(ys[i])
         recognizer.AddTemplate(label, points)
@@ -1778,8 +1791,8 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> x2p (x):
 
     points <span class="op">=</span> []
-    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,x.num):
-        points.append((x[i<span class="op">*</span><span class="dv">2</span>],x[i<span class="op">*</span><span class="dv">2</span><span class="op">+</span><span class="dv">1</span>]))
+    <span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(<span class="dv">0</span>,x.num):
+        points.append((x[i<span class="op">*</span><span class="dv">2</span>],x[i<span class="op">*</span><span class="dv">2+1</span>]))
 
     <span class="cf">return</span> points</code></pre></div>
 <p>To match an unknown gesture, we implement a function <code>forward</code> and store for each class the best matching template in the <code>probs</code> array (that is we look for the class template with the smallest distance).</p>
@@ -1787,7 +1800,7 @@ The following example shows all four versions. Note that we use a <code>OrderedD
     
     recognizer <span class="op">=</span> <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>]
 
-    <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:        
+    <span class="cf">if</span> <span class="op">not</span> recognizer <span class="op">is</span> <span class="va">None</span>:        
         points <span class="op">=</span> x2p(x)
         recognizer.RecognizeProbs(points, probs)       </code></pre></div>
 <p>Finally, we add functions to save and load our model:</p>
@@ -1801,7 +1814,7 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 
     recognizer <span class="op">=</span> <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>]
 
-    <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:
+    <span class="cf">if</span> <span class="op">not</span> recognizer <span class="op">is</span> <span class="va">None</span>:
         pickle.dump (recognizer.Templates, <span class="bu">open</span>(path, <span class="st">&#39;wb&#39;</span>))  </code></pre></div>
 <blockquote>
 <p>Check out the <a href="code/ml/dollar/ssi_dollar.py">code</a>.</p>
