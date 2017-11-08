@@ -35,7 +35,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
-
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
 
 namespace ssi {
 

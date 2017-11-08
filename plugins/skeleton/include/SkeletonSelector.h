@@ -128,6 +128,7 @@ public:
 	ssi_type_t getSampleTypeOut (ssi_type_t sample_type_in) {
 		if (sample_type_in != SSI_SKELETON_VALUE_SSITYPE) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 		return SSI_SKELETON_VALUE_SSITYPE;
 	}

@@ -125,6 +125,7 @@ namespace ssi {
 			if (from_num < frame_size + delta_size)
 			{
 				ssi_err("stream too short");
+				return;
 			}
 
 			ssi_size_t max_shift = (from_num - delta_size) / frame_size;
@@ -242,6 +243,7 @@ namespace ssi {
 		if (frame == 0) 
 		{
 			ssi_err("zero frame step");
+			return;
 		}
 
 		ssi_size_t bytes_per_sample = from.byte * from.dim;

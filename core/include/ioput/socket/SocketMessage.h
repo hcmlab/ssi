@@ -40,8 +40,8 @@ class SocketMessage :  public IMessage {
 
 public:
 
-	SocketMessage (Socket::TYPE type, ssi_size_t port, const ssi_char_t *host) {
-		_socket = Socket::CreateAndConnect (type, Socket::CLIENT, port, host);
+	SocketMessage (Socket::TYPE::List type, ssi_size_t port, const ssi_char_t *host) {
+		_socket = Socket::CreateAndConnect (type, Socket::MODE::CLIENT, port, host);
 	}
 
 	~SocketMessage () {

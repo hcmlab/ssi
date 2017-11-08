@@ -44,10 +44,13 @@ public:
 
 	public:
 
-		Options() : chunks(false), chunksCountFrom(1) {
+		Options() : chunks(false), chunksCountFrom(1), overwrite(false), keepEmpty(true) {
 
 			path[0] = '\0';
+
 			addOption ("path", path, SSI_MAX_CHAR, SSI_CHAR, "file path  (empty for stdout)");
+			addOption ("overwrite", &overwrite, 1, SSI_BOOL, "overwrite file if it already exists (otherwise a unique path will be created)");
+			addOption ("keepEmpty", &keepEmpty, 1, SSI_BOOL, "store stream even if it is empty");
 			addOption ("chunks", &chunks, 1, SSI_BOOL, "write each chunk to a new file (chunk number will be added to path)");
 			addOption ("chunksCountFrom", &chunksCountFrom, 1, SSI_SIZE, "begin numbering from here (if chunks turned on)");
 		};
@@ -61,6 +64,7 @@ public:
 
 		ssi_char_t path[SSI_MAX_CHAR];
 		bool chunks;
+		bool overwrite, keepEmpty;
 		ssi_size_t chunksCountFrom;
 	};
 
@@ -82,6 +86,8 @@ public:
 	void consume_flush (ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]);
 
+	bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
+
 	const WAVEFORMATEX &getFormat () { return _format; };
 
 private:
@@ -90,6 +96,13 @@ private:
 	WavWriter::Options _options;
 	ssi_char_t *_file;
 	static const ssi_char_t *ssi_log_name;
+
+	bool _first_call;
+	bool _ready;
+	ssi_char_t *_filepath;
+	ssi_stream_t _stream;
+	void open();
+	void close();
 
 	File *_wav_file;
 	ssi_size_t _counter;

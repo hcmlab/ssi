@@ -117,7 +117,7 @@ protected:
 	ssi_char_t *_file;
 
 	VideoChannel _video_channel;
-	void setProvider (IProvider *provider);
+	bool setProvider (IProvider *provider);
 
 	static CameraList* GetVideoCaptureDevices();
 	bool determineIfDesiredMediaTypeExists(IBaseFilter *pCap);

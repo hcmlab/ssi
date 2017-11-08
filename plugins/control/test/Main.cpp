@@ -200,9 +200,10 @@ bool ex_checkbox(void *arg) {
 	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 
-	ZeroEventSender *ezero = ssi_create_id(ZeroEventSender, 0, "ezero");
-	ezero->getOptions()->mindur = 0.2;
-	ezero->getOptions()->eager = false;
+	TriggerEventSender *ezero = ssi_create_id(TriggerEventSender, 0, "ezero");
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	ezero->getOptions()->minDuration = 0.2;
+	ezero->getOptions()->sendStartEvent = false;
 	ezero->getOptions()->setAddress("click@mouse");
 	frame->AddConsumer(button_p, ezero, "0.25s");
 	board->RegisterSender(*ezero);
@@ -225,6 +226,7 @@ bool ex_checkbox(void *arg) {
 	board->RegisterListener(*monitor, 0, 60000);
 
 	decorator->add("plot*", 1, 3, 0, 0, 400, CONSOLE_HEIGHT);
+
 	ControlCheckBox *checkbox = 0;
 	
 	checkbox = ssi_create_id(ControlCheckBox, 0, "checkbox");

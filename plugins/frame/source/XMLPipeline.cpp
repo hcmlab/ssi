@@ -351,8 +351,10 @@ bool XMLPipeline::parseElement (TiXmlElement *element) {
 		return parseExecute (element);
 	} else if (strcmp(element->Value(), "job") == 0) {
 		return parseJob(element);
-	} else if (strcmp (element->Value (), "gate") == 0) {
-		return parseGate (element);
+	} else if (strcmp(element->Value(), "gate") == 0) {
+		return parseGate(element);
+	} else if (strcmp(element->Value(), "message") == 0) {
+		return parseMessage(element);
 	} else if (strcmp (element->Value (), "object") == 0) {
 		IObject *object = parseObject (element, true);
 		return object != 0;
@@ -583,10 +585,29 @@ bool XMLPipeline::parseGate (TiXmlElement *element) {
 	return true;
 }
 
+bool XMLPipeline::parseMessage(TiXmlElement *element) {
+
+	const ssi_char_t *text = 0;
+	text = element->Attribute("text");
+	if (!text) {
+		ssi_wrn("execute: attribute 'text' is missing");
+		return false;
+	}
+
+	_frame->SetStartMessage(text);
+
+	return true;
+}
+
 IObject *XMLPipeline::parseObject (TiXmlElement *element, bool auto_free) {
 
 	const ssi_char_t *create = element->Attribute("create");
 	IObject *object = Factory::CreateXML (element, auto_free);
+
+	if (!object)
+	{
+		return 0;
+	}
 
 	if (_eboard && _eboard->RegisterSender (*object)) {
 		_start_eboard = true;
@@ -648,6 +669,12 @@ IObject *XMLPipeline::parseObject (TiXmlElement *element, bool auto_free) {
 bool XMLPipeline::parseRunnable(TiXmlElement *element) {
 
 	IObject *runnable = ssi_pcast (IObject, parseObject (element));
+
+	if (!runnable)
+	{
+		return false;
+	}
+
 	_frame->AddRunnable(ssi_pcast(SSI_IRunnableObject, runnable));
 
 	return true;
@@ -661,6 +688,7 @@ bool XMLPipeline::parseRegister (TiXmlElement *element) {
 bool XMLPipeline::parseListener (TiXmlElement *element) {
 
 	IObject *listener = parseObject (element);
+
 	if (!listener) {
 		return false;
 	}
@@ -713,6 +741,7 @@ bool XMLPipeline::parseListener (TiXmlElement *element) {
 bool XMLPipeline::parseSensor (TiXmlElement *element) {
 
 	ISensor *sensor = ssi_pcast (ISensor, parseObject (element));
+
 	if (!sensor) {
 		return false;
 	}
@@ -788,6 +817,7 @@ bool XMLPipeline::parseSensor (TiXmlElement *element) {
 bool XMLPipeline::parseTransformer (TiXmlElement *element) {
 
 	ITransformer *transformer = ssi_pcast (ITransformer, parseObject (element));
+
 	if (!transformer) {
 		return false;
 	}
@@ -962,6 +992,7 @@ bool XMLPipeline::parseTransformer (TiXmlElement *element) {
 bool XMLPipeline::parseConsumer (TiXmlElement *element) {
 
 	IConsumer *consumer = ssi_pcast (IConsumer, parseObject (element));
+
 	if (!consumer) {
 		return false;
 	}

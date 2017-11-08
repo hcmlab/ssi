@@ -85,9 +85,9 @@ bool FFMPEGWriterClient::open () {
 	_mode = _writer->_mode;
 
 	// create output media context
-	ret = avformat_alloc_output_context2 (&_output_context, 0, 0, _writer->_options.url);
+	ret = avformat_alloc_output_context2 (&_output_context, 0, 0, _writer->_path_or_url);
 	if (!_output_context) {		 			
-		ret = avformat_alloc_output_context2(&_output_context, NULL, _writer->_options.format, _writer->_options.url);
+		ret = avformat_alloc_output_context2(&_output_context, NULL, _writer->_options.format, _writer->_path_or_url);
 		if (!_output_context) {		 			
 			PrintErrorMsg ("avformat_alloc_output_context2", ret);
 			return false;
@@ -110,11 +110,11 @@ bool FFMPEGWriterClient::open () {
 		}
 	}	
 
-	av_dump_format (_output_context, 0, _writer->_options.url, 1);
+	av_dump_format (_output_context, 0, _writer->_path_or_url, 1);
 
 	// open the output file, if needed
 	if (!(_output_format->flags & AVFMT_NOFILE)) {
-        ret = avio_open (&_output_context->pb, _writer->_options.url, AVIO_FLAG_WRITE);
+        ret = avio_open (&_output_context->pb, _writer->_path_or_url, AVIO_FLAG_WRITE);
         if (ret < 0) {
             PrintErrorMsg ("avio_open", ret);
 			return false;
@@ -367,7 +367,7 @@ bool FFMPEGWriterClient::openVideo () {
 	};
 	_video_frame_rgb->width  = width;
 	_video_frame_rgb->height = height;
-	ret = av_image_alloc (_video_frame_rgb->data, _video_frame_rgb->linesize, width, height, (AVPixelFormat) _video_frame_rgb->format, 32);
+	ret = av_image_alloc (_video_frame_rgb->data, _video_frame_rgb->linesize, width, height, (AVPixelFormat) _video_frame_rgb->format, 1);
 	if (ret < 0) {
 		PrintErrorMsg ("av_image_alloc", ret);
 		return false;
@@ -383,7 +383,7 @@ bool FFMPEGWriterClient::openVideo () {
 	_video_frame_yuv->width  = width;
 	_video_frame_yuv->height = height;
 	_video_frame_yuv->pts = 0;
-	ret = av_image_alloc (_video_frame_yuv->data, _video_frame_yuv->linesize, width, height, _video_codec_context->pix_fmt, 32);
+	ret = av_image_alloc (_video_frame_yuv->data, _video_frame_yuv->linesize, width, height, _video_codec_context->pix_fmt, 1);
 	if (ret < 0) {
 		PrintErrorMsg ("av_image_alloc", ret);
 		return false;

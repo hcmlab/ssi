@@ -68,7 +68,8 @@ public:
 
 			setUrl ("");
 
-			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url (file path or streaming address, e.g. udp://<ip:port>)");
+			addOption ("path", url, SSI_MAX_CHAR, SSI_CHAR, "path of input file");
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "streaming address in format udp://<ip:port>");
 			addOption ("stream", &stream, 1, SSI_BOOL, "set this flag for very fast decoding in streaming applications (forces h264/aac codec)");
 			addOption ("buffer", &buffer, 1, SSI_TIME, "internal buffer size in seconds");			
 			addOption ("fps", &fps, 1, SSI_TIME, "default video frame rate in Hz (if not determined from url)");
@@ -160,6 +161,8 @@ protected:
 	bool _is_running;
 	Event _wait_event;
 	bool _interrupted;
+
+	bool isStream(const ssi_char_t *url);
 };
 
 };

@@ -38,6 +38,7 @@
 #include "CameraTools.h"
 #include "FakeCamPushSource.h"
 #include "FakeAudioPushSource.h"
+#include "ioput/file/FilePath.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -65,6 +66,9 @@ void CameraWriter::SetLogLevelStatic (int level)
 }
 
 CameraWriter::CameraWriter(const ssi_char_t *file) :
+	_filepath(0),
+	_first_call(true),
+	_ready(false),
 	_comInitCountConstructor(0),
 	_comInitCountEnterConsumeFlush(0),
 	_audio_format(0),
@@ -116,7 +120,6 @@ CameraWriter::~CameraWriter()
 	SafeReleaseFJ(_pFakeAudioControl);
 	SafeReleaseFJ(_pFakeSource);
 	SafeReleaseFJ(_pFakeAudioSource);
-	//delete _pFakeSource;
 	SafeReleaseFJ(_pBuild);
 	SafeReleaseFJ(_pGraph);
 
@@ -127,153 +130,113 @@ CameraWriter::~CameraWriter()
 	}
 }
 
-void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_in[])
+void CameraWriter::open()
 {
-	SSI_DBG (SSI_LOG_LEVEL_DETAIL, "try to start cam writer...");
-
-	// video
-
-	if (stream_in[0].sr != _video_format.framesPerSecond) {
-		ssi_wrn ("sample rate '%lf' of input stream differs from internal sample rate '%lf'", stream_in[0].sr, _video_format.framesPerSecond);
-	}
-	if (stream_in[0].byte != ssi_video_stride(_video_format) * _video_format.heightInPixels) {
-		ssi_wrn ("sample bytes '%u' of input stream differs from internal sample bytes '%u'", stream_in[0].byte, ssi_video_stride(_video_format) * _video_format.heightInPixels);
-	}
-	if (stream_in[0].dim != 1) {
-		ssi_wrn ("sample dimension '%u' of input stream differs from internal sample dimension 1'", stream_in[0].dim);
-	}
-
-	if (ssi_exists (_options.path)) {
-		remove (_options.path);
-	}
-
-	// audio
-	if (stream_in_num > 1) {
-		_audio_format = new WAVEFORMATEX (ssi_create_wfx (stream_in[1].sr, stream_in[1].dim, stream_in[1].byte));
-	}
-
-	// initalize com
-
-	if(ssi_video_stride (_video_format) * _video_format.heightInPixels != stream_in[0].byte)
+	if (_ready)
 	{
-		ssi_err("stream[0] not compatible to videoParams settings");
+		return;
 	}
 
-	if(_audio_format)
+	_ready = false;
+	HRESULT hr = -1;
+
+	if (_options.overwrite)
 	{
-		SSI_ASSERT(stream_in_num == 2);
-		if(_audio_format->nChannels != stream_in[1].dim || _audio_format->wBitsPerSample / 8 != stream_in[1].byte)
+		ssi_mkdir_r(FilePath(_options.path).getDir());
+		_filepath = ssi_strcpy(_options.path);
+
+		if (ssi_exists(_filepath))
 		{
-			ssi_err("stream[1] not compatible to audioParams settings");
+			remove(_filepath);
 		}
 	}
 	else
 	{
-		SSI_ASSERT(stream_in_num == 1);
-		
+		_filepath = FilePath(_options.path, SSI_FILE_TYPE_AVI).getUnique(true);
 	}
 
-	HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-    if (FAILED(hr))
-    {
-		if(hr == RPC_E_CHANGED_MODE)
-		{
-			SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Tried to reinitialize COM with different threading model!");
-		}
-		else
-		{
-			ssi_err ("Could not initialize COM library in connect()");
-			return;
-		}
-    }
-	else 
-	{
-		if(hr == S_FALSE)
-		{
-			SSI_DBG (SSI_LOG_LEVEL_DEBUG, "COM was already initialized for this thread!");
-		}
-		++_comInitCountEnterConsumeFlush;
-	}
-
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "open '%s'", _filepath);
 
 	// build graph
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling InitCaptureGraphBuilder...");
-	
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling InitCaptureGraphBuilder...");
+
 	hr = CameraTools::InitCaptureGraphBuilder(&_pGraph, &_pBuild);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("InitCapturegraphBuilder failed");
+		ssi_wrn("InitCapturegraphBuilder failed");
 		return;
 	}
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling AddFilterToGraphByCLSID...");
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling AddFilterToGraphByCLSID...");
 	hr = CameraTools::AddFilterToGraphByCLSID(_pGraph, CLSID_FakeCamPushSource, L"FakeSource", &_pFakeSource);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("Adding the FakeCamPushSource failed");
+		ssi_wrn("Adding the FakeCamPushSource failed");
 		return;
 	}
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling GetFirstPin on FakeSource...");
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling GetFirstPin on FakeSource...");
 	IPin *pPin = CameraTools::GetFirstPin(_pFakeSource, PINDIR_OUTPUT);
-	if(!pPin)
+	if (!pPin)
 	{
-		ssi_err ("Could not get output Pin from FakeCamPushSource");
+		ssi_wrn("Could not get output Pin from FakeCamPushSource");
+		return;
 	}
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling QueryInterface on Pin...");
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling QueryInterface on Pin...");
 	hr = pPin->QueryInterface(IID_IFakeCamPushControl, (void**)&_pFakeCamControl);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("Getting the FakeCamPushControl Interface failed");
+		ssi_wrn("Getting the FakeCamPushControl Interface failed");
 		return;
 	}
 
 	SafeReleaseFJ(pPin);
 
-	if(_audio_format)
+	if (_audio_format)
 	{
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling AddFilterToGraphByCLSID...");
+		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling AddFilterToGraphByCLSID...");
 		hr = CameraTools::AddFilterToGraphByCLSID(_pGraph, CLSID_FakeAudioPushSource, L"FakeAudioSource", &_pFakeAudioSource);
-		if(SUCCEEDED(hr))
+		if (SUCCEEDED(hr))
 		{
-			 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+			SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 		}
-		else 
+		else
 		{
-			ssi_err ("Adding the FakeAudioPushSource failed");
+			ssi_wrn("Adding the FakeAudioPushSource failed");
 			return;
 		}
 
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling GetFirstPin on FakeAudioSource...");
+		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling GetFirstPin on FakeAudioSource...");
 		IPin *pPin = CameraTools::GetFirstPin(_pFakeAudioSource, PINDIR_OUTPUT);
-		if(!pPin)
+		if (!pPin)
 		{
-			ssi_err ("Could not get output Pin from FakeAudioPushSource");
+			ssi_wrn("Could not get output Pin from FakeAudioPushSource");
+			return;
 		}
 
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling QueryInterface on Pin...");
+		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling QueryInterface on Pin...");
 		hr = pPin->QueryInterface(IID_IFakeAudioPushControl, (void**)&_pFakeAudioControl);
-		if(SUCCEEDED(hr))
+		if (SUCCEEDED(hr))
 		{
-			 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+			SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 		}
-		else 
+		else
 		{
-			ssi_err ("Getting the FakeAudioPushControl Interface failed");
+			ssi_wrn("Getting the FakeAudioPushControl Interface failed");
 			return;
 		}
 
@@ -282,57 +245,47 @@ void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_i
 		_numberOfAudioSamplesPerVideoFrame = (int)(((double)(_audio_format->nSamplesPerSec) / _video_format.framesPerSecond) + 1.0);
 		_pFakeAudioControl->SetAudioFormatForSource(*_audio_format, _numberOfAudioSamplesPerVideoFrame);
 	}
-	
 
 	hr = CameraTools::QueryInterfaces(_pGraph, &_pControl);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("MediaControl Interface failed");
+		ssi_wrn("MediaControl Interface failed");
 		return;
 	}
 
-	hr = _pFakeCamControl->SetVideoFormatForSource(_video_format.framesPerSecond, _video_format.widthInPixels, _video_format.heightInPixels, _video_format.numOfChannels, !_options.flip, _options.mirror);
+	hr = _pFakeCamControl->SetVideoFormatForSource(_video_format.framesPerSecond, _video_format.widthInPixels, _video_format.heightInPixels, _video_format.numOfChannels, !_options.flip, _options.mirror);	
 
-	
-
-	wchar_t fileNameW[MAX_PATH*2];
-	if(!MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, _options.path, -1, fileNameW, MAX_PATH*2))
+	wchar_t fileNameW[MAX_PATH * 2];
+	if (!MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, _filepath, -1, fileNameW, MAX_PATH * 2))
 	{
-		ssi_err("Could not convert filename to wide char");
+		ssi_wrn("Could not convert filename to wide char");
+		return;
 	}
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Calling SetOutputFileName...");
+	SSI_DBG(SSI_LOG_LEVEL_DEBUG, "Calling SetOutputFileName...");
 	hr = _pBuild->SetOutputFileName(&MEDIASUBTYPE_Avi, fileNameW, &_pAviMux, &_pFileSink);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("SetOutputFileName failed");
+		ssi_wrn("SetOutputFileName failed");
 		return;
 	}
-
-	//delete[] fileNameW;
-
-	//hr = _pAviMux->QueryInterface(IID_IConfigAviMux, (void**)&_pConfigMux);
-	//if (SUCCEEDED(hr))
-	//{
-	//	hr = _pConfigMux->SetMasterStream(1);
-	//	SafeReleaseFJ(_pConfigMux);
-	//}
 
 	hr = _pAviMux->QueryInterface(IID_IConfigInterleaving, (void**)&_pInterleave);
 	if (SUCCEEDED(hr))
 	{
-		hr = _pInterleave->put_Mode(ssi_cast (InterleavingMode, _options.mode));
-		if(FAILED(hr))
+		hr = _pInterleave->put_Mode(ssi_cast(InterleavingMode, _options.mode));
+		if (FAILED(hr))
 		{
-			ssi_err("Set interleave mode failed!");
+			ssi_wrn("Set interleave mode failed!");
+			return;
 		}
 		SafeReleaseFJ(_pInterleave);
 	}
@@ -340,17 +293,19 @@ void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_i
 	// let user select compression
 	if (_options.compression[0] == '\0') {
 		StringList list;
-		CameraWriter::GetListOfCompressionFilterNames (list);
-		int sel = CameraWriter::LetUserSelectDesiredCompression (list, true);
+		CameraWriter::GetListOfCompressionFilterNames(list);
+		int sel = CameraWriter::LetUserSelectDesiredCompression(list, true);
 		if (sel >= 0) {
-			ssi_strcpy (_options.compression, list.get (sel));
-		} else {
-			ssi_err ("invalid selection");
+			ssi_strcpy(_options.compression, list.get(sel));
+		}
+		else {
+			ssi_wrn("Invalid selection");
+			return;
 		}
 	}
 
 	// apply compression
-	if (strcmp (_options.compression, SSI_CAMERA_USE_NO_COMPRESSION) != 0)
+	if (strcmp(_options.compression, SSI_CAMERA_USE_NO_COMPRESSION) != 0)
 	{
 		ICreateDevEnum *pSysDevEnum = NULL;
 		IEnumMoniker *pEnum = NULL;
@@ -359,8 +314,9 @@ void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_i
 		hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, (void**)&pSysDevEnum);
 		if (FAILED(hr))
 		{
-			ssi_err("Could not create Device enumerator");
-		}    
+			ssi_wrn("Could not create Device enumerator");
+			return;
+		}
 
 		hr = pSysDevEnum->CreateClassEnumerator(CLSID_VideoCompressorCategory, &pEnum, 0);
 
@@ -376,18 +332,19 @@ void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_i
 				char* lpszText = _com_util::ConvertBSTRToString(varName.bstrVal);
 				if (SUCCEEDED(hr))
 				{
-					if(strcmp(lpszText, _options.compression)==0)
+					if (strcmp(lpszText, _options.compression) == 0)
 					{
 						hr = pMoniker->BindToObject(NULL, NULL, IID_IBaseFilter, (void**)&_pEncoder);
 						if (FAILED(hr))
 						{
-							ssi_err("Could not bind moniker to object!");
+							ssi_wrn("Could not bind moniker to object!");
+							return;
 						}
 					}
 
 				}
 				delete[] lpszText;
-				VariantClear(&varName); 
+				VariantClear(&varName);
 				pPropBag->Release();
 				pMoniker->Release();
 			}
@@ -396,67 +353,147 @@ void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_i
 		pEnum->Release();
 	}
 
-	if(_pEncoder)
+	if (_pEncoder)
 	{
 		hr = _pGraph->AddFilter(_pEncoder, L"Encoder");
-		if(FAILED(hr))
+		if (FAILED(hr))
 		{
-			ssi_err("Adding encoder to Graph failed!");
+			ssi_wrn("Adding encoder to Graph failed!");
+			return;
 		}
 	}
 
 	hr = _pBuild->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video, _pFakeSource, _pEncoder, _pAviMux);
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("RenderStream failed");
+		ssi_wrn("RenderStream failed");
 		return;
 	}
 
-	if(_audio_format)
+	if (_audio_format)
 	{
-		hr = _pAviMux->QueryInterface(IID_IConfigAviMux, (void**)&_pConfigMux );
+		hr = _pAviMux->QueryInterface(IID_IConfigAviMux, (void**)&_pConfigMux);
 		if (SUCCEEDED(hr))
 		{
 			//hr = _pConfigMux->SetMasterStream(1);
-			if(FAILED(hr))
+			if (FAILED(hr))
 			{
-				ssi_err("SetMasterStream failed!");
+				ssi_wrn("SetMasterStream failed!");
+				return;
 			}
 			SafeReleaseFJ(_pConfigMux);
 		}
 
 		hr = _pBuild->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Audio, _pFakeAudioSource, NULL, _pAviMux);
-		if(SUCCEEDED(hr))
+		if (SUCCEEDED(hr))
 		{
-			 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+			SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 		}
-		else 
+		else
 		{
-			ssi_err ("RenderStream failed");
+			ssi_wrn("RenderStream failed");
 			return;
 		}
 
 	}
 
 	hr = _pControl->Run();
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
-		 SSI_DBG (SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
+		SSI_DBG(SSI_LOG_LEVEL_VERBOSE, "...SUCCEEDED!");
 	}
-	else 
+	else
 	{
-		ssi_err ("Running the graph failed");
+		ssi_wrn("Running the graph failed");
 		return;
 	}
 
+	_first_call = true;
+	_ready = true;
+}
+
+void CameraWriter::consume_enter(ssi_size_t stream_in_num, ssi_stream_t stream_in[])
+{
+	SSI_DBG (SSI_LOG_LEVEL_DETAIL, "try to start cam writer...");
+
+	// video
+
+	if (stream_in[0].sr != _video_format.framesPerSecond) {
+		ssi_wrn ("sample rate '%lf' of input stream differs from internal sample rate '%lf'", stream_in[0].sr, _video_format.framesPerSecond);
+		return;
+	}
+	if (stream_in[0].byte != ssi_video_stride(_video_format) * _video_format.heightInPixels) {
+		ssi_wrn ("sample bytes '%u' of input stream differs from internal sample bytes '%u'", stream_in[0].byte, ssi_video_stride(_video_format) * _video_format.heightInPixels);
+		return;
+	}
+	if (stream_in[0].dim != 1) {
+		ssi_wrn ("sample dimension '%u' of input stream differs from internal sample dimension 1'", stream_in[0].dim);
+		return;
+	}
+	if (ssi_video_stride(_video_format) * _video_format.heightInPixels != stream_in[0].byte)
+	{
+		ssi_wrn("video stream not compatible");
+		return;
+	}
+
+	// audio
+	if (stream_in_num > 1) {
+		_audio_format = new WAVEFORMATEX (ssi_create_wfx (stream_in[1].sr, stream_in[1].dim, stream_in[1].byte));
+	}
+
+	if(_audio_format)
+	{
+		SSI_ASSERT(stream_in_num == 2);
+		if(_audio_format->nChannels != stream_in[1].dim || _audio_format->wBitsPerSample / 8 != stream_in[1].byte)
+		{
+			ssi_wrn("audio stream not compatible");
+			return;
+		}
+	}
+	else
+	{
+		SSI_ASSERT(stream_in_num == 1);		
+	}
+
+	// initialize COM
+
+	HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    if (FAILED(hr))
+    {
+		if(hr == RPC_E_CHANGED_MODE)
+		{
+			SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Tried to reinitialize COM with different threading model!");
+		}
+		else
+		{
+			ssi_wrn ("Could not initialize COM library in connect()");
+			return;
+		}
+    }
+	else 
+	{
+		if(hr == S_FALSE)
+		{
+			SSI_DBG (SSI_LOG_LEVEL_DEBUG, "COM was already initialized for this thread!");
+		}
+		++_comInitCountEnterConsumeFlush;
+	}
+
+	// build graph
+
+	open();
 }
 
 void CameraWriter::consume(IConsumer::info consume_info, ssi_size_t stream_in_num, ssi_stream_t stream_in[])
 {
+	if (!_ready)
+	{
+		return;
+	}
 
 	HRESULT hr;
 	//SSI_ASSERT(stream_in_num == 1);
@@ -470,14 +507,24 @@ void CameraWriter::consume(IConsumer::info consume_info, ssi_size_t stream_in_nu
 		hr = _pFakeCamControl->PumpSampleIntoFilter((BYTE*)(stream_in[0].ptr + (i * ssi_video_stride (_video_format) * _video_format.heightInPixels)), ssi_video_stride (_video_format) * _video_format.heightInPixels);
 		
 	}
+
+	_first_call = false;
 }
 
-void CameraWriter::consume_flush(ssi_size_t stream_in_num, ssi_stream_t stream_in[])
+void CameraWriter::close()
 {
+	if (!_ready)
+	{
+		return;
+	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "close '%s'", _filepath);
 
 	_pFakeCamControl->SignalEndOfStream();
-	if(_audio_format)
+	if (_audio_format)
+	{
 		_pFakeAudioControl->SignalEndOfStream();
+	}
 	_pControl->Stop();
 
 	SafeReleaseFJ(_pControl);
@@ -488,13 +535,24 @@ void CameraWriter::consume_flush(ssi_size_t stream_in_num, ssi_stream_t stream_i
 	SafeReleaseFJ(_pInterleave);
 	SafeReleaseFJ(_pFakeCamControl);
 	SafeReleaseFJ(_pFakeAudioControl);
-	//SafeReleaseFJ(_pFakeSource);
-	//delete _pFakeSource;
 	SafeReleaseFJ(_pBuild);
 	SafeReleaseFJ(_pGraph);
 
-	delete _audio_format;
-	_audio_format = 0;
+	if (_first_call && !_options.keepEmpty)
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "remove '%s'", _filepath);
+		ssi_remove(_filepath);	
+	}
+
+	delete[] _filepath; _filepath = 0;
+	_ready = false;
+}
+
+void CameraWriter::consume_flush(ssi_size_t stream_in_num, ssi_stream_t stream_in[])
+{
+	close();
+
+	delete _audio_format; _audio_format = 0;
 
 	if(_comInitCountEnterConsumeFlush > 0)
 	{
@@ -536,7 +594,8 @@ HRESULT CameraWriter::GetListOfCompressionFilterNames (StringList &list) {
 
 	if (FAILED(hr))
 	{
-		ssi_err_static ("Could not create device enumerator");
+		ssi_wrn_static ("Could not create device enumerator");
+		return -1;
 	}    
 
 	hr = pSysDevEnum->CreateClassEnumerator(CLSID_VideoCompressorCategory, &pEnum, 0);
@@ -589,7 +648,8 @@ int CameraWriter::LetUserSelectDesiredCompression(StringList &list, bool fallBac
 		{
 			return LetUserSelectDesiredCompressionOnConsole(list);
 		}
-		ssi_err_static("DialogLibGateWay initialisation failed and no fallback available");
+		ssi_wrn_static("DialogLibGateWay initialisation failed and no fallback available");
+		return -1;
 	}
 
 	if(!dialogGateway.SetNewDialogType("SimpleSelectionDialog"))
@@ -598,7 +658,8 @@ int CameraWriter::LetUserSelectDesiredCompression(StringList &list, bool fallBac
 		{
 			return LetUserSelectDesiredCompressionOnConsole(list);
 		}
-		ssi_err_static("Could not set SimpleSelectionDialog and no fallback available");
+		ssi_wrn_static("Could not set SimpleSelectionDialog and no fallback available");
+		return -1;
 	}
 
 	int intHandle = dialogGateway.AlterExistingItem("Caption", -1, "Select a compression filter");
@@ -613,7 +674,8 @@ int CameraWriter::LetUserSelectDesiredCompression(StringList &list, bool fallBac
 				return LetUserSelectDesiredCompressionOnConsole(list);
 			}
 
-			ssi_err_static("Could not set Item and no fallback available");
+			ssi_wrn_static("Could not set Item and no fallback available");
+			return -1;
 		}
 	}
 
@@ -649,5 +711,23 @@ int CameraWriter::LetUserSelectDesiredCompressionOnConsole(StringList &list) {
 	return (selection - 1);
 }
 
+bool CameraWriter::notify(INotify::COMMAND::List command, const ssi_char_t *message) {
+
+	switch (command)
+	{
+	case INotify::COMMAND::SLEEP_POST:
+	{
+		close();
+		return true;
+	}
+	case INotify::COMMAND::WAKE_PRE:
+	{
+		open();			
+		return true;
+	}
+	}	
+
+	return false;
+}
 
 }

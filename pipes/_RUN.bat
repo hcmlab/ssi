@@ -1,1 +1,1 @@
-..\bin\x64\vc120\xmlpipe.exe %1
+..\bin\x64\vc140\xmlpipe.exe -log ssi.log %1

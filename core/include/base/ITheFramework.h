@@ -132,6 +132,7 @@ public:
 	virtual int AddRunnable (IRunnable *runnable = 0) = 0;
 	// last paramter defines milliseconds to wait, if < 0 until job is finished [-1] 
 	virtual void AddExeJob (const ssi_char_t *exe, const ssi_char_t *args, EXECUTE::list type, int wait) = 0;
+	virtual void SetStartMessage(const ssi_char_t *text) = 0;	
 	virtual void SetWaitable(IWaitable *waitable) = 0;
 
 	virtual bool IsBufferInUse (int buffer_id) = 0;

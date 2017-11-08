@@ -305,75 +305,16 @@ ssi_size_t FileBinaryLZ4::write (const void *ptr, ssi_size_t size, ssi_size_t co
 
 ssi_size_t FileBinaryLZ4::writeLine (const ssi_char_t *string) {
 
-	ssi_err("write line for LZ4 files not yet implemented!");
+	ssi_wrn("write line for LZ4 files not yet implemented!");
 
-	if (!_is_open) {
-		ssi_wrn ("file not open (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-
-	if (!_write_mode) {
-		ssi_wrn ("file not in write mode (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-
-	ssi_size_t result_1, result_2;
-
-	ssi_size_t len = ssi_cast (ssi_size_t, strlen (string));
-	result_1 = write (&len, sizeof (ssi_size_t), 1);
-	if (!result_1) {
-		ssi_wrn ("write() failed (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-	result_2 = write (string, sizeof (ssi_char_t), len);
-	if (!result_2) {
-		ssi_wrn ("write() failed (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-
-	return result_1+result_2;
+	return 0;
 }
 
 ssi_size_t FileBinaryLZ4::readLine (ssi_size_t num, ssi_char_t *string) {
 
 	ssi_err("read line for LZ4 files not yet implemented!");
 
-	if (!_is_open) {
-		ssi_wrn ("file not open (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-
-	if (!_read_mode) {
-		ssi_wrn ("file not in read mode (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-
-	ssi_wrn("not implemented");
-
 	return 0;
-
-
-	ssi_size_t result_1, result_2;
-
-	ssi_size_t len;
-	result_1 = read (&len, sizeof (ssi_size_t), 1);
-	if (!result_1)
-	{
-		return 0;
-	}
-	if (num <= len) 
-	{	
-		ssi_wrn ("input string too short (path=%s, mode=%d, type=%d, shared=false)", _path, _mode, _type);
-		return 0;
-	}
-	result_2 = read (string, ssi_cast (ssi_size_t, sizeof (ssi_char_t)), len);
-	if (!result_2)
-	{
-		return 0;
-	}
-	string[len] = '\0';
-
-	return result_1 + result_2;
 }
 
 

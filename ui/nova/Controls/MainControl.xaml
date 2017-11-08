@@ -15,9 +15,6 @@
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" Background="Transparent" Name="menu">
-            <Button Name="showSettingsMenu" Background="Transparent" BorderBrush="Transparent">
-                <Image Source="/Resources/settings.png" Width="16"></Image>
-            </Button>
             <MenuItem Header="FILE">
                 <MenuItem Header="Load Files" Name="loadFilesMenu" />
                 <MenuItem Header="Load Project" Name="fileLoadProjectMenu" />
@@ -27,10 +24,11 @@
                     <MenuItem Header="To GeNIe Data Sheet" Name="exportToGenie" Visibility="Collapsed" />
                     <MenuItem Header="Selected Annotation" Name="exportSelectedTierMenu">
                         <MenuItem Header="To CSV" Name="exportAnnoToCSVMenu" />
-                        <MenuItem Header="To XPS" Name="exportTierToXPSMenu" />
-                        <MenuItem Header="To PNG" Name="exportTierToPNGMenu" />
+                        <MenuItem Header="To XPS" Name="exportAnnoToXPSMenu" />
+                        <MenuItem Header="To PNG" Name="exportAnnoToPNGMenu" />
                     </MenuItem>
                     <MenuItem Header="Selected Signal" Name="exportSelectedTrackMenu">
+                        <MenuItem Header="To CSV" Name="exportSignalToCSVMenu"/>
                         <MenuItem Header="To XPS" Name="exportSignalToXPSMenu" />
                         <MenuItem Header="To PNG" Name="exportSignalToPNGMenu"/>
                     </MenuItem>
@@ -65,6 +63,7 @@
                     <MenuItem Header="To Continuous Annotation" Name="convertSignalToAnnoContinuousMenu" />
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="SETTINGS" Name="showSettingsMenu"/>
             <MenuItem Header="LEARNING" Name="databaseCMLMenu">
                 <MenuItem Header="Extract Features" Name="databaseCMLExtractFeaturesMenu"/>
                 <MenuItem Header="Merge Features" Name="databaseCMLMergeFeaturesMenu"/>
@@ -73,10 +72,12 @@
                 <MenuItem Header="Fusion" Name="fusionmenu">
                     <MenuItem Header="Train Bayesian Network" Name="databaseCMLFusionMenu"/>
                 </MenuItem>
-                <MenuItem Header="Merge / Copy Annotations" Name="databaseCMLMergeAnnotationsMenu" />                
+                <MenuItem Header="Merge / Copy Annotations" Name="databaseCMLMergeAnnotationsMenu" />
                 <MenuItem Header="Predict Annotations" Name="databaseCMLPredictMenu"/>
                 <MenuItem Header="Complete Current Annotation" Name="databaseCMLCompleteStepMenu" InputGestureText="Ctrl+L"/>
             </MenuItem>
+
+
             <MenuItem Header="?">
                 <MenuItem Header="About"  Name="aboutMenu" />
                 <MenuItem Header="Documentation"  Name="helpDocumentationMenu" />
@@ -239,7 +240,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
+                            <RowDefinition Name="signalbar" Height="30" MinHeight="30" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -270,7 +271,7 @@
 
                                     <StatusBar Grid.Column="0"
                                                    Grid.Row="0"
-                                                   Background="Transparent">
+                                                   Background="Transparent" Name="signalstatusbar" Visibility="Hidden" >
 
                                         <Button Name="signalSettingsButton" 
                                                     Background="Transparent" 
@@ -332,7 +333,7 @@
                             </Border>
 
                             <Border Grid.Column="0"
-                                    Grid.Row="1" 
+                                    Grid.Row="1"  
                                     Background="Transparent">
                                 <local:SignalTrackControl x:Name="signalTrackControl"
                                     VerticalAlignment="Stretch"
@@ -370,12 +371,12 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="30" />
+                                        <RowDefinition Height="30"  />
                                     </Grid.RowDefinitions>
 
                                     <StatusBar Grid.Column="0" 
                                     Grid.Row="0"
-                                    Background="Transparent">
+                                    Background="Transparent" Name="annostatusbar" MinHeight="30" Visibility="Hidden">
 
                                         <Button Name="annoSettingsButton" 
                                                 Background="Transparent" 

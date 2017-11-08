@@ -45,7 +45,7 @@ namespace ssi {
 
 		ssi_char_t string[SSI_MAX_CHAR];
 		FilePath fp (script);
-		ssi_sprint (string, "%s\\%s", fp.getDir (), tmpfile);
+		ssi_sprint (string, "%s%s", fp.getDir (), tmpfile);
 		WavTools::WriteWavFile (string, stream);
 
 		//run praat		

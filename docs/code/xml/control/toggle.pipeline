@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="control"/>
+	</register>
+	
+	<framework waitid="close" sync="true" slisten="false" sport="1234"/>
+	<runnable create="WaitButton:close" title="button" label="CLOSE"/>
+	
+	<!-- add a checkbox and publish events on a socket /-->
+	
+	<runnable create="NotifySender:sender" url="udp://255.255.255.255:1111"/>	
+	<runnable create="ControlCheckBox:record" id="sender" label="RECORD" default="false"/>	
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,450">console</area>
+		<area pos="0,450,400,150">record,close</area>				
+	</object>
+
+	<!-- start message -->
+
+	<message text="
+	
+USE CHECK BOX TO
+START/STOP RECORDING
+
+	"/>	
+	
+</pipeline>

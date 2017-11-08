@@ -38,10 +38,11 @@ using namespace ssi;
 	#endif
 #endif
 
-void record ();
 bool ex_cam (void *args);
-bool ex_camfile (void *args);
-bool ex_camscreen (void *args);
+bool ex_write(void *args);
+bool ex_write_demand(void *args);
+bool ex_read (void *args);
+bool ex_screen (void *args);
 
 int main () {
 
@@ -51,23 +52,23 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe");
-	Factory::RegisterDLL ("ssievent");
-	Factory::RegisterDLL ("ssiioput");
-	Factory::RegisterDLL ("ssigraphic");
-	Factory::RegisterDLL ("ssicamera");
-	Factory::RegisterDLL ("ssiaudio");
-	Factory::RegisterDLL ("ssiimage");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("ioput");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("camera");
+	Factory::RegisterDLL ("audio");
+	Factory::RegisterDLL ("image");
+	Factory::RegisterDLL ("control");
 
 	Exsemble ex;
 	ex.console(0, 0, 650, 600);
-	ex.add(ex_cam, 0, "WRITE", "Write to a file");
-	ex.add(ex_camfile, 0, "READ", "From from a file");
-	ex.add(ex_camscreen, 0, "SCREEN", "Capture the screen");
+	ex.add(ex_cam, 0, "CAMERA", "Show camera");
+	ex.add(ex_write, 0, "WRITE", "Write to a file");
+	ex.add(ex_write_demand, 0, "WRITE ON DEMAND", "Write to a file");
+	ex.add(ex_read, 0, "READ", "From from a file");
+	ex.add(ex_screen, 0, "SCREEN", "Capture the screen");
 	ex.show();
-
-	ssi_print ("\n\n\tpress enter to quit\n");
-	getchar ();
 	
 	Factory::Clear ();
 
@@ -86,36 +87,15 @@ bool ex_cam (void *args) {
 	Decorator *decorator = ssi_create (Decorator, 0, true);
 	frame->AddDecorator(decorator);
 
-	Audio *audio = ssi_create (Audio, "audio", true);	
-	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIO_PROVIDER_NAME);
-	frame->AddSensor(audio);
-	
 	Camera *camera = ssi_create (Camera, "camera", true);	
 	ITransformable *camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME);
 	frame->AddSensor(camera);
-
-	ssi_video_params_t video_params = camera->getOptions()->params;
-	
-	ITransformable *ids[] = { camera_p, audio_p };
-	CameraWriter *cam_write = ssi_create (CameraWriter, 0, true);
-	cam_write->getOptions()->setPath("video.avi");
-	//cam_write->getOptions()->mirror = false;
-	//cam_write->getOptions()->flip = true;
-	cam_write->getOptions()->setCompression("Microsoft Video 1");
-	//cam_write->getOptions()->setCompression(SSI_CAMERA_USE_NO_COMPRESSION);
-	frame->AddConsumer(2, ids, cam_write, "1");
 
 	VideoPainter *camera_plot = ssi_create_id (VideoPainter, 0, "plot");
 	camera_plot->getOptions()->mirror = false;
 	camera_plot->getOptions()->flip = true;
 	camera_plot->getOptions()->setTitle("camera");
 	frame->AddConsumer(camera_p, camera_plot, "1");
-
-	SignalPainter *audio_plot = ssi_create_id (SignalPainter, 0, "plot");
-	audio_plot->getOptions()->setTitle("audio");
-	audio_plot->getOptions()->size = 2.0;	
-	audio_plot->getOptions()->type = PaintSignalType::AUDIO;
-	frame->AddConsumer(audio_p, audio_plot, "0.1s");
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 400);
@@ -129,27 +109,37 @@ bool ex_cam (void *args) {
 	return true;
 }
 
-void record () {
+bool ex_write (void *args) {
 
 	ITheFramework *frame = Factory::GetFramework ();
 
 	Decorator *decorator = ssi_create (Decorator, 0, true);
 	frame->AddDecorator(decorator);
 
+	Audio *audio = ssi_create(Audio, "audio", true);
+	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIO_PROVIDER_NAME);
+	frame->AddSensor(audio);
+
 	Camera *camera = ssi_create (Camera, "camera", true);	
 	ITransformable *camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME);
 	frame->AddSensor(camera);
-	CameraWriter *cam_write = ssi_create (CameraWriter, 0, true);
-	cam_write->getOptions()->setPath("video.avi");
-	cam_write->getOptions()->setCompression("Microsoft Video 1");
-	//cam_write->getOptions()->setCompression(SSI_CAMERA_USE_NO_COMPRESSION);
-	frame->AddConsumer(camera_p, cam_write, "1");
+
+	ITransformable *ids[] = { camera_p, audio_p };
+	CameraWriter *cam_write = ssi_create(CameraWriter, "camerawrite", true);
+	cam_write->getOptions()->setPath("video.avi");	
+	frame->AddConsumer(2, ids, cam_write, "1");
 
 	VideoPainter *camera_plot = ssi_create_id (VideoPainter, 0, "plot");
 	camera_plot->getOptions()->mirror = false;
 	camera_plot->getOptions()->flip = true;
 	camera_plot->getOptions()->setTitle("camera");
 	frame->AddConsumer(camera_p, camera_plot, "1");
+
+	SignalPainter *audio_plot = ssi_create_id(SignalPainter, 0, "plot");
+	audio_plot->getOptions()->setTitle("audio");
+	audio_plot->getOptions()->size = 2.0;
+	audio_plot->getOptions()->type = PaintSignalType::AUDIO;
+	frame->AddConsumer(audio_p, audio_plot, "0.1s");
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 800);
@@ -158,14 +148,68 @@ void record () {
 	frame->Wait();
 	frame->Stop();
 	frame->Clear();
+
+	return true;
 }
 
-bool ex_camfile (void *args) {		
+bool ex_write_demand(void *args) {
+
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	Audio *audio = ssi_create(Audio, "audio", true);
+	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIO_PROVIDER_NAME);
+	frame->AddSensor(audio);
+
+	Camera *camera = ssi_create(Camera, "camera", true);
+	ITransformable *camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME);
+	frame->AddSensor(camera);
+
+	ITransformable *ids[] = { camera_p, audio_p };
+	CameraWriter *cam_write = ssi_create_id(CameraWriter, "camerawrite", "writer");
+	cam_write->getOptions()->overwrite = false;
+	cam_write->getOptions()->setPath("video.avi");;
+	//frame->AddConsumer(2, ids, cam_write, "1");
+	frame->AddConsumer(camera_p, cam_write, "1");
+
+	VideoPainter *camera_plot = ssi_create_id(VideoPainter, 0, "plot");
+	camera_plot->getOptions()->mirror = false;
+	camera_plot->getOptions()->flip = true;
+	camera_plot->getOptions()->setTitle("camera");
+	frame->AddConsumer(camera_p, camera_plot, "1");
+
+	SignalPainter *audio_plot = ssi_create_id(SignalPainter, 0, "plot");
+	audio_plot->getOptions()->setTitle("audio");
+	audio_plot->getOptions()->size = 2.0;
+	audio_plot->getOptions()->type = PaintSignalType::AUDIO;
+	frame->AddConsumer(audio_p, audio_plot, "0.1s");
+
+	ControlCheckBox *control = ssi_create_id(ControlCheckBox, 0, "control");
+	control->getOptions()->setId("writer,plot*");
+	control->getOptions()->setLabel("RECORD");
+	frame->AddRunnable(control);
+
+	decorator->add("console", 0, 0, 650, 600);
+	decorator->add("control", 0, 600, 650, 200);
+	decorator->add("plot*", 650, 0, 400, 800);	
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
+bool ex_read (void *args) {		
 
 	const ssi_char_t *filename = "video.avi";	
 
-	if (!ssi_exists (filename)) {
-		record ();		
+	if (!ssi_exists (filename) && !ex_write(args))
+	{
+		return false;
 	}
 
 	ITheFramework *frame = Factory::GetFramework ();
@@ -196,7 +240,7 @@ bool ex_camfile (void *args) {
 	return true;
 }		
 
-bool ex_camscreen (void *args) {
+bool ex_screen (void *args) {
 
 	ITheFramework *frame = Factory::GetFramework ();
 
@@ -222,10 +266,8 @@ bool ex_camscreen (void *args) {
 	frame->AddConsumer(screen_p, cam_plot, "1");
 
 	ITransformable *ts[] = { screen_p, audio_p };
-	CameraWriter *cam_write = ssi_create (CameraWriter, 0, true);
+	CameraWriter *cam_write = ssi_create (CameraWriter, "camerawrite", true);
 	cam_write->getOptions()->setPath("screen.avi");
-	cam_write->getOptions()->setCompression("Microsoft Video 1");
-	//cam_write->getOptions()->setCompression(SSI_CAMERA_USE_NO_COMPRESSION);
 	frame->AddConsumer(2, ts, cam_write, "1");
 
 	decorator->add("console", 0, 0, 650, 800);

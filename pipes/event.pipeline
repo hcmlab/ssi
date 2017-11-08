@@ -50,7 +50,7 @@
 		<listen address="pressed@button"/>
 	</object>
 	
-	<consumer create="FileWriter" path="cursor" type="1">
+	<consumer create="FileWriter" path="cursor" overwrite="true" type="1">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
 	

@@ -97,6 +97,7 @@ void FileAscii::setFormat (const char *delim,
 			break;
 		default:
 			ssi_err ("unsupported sample type");
+			return;
 	}
 	_format_with_delim = ssi_strcat (_format, _delim);
 	_format_with_newline = ssi_strcat (_format, "\n");	
@@ -155,6 +156,7 @@ ssi_size_t FileAscii::read (void *ptr, ssi_size_t size, ssi_size_t count) {
 			break;
 		default:
 			ssi_err ("unsupported sample type");
+			return 0;
 	}
 
 	if (!result) {
@@ -236,6 +238,7 @@ ssi_size_t FileAscii::write (const void *ptr, ssi_size_t size, ssi_size_t count)
 			break;
 		default:
 			ssi_err ("unsupported sample type");
+			return 0;
 	}
 
 	if (!result) {

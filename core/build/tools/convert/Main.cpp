@@ -218,6 +218,7 @@ void V0toVX (const ssi_char_t *filename, ssi_char_t *sample_type, bool list_inpu
 	ssi_type_t type = SSI_UNDEF;
 	if (!ssi_name2type (sample_type, type)) {
 		ssi_err ("unkown sample type '%s'", sample_type);
+		return;
 	}
 
 	if (list_input) {

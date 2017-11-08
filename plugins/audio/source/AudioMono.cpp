@@ -95,6 +95,7 @@ void AudioMono::transform(ITransformer::info info,
 
 		for (ssi_size_t i = 0; i < num; i++)
 		{
+			*dstptr = 0;
 			for (ssi_size_t j = 0; j < dim; j++)
 			{
 				*dstptr += *srcptr++;
@@ -122,6 +123,7 @@ void AudioMono::transform(ITransformer::info info,
 
 		for (ssi_size_t i = 0; i < num; i++)
 		{
+			*dstptr = 0;
 			for (ssi_size_t j = 0; j < dim; j++)
 			{
 				*dstptr += *srcptr++;

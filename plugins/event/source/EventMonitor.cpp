@@ -108,7 +108,16 @@ bool EventMonitor::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 			case SSI_ETYPE_STRING:
 			{
 				ssi_char_t *str = ssi_pcast(ssi_char_t, e->ptr);
-				_monitor->print(str);
+				if (_options.lineReturn)
+				{
+					ssi_char_t *tmp = ssi_strrepl(str, "\n", "\r\n");
+					_monitor->print(tmp);
+					delete[] tmp;
+				}
+				else
+				{
+					_monitor->print(str);
+				}
 				break;
 			}
 

@@ -1,0 +1,108 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="control"/>
+		<load name="audio"/>
+		<load name="camera"/>
+	</register>
+	
+	<framework waitid="close"/>
+	<runnable create="WaitButton:close" title="button" label="CLOSE"/>
+	
+	<!-- sensors -->
+	
+	<sensor create="Mouse" mask="1">
+		<output channel="cursor" pin="cursor" />
+	</sensor>	
+	
+	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<sensor create="Camera" option="camera">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	
+	<runnable create="ClockEventSender" address="tick@clock" clock="1000"/>	
+	
+
+	<!-- storage
+
+	use unique file names
+	
+	-->
+	
+	<consumer create="FileWriter" path="record/cursor" overwrite="false" keepEmpty="false">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>	
+	<consumer create="WavWriter" path="record/audio" overwrite="false" keepEmpty="false">
+		<input pin="audio" frame="0.2s"/>		
+	</consumer>
+	<consumer create="CameraWriter" option="camerawriter" path="record/camera" overwrite="false" keepEmpty="false">
+		<input pin="video" frame="1"/>
+	</consumer>		
+	<consumer create="FileAnnotationWriter" defaultSchemeName="cursor" path="record/cursor" overwrite="false" keepEmpty="false">
+		<input pin="cursor" frame="0.2s"/>
+	</consumer>				
+	<object create="FileAnnotationWriter" defaultSchemeName="clock" addUnkownLabel="true" eventNameAsLabel="true" path="record/clock" overwrite="false" keepEmpty="false">
+		<listen address="tick@clock"/>
+	</object>
+	
+	<!--storage -->
+	
+	
+	<!-- storage
+	
+	record on demand
+	
+	-->
+	
+	<runnable create="ControlCheckBox:record" id="plot*,writer*" label="RECORD" default="false"/>	
+	
+	<consumer create="FileWriter:writer" path="record/$(num,2)/cursor" overwrite="false" keepEmpty="false">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	<consumer create="WavWriter:writer" path="record/$(num,2)/audio" overwrite="false" keepEmpty="false">
+		<input pin="audio" frame="0.2s"/>		
+	</consumer>
+	<consumer create="CameraWriter:writer" option="camerawriter" path="record/$(num,2)/camera" overwrite="false" keepEmpty="false">
+		<input pin="video" frame="1"/>
+	</consumer>		
+	<consumer create="FileAnnotationWriter:writer" defaultSchemeName="cursor" path="record/$(num,2)/cursor" overwrite="false" keepEmpty="false">
+		<input pin="cursor" frame="0.2s"/>
+	</consumer>			
+	<object create="FileAnnotationWriter:writer" defaultSchemeName="clock" addUnkownLabel="true" eventNameAsLabel="true" path="record/$(num,2)/clock" overwrite="false" keepEmpty="false">
+		<listen address="tick@clock"/>
+	</object>
+
+	<!-- visualization 	-->
+	
+	<consumer create="VideoPainter:vplot" title="camera">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.02s"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>		
+	<object create="EventMonitor:monitor">
+		<listen address="@"/>
+	</object>
+	
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,450">console</area>
+		<area pos="0,450,400,150">record,close</area>
+		<area pos="400,0,400,300" nh="1">vplot*</area>		
+		<area pos="400,300,400,300" nh="1">plot*</area>		
+		<area pos="800,0,400,600" nh="1">monitor</area>		
+	</object>
+
+</pipeline>

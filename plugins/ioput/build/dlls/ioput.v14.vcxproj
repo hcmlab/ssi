@@ -141,6 +141,8 @@
     <ClInclude Include="..\..\include\FileReader.h" />
     <ClInclude Include="..\..\include\FileSampleWriter.h" />
     <ClInclude Include="..\..\include\FileWriter.h" />
+    <ClInclude Include="..\..\include\NotifyReceiver.h" />
+    <ClInclude Include="..\..\include\NotifySender.h" />
     <ClInclude Include="..\..\include\SocketEventReader.h" />
     <ClInclude Include="..\..\include\SocketEventWriter.h" />
     <ClInclude Include="..\..\include\SocketReader.h" />
@@ -155,6 +157,8 @@
     <ClCompile Include="..\..\source\FileReader.cpp" />
     <ClCompile Include="..\..\source\FileSampleWriter.cpp" />
     <ClCompile Include="..\..\source\FileWriter.cpp" />
+    <ClCompile Include="..\..\source\NotifyReceiver.cpp" />
+    <ClCompile Include="..\..\source\NotifySender.cpp" />
     <ClCompile Include="..\..\source\SocketEventReader.cpp" />
     <ClCompile Include="..\..\source\SocketEventWriter.cpp" />
     <ClCompile Include="..\..\source\SocketReader.cpp" />

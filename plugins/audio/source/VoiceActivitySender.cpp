@@ -44,27 +44,29 @@ VoiceActivitySender::VoiceActivitySender (const ssi_char_t *file)
 	_audio_activity(0),
 	_zero_event_sender(0) {
 
-	_audio_activity = ssi_pcast(AudioActivity, Factory::Create(AudioActivity::GetCreateName(), 0, false));
-	_audio_activity->getOptions()->threshold = 0.05f;
-	_audio_activity->getOptions()->method = AudioActivity::LOUDNESS;
+	_audio_activity = ssi_pcast(AudioActivity, Factory::Create(AudioActivity::GetCreateName(), 0, false));	
 	if (!_audio_activity) {
 		ssi_err("could not create 'AudioActivity'");
+		return;
 	}
+	_audio_activity->getOptions()->threshold = 0.05f;
+	_audio_activity->getOptions()->method = AudioActivity::LOUDNESS;
 	for (ssi_size_t i = 0; i < _audio_activity->getOptions()->getSize(); i++) {
 		ssi_option_t *o = _audio_activity->getOptions()->getOption(i);
 		_options.addOption(o->name, o->ptr, o->num, o->type, o->help);
 	}
 
-	_zero_event_sender = ssi_pcast(ZeroEventSender, Factory::Create(ZeroEventSender::GetCreateName(), 0, false));
+	_zero_event_sender = ssi_pcast(ZeroEventSender, Factory::Create(ZeroEventSender::GetCreateName(), 0, false));	
+	if (!_zero_event_sender) {
+		ssi_err("could not create 'ZeroEventSender'");
+		return;
+	}	
 	_zero_event_sender->getOptions()->mindur = 0.5;
 	_zero_event_sender->getOptions()->maxdur = 5.0;
 	_zero_event_sender->getOptions()->hangin = 3;
 	_zero_event_sender->getOptions()->hangout = 10;
 	_zero_event_sender->getOptions()->setEvent("vad");
 	_zero_event_sender->getOptions()->setSender("audio");
-	if (!_zero_event_sender) {
-		ssi_err("could not create 'ZeroEventSender'");
-	}	
 	for (ssi_size_t i = 0; i < _zero_event_sender->getOptions()->getSize(); i++) {
 		ssi_option_t *o = _zero_event_sender->getOptions()->getOption(i);
 		_options.addOption(o->name, o->ptr, o->num, o->type, o->help);

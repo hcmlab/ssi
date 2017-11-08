@@ -37,6 +37,7 @@
 
 namespace ssi {
 
+ssi_char_t String::INVALID_CHAR = '\0';
 ssi_char_t *String::ssi_log_name = "string____";
 
 String::String () {
@@ -71,6 +72,7 @@ char& String::operator[](ssi_size_t index)
 	if (index >= ssi_strlen(_string))
 	{
 		ssi_err("out of range (%u>=%u)", index, ssi_strlen(_string));
+		return INVALID_CHAR;
 	}		
 	return _string[index];
 }
@@ -80,6 +82,7 @@ const char& String::operator[](ssi_size_t index) const
 	if (index >= ssi_strlen(_string))
 	{
 		ssi_err("out of range (%u>=%u)", index, ssi_strlen(_string));
+		return INVALID_CHAR;
 	}
 	return _string[index];
 }

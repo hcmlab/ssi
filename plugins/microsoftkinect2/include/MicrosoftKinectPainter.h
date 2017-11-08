@@ -106,12 +106,14 @@ public:
 	ssi_size_t getSampleBytesOut (ssi_size_t sample_bytes_in) { 
 		if (sample_bytes_in != (_israwdepth ? ssi_video_size (_raw_format) : ssi_video_size (_video_format))) {
 			ssi_err ("invalid byte size");
+			return 0;
 		}
 		return ssi_video_size (_video_format); 
 	};	
 	ssi_type_t getSampleTypeOut (ssi_type_t sample_type_in) {
 		if (sample_type_in != SSI_IMAGE) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 		return SSI_IMAGE;
 	};

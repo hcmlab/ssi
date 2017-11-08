@@ -136,11 +136,11 @@ void SocketEventReader::event (const char *from,
 
 		if (n_events == 0)
 		{
-			ssi_event_init(e, SSI_ETYPE_EMPTY, Factory::AddString(sender_id), Factory::AddString(event_id), time_ms, dur, 0, 1.0f, ssi_estate_t(state));
+			ssi_event_init(e, SSI_ETYPE_EMPTY, _event_string.sender_id, _event_string.event_id, time_ms, dur, 0, 1.0f, ssi_estate_t(state));
 		}
 		else
 		{
-			ssi_event_init(e, SSI_ETYPE_MAP, Factory::AddString(sender_id), Factory::AddString(event_id), time_ms, dur, n_events * sizeof(ssi_event_map_t), 1.0f, ssi_estate_t(state));
+			ssi_event_init(e, SSI_ETYPE_MAP, _event_string.sender_id, _event_string.event_id, time_ms, dur, n_events * sizeof(ssi_event_map_t), 1.0f, ssi_estate_t(state));
 			ssi_event_map_t *t = ssi_pcast(ssi_event_map_t, e.ptr);
 			for (osc_int32 i = 0; i < n_events; i++) {
 				t[i].id = Factory::AddString(events[i]);
@@ -155,75 +155,87 @@ void SocketEventReader::event (const char *from,
 
 void SocketEventReader::enter () {
 
-	_socket = Socket::CreateAndConnect (_options.type, Socket::SERVER, _options.port, _options.host);	
+	if (_options.url[0] != '\0')
+	{
+		_socket = Socket::CreateAndConnect(_options.url, Socket::MODE::SERVER);
+	}
+	else
+	{
+		ssi_wrn("using deprecated option 'host,type,port', use 'url' instead");
+		_socket = Socket::CreateAndConnect(_options.type, Socket::MODE::SERVER, _options.port, _options.host);
+	}
+
 	if (_options.osc) {
 		_socket_osc = new SocketOsc (*_socket, _options.size);
 	} else {
 		_buffer = new ssi_byte_t[_options.size];
 	}
-	
-	if (!_socket) {
-		ssi_wrn ("could not connect '%s@%u'", _options.host, _options.port);
-	}
 
 	_frame = Factory::GetFramework ();
 	
 	ssi_char_t string[SSI_MAX_CHAR];
-	ssi_sprint (string, "SocketEventReader@'%s@%u'", _options.host, _options.port); 	
+	ssi_sprint (string, "SocketEventReader@%s", _socket->getUrl()); 	
 	Thread::setName (string);
-
-	ssi_sprint(string, "%s@%u", _options.host, _options.port);
-	ssi_msg(SSI_LOG_LEVEL_BASIC, "started '%s'", string);
+	
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "start receiving events from %s", _socket->getUrl());
 }
 
 void SocketEventReader::run () {
 
 	int result = 0;
 	
-	if (_options.osc) {		
-		result = _socket_osc->recv (this, _options.timeout); 
-	} else if (_socket->isConnected()) {
-		result = _socket->recv (_buffer, _options.size, _options.timeout); 
-		if (result > 0) {
-			// make sure we have an ending null-byte
-			bool has_null_byte = false;
-			for (int i = 0; i < result; i++) {
-				if (_buffer[i] == '\0') {
-					has_null_byte = true;
-					break;
+	if (_socket->isConnected())
+	{
+		if (_options.osc)
+		{
+			result = _socket_osc->recv(this, _options.timeout);
+		}
+		else
+		{
+			result = _socket->recv(_buffer, _options.size, _options.timeout);
+			if (result > 0) {
+				// make sure we have an ending null-byte
+				bool has_null_byte = false;
+				for (int i = 0; i < result; i++) {
+					if (_buffer[i] == '\0') {
+						has_null_byte = true;
+						break;
+					}
+				}
+				// send event
+				if (_elistener) {
+					_event_string.time = _frame->GetElapsedTimeMs();
+					_event_string.dur = 0;
+					if (has_null_byte) {
+						ssi_event_adjust(_event_string, ssi_strlen(_buffer) + 1);
+						strcpy(_event_string.ptr, _buffer);
+					}
+					else {
+						ssi_event_adjust(_event_string, result + 1);
+						memcpy(_event_string.ptr, _buffer, result * sizeof(ssi_byte_t));
+						_event_string.ptr[result] = '\0';
+					}
+					_elistener->update(_event_string);
 				}
 			}
-			// send event
-			if (_elistener) {
-				_event_string.time = _frame->GetElapsedTimeMs ();
-				_event_string.dur = 0;
-				if (has_null_byte) {
-					ssi_event_adjust(_event_string, ssi_strlen(_buffer) + 1);
-					strcpy(_event_string.ptr, _buffer);					
-				} else {
-					ssi_event_adjust(_event_string, result + 1);
-					memcpy(_event_string.ptr, _buffer, result * sizeof(ssi_byte_t));
-					_event_string.ptr[result] = '\0';
-				}				
-				_elistener->update (_event_string);
-			}	
 		}
-	} else {
+	}
+	else
+	{
 		Sleep(10);
 	}
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "received %d bytes", result);
+	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "receive %d bytes", result);
 };
 
 void SocketEventReader::flush () {
-	
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "stop receiving events from %s", _socket->getUrl());
+
 	delete _socket; _socket = 0;
 	delete _socket_osc; _socket_osc = 0;
 	delete[] _buffer; _buffer = 0;
 
-	ssi_char_t string[SSI_MAX_CHAR];
-	ssi_sprint(string, "%s@%u", _options.host, _options.port);
-	ssi_msg(SSI_LOG_LEVEL_BASIC, "stopped'%s'", string);
 }
 
 }

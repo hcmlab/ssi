@@ -46,16 +46,17 @@ public:
 	public:
 
 		Options ()
-			: mode (File::WRITE), stream (true), version (File::DEFAULT_VERSION), type (File::BINARY) {
+			: mode (File::WRITE), stream (true), type (File::BINARY), overwrite(false), keepEmpty(true) {
 
 			path[0] = '\0';
 			meta[0] = '\0';
 			setDelim (SSI_FILE_DEFAULT_DELIM);
 
 			addOption ("path", path, SSI_MAX_CHAR, SSI_CHAR, "file path (empty for stdout)");
+			addOption ("overwrite", &overwrite, 1, SSI_BOOL, "overwrite file if it already exists (otherwise a unique path will be created)");			
+			addOption ("keepEmpty", &keepEmpty, 1, SSI_BOOL, "store stream even if it is empty");
 			addOption ("type", &type, 1, SSI_UCHAR, "file type (0=binary, 1=text, 2=lz4)");		
 			addOption ("mode", &mode, 1, SSI_UCHAR, "file access mode (1=w, 2=a, 3=r+, 4=w+, 5=a+)");
-			addOption ("version", &version, 1, SSI_UCHAR, "file version (0=V0, 1=V1, 2=V2(xml))");
 			addOption ("stream", &stream, 1, SSI_BOOL, "continuous stream mode");
 			addOption ("delim", delim, SSI_MAX_CHAR, SSI_CHAR, "delimiter string (text only)");
 			addOption ("meta", &meta, SSI_MAX_CHAR, SSI_CHAR, "list of 'key=value' pairs separated by ; to add as meta information");
@@ -78,10 +79,10 @@ public:
 		ssi_char_t path[SSI_MAX_CHAR];
 		File::TYPE type;
 		File::MODE mode;
-		File::VERSION version;
 		bool stream;
 		ssi_char_t delim[20];		
 		ssi_char_t meta[SSI_MAX_CHAR];
+		bool overwrite, keepEmpty;
 	};
 
 public: 	
@@ -101,6 +102,8 @@ public:
 		ssi_stream_t stream_in[]);
 	void consume_flush (ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]);
+
+	bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
 
 	void setMetaData (ssi_size_t size, const void *meta) {
 		_n_meta = size;
@@ -128,12 +131,18 @@ protected:
 	ssi_byte_t *_meta;
 	FileStreamOut _out;
 
-	File *_fileptr;
+	File *_fileptr;	
 	ssi_size_t _total_sample_number;
-	int64_t _position;
+	int64_t _position;	
+
 	ssi_char_t _string[1024];
-	bool _first_call;
 	ITheFramework *_frame;
+
+	bool _first_call;	
+	ssi_char_t *_filepath;
+	ssi_stream_t _stream;
+	void open();
+	void close();
 
 	void parse_meta(const ssi_char_t *string, char delim);
 	struct key_value_t

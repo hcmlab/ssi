@@ -16,7 +16,7 @@
 	Stores the audio stream to a wav file in RIFF format.
 	
 	-->
-	<consumer create="WavWriter" path="audio.wav">
+	<consumer create="WavWriter" path="audio.wav" overwrite="true">
 		<input pin="audio" frame="512"/>		
 	</consumer>
 	

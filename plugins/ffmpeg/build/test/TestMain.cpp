@@ -55,14 +55,14 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe");
-	Factory::RegisterDLL ("ssiffmpeg");
-	Factory::RegisterDLL ("ssigraphic");
-	Factory::RegisterDLL ("ssiioput");
-	Factory::RegisterDLL ("ssisignal");
-	Factory::RegisterDLL ("ssievent");
-	Factory::RegisterDLL ("ssicamera");
-	Factory::RegisterDLL ("ssiaudio");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("ffmpeg");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("ioput");
+	Factory::RegisterDLL ("signal");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("camera");
+	Factory::RegisterDLL ("audio");
 
 	Exsemble ex;
 	ex.add(ex_output_file, 0, "FFMPEG", "Output file");
@@ -106,21 +106,25 @@ bool ex_output_file (void *args) {
 	FFMPEGWriter *ffmpeg = 0;
 	
 	ffmpeg = ssi_create(FFMPEGWriter, "writer-mp4", true);
-	ffmpeg->getOptions()->setUrl("out.mp4");
+	ffmpeg->getOptions()->setPath("out.mp4");
+	ffmpeg->getOptions()->overwrite = true;
 	frame->AddConsumer(video, ffmpeg, "1");
 
 	ffmpeg = ssi_create(FFMPEGWriter, "writer+a-mp4", true);
-	ffmpeg->getOptions()->setUrl("out+a.mp4");
+	ffmpeg->getOptions()->setPath("out+a.mp4");
+	ffmpeg->getOptions()->overwrite = true;
 	ITransformable *ts[2] = { video, audio };
 	frame->AddConsumer(2, ts, ffmpeg, "1");
 
 	ffmpeg = ssi_create(FFMPEGWriter, "writer-mp3", true);
-	ffmpeg->getOptions()->setUrl("out.mp3");
+	ffmpeg->getOptions()->setPath("out.mp3"); 
+	ffmpeg->getOptions()->overwrite = true;
 	frame->AddConsumer(audio, ffmpeg, "0.01s");
 
 	// check
 	WavWriter *wavwrite = ssi_create(WavWriter, 0, true);
 	wavwrite->getOptions()->setPath("out.wav");
+	wavwrite->getOptions()->overwrite = true;
 	frame->AddConsumer(audio, wavwrite, "0.01s");
 
 	// plot	

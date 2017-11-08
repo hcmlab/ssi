@@ -387,7 +387,7 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 #define ssi_err(text, ...) { \
 	if (ssimsg) { \
 		ssimsg->err(ssi_log_name, __FILE__, __LINE__, (text), __VA_ARGS__); \
-		} \
+	} \
 	if (ssiout) { \
 		/*set console color to red */ \
 		HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);	\
@@ -401,15 +401,15 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 		SetConsoleTextAttribute(hCon, GRAY); \
 		} \
 	if (ssi_log_file_on) { \
-		ssi_log_file_end (); \
-		} \
+		fflush (ssiout); \
+	} \
 	SSI_ASSERT (false); \
 }
 #else
 #define ssi_err(text, ...) { \
 	if (ssimsg) { \
 		ssimsg->err(ssi_log_name, __FILE__, __LINE__, (text), __VA_ARGS__); \
-		} \
+	} \
 	if (ssiout) { \
 		/*set console color to red */ \
 		HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);	\
@@ -428,9 +428,8 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 	ssi_fprint (errfile, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
 	fclose (errfile); \
 	if (ssi_log_file_on) { \
-		ssi_log_file_end (); \
-		} \
-	exit (-1); \
+		fflush (ssiout); \
+	} \
 }
 #endif
 
@@ -438,7 +437,7 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 #define ssi_err_static(text, ...) { \
 	if (ssimsg) { \
 		ssimsg->err(ssi_log_name_static, __FILE__, __LINE__, (text), __VA_ARGS__); \
-		} \
+	} \
 	if (ssiout) { \
 		 \
 		/*set console color to red */ \
@@ -453,15 +452,15 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 		SetConsoleTextAttribute(hCon, GRAY); \
 		} \
 	if (ssi_log_file_on) { \
-		ssi_log_file_end (); \
-		} \
+		fflush (ssiout); \
+	} \
 	SSI_ASSERT (false); \
 }
 #else
 #define ssi_err_static(text, ...) { \
 	if (ssimsg) { \
 		ssimsg->err(ssi_log_name_static, __FILE__, __LINE__, (text), __VA_ARGS__); \
-		} \
+	} \
 	if (ssiout) { \
 		 \
 		/*set console color to red */ \
@@ -474,16 +473,15 @@ enum Color { DARKBLUE = 1, DARKGREEN, DARKTEAL, DARKRED, DARKPINK, DARKYELLOW, G
 		\
 		/*set console color to gray (default) */ \
 		SetConsoleTextAttribute(hCon, GRAY); \
-		} \
+	} \
 	FILE *errfile = fopen ("ssi_last.err", "w"); \
 	ssi_fprint (errfile, "[%s] # !ERROR! # ", ssi_log_name_static); \
 	ssi_fprint (errfile, (text), __VA_ARGS__); \
 	ssi_fprint (errfile, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
 	fclose (errfile); \
 	if (ssi_log_file_on) { \
-		ssi_log_file_end (); \
-		} \
-	exit (-1); \
+		fflush (ssiout); \
+	} \
 }
 #endif
 #define ssi_wrn(text, ...) { \

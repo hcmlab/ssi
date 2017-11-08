@@ -61,6 +61,7 @@ namespace ssi {
 				_file = fopen(_filename, "w");
 				if (_file == 0) {
 					ssi_err("could not open file %s", _filename);
+					return;
 				}
 			}
 			else {

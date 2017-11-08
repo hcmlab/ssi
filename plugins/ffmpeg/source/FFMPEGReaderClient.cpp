@@ -357,9 +357,9 @@ bool FFMPEGReaderClient::close () {
 void FFMPEGReaderClient::run () {
 
 	while (_state == STATE::CONNECT) {
-		if (!open ()) {
-			ssi_wrn ("could not open stream '%s', retry..", _reader->_options.url);
-			sleep_ms (100);
+		if (!open ()) {			
+			ssi_wrn("could not open stream '%s', retry..", _reader->_options.url);
+			sleep_ms(100);			
 		} else {
 			ssi_msg (SSI_LOG_LEVEL_DETAIL, "start demuxing '%s'", _reader->_options.url);
 			_state = STATE::READ;

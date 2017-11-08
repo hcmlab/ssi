@@ -57,6 +57,7 @@ public:
 		ssi_char_t **values,
 		File::TYPE type, 
 		File::VERSION version = DEFAULT_VERSION);
+	bool ready() { return _is_open;  }
 	bool close ();
 	bool write (ssi_stream_t &data, 
 		bool continued);

@@ -119,6 +119,7 @@ protected:
 	bool parseExecute(TiXmlElement *element);
 	bool parseJob(TiXmlElement *element);
 	bool parseGate (TiXmlElement *element);
+	bool parseMessage(TiXmlElement *element);	
 
 	bool getChildSize(TiXmlElement *mama, const ssi_char_t *value, ssi_size_t &n_childs);
 

@@ -115,7 +115,7 @@ public:
 
 	public:
 		Options () 
-			: monitor(false), mupd(100), console(false), sync(false), sport(1111), stype(Socket::UDP), slisten(false), sdialog(false), countdown(3), runtime(0), tserver(false), tport(2222), info(false) {
+			: monitor(false), mupd(100), console(false), sync(false), sport(1111), stype(Socket::TYPE::UDP), slisten(false), sdialog(false), countdown(3), runtime(0), tserver(false), tport(2222), info(false) {
 
 			shost[0] = '\0';
 
@@ -184,7 +184,7 @@ public:
 
 		int sport;
 		ssi_char_t shost[SSI_MAX_CHAR];
-		Socket::TYPE stype;
+		Socket::TYPE::List stype;
 		bool slisten;
 		bool sdialog;
 
@@ -285,6 +285,7 @@ public:
 	void AddDecorator(IObject *decorator);
 	int AddRunnable (IRunnable *runnable);
 	void AddExeJob (const ssi_char_t *exe, const ssi_char_t *args, EXECUTE::list type, int wait);
+	void SetStartMessage(const ssi_char_t *text);
 	void SetWaitable(IWaitable *waitable);
 
 	bool IsBufferInUse (int buffer_id);
@@ -334,6 +335,7 @@ protected:
 	IRunnable *_monitor;
 
 	void countdown(ssi_size_t n_seconds);
+	void message();
 
 	Socket *_sync_socket;
 	SYNC_MSG_ID::List _sync_msg_id;
@@ -402,6 +404,7 @@ protected:
 		int wait; 
 	};
 	std::vector<job_s> _jobs;
+	ssi_char_t *_start_message;
 
 	File *_info;
 	TimeServer *_tserver;

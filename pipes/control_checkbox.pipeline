@@ -22,8 +22,9 @@
 	</consumer>	
 	
 	<!-- checkbox -->
-	<runnable create="ControlCheckBox" pos="810,310,200,75" id="decorator" name="show" label="SHOW WINDOWS"/>
-	<runnable create="ControlCheckBox" pos="810,385,200,75" id="ezero" name="eager" label="ENABLE EAGER DETECTION"/>		
+	<runnable create="ControlCheckBox" pos="810,310,200,75" id="plot" name="" label="PLOTTING ON/OFF"/>
+	<runnable create="ControlCheckBox" pos="810,385,200,75" id="decorator" name="show" label="SHOW WINDOWS"/>
+	<runnable create="ControlCheckBox" pos="810,460,200,75" id="ezero" name="eager" label="EAGER DETECTION"/>		
 	
 	<!-- visualization 	 -->
 	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">

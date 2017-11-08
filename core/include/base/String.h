@@ -37,6 +37,8 @@ class String {
 
 public:
 
+	static ssi_char_t INVALID_CHAR;
+
 	String ();
 	String (const ssi_char_t *string);
 	~String ();
@@ -81,9 +83,10 @@ public:
 
 protected:
 
-	static ssi_char_t *ssi_log_name;
+	static ssi_char_t *ssi_log_name;	
 
 	ssi_char_t *_string;
+
 };
 
 }

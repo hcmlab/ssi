@@ -60,7 +60,7 @@
 
             <DockPanel Grid.Column="1" Grid.Row="0" Margin="10">
                 <Label Content="Sessions"  DockPanel.Dock="Top" Margin="-3,0,0,0" />
-                <ListView Name="SessionsBox" Margin="0,0,5,0" DockPanel.Dock="Top" SelectionMode="Single" SelectionChanged="SessionsBox_SelectionChanged" >
+                <ListView Name="SessionsBox" Margin="0,0,5,0" DockPanel.Dock="Top" SelectionMode="Single" SelectionChanged="SessionsBox_SelectionChanged"  GridViewColumnHeader.Click="SessionsBox_Click" >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Width="Auto" Header="Name">
@@ -96,7 +96,7 @@
                     <StackPanel Grid.Row="0" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
                         <!--<Button Name="AddAnnotation" Margin="0,0,5,0" BorderBrush="Transparent" Background="Transparent" Content="+" Height="25"  Click="AddAnnotation_Click" Visibility="Collapsed" />-->
                         <!--Button Name="CopyAnnotation" Margin="0,0,5,0" BorderBrush="Transparent" Background="Transparent" Content="COPY" Height="25"  Click="CopyAnnotation_Click" Visibility="Collapsed" /-->
-                        <Button Name="DeleteAnnotation" BorderBrush="Transparent" Background="Transparent" Content="REM" Click="DeleteAnnotation_Click"/>
+                        <Button Name="DeleteAnnotation" BorderBrush="Transparent" Background="Transparent" Content="REM" Click="DeleteAnnotation_Click" Visibility="Collapsed" />
                     </StackPanel>
                 </DockPanel>
                 <StackPanel Orientation="Vertical" Margin="0,5,0,0" DockPanel.Dock="Bottom">
@@ -107,7 +107,8 @@
                     <CheckBox Name="showonlymine" Content="Mine only" Checked="showOnlyMine_Checked" Unchecked="showOnlyMine_Unchecked" />
                     <CheckBox Name="showOnlyUnfinished" Content="Unfinished only" Checked="showOnlyUnfinished_Checked" Unchecked="showOnlyUnfinished_Unchecked" />
                 </StackPanel>
-                <ListView Name="AnnotationsBox" SelectionChanged="AnnotationResultBox_SelectionChanged" SelectionMode="Extended">
+                <ListView Name="AnnotationsBox" SelectionChanged="AnnotationResultBox_SelectionChanged" SelectionMode="Extended" GridViewColumnHeader.Click="AnnotationsBox_Click"  >
+                    
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Width="Auto" Header="Scheme" DisplayMemberBinding="{Binding Scheme}" />
@@ -150,16 +151,33 @@
                     </DockPanel>
                 </StackPanel>
 
-                <ListView Name="StreamsBox" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" ItemContainerStyle="{StaticResource StreamItemColorStyle}" ItemsSource="{Binding}">
+                <ListView Name="StreamsBox" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" ItemContainerStyle="{StaticResource StreamItemColorStyle}" ItemsSource="{Binding}" GridViewColumnHeader.Click="StreamsBox_Click" >
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Filename" Width="Auto">
+                            <GridViewColumn Header="Role" Width="Auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" />
+                                        <TextBlock Text="{Binding Role}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+
+                            <GridViewColumn Header="Type" Width="120">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Type}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="Extension" Width="Auto">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Extension}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
                         </GridView>
                     </ListView.View>
                 </ListView>

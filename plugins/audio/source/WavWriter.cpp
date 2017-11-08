@@ -41,11 +41,15 @@ namespace ssi {
 const ssi_char_t *WavWriter::ssi_log_name = "wavwriter_";
 
 WavWriter::WavWriter(const char *file)
-	: _wav_file (0),
+	: _filepath (0),
+	_wav_file (0),
 	_counter (0),
 	_chunks(false),
 	_chunk_counter(0),
-	_file (0) {
+	_file (0),
+	_first_call(true),
+	_ready(false) 
+{
 
 	if (file) {
 		if (!OptionList::LoadXML(file, &_options)) {
@@ -63,42 +67,63 @@ WavWriter::~WavWriter() {
 	}
 }
 
-void WavWriter::consume_enter (ssi_size_t stream_in_num,
-	ssi_stream_t stream_in[]) {
-
-	if (stream_in[0].type != SSI_FLOAT && stream_in[0].type != SSI_SHORT) {
-		ssi_err ("format not supported (%s)", SSI_TYPE_NAMES[stream_in[0].type]);
+void WavWriter::open()
+{
+	if (_ready)
+	{
+		return;
 	}
 
-	if (stream_in[0].type == SSI_FLOAT) {
-		ssi_stream_init (_stream_short, 0, stream_in[0].dim, sizeof (short), SSI_SHORT, stream_in[0].sr);
+	if (_stream.type == SSI_FLOAT) 
+	{
+		ssi_stream_init(_stream_short, 0, _stream.dim, sizeof(short), SSI_SHORT, _stream_short.sr);
 	}
 
-	_format = ssi_create_wfx (stream_in[0].sr, stream_in[0].dim, sizeof (short));
+	_format = ssi_create_wfx(_stream.sr, _stream.dim, sizeof(short));
 	_chunks = _options.chunks;
 
-	if (_chunks) { 
+	if (_chunks) 
+	{
 		_chunk_counter = _options.chunksCountFrom;
 	}
-	else {
-
-		// open file
-		FilePath fp(_options.path);
-		ssi_char_t *path;
-		if (ssi_strcmp(fp.getExtension(), SSI_FILE_TYPE_WAV)) {
-			path = ssi_strcpy(_options.path);
-		} else {
-			path = ssi_strcat(_options.path, SSI_FILE_TYPE_WAV);
+	else 
+	{
+		if (_options.overwrite)
+		{
+			FilePath fp(_options.path, SSI_FILE_TYPE_WAV);
+			ssi_mkdir_r(fp.getDir());
+			_filepath = ssi_strcpy(fp.getPathFull());
 		}
-		_wav_file = File::CreateAndOpen(File::BINARY, File::WRITE, path);
-		delete[] path;
+		else
+		{
+			_filepath = FilePath(_options.path, SSI_FILE_TYPE_WAV).getUnique(true);
+		}
 
-		// write empty header
+		_wav_file = File::CreateAndOpen(File::BINARY, File::WRITE, _filepath);
+
 		WavTools::WriteWavHeader(*_wav_file, _format, 0);
 		WavTools::WriteWavChunk(*_wav_file, _format, 0);
 		_counter = 0;
 
-		ssi_msg(SSI_LOG_LEVEL_BASIC, "start writing '%s'", _options.path);
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "open '%s'", _filepath);
+	}
+
+	_ready = true;
+	_first_call = true;
+}
+
+void WavWriter::consume_enter (ssi_size_t stream_in_num,
+	ssi_stream_t stream_in[]) {
+
+	if (stream_in[0].type != SSI_FLOAT && stream_in[0].type != SSI_SHORT) 
+	{
+		ssi_err("format not supported (%s)", SSI_TYPE_NAMES[stream_in[0].type]);	
+		return;
+	}
+	else
+	{
+		_stream = stream_in[0];
+		open();
 	}
 }
 
@@ -117,10 +142,16 @@ void WavWriter::consume (IConsumer::info consume_info,
 		WavTools::WriteWavFile(path, stream_in[0]);
 
 		delete[] path;
+	}
+	else
+	{
+		if (!_ready)
+		{
+			return;
+		}
 
-	} else {
-
-		if (stream_in[0].type == SSI_FLOAT) {
+		if (stream_in[0].type == SSI_FLOAT)
+		{
 			ssi_stream_adjust(_stream_short, stream_in[0].num);
 			short *dstptr = ssi_pcast(short, _stream_short.ptr);
 			float *srcptr = ssi_pcast(float, stream_in[0].ptr);
@@ -129,35 +160,81 @@ void WavWriter::consume (IConsumer::info consume_info,
 			}
 			_wav_file->write(_stream_short.ptr, 1, _stream_short.tot);
 		}
-		else {
+		else 
+		{
 			_wav_file->write(stream_in[0].ptr, 1, stream_in[0].tot);
 		}
+
+		_counter += stream_in[0].num;
+		_first_call = false;
+	}
+}
+
+void WavWriter::close()
+{
+	if (!_ready)
+	{
+		return;
 	}
 
-	_counter += stream_in[0].num;
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "close '%s'", _filepath);
+
+	_wav_file->seek(0, File::BEGIN);
+	WavTools::WriteWavHeader(*_wav_file, _format, _counter);
+	WavTools::WriteWavChunk(*_wav_file, _format, _counter);	
+	delete _wav_file; _wav_file = 0;
+
+	if (_stream.type == SSI_FLOAT) 
+	{
+		ssi_stream_destroy(_stream_short);
+	}
+	 
+	if (_first_call && !_options.keepEmpty)
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "remove '%s'", _filepath);
+		ssi_remove(_filepath);
+	}
+
+	delete[] _filepath; _filepath = 0;
+	_ready = false;	
 }
 
 void WavWriter::consume_flush (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
-	if (_chunks) {
+	if (_chunks) 
+	{
 		_chunk_counter = 0;
-	} else {
-
-		ssi_msg(SSI_LOG_LEVEL_BASIC, "stop writing '%s'", _options.path);
-
-		// re-write header
-		_wav_file->seek(0, File::BEGIN);
-		WavTools::WriteWavHeader(*_wav_file, _format, _counter);
-		WavTools::WriteWavChunk(*_wav_file, _format, _counter);
-
-		// close file
-		delete _wav_file; _wav_file = 0;
-
-		if (stream_in[0].type == SSI_FLOAT) {
-			ssi_stream_destroy(_stream_short);
-		}
+	} 
+	else 
+	{
+		close();
 	}
+}
+
+bool WavWriter::notify(INotify::COMMAND::List command, const ssi_char_t *message) {
+
+	switch (command)
+	{
+	case INotify::COMMAND::SLEEP_POST:
+	{
+		if (!_chunks)
+		{
+			close();		
+		}
+		return true;
+	}
+	case INotify::COMMAND::WAKE_PRE:
+	{
+		if (!_chunks)
+		{			
+			open();
+		}
+		return true;
+	}
+	}
+
+	return false;
 }
 
 }

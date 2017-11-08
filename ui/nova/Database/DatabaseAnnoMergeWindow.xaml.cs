@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -26,6 +27,9 @@ namespace ssi
 
 
         CultureInfo culture = CultureInfo.InvariantCulture;
+        BackgroundWorker backgroundWorker = new BackgroundWorker();
+
+
 
         public DatabaseAnnoMergeWindow()
         {
@@ -232,7 +236,7 @@ namespace ssi
                 Copy.IsEnabled = false;
             }
 
-
+            Stats.Content = defaultlabeltext;
 
         }
 
@@ -262,6 +266,7 @@ namespace ssi
                 newList.Meta.Annotator = DatabaseHandler.Annotators.Find(a => a.FullName == newList.Meta.AnnotatorFullName).Name;
                 newList.Source.StoreToDatabase = true;
                 newList.Source.Database.Session = al[0].Source.Database.Session;
+                newList.Meta.isFinished = true;
                 newList.HasChanged = true;
 
                 if (newList != null)
@@ -320,6 +325,7 @@ namespace ssi
             newList.Meta.Annotator = DatabaseHandler.Annotators.Find(a => a.FullName == newList.Meta.AnnotatorFullName).Name;
             newList.Source.StoreToDatabase = true;
             newList.Source.Database.Session = al[0].Source.Database.Session;
+            newList.Meta.isFinished = true;
             newList.HasChanged = true;
 
             int minSize = int.MaxValue;
@@ -373,6 +379,7 @@ namespace ssi
             newList.Meta.Annotator = DatabaseHandler.Annotators.Find(a => a.FullName == newList.Meta.AnnotatorFullName).Name;
             newList.Source.StoreToDatabase = true;
             newList.Source.Database.Session = al[0].Source.Database.Session;
+            newList.Meta.isFinished = true;
             newList.HasChanged = true;
 
             int minSize = int.MaxValue;
@@ -564,6 +571,7 @@ namespace ssi
             newList.Meta.Annotator = DatabaseHandler.Annotators.Find(a => a.FullName == newList.Meta.AnnotatorFullName).Name;
             newList.Source.StoreToDatabase = true;
             newList.Source.Database.Session = al[0].Source.Database.Session;
+            newList.Meta.isFinished = true;
             newList.HasChanged = true;
 
             for (int i = 0; i < cont.Count - 1; i++)
@@ -1051,7 +1059,7 @@ namespace ssi
 
 
 
-        private async Task CalculateKappaWrapper()
+        private async Task CalculateKappaWrapper(List<AnnoList> annolists)
         {
             if (AnnotationResultBox.SelectedItems.Count > 1)
             {
@@ -1062,7 +1070,6 @@ namespace ssi
                 string interpretation = "";
 
                 CancellationToken token = new CancellationToken();
-                List<AnnoList> annolists = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
                 await Task.Run(() =>
                 {
                     lock (syncLock)
@@ -1125,7 +1132,7 @@ namespace ssi
                 {
                     lock (syncLock)
                     {
-                           cronbachalpha = Cronbachsalpha(annolists, 1);
+                           cronbachalpha = Cronbachsalpha(annolists, 3);
                     }
                  
 
@@ -1143,6 +1150,10 @@ namespace ssi
                 }, token);
 
 
+                Action EmptyDelegate = delegate () { };
+                Stats.Content = "Cronbach's α: " + cronbachalpha.ToString("F3") + ": " + interpretation;
+
+
                 double pearsoncorrelation = double.MaxValue;
                 if (annolists.Count == 2)
                 {
@@ -1151,10 +1162,6 @@ namespace ssi
                     interpretation = Pearsoninterpretation(pearsoncorrelation);
                 }
 
-
-
-                Action EmptyDelegate = delegate () { };
-                Stats.Content = "Cronbach's α: " + cronbachalpha.ToString("F3") + ": " + interpretation;
 
                 if(pearsoncorrelation != double.MaxValue)
                 {
@@ -1334,16 +1341,17 @@ namespace ssi
 
         private void calculateStatistics()
         {
+            List<AnnoList> annolists = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
             if (selectedisContinuous)
             {
-                List<AnnoList> annolists = DatabaseHandler.LoadSession(AnnotationResultBox.SelectedItems);
+               
                 CalculateCronbachWrapper(annolists);
                 // CalculateRMSEWrapper(annolists);
             }
             else
             {
 
-                CalculateKappaWrapper();
+                CalculateKappaWrapper(annolists);
 
             };
 

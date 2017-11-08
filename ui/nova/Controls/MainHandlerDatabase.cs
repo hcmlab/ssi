@@ -165,19 +165,26 @@ namespace ssi
 
                 control.ShadowBox.Visibility = Visibility.Collapsed;
 
-                List<string> streams = dialog.SelectedStreams();
-                databaseSessionStreams = streams;
+                List<StreamItem> streams = dialog.SelectedStreams();
+                databaseSessionStreams = new List<string>();
+
+                foreach (StreamItem stream in streams)
+                {
+                    databaseSessionStreams.Add(stream.Name);
+                }
+
+                   
 
                 if (streams != null && streams.Count > 0)
                 {
                     List<string> streamsAll = new List<string>();
-                    foreach (string stream in streams)
+                    foreach (StreamItem stream in streams)
                     {
-                        if (stream.EndsWith("stream"))
+                        if (stream.Extension == "stream")
                         {
-                            streamsAll.Add(stream + "~");
+                            streamsAll.Add(stream.Name + "~");
                         }
-                        streamsAll.Add(stream);
+                        streamsAll.Add(stream.Name);
 
                     }
 
@@ -189,6 +196,9 @@ namespace ssi
                         }
 
                         MainHandler.NumberOfAllCurrentDownloads = streamsAll.Count;
+
+
+                        tokenSource = new CancellationTokenSource();
 
                         foreach (string stream in streamsAll)
                         {
@@ -214,17 +224,11 @@ namespace ssi
                             {
                                 continue;
                             }
-                           
+  
 
-
-                            if(File.Exists(localPath))
-                            {
-
-                            }
-
-
-                            //In case we host our files on nextcloud, the file format is special. For now we only allow self-hosted, but in the future we add an option for nextcloud in general.
-                            if(meta.Server.Contains("https://hcm-lab.de/cloud"))
+                            //TODO add more servers...
+                            
+                            if(meta.UrlFormat == UrlFormat.NEXTCLOUD)
                             {
                                 url = meta.Server + "/download?path=%2F" + DatabaseHandler.DatabaseName + "%2F" + DatabaseHandler.SessionName + "&files=" + stream;
                             }
@@ -258,9 +262,9 @@ namespace ssi
                             }
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        MessageBox.Show("Make sure ip, login and password are correct", "Connection to database not possible");
+                        MessageBox.Show("Error: " + e, "Connection to database not possible");
                     }
                 }
             }

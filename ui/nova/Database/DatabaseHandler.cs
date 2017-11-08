@@ -677,6 +677,13 @@ namespace ssi
                     {
                         meta.ServerAuth = bool.Parse(document["serverAuth"].ToString());
                     }
+
+                    if (document.TryGetElement("urlFormat", out value))
+                    {
+                        UrlFormat format = UrlFormat.GENERAL;
+                        Enum.TryParse<UrlFormat>(document["urlFormat"].AsString, out format);
+                        meta.UrlFormat = format;
+                    }
                 }
                 else
                 {
@@ -698,7 +705,8 @@ namespace ssi
                 {"name", meta.Name},
                 {"description", meta.Description == null ? "" : meta.Description},
                 {"server", meta.Server == null ? "" : meta.Server},
-                {"serverAuth", meta.ServerAuth.ToString()}
+                {"serverAuth", meta.ServerAuth.ToString()},
+                {"urlFormat", meta.UrlFormat.ToString()}
             };
 
             var builder = Builders<BsonDocument>.Filter;
@@ -843,6 +851,7 @@ namespace ssi
             try
             {
                 adminDatabase.RunCommand<BsonDocument>(createUser);
+                ChangeUserCustomData(user);
             }
             catch
             {
@@ -2155,11 +2164,17 @@ namespace ssi
                 {
                     newAnnotationDoc.Add(new BsonElement("data_backup_id", annoList.Source.Database.DataBackupOID));
                 }
+
+
+                bool isfinished = annoList.Meta.isFinished;
+                if (markAsFinished) isfinished = true;
+
+
                 newAnnotationDoc.Add(new BsonElement("annotator_id", annotatorID));
                 newAnnotationDoc.Add(new BsonElement("role_id", roleID));
                 newAnnotationDoc.Add(new BsonElement("scheme_id", schemeID));
                 newAnnotationDoc.Add(new BsonElement("session_id", sessionID));
-                newAnnotationDoc.Add(new BsonElement("isFinished", markAsFinished));
+                newAnnotationDoc.Add(new BsonElement("isFinished", isfinished));
                 newAnnotationDoc.Add(new BsonElement("isLocked", isLocked));
                 newAnnotationDoc.Add(new BsonElement("date", new BsonDateTime(DateTime.Now)));
                 BsonArray streamArray = new BsonArray();
@@ -2519,6 +2534,8 @@ namespace ssi
                 annoList.Meta.Annotator = annotation.Annotator;
                 annoList.Meta.AnnotatorFullName = annotation.AnnotatorFullName;
                 annoList.Meta.Role = annotation.Role;
+                annoList.Meta.isLocked = annotation.IsLocked;
+                annoList.Meta.isFinished = annotation.IsFinished;
 
                 // load scheme and data
 
@@ -2603,15 +2620,16 @@ namespace ssi
                 if (annotation.Contains("date"))
                 { 
                     date = annotation["date"].ToUniversalTime();
-                }                
+                }
 
+                bool isOwner = Properties.Settings.Default.MongoDBUser == annotatorName || DatabaseHandler.CheckAuthentication() >= DatabaseAuthentication.DBADMIN;
 
                 if (!onlyMe && !onlyUnfinished ||
                    onlyMe && !onlyUnfinished && Properties.Settings.Default.MongoDBUser == annotatorName ||
                    !onlyMe && onlyUnfinished && !isFinished ||
                    onlyMe && onlyUnfinished && !isFinished && Properties.Settings.Default.MongoDBUser == annotatorName)
                 {
-                    DatabaseAnnotation anno = new DatabaseAnnotation() { Id = id, Role = roleName, Scheme = schemeName, Annotator = annotatorName, AnnotatorFullName = annotatorFullName, Session = sessionName, IsFinished = isFinished, IsLocked = islocked, Date = date };
+                    DatabaseAnnotation anno = new DatabaseAnnotation() { Id = id, Role = roleName, Scheme = schemeName, Annotator = annotatorName, AnnotatorFullName = annotatorFullName, Session = sessionName, IsFinished = isFinished, IsLocked = islocked, Date = date, IsOwner = isOwner };
                     items.Add(anno);
                 }
             }
@@ -2679,12 +2697,20 @@ namespace ssi
 
     #region DATABASE TYPES
 
+    public enum UrlFormat
+    {
+        GENERAL = 0,
+        NEXTCLOUD = 1
+       
+    }
+
     public class DatabaseDBMeta
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public string Server { get; set; }
         public bool ServerAuth { get; set; }
+        public UrlFormat UrlFormat { get; set; }
         public override string ToString()
         {
             return Name;
@@ -2698,6 +2724,8 @@ namespace ssi
         public string Language { get; set; }
         public string Location { get; set; }
         public DateTime Date { get; set; }
+        public bool hasMatchingAnnotations { get; set; }
+
         public override string ToString()
         {
             return Name;
@@ -2785,7 +2813,10 @@ namespace ssi
 
         public string Session { get; set; }
 
+        public bool IsOwner { get; set; }
+
         public bool IsFinished { get; set; }
+
 
         public bool IsLocked { get; set; }
 

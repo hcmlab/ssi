@@ -77,6 +77,7 @@ void AudioPlayer::consume_enter (ssi_size_t stream_in_num,
 
 	if (stream_in[0].type != SSI_FLOAT && stream_in[0].type != SSI_SHORT) {
 		ssi_err ("type '%s' not supported", SSI_TYPE_NAMES[stream_in[0].type]);
+		return;
 	}
 
 	_scale = stream_in[0].type == SSI_FLOAT;
@@ -92,6 +93,7 @@ void AudioPlayer::consume_enter (ssi_size_t stream_in_num,
 	MMRESULT result = ::waveOutOpen (0, _options.device, &audio_format, 0, 0, WAVE_FORMAT_QUERY);
 	if (result != MMSYSERR_NOERROR) {
 		ssi_err ("audio-out device '%u' does not support the requested format", _options.device);
+		return;
 	}
 
 	if(_options.bufferSizeSamples > 0)
@@ -136,7 +138,7 @@ int AudioPlayer::selectDevice () {
 	WAVEOUTCAPS waveOutCaps;
 	for (UINT i = 0; i < n_devices; i++) {		
 		if (waveOutGetDevCaps (i, &waveOutCaps, sizeof(WAVEOUTCAPS)) != MMSYSERR_NOERROR) {
-			ssi_wrn ("could not determine capabilities for device #u", i);
+			ssi_wrn ("could not determine capabilities for device #%d", i);
 		} else {
 			devices.add (waveOutCaps.szPname);		
 		}
@@ -161,7 +163,7 @@ int AudioPlayer::getDevice (const ssi_char_t *name) {
 	WAVEOUTCAPS waveOutCaps;
 	for (UINT i = 0; i < n_devices; i++) {		
 		if (waveOutGetDevCaps (i, &waveOutCaps, sizeof(WAVEOUTCAPS)) != MMSYSERR_NOERROR) {
-			ssi_wrn ("could not determine capabilities for device #u", i);
+			ssi_wrn ("could not determine capabilities for device #%u", i);
 		} else {
 			if (strcmp (waveOutCaps.szPname, name) == 0) {
 				return i;
@@ -177,7 +179,7 @@ bool AudioPlayer::getDevice (ssi_size_t id, ssi_size_t n_name, char *name) {
 	
 	WAVEOUTCAPS waveOutCaps;	
 	if (waveOutGetDevCaps (id, &waveOutCaps, sizeof(WAVEOUTCAPS)) != MMSYSERR_NOERROR) {
-		ssi_wrn ("could not determine capabilities for device #u", id);
+		ssi_wrn ("could not determine capabilities for device #%u", id);
 		return false;
 	} else {
 		if (n_name < MAXPNAMELEN) {			

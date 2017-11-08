@@ -21,6 +21,15 @@
   <ItemGroup>
     <ClCompile Include="cmltrain_Main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cmltrain.resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cmltrain.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\ui\ui.ico" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBE23EEA-D6F8-403F-87E5-D350F70BE6D7}</ProjectGuid>
     <RootNamespace>FrameworkThreadExample2</RootNamespace>

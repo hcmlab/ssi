@@ -49,7 +49,7 @@ public:
 
 	struct options {
 		FORMAT::VALUE format;
-		Socket::TYPE protocol;
+		Socket::TYPE::List protocol;
 		int buffer_size;
 		ssi_char_t *work_dir;
 		ssi_char_t *now;

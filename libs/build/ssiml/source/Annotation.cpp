@@ -1500,9 +1500,9 @@ ssi_size_t Annotation::max_class_id()
 
 bool Annotation::addOffset(ssi_time_t offset_left, ssi_time_t offset_right)
 {
-	if (!_scheme || _scheme->type != SSI_SCHEME_TYPE::DISCRETE)
+	if (!_scheme || _scheme->type == SSI_SCHEME_TYPE::CONTINUOUS)
 	{
-		ssi_wrn("not a discrete scheme");
+		ssi_wrn("not a discrete or free scheme");
 		return false;
 	}
 

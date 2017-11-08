@@ -96,6 +96,7 @@ public:
 	{
 		if( (socket_ = socket( AF_INET, SOCK_DGRAM, 0 )) == INVALID_SOCKET ){
             ssi_err ("unable to create udp socket");
+			return;
         }
 		
 		memset( &sendToAddr_, 0, sizeof(sendToAddr_) );
@@ -118,6 +119,8 @@ public:
        
         if (connect(socket_, (struct sockaddr *)&connectSockAddr, sizeof(connectSockAddr)) < 0) {
             ssi_err ("unable to connect udp socket");
+			IpEndpointName ip;
+			return ip;
         }
 
         // get the address
@@ -127,6 +130,8 @@ public:
         socklen_t length = sizeof(sockAddr);
         if (getsockname(socket_, (struct sockaddr *)&sockAddr, &length) < 0) {
             ssi_err ("unable to getsockname");
+			IpEndpointName ip;
+			return ip;
         }
         
 		if( isConnected_ ){
@@ -134,6 +139,8 @@ public:
 			
 			if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
 				ssi_err ("unable to connect udp socket\n");
+				IpEndpointName ip;
+				return ip;
 			}
 
 		}else{
@@ -145,6 +152,8 @@ public:
 			if( connect(socket_, (struct sockaddr *)&unconnectSockAddr, sizeof(unconnectSockAddr)) < 0 
 					&& WSAGetLastError() != WSAEADDRNOTAVAIL ){
 				ssi_err ("unable to un-connect udp socket\n");
+				IpEndpointName ip;
+				return ip;
 			}
 		}
 
@@ -160,6 +169,7 @@ public:
 		} else {
 			if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
 				ssi_err ("unable to connect udp socket");
+				return;
 			}
 		}
 
@@ -171,6 +181,7 @@ public:
 		char on = active ? 1 : 0;
 		if (setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on)) < 0) {
 			ssi_err("unable to configure udp broadcast");
+			return;
 		}		
 	}
 
@@ -206,7 +217,8 @@ public:
 		SockaddrFromIpEndpointName( bindSockAddr, localEndpoint );
 
         if (bind(socket_, (struct sockaddr *)&bindSockAddr, sizeof(bindSockAddr)) < 0) {
-            ssi_err ("unable to bind udp socket\n");
+            ssi_err ("unable to bind udp socket");
+			return;
         }
 
 		isBound_ = true;

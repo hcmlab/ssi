@@ -2,17 +2,19 @@
 <pipeline>
 
 	<register>
-		<load name="ssigraphic" />
-		<load name="ssiioput" />
+		<load name="graphic" />
+		<load name="ioput" />
 	</register>
 
+	<framework sync="true" slisten="true" sport="1234"/>
+	
 	<!-- camera sensor -->
-	<sensor create="SocketReader" port="9999" format="3" ssr="25.0" swidth="640" sheight="480" sdepth="8" schannels="3">		
+	<sensor create="SocketReader" url="udp://localhost:9999" format="3" ssr="25.0" swidth="640" sheight="480" sdepth="8" schannels="3">		
 		<output channel="socket" pin="camera" size="2.0s"/>
 	</sensor>
 	
 	<!-- visualization -->	
-	<consumer create="VideoPainter:plot" title="camera" flip="false">
+	<consumer create="VideoPainter:plot" title="camera" flip="true">
 		<input pin="camera" frame="1"/>
 	</consumer>
 	

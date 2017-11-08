@@ -73,6 +73,7 @@ public:
 	ssi_size_t getSampleDimensionOut (ssi_size_t sample_dimension_in) {
 		if (sample_dimension_in != 1) {
 			ssi_err ("sample dimension != 1 not supported");
+			return 0;
 		}
 		return 8;
 	}

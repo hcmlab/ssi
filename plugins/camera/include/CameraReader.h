@@ -147,14 +147,14 @@ protected:
 	ssi_char_t *_file;	
 
 	VideoChannel _video_channel;
-	void setProvider (IProvider *provider);
+	bool setProvider (IProvider *provider);
 
 	static char *ssi_log_name;
 	int ssi_log_level;
 	static int ssi_log_level_static;
 
 	HRESULT RunGraph();
-	void InitGraph();
+	bool InitGraph();
 	void Flip();
 	void Mirror();
 

@@ -43,6 +43,8 @@
 #include "base/IWindow.h"
 #include "thread/Thread.h"
 
+#define SSI_GRAPHIC_TITLEBAROFFSET   10
+
 namespace ssi {
 
 class SystemTray;

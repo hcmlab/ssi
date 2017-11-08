@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <HTML>
     <HEAD>
-        <TITLE>ssiffmpeg.dll  - Social Signal Interpretation (SSI) API [v1.0.2]
+        <TITLE>ssiffmpeg.dll  - Social Signal Interpretation (SSI) API [v1.0.3]
         </TITLE>
     </HEAD>
     <BODY>
@@ -99,6 +99,50 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;path&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;file path (leave empty to use url)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;overwrite&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;overwrite file if it already exists (otherwise a unique path will be created)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -108,13 +152,13 @@
                                 <CODE>&nbsp;1024&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'out.mp4'&nbsp;</CODE>
+                                <CODE>&nbsp;''&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;url (file path or streaming address, e.g. udp://<ip:port>)&nbsp;</CODE>
+                                <CODE>&nbsp;streaming address in the format udp://<ip:port>&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -158,7 +202,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;default output format (if not determined from url), set to 'mpegts' in streaming applications&nbsp;</CODE>
+                                <CODE>&nbsp;default output format if not determined from url or path (forced to 'mpegts' if in streaming mode)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -352,6 +396,28 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;path&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;path of input file&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -367,7 +433,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;url (file path or streaming address, e.g. udp://<ip:port>)&nbsp;</CODE>
+                                <CODE>&nbsp;streaming address in format udp://<ip:port>&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -611,7 +677,7 @@
         </TABLE>
         <HR />
         <FONT SIZE="-1">
-            <P>Built with Social Signal Interpretation (SSI) [v1.0.2]
+            <P>Built with Social Signal Interpretation (SSI) [v1.0.3]
                 <BR />(c) University of Augsburg
                 <BR />
                 <A HREF="http://openssi.net" TARGET="new">http://openssi.net</A>

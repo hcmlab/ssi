@@ -131,8 +131,7 @@ CameraReader::~CameraReader()
 bool CameraReader::setProvider (const ssi_char_t *name, IProvider *provider) {
 
 	if (strcmp (name, SSI_CAMERAREADER_PROVIDER_NAME) == 0) {
-		setProvider (provider);
-		return true;
+		return setProvider (provider);		
 	}
 
 	ssi_wrn ("unkown provider name '%s'", name);
@@ -140,51 +139,23 @@ bool CameraReader::setProvider (const ssi_char_t *name, IProvider *provider) {
 	return false;
 }
 
-void CameraReader::InitGraph()
+bool CameraReader::InitGraph()
 {
+	if (!ssi_exists(_options.path))
+	{
+		ssi_wrn("file not found '%s'", _options.path);
+		return false;
+	}
+
 	_cbIH.pInfoHeader = &_bmpIH;
 	_cbIH.pDataOfBMP = NULL;
 	
-	if (_options.path[0] == '\0')
-	{
-		ssi_char_t szFile[MAX_PATH];
-		OPENFILENAME fileName;
-		ZeroMemory(&fileName, sizeof(OPENFILENAME));
-		fileName.lStructSize = sizeof(OPENFILENAME);
-		fileName.hwndOwner = NULL;
-		fileName.nMaxFile = sizeof(szFile);
-		fileName.lpstrFilter = "All Files\0*.*\0\0";
-		fileName.nFilterIndex = 1;
-		fileName.lpstrFileTitle = NULL;
-		fileName.nMaxFileTitle = 0;
-		fileName.lpstrInitialDir = NULL;
-		fileName.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-		while (!GetOpenFileName(&fileName))
-		{
-			_options.path[0] = '\0';
-			//ssi_wrn("No File selected!");
-		}
-
-		size_t strLenVar = strnlen(fileName.lpstrFile, 1024);
-		strcpy_s(_options.path, strLenVar + 1, fileName.lpstrFile);
-	}
-	else
-	{
-		size_t strLenVar = strnlen(_options.path, 1024);
-		if (strLenVar == 1024)
-		{
-			_options.path[0] = '\0';
-			ssi_wrn("String that indicated the File-Name was not NULL-Terminated!!!");
-		}
-		strcpy_s(_options.path, strLenVar + 1, _options.path);
-	}
-
 	if (_options.params.heightInPixels == 0 || _options.params.widthInPixels == 0 || _options.params.depthInBitsPerChannel == 0 || _options.params.numOfChannels == 0 || (std::abs(_options.forcefps) <= std::numeric_limits<ssi_time_t>::epsilon()))
 	{
 		if (!CameraTools::BuildAndDestroyGraphToDetermineFileVideoParams(_options.path, &_options.params))
 		{
 			ssi_wrn("Could not determine video file parameters");
+			return false;
 		}
 		_options.forcefps = _options.params.framesPerSecond;
 	}
@@ -198,22 +169,28 @@ void CameraReader::InitGraph()
 	}
 	_options.params.framesPerSecond = _options.forcefps;
 	_options.params.flipImage = _options.flip;
+
+	return true;
 }
 
-void CameraReader::setProvider (IProvider *provider) {
+bool CameraReader::setProvider (IProvider *provider) {
 
 	if (!provider) {
-		return;
-	}
-	_provider = provider;
+		return false;
+	}	
 
-	InitGraph();
+	if (!InitGraph())
+	{
+		return false;
+	}
+
+	_provider = provider;
 
 	_provider->setMetaData (sizeof (_options.params), &_options.params);
 	ssi_stream_init (_video_channel.stream, 0, 1, ssi_video_size (_options.params), SSI_IMAGE, _options.forcefps);
 	provider->init (&_video_channel);
 
-
+	return true;
 }
 
 bool CameraReader::connect()

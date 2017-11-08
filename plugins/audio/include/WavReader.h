@@ -133,7 +133,7 @@ protected:
 	ssi_char_t *_file;
 
 	AudioChannel _audio_channel;
-	void setProvider (IProvider *provider);
+	bool setProvider (IProvider *provider);
 
 	ssi_char_t *_wav_path;
 	File *_wav_file;
@@ -143,7 +143,7 @@ protected:
 	ssi_stream_t _stream;
 	ssi_stream_t _stream_scale;
 	bool _is_providing;
-	ssi_size_t _loop_pos;
+	int64_t _loop_pos;
 
 	ssi_time_t _sample_rate;
 	ssi_size_t _sample_dimension;

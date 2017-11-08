@@ -582,7 +582,7 @@ bool ex_msg(void *arg) {
 
 	delete ssimsg; ssimsg = 0;
 
-	ssimsg = new SocketMessage (Socket::UDP, 1111, "localhost");
+	ssimsg = new SocketMessage (Socket::TYPE::UDP, 1111, "localhost");
 
 	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "Debug Message #%d", id);
 	id++;
@@ -631,7 +631,7 @@ bool ex_sync (void *arg) {
 	frame->AddSensor(mouse);
 
 	SocketWriter *writer = ssi_create(SocketWriter, 0, true);
-	writer->getOptions()->type = Socket::UDP;
+	writer->getOptions()->type = Socket::TYPE::UDP;
 	writer->getOptions()->port = 9998;
 	frame->AddConsumer(cursor_p, writer, "1");
 

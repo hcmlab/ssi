@@ -31,7 +31,7 @@ namespace ssi
         static public double mouseDownPos;
         static public int closestIndex = -1;
         static public int closestIndexOld = 0;
-        public static bool continuousAnnoMode = false;
+        public static bool isLiveAnnoMode = false;
         public static bool askForLabel = false;
         public static AnnoTierSegment objectContainer = null;
         public static bool MouseActive = Properties.Settings.Default.LiveModeActivateMouse;
@@ -91,6 +91,28 @@ namespace ssi
                 OnTierSegmentChange?.Invoke(s, null);
             }
         }
+
+
+        static public void SelectPoint(AnnoTierSegment s)
+        {
+            UnselectLabel();
+            if (s != null)
+            {
+                s.select(true);
+
+                if (objectContainer == null)
+                {
+                    objectContainer = s;
+                }
+                selectedLabel = s;
+                selectedZindex = GetZIndex(selectedLabel);
+                SetZIndex(selectedLabel, selectedZindexMax + 1);
+
+                OnTierSegmentChange?.Invoke(s, null);
+            }
+        }
+
+
 
         static public void UnselectLabel()
         {
@@ -158,6 +180,7 @@ namespace ssi
         private bool annorightdirection = true;   
         private bool isMouseAlreadydown = false;
         private double yPos = 0;
+        private int level = 2;
         private List<Line> continuousTierLines = new List<Line>();
         private List<Line> continuousTierMarkers = new List<Line>();
         private Ellipse continuousTierEllipse = new Ellipse();
@@ -294,7 +317,7 @@ namespace ssi
                         dispatcherTimer.Interval = TimeSpan.FromMilliseconds(20);
                         dispatcherTimer.Tick += new EventHandler(delegate (object s, EventArgs a)
                         {
-                        if (continuousAnnoMode && isSelected)
+                        if (isLiveAnnoMode && isSelected)
                         {
                             double closestposition = MainHandler.Time.CurrentPlayPosition;
                             closestIndex = GetClosestContinuousIndex(closestposition);
@@ -384,8 +407,8 @@ namespace ssi
 
             double step = fac * segmentHeight;
             yPos = (yPos - step >= 0) ? yPos - step : yPos;
+            if (yPos - step >= 0) level++;
 
-            
         }
 
         public void continuousSegmentDown()
@@ -394,11 +417,13 @@ namespace ssi
             double numberOfLevels = Properties.Settings.Default.ContinuousHotkeysNumber;
             double fac = 1 + (1 / (numberOfLevels - 1));
             double segmentHeight = (this.ActualHeight / numberOfLevels);
-
-            double step = fac * segmentHeight;
-            yPos = (yPos + step <= this.ActualHeight) ? yPos + step : yPos;
-
            
+            double step = fac * segmentHeight;
+            yPos = (yPos + step <= this.ActualHeight) ? yPos + step  : yPos;
+            if (yPos + step <= this.ActualHeight) level--;
+
+
+
         }
 
         public void continuousSegmentToPosition(int position)
@@ -407,7 +432,7 @@ namespace ssi
             double numberOfLevels = Properties.Settings.Default.ContinuousHotkeysNumber;
             double fac = 1 + (1 / (numberOfLevels - 1));
             double segmentHeight = (this.ActualHeight / numberOfLevels);
-
+            level = position;
             yPos = (numberOfLevels - (position * fac)) * segmentHeight;
 
            
@@ -434,7 +459,7 @@ namespace ssi
             surface.LayoutTransform = transform;
         }
 
-        public void ExportToPng(Uri path, Canvas surface)
+        public void ExportToPNG(Uri path, Canvas surface)
         {
             if (path == null) return;
             Transform transform = surface.LayoutTransform;
@@ -475,9 +500,13 @@ namespace ssi
             }
             else
             {   //it has to be called twice, otherwise there are some weird effects.
+                continuousSegmentToPosition(level);
                 TimeRangeChanged(MainHandler.Time);
                 TimeRangeChanged(MainHandler.Time);
+
             }
+
+
         }
 
         public void Select(bool flag)
@@ -568,6 +597,7 @@ namespace ssi
             }
 
             int drawlinesnumber = 1000;
+            if (AnnoList.Count < 1000) drawlinesnumber = AnnoList.Count;
             //if (this.ActualWidth == 0) drawlinesnumber = 500;
             //else if (AnnoList.Count > this.ActualWidth) drawlinesnumber = (int) (this.ActualWidth);
             //else drawlinesnumber = AnnoList.Count;
@@ -639,7 +669,7 @@ namespace ssi
             if (!activated)
             {
                 dispatcherTimer.Start();
-                continuousAnnoMode = true;
+                isLiveAnnoMode = true;
 
                 closestIndex = -1;
                 closestIndexOld = closestIndex;
@@ -647,7 +677,7 @@ namespace ssi
             else
             {
                 dispatcherTimer.Stop();
-                continuousAnnoMode = false;
+                isLiveAnnoMode = false;
                 continuousTierEllipse.Visibility = Visibility.Hidden;
             }
             TimeRangeChanged(MainHandler.Time);
@@ -881,6 +911,20 @@ namespace ssi
                             break;
                         }
                     }
+                }
+
+                else if (IsContinuous)
+                {
+                    double closestposition = MainHandler.Time.TimeFromPixel(e.GetPosition(this).X);
+                    closestIndex = GetClosestContinuousIndex(closestposition);
+                    if(closestIndex != -1)
+                    {
+                        AnnoListItem item = this.AnnoList[closestIndex];
+                        AnnoTierSegment s = new AnnoTierSegment(item, this);
+                        SelectLabel(s);
+                    }
+                   
+
                 }
             }
             
@@ -1177,7 +1221,7 @@ namespace ssi
             }
             else if (AnnoList.Scheme.Type == AnnoScheme.TYPE.CONTINUOUS && !Keyboard.IsKeyDown(Key.LeftAlt))
             {
-                if (continuousAnnoMode) continuousTierEllipse.Visibility = Visibility.Visible;
+                if (isLiveAnnoMode) continuousTierEllipse.Visibility = Visibility.Visible;
                 else continuousTierEllipse.Visibility = Visibility.Hidden;
 
                 if (e.RightButton == MouseButtonState.Pressed && this.isSelected)
@@ -1247,6 +1291,7 @@ namespace ssi
             {
                 if (this.ActualHeight > 0)
                 {
+                    
                     //markers
 
                     if (continuousTierMarkers.Count > 0)
@@ -1262,6 +1307,8 @@ namespace ssi
                             continuousTierMarkers[i].Y2 = continuousTierMarkers[i].Y1;
                             continuousTierMarkers[i].X1 = 0;
                             continuousTierMarkers[i].X2 = this.ActualWidth;
+
+                          
                         }
                     }
 

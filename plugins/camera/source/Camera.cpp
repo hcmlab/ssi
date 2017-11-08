@@ -104,7 +104,7 @@ Camera::Camera(const ssi_char_t *file) :
 			ssi_wrn("Tried to reinitialize COM with different threading model! This might cause trouble!");
 		}
 		else {
-			ssi_err ("Could not initialize COM library in constructor()");
+			ssi_wrn("Could not initialize COM library in constructor()");			
 		}
     }
 	else {
@@ -160,8 +160,7 @@ CameraList* Camera::GetVideoCaptureDevices()
 bool Camera::setProvider (const ssi_char_t *name, IProvider *provider) {
 
 	if (strcmp (name, SSI_CAMERA_PROVIDER_NAME) == 0) {
-		setProvider (provider);		
-		return true;
+		return setProvider (provider);				
 	}
 
 	ssi_wrn ("unkown provider name '%s'", name);
@@ -169,95 +168,103 @@ bool Camera::setProvider (const ssi_char_t *name, IProvider *provider) {
 	return false;
 }
 
-void Camera::setProvider(IProvider *provider) {
+bool Camera::setProvider(IProvider *provider) {
 
-	if (provider) {
-
-		// determine format
-
-		_listOfVideoCameras = Camera::GetVideoCaptureDevices();
-
-		if(_listOfVideoCameras->getListSize() < 1) {
-			ssi_err("No Capture Device found!!!\n");
-		}
-
-		const ssi_char_t *nameOfDesiredCam = _options.getDeviceName ();
-		if (nameOfDesiredCam) {
-			size_t strLenVar = strnlen(nameOfDesiredCam, 1024);
-			if(strLenVar == 1024) {
-				_nameOfDesiredCam = NULL;
-				ssi_err ("String that indicated the Camera-Name was not NULL-Terminated or longer than 1024 bytes");
-			}
-			_nameOfDesiredCam = new ssi_char_t[strLenVar + 1];
-			strcpy_s(_nameOfDesiredCam, strLenVar+1, nameOfDesiredCam);
-			bool desiredCamFound = false;
-			int tmpIndex = 0;
-			for(ssi_size_t i = 0; i < _listOfVideoCameras->getListSize(); ++i, ++tmpIndex) {
-				CameraDeviceName curDev = _listOfVideoCameras->getReferenceToCameraDeviceName(i);
-				if(curDev == (char*)nameOfDesiredCam) {
-					desiredCamFound = true;
-					break;
-				}
-			}
-			if(desiredCamFound) {
-				_indexOfSelectedCamera = tmpIndex;
-			}
-			else {
-				ssi_wrn ("video capture device '%s' not found", nameOfDesiredCam);
-				int tmpIndex = CameraList::LetUserSelectDesiredCam(_listOfVideoCameras);
-				if(tmpIndex < 0) {
-					ssi_err("invalid video capture device");
-				}
-				else {
-					_indexOfSelectedCamera = tmpIndex;
-				}
-			}
-		}
-		else {
-			int tmpIndex = CameraList::LetUserSelectDesiredCam(_listOfVideoCameras);
-			if(tmpIndex < 0) {
-				ssi_err("invalid video capture device");
-			}
-			else {
-				_indexOfSelectedCamera = tmpIndex;
-			}
-		}
-
-		IBaseFilter *pCap = NULL;
-		HRESULT hr = CameraTools::FindAndBindToIBaseFilter(&pCap, &(_listOfVideoCameras->getReferenceToCameraDeviceName(_indexOfSelectedCamera)));
-		if(FAILED(hr))
-		{
-			ssi_err("could not bind the cam to IBaseFilter. Failed with %ld", hr);
-		}
-		
-		bool foundType = this->determineIfDesiredMediaTypeExists(pCap);
-
-		if(foundType == false)
-		{
-			//TODO show dialog and maybe selection
-			if(LetUserSelectMediaType())
-			{
-				if(!this->determineIfDesiredMediaTypeExists(NULL))
-				{
-					ssi_err("type Info not supported.");
-				}
-			}
-			else
-			{
-				ssi_err("type Info not supported.");
-			}
-		}
-
-		SafeReleaseFJ(pCap);
-
-		_options.params.flipImage = _options.flip;
-		provider->setMetaData (sizeof (_options.params), &_options.params);
-		ssi_stream_init (_video_channel.stream, 0, 1, ssi_video_size (_options.params), SSI_IMAGE, _options.params.framesPerSecond);
-		provider->init (&_video_channel);
+	if (!provider)
+	{
+		return false;
 	}
 
-	Lock lock (_setProviderMutex); 
-	
+	// determine format
+
+	_listOfVideoCameras = Camera::GetVideoCaptureDevices();
+
+	if(_listOfVideoCameras->getListSize() < 1) {
+		ssi_wrn("No Capture Device found\n");
+		return false;
+	}
+
+	const ssi_char_t *nameOfDesiredCam = _options.getDeviceName ();
+	if (nameOfDesiredCam) {
+		size_t strLenVar = strnlen(nameOfDesiredCam, 1024);
+		if(strLenVar == 1024) {
+			_nameOfDesiredCam = NULL;
+			ssi_wrn ("String that indicated the Camera-Name was not NULL-Terminated or longer than 1024 bytes");
+			return false;
+		}
+		_nameOfDesiredCam = new ssi_char_t[strLenVar + 1];
+		strcpy_s(_nameOfDesiredCam, strLenVar+1, nameOfDesiredCam);
+		bool desiredCamFound = false;
+		int tmpIndex = 0;
+		for(ssi_size_t i = 0; i < _listOfVideoCameras->getListSize(); ++i, ++tmpIndex) {
+			CameraDeviceName curDev = _listOfVideoCameras->getReferenceToCameraDeviceName(i);
+			if(curDev == (char*)nameOfDesiredCam) {
+				desiredCamFound = true;
+				break;
+			}
+		}
+		if(desiredCamFound) {
+			_indexOfSelectedCamera = tmpIndex;
+		}
+		else {
+			ssi_wrn ("video capture device '%s' not found", nameOfDesiredCam);
+			int tmpIndex = CameraList::LetUserSelectDesiredCam(_listOfVideoCameras);
+			if(tmpIndex < 0) {
+				ssi_wrn("Invalid video capture device");
+				return false;
+			}
+			else {
+				_indexOfSelectedCamera = tmpIndex;
+			}
+		}
+	}
+	else {
+		int tmpIndex = CameraList::LetUserSelectDesiredCam(_listOfVideoCameras);
+		if(tmpIndex < 0) {
+			ssi_wrn("Invalid video capture device");
+			return false;
+		}
+		else {
+			_indexOfSelectedCamera = tmpIndex;
+		}
+	}
+
+	IBaseFilter *pCap = NULL;
+	HRESULT hr = CameraTools::FindAndBindToIBaseFilter(&pCap, &(_listOfVideoCameras->getReferenceToCameraDeviceName(_indexOfSelectedCamera)));
+	if(FAILED(hr))
+	{
+		ssi_wrn("Could not bind the cam to IBaseFilter. Failed with %ld", hr);
+		return false;
+	}
+		
+	bool foundType = this->determineIfDesiredMediaTypeExists(pCap);
+
+	if(foundType == false)
+	{
+		//TODO show dialog and maybe selection
+		if(LetUserSelectMediaType())
+		{
+			if(!this->determineIfDesiredMediaTypeExists(NULL))
+			{
+				ssi_wrn("Type Info not supported.");
+				return false;
+			}
+		}
+		else
+		{
+			ssi_wrn("type Info not supported.");
+			return false;
+		}
+	}
+
+	SafeReleaseFJ(pCap);
+
+	_options.params.flipImage = _options.flip;
+	provider->setMetaData (sizeof (_options.params), &_options.params);
+	ssi_stream_init (_video_channel.stream, 0, 1, ssi_video_size (_options.params), SSI_IMAGE, _options.params.framesPerSecond);
+	provider->init (&_video_channel);
+
+	Lock lock (_setProviderMutex); 	
 	{
 		_provider = provider;
 	}
@@ -266,6 +273,8 @@ void Camera::setProvider(IProvider *provider) {
 	ssi_char_t string[SSI_MAX_CHAR];
 	ssi_sprint (string, "%s@%s", getName (), _options.getDeviceName ());
 	Thread::setName (string);
+
+	return true;
 }
 
 bool Camera::setVideoOutputFormatAndConnectPin()
@@ -287,7 +296,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 	HRESULT hr = _pCapDevice->EnumPins(&pEnumPins);
 	if(FAILED(hr))
 	{
-		ssi_err ("could enumerate pins in setVideoOutputFormat(). Failed with %ld", hr);
+		ssi_wrn ("Could enumerate pins in setVideoOutputFormat(). Failed with %ld", hr);
 		return false;
 	}
 
@@ -304,7 +313,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 		if(FAILED(hr))
 		{
 			SafeReleaseFJ(pPin);
-			ssi_wrn ("the pin does not support IKsPropertySet in setVideoOutputFormat(). Failed with %ld", hr);
+			ssi_wrn ("The pin does not support IKsPropertySet in setVideoOutputFormat(). Failed with %ld", hr);
 			continue;
 		}
 
@@ -314,7 +323,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 		{
 			SafeReleaseFJ(pKsPropertySet);
 			SafeReleaseFJ(pPin);
-			ssi_wrn ("the pin does not support IKsPropertySet AMPROPERTY_PIN_CATEGORY in setVideoOutputFormat(). Failed with %ld", hr);
+			ssi_wrn ("The pin does not support IKsPropertySet AMPROPERTY_PIN_CATEGORY in setVideoOutputFormat(). Failed with %ld", hr);
 			continue;
 		}
 		if(IsEqualGUID(pinCategory, PIN_CATEGORY_CAPTURE) == FALSE)
@@ -330,7 +339,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 		{
 			SafeReleaseFJ(pKsPropertySet);
 			SafeReleaseFJ(pPin);
-			ssi_err ("the pin does not support IAMStreamConfig in setVideoOutputFormat(). Failed with %ld", hr);
+			ssi_wrn ("The pin does not support IAMStreamConfig in setVideoOutputFormat(). Failed with %ld", hr);
 			continue;
 		}
 
@@ -343,7 +352,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 			SafeReleaseFJ(pConfig);
 			SafeReleaseFJ(pKsPropertySet);
 			SafeReleaseFJ(pPin);
-			ssi_err ("failed to get number of capabilities in setVideoOutputFormat(). Failed with %ld", hr);
+			ssi_wrn ("Failed to get number of capabilities in setVideoOutputFormat(). Failed with %ld", hr);
 			continue;
 		}
 
@@ -360,7 +369,7 @@ bool Camera::setVideoOutputFormatAndConnectPin()
 					SafeReleaseFJ(pConfig);
 					SafeReleaseFJ(pKsPropertySet);
 					SafeReleaseFJ(pPin);
-					ssi_err ("failed retrieving StreamCaps in setVideoOutputFormat(). Failed with %ld", hr);
+					ssi_wrn ("Failed retrieving StreamCaps in setVideoOutputFormat(). Failed with %ld", hr);
 					continue;
 				}
 
@@ -724,7 +733,7 @@ bool Camera::connect()
 	}
 	else 
 	{
-		ssi_err ("InitCapturegraphBuilder failed");
+		ssi_wrn ("InitCapturegraphBuilder failed");
 		return false;
 	}
 
@@ -732,14 +741,15 @@ bool Camera::connect()
 	hr = CameraTools::FindAndBindToIBaseFilter(&_pCapDevice, &(_listOfVideoCameras->getReferenceToCameraDeviceName(_indexOfSelectedCamera)));
 	if(FAILED(hr))
 	{
-		ssi_err("Could not bind the cam to IBaseFilter. Failed with %ld", hr);
+		ssi_wrn("Could not bind the cam to IBaseFilter. Failed with %ld", hr);
+		return false;
 	}
 
 	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "Adding Capture Filter to graph...");
 	hr = _pGraph->AddFilter(_pCapDevice, L"Capture Filter");
 	if(FAILED(hr))
 	{
-		ssi_err("FAILED! Could not add the cam to IBaseFilter. Failed with %ld", hr);
+		ssi_wrn("FAILED! Could not add the cam to IBaseFilter. Failed with %ld", hr);
 		return false;
 	}
 	else
@@ -756,13 +766,13 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("QueryInterfaces");
+		ssi_wrn("QueryInterfaces");
 		return false;
 	}
 
 	if(setVideoOutputFormatAndConnectPin() == false)
 	{
-		ssi_err("Could not set desired VideoOutputFormat!");
+		ssi_wrn("Could not set desired VideoOutputFormat!");
 		return false;
 	}
 	
@@ -773,7 +783,7 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("FindFilterByName with UAProxyForceGrabber");
+		ssi_wrn("FindFilterByName with UAProxyForceGrabber");
 		return false;
 	}
 
@@ -788,7 +798,7 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("Get Output Pin of Grabber Device");
+		ssi_wrn("Get Output Pin of Grabber Device");
 		return false;
 	}
 
@@ -801,7 +811,7 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("Query Grabber Interface");
+		ssi_wrn("Query Grabber Interface");
 		SafeReleaseFJ(pPin);
 		return false;
 	}
@@ -815,7 +825,7 @@ bool Camera::connect()
 	else
 	{
 		SafeReleaseFJ(pPin);
-		ssi_err ("Could not Render Graph to NullRenderer");
+		ssi_wrn("Could not Render Graph to NullRenderer");
 		
 		return false;
 	}
@@ -831,7 +841,7 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("Activation of FrameBuffering for Grabbing");
+		ssi_wrn("Activation of FrameBuffering for Grabbing");
 		return false;
 	}
 
@@ -857,7 +867,7 @@ bool Camera::connect()
 	}
 	else
 	{
-		ssi_err ("Running Graph");
+		ssi_wrn("Running Graph failed");
 		return false;
 	}
 
@@ -1042,13 +1052,14 @@ bool Camera::LetUserSelectMediaType()
 
 	if(!dialogGateway.didInitWork())
 	{
-		ssi_err("In Camera::LetUserSelectMediaType -> DialogLibGateWay initialisation failed and no fallback available");
+		ssi_wrn("In Camera::LetUserSelectMediaType -> DialogLibGateWay initialisation failed and no fallback available");
 		return false;
 	}
 
 	if(!dialogGateway.SetNewDialogType("PinAndMediaSelectionDialog"))
 	{
-		ssi_err_static("In Camera::LetUserSelectMediaType -> Could not set PinAndMediaSelectionDialog and no fallback available");
+		ssi_wrn("In Camera::LetUserSelectMediaType -> Could not set PinAndMediaSelectionDialog and no fallback available");
+		return false;
 	}
 
 	int intHandle = dialogGateway.AlterExistingItem("Caption", -1, "Select a MediaType");
@@ -1274,45 +1285,45 @@ bool Camera::LetUserSelectMediaType()
 		int width;
 		if(!dialogGateway.RetrieveInt("WidthInPixels", &width))
 		{
-			ssi_err("Error retrieving WidthInPixels");
+			ssi_wrn("Error retrieving WidthInPixels");
 			return false;
 		}
 		int height;
 		if(!dialogGateway.RetrieveInt("HeightInPixels", &height))
 		{
-			ssi_err("Error retrieving HeightInPixels");
+			ssi_wrn("Error retrieving HeightInPixels");
 			return false;
 		}
 		int depth;
 		if(!dialogGateway.RetrieveInt("DepthInBitsPerChannel", &depth))
 		{
-			ssi_err("Error retrieving DepthInBitsPerChannel");
+			ssi_wrn("Error retrieving DepthInBitsPerChannel");
 			return false;
 		}
 		int channels;
 		if(!dialogGateway.RetrieveInt("NumOfChannels", &channels))
 		{
-			ssi_err("Error retrieving NumOfChannels");
+			ssi_wrn("Error retrieving NumOfChannels");
 			return false;
 		}
 		double fps;
 		if(!dialogGateway.RetrieveDouble("FramesPerSecond", &fps))
 		{
-			ssi_err("Error retrieving FramesPerSecond");
+			ssi_wrn("Error retrieving FramesPerSecond");
 			return false;
 		}
 		int tmp;
 		
 		if(!dialogGateway.RetrieveInt("UseClosestFramerateForGraph", &tmp))
 		{
-			ssi_err("Error retrieving UseClosestFramerateForGraph");
+			ssi_wrn("Error retrieving UseClosestFramerateForGraph");
 			return false;
 		}
 		bool closeFPS = (tmp > 0) ? true : false;
 
 		if(!dialogGateway.RetrieveInt("FlipImage", &tmp))
 		{
-			ssi_err("Error retrieving FlipImage");
+			ssi_wrn("Error retrieving FlipImage");
 			return false;
 		}
 		bool flip = (tmp > 0) ? true : false;
@@ -1320,14 +1331,14 @@ bool Camera::LetUserSelectMediaType()
 		int majortype;
 		if(!dialogGateway.RetrieveInt("MajorVideoType", &majortype))
 		{
-			ssi_err("Error retrieving MajorVideoType");
+			ssi_wrn("Error retrieving MajorVideoType");
 			return false;
 		}
 
 		char *subtype;
 		if(!dialogGateway.RetrieveString("OutputSubTypeOfCaptureDevice", &subtype))
 		{
-			ssi_err("Error retrieving MajorVideoType");
+			ssi_wrn("Error retrieving MajorVideoType");
 			return false;
 		}
 		

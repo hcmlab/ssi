@@ -133,6 +133,7 @@ void Window::RegisterWindowClass() {
 		{
 			PrintLastError();
 			ssi_err("window registration failed");
+			return;
 		}
 	}
 }

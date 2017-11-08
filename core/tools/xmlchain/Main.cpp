@@ -193,7 +193,7 @@ void GetDirectories(const ssi_char_t *exePath, params_t &params)
 #if _WIN32|_WIN64
 		params.exeDir = ssi_strcat(workDir, "\\", exepath_fp.getDir());
 #else
-		params.exeDir = ssi_strcat(_workdir, "/", exepath_fp.getDir());
+        params.exeDir = ssi_strcat(workDir, "/", exepath_fp.getDir());
 #endif
 	}
 	else 
@@ -212,7 +212,7 @@ void GetDirectories(const ssi_char_t *exePath, params_t &params)
 #if _WIN32|_WIN64
 		params.chainPathAbsolute = ssi_strcat(workDir, "\\", params.chainPath);
 #else
-		params.chainPathAbsolute = ssi_strcat(_workdir, "/", params.chainPath);
+        params.chainPathAbsolute = ssi_strcat(workDir, "/", params.chainPath);
 #endif
 	}
 	else
@@ -250,12 +250,18 @@ void ResolveDependencies(params_t &params)
 				"swscale-4.dll",
 			};
 			for (ssi_size_t i = 0; i < 8; i++)
-			{
-				ssi_char_t *dlldst = ssi_strcat(params.exeDir, "\\", depend[i]);
-				ssi_char_t *dllsrc = ssi_strcat(params.srcUrl, "/", depend[i]);
+            {
+#if _WIN32|_WIN64
+                ssi_char_t *dlldst = ssi_strcat(params.exeDir, "\\", depend[i]);
+#else
+                 ssi_char_t *dlldst = ssi_strcat(params.exeDir, "/", depend[i]);
+#endif
+                ssi_char_t *dllsrc = ssi_strcat(params.srcUrl, "/", depend[i]);
 				if (!ssi_exists(dlldst))
 				{
+#if _WIN32||_WIN64
 					WebTools::DownloadFile(dllsrc, dlldst);
+#endif
 				}
 				delete[] dlldst;
 				delete[] dllsrc;

@@ -121,8 +121,7 @@ bool ControlCheckBox::start () {
 	} else {
 		ssi_sprint(name, "enabled");
 	}
-
-	_checkbox = new CheckBox(_options.label, value);
+	_checkbox = new CheckBox(_options.label[0] != '\0' ? _options.label : name, value);
 	_checkbox->setCallback(this);
 
 	ssi_sprint(name, "%s", _options.id);
@@ -134,33 +133,57 @@ bool ControlCheckBox::start () {
 	_window->create();
 	_window->show();	
 
-	update(value);
+	init(value);
 
 	return true;
 }
 
-void ControlCheckBox::update(bool value) {
-	
-		if (_is_option) {			
-			for (ssi_size_t i = 0; i < _n_targets; i++) {
-				if (_targets[i] && _ready[i]) {					
-					ssi_msg(SSI_LOG_LEVEL_DETAIL, "change option(s) '%s:%s' to %s", _target_ids[i], _options.option, value ? "true" : "false");
-					_targets[i]->getOptions()->lock();
-					_targets[i]->getOptions()->setOptionValue(_options.option, &value);
-					_targets[i]->getOptions()->unlock();
-					_targets[i]->notify(INotify::COMMAND::OPTIONS_CHANGE, _options.option);
-				}
-			}
-		} else {			
-			for (ssi_size_t i = 0; i < _n_targets; i++) {					
-				if (_targets[i]) {
-					ssi_msg(SSI_LOG_LEVEL_DETAIL, "turn object '%s' %s", _target_ids[i], value ? "on" : "off");
-					_targets[i]->notify(value ? INotify::COMMAND::WAKE_PRE : INotify::COMMAND::SLEEP_PRE);
-					_targets[i]->setEnabled(value);
-					_targets[i]->notify(value ? INotify::COMMAND::WAKE_POST : INotify::COMMAND::SLEEP_POST);
-				}
+void ControlCheckBox::init(bool value) {
+
+	if (_is_option) {
+		for (ssi_size_t i = 0; i < _n_targets; i++) {
+			if (_targets[i] && _ready[i]) {
+				ssi_msg(SSI_LOG_LEVEL_DETAIL, "change option(s) '%s:%s' to %s", _target_ids[i], _options.option, value ? "true" : "false");
+				_targets[i]->getOptions()->lock();
+				_targets[i]->getOptions()->setOptionValue(_options.option, &value);
+				_targets[i]->getOptions()->unlock();
+				_targets[i]->notify(INotify::COMMAND::OPTIONS_CHANGE, _options.option);
 			}
 		}
+	}
+	else {
+		for (ssi_size_t i = 0; i < _n_targets; i++) {
+			if (_targets[i]) {
+				ssi_msg(SSI_LOG_LEVEL_DETAIL, "turn object '%s' %s", _target_ids[i], value ? "on" : "off");
+				_targets[i]->notify(value ? INotify::COMMAND::WAKE_INIT: INotify::COMMAND::SLEEP_INIT);
+				_targets[i]->setEnabled(value);				
+			}
+		}
+	}
+}
+
+void ControlCheckBox::update(bool value) {
+	
+	if (_is_option) {			
+		for (ssi_size_t i = 0; i < _n_targets; i++) {
+			if (_targets[i] && _ready[i]) {					
+				ssi_msg(SSI_LOG_LEVEL_DETAIL, "change option(s) '%s:%s' to %s", _target_ids[i], _options.option, value ? "true" : "false");
+				_targets[i]->getOptions()->lock();
+				_targets[i]->getOptions()->setOptionValue(_options.option, &value);
+				_targets[i]->getOptions()->unlock();
+				_targets[i]->notify(INotify::COMMAND::OPTIONS_CHANGE, _options.option);
+			}
+		}
+	} else {			
+		for (ssi_size_t i = 0; i < _n_targets; i++) {					
+			if (_targets[i]) {
+				ssi_msg(SSI_LOG_LEVEL_DETAIL, "turn object '%s' %s", _target_ids[i], value ? "on" : "off");
+				_targets[i]->notify(value ? INotify::COMMAND::WAKE_PRE : INotify::COMMAND::SLEEP_PRE);
+				_targets[i]->setEnabled(value);
+				_targets[i]->notify(value ? INotify::COMMAND::WAKE_POST : INotify::COMMAND::SLEEP_POST);
+			}
+		}
+	}
 }
 
 bool ControlCheckBox::stop() {

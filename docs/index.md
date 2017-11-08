@@ -1045,11 +1045,11 @@ To share the xml string with an external application, we use ``SocketEventWriter
 
 > Check out the full [pipeline](code/xml/network/xmlsender.pipeline) and the according [template](code/xml/network/xmlsender.xml).
 		
-### Options {#xml-advanced-options}		
-		
-So far, we have learned about [options](#xml-basics-component) as a way to configure the behaviour of a component before the execution of a pipeline. However, some options also allow it to change the behaviour of a component *at* run-time. We can read this from the API when an option is marked as ``FREE`` (see [here](#fig:xml-advanced-options-0)).
+### More Control {#xml-advanced-control}		
+				
+So far, we have learned about [options](#xml-basics-component) as a way to configure the behaviour of a component before the execution of a pipeline. However, some options can be changed *at* run-time, too. We can read this from the API when an option is marked as ``FREE`` (see [here](#fig:xml-advanced-control-0)).
 
-![*Options marked as ``FREE`` can be changed at run-time.*](pics/xml-advanced-options-0.png){#fig:xml-advanced-options-0 width=80%}
+![*Options marked as ``FREE`` can be changed at run-time.*](pics/xml-advanced-control-0.png){#fig:xml-advanced-control-0 width=80%}
 
 First, we add an instance of ``Limits``, which keeps stream values in a certain range. The range is defined by options ``min`` and ``max``, which we initialize with default values:
 
@@ -1068,7 +1068,7 @@ Now, we need a way to access the ``min`` and ``max`` options at run-time. The ``
 
 When the pipeline is started editable options are listed and can be changed (press enter to confirm) as shown [here](#fig:xml-advanced-options-1). Note that we used the ``runnable`` tag to include the component. We do this because GUI elements have 	their own thread and this way we make sure it will be started.
 
-![*``ControlGrid`` lists options that are editable at run-time.*](pics/xml-advanced-options-1.png){#fig:xml-advanced-options-1 width=80%}
+![*``ControlGrid`` lists options that are editable at run-time.*](pics/xml-advanced-control-1.png){#fig:xml-advanced-control-1 width=80%}
 
 To target a specific option we can use ``ControlTextBox``:
 
@@ -1077,9 +1077,9 @@ To target a specific option we can use ``ControlTextBox``:
 <runnable create="ControlTextBox:control" id="limits" name="max"/>
 ``` 
 
-It gives us an individual text box for each option as shown [here](#fig:xml-advanced-options-2):
+It gives us an individual text box for each option as shown [here](#fig:xml-advanced-control-2):
 
-![*``ContolTextBox`` allows it to target specific options.*](pics/xml-advanced-options-2.png){#fig:xml-advanced-options-2 width=80%}
+![*``ContolTextBox`` allows it to target specific options.*](pics/xml-advanced-control-2.png){#fig:xml-advanced-control-2 width=80%}
 
 Or in case of a floating point option (single value) we can use ``ControlSlider``:
 
@@ -1088,11 +1088,51 @@ Or in case of a floating point option (single value) we can use ``ControlSlider`
 <runnable create="ControlSlider:control" id="limits" name="max" defval="0.5" minval="0.5" maxval="1.0"/>
 ```
 
-It creates a slider for each option as shown [here](#fig:xml-advanced-options-3):
+It creates a slider for each option as shown [here](#fig:xml-advanced-control-3):
 
-![*``ControlSlider`` adds a slider to floating point options.*](pics/xml-advanced-options-3.png){#fig:xml-advanced-options-3 width=80%}
+![*``ControlSlider`` adds a slider to floating point options.*](pics/xml-advanced-control-3.png){#fig:xml-advanced-control-3 width=80%}
 
-> Check out the full code: [controller](code/xml/options/controller.pipeline), [textbox](code/xml/options/textbox.pipeline), [slider](code/xml/options/slider.pipeline).
+Finally, any component that is not a ``Transformer`` or a ``Sensor`` can be turned on and off at run-time. Therefore, we add a ``ControlCheckBox``.
+		
+``` xml		
+<runnable create="ControlCheckBox:control" id="plot" name="" title="CONTROL" label="PLOTTING ON/OFF"/>		
+```
+
+It creates a check box to turn the component with the id ``plot`` on and off as shown [here](#fig:xml-advanced-control-4):
+
+![*Use a ``ControlCheckBox`` to turn a component on/off.*](pics/xml-advanced-control-4.png){#fig:xml-advanced-control-4 width=80%}
+
+Note that a ``ControlCheckBox`` can also be used to control a boolean option. Therefore, the ``name`` option has to be set to the name of the option.
+
+> Check out the full code: [controller](code/xml/control/controller.pipeline), [textbox](code/xml/control/textbox.pipeline), [slider](code/xml/control/slider.pipeline), [component](code/xml/control/component.pipeline).
+
+### Record On Demand {#xml-advanced-record}		
+
+When a component is disabled (e.g. using a ``ControlCheckBox`` in the previous example), it does no longer receive input (neither streams, nor events). Some components, however, implement a special behaviour on top of this. A [``FileWriter``](#xml-basics-visualization-storage), for instance, closes the output file and when it is enabled again it begins writing to a new file. By default, this means the previous file will be overwritten. To prevent a ``FileWriter`` to overwrite an existing file we have to set the option ``overwrite=false``. Now, a new filename is automatically generated if the file exists. By default a running index will be added. E.g. if the file ``my.stream`` already exists, it will be changed to ``my1.stream``. And if ``my1.stream`` also exists, it will be set to ``my2.stream`` and so on. To have more control on the new path, we can use the variable ``$(num)`` to place a running index anywhere in the path. E.g. ``my/unique/path_$(num)/my.stream`` creates  ``my/unique/path_<1,2,3,...>/my.stream``. To add trailing zeros to the running index, we can use ``$(num,[length])``.
+
+The following example uses a ``ControlCheckBox`` to control a ``FileWriter`` and uses a new file path each time it is enabled:
+
+``` xml
+<runnable create="ControlCheckBox:record" id="plot*,writer*" label="RECORD" default="false"/>	
+<consumer create="FileWriter:writer" path="record/$(num,2)/cursor" overwrite="false">
+	<input pin="cursor" frame="0.2s" />
+</consumer>
+```
+
+It is also possible to enable/disable components of a pipeline via a socket connection. This is useful if several pipelines are involved in a recording session. Therefore, we add a ``NotifySender`` in one of the pipelines and connect it a ``ControlCheckBox`` (note that it is important to place the sender before the control!). Whenever the ``NotifySender`` receives a notification it will publish it on the socket:
+
+``` xml
+<runnable create="NotifySender:sender" url="udp://255.255.255.255:1111"/>	
+<runnable create="ControlCheckBox:record" id="sender" label="RECORD" default="false"/>	
+```
+
+Then we add a ``NotifyReceiver`` to the other pipelines, which will receive the notifications and forward it to the connected components:
+
+``` xml
+<runnable create="NotifyReceiver:receiver" id="plot*,writer*" url="udp://255.255.255.255:1111"/>
+```
+
+> Check out the full code: [toggle](code/xml/control/toggle.pipeline) and [record](code/xml/control/record.pipeline).
 
 # Python {#python}
 

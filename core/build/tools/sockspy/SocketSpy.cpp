@@ -59,9 +59,9 @@ SocketSpy::~SocketSpy () {
 void SocketSpy::enter () {
 
 	if (_opts.host && _opts.host[0] != '\0') {
-		_socket = Socket::CreateAndConnect (_opts.protocol, Socket::SERVER, _opts.port, _opts.host);
+		_socket = Socket::CreateAndConnect (_opts.protocol, Socket::MODE::SERVER, _opts.port, _opts.host);
 	} else {
-		_socket = Socket::CreateAndConnect (_opts.protocol, Socket::SERVER, _opts.port);
+		_socket = Socket::CreateAndConnect (_opts.protocol, Socket::MODE::SERVER, _opts.port);
 	}
 
 	switch (_opts.format) {
@@ -120,7 +120,7 @@ void SocketSpy::enter () {
 						ssi_char_t *host = url_parts[0];
 						ssi_size_t port = 0;
 						sscanf (url_parts[1], "%u", &port);
-						_fork[i] = Socket::CreateAndConnect (_opts.protocol, Socket::CLIENT, port, host);
+						_fork[i] = Socket::CreateAndConnect (_opts.protocol, Socket::MODE::CLIENT, port, host);
 					} else {
 						ssi_err ("found invalid url '%s'", url);
 					}

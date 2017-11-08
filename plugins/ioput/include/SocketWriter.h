@@ -58,23 +58,31 @@ public:
 	public:
 
 		Options ()
-			: port (1234), type (Socket::UDP), osc (false), reltime (false), format (FORMAT::BINARY), compression (SocketImage::COMPRESSION::JPG), packet_delay (3) {
-
-			host[0] = '\0';
+			: reltime (false), format (FORMAT::BINARY), compression (SocketImage::COMPRESSION::JPG), packet_delay (3) {
+			
+			setUrl("");			
 			delim[0] = ',';
 			delim[1] = '\0';
-			setHost("localhost");
 
-			addOption ("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any)");
-			addOption ("port", &port, 1, SSI_INT, "port number (-1 for any)");		
-			addOption ("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP)");	
-			addOption ("osc", &osc, 1, SSI_BOOL, "use osc format (deprecated, use format instead)");
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. upd://*:-1, tcp://172.0.0.1:1234)");
 			addOption ("format", &format, 1, SSI_INT, "streaming format: 0=BINARY, 1=ASCII, 2=OSC, 3=IMAGE");
 			addOption ("delim", &delim, SSI_MAX_CHAR, SSI_CHAR, "delim chars if streaming in ascii format");
 			addOption ("id", id, SSI_MAX_CHAR, SSI_CHAR, "id if streaming in osc format");
 			addOption ("compression", &compression, 1, SSI_INT, "compression if streaming images (0=NONE,1=JPG)");
 			addOption ("packet_delay", &packet_delay, 1, SSI_SIZE, "delay between sending packets in milliseconds to give receiver some time to pick them up (IMAGE only)");
 			addOption ("reltime", &reltime, 1, SSI_BOOL, "send relative time stamps (OSC only)");
+
+			// deprecated
+
+			type = Socket::TYPE::UDP;
+			port = 1234;
+			setHost("localhost");
+			osc = false;
+
+			addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
+			addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
+			addOption("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP) [deprecated use 'url']");
+			addOption("osc", &osc, 1, SSI_BOOL, "use osc format [deprecated, use 'format']");
 		};
 
 		void setHost (const ssi_char_t *host) {
@@ -89,10 +97,20 @@ public:
 				ssi_strcpy (this->id, id);
 			}
 		}
+		void setUrl(const ssi_char_t *url) {
+			this->url[0] = '\0';
+			if (url) {
+				ssi_strcpy(this->url, url);
+			}
+		}
+		void setUrl(Socket::TYPE::List type, const ssi_char_t *host, int port) {
+			ssi_sprint(url, "%s://%s:%d", Socket::TYPE_NAMES[type], host, port);
+		}
 
+		ssi_char_t url[SSI_MAX_CHAR];
 		ssi_char_t host[SSI_MAX_CHAR];
 		int port;
-		Socket::TYPE type;	
+		Socket::TYPE::List type;	
 		bool osc;
 		ssi_char_t id[SSI_MAX_CHAR];
 		bool reltime;

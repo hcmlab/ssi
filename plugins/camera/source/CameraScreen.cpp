@@ -203,7 +203,7 @@ void CameraScreen::setProvider (IProvider *provider) {
 			_rsz_stream_out.time = 0;
 			_rsz_stream_out.type = SSI_IMAGE;
 	
-			ssi_pcast (CVResize, _rsz_filter)->getOptions ()->setResize (_options.resize_width, _options.resize_height, ssi_cast (CVResize::METHOD, _options.resize_method));
+			ssi_pcast (CVResize, _rsz_filter)->getOptions ()->setResize (ssi_real_t(_options.resize_width), ssi_real_t(_options.resize_height), ssi_cast (CVResize::METHOD, _options.resize_method));
 			ssi_pcast (CVResize, _rsz_filter)->setFormat (_org_params);
 			_rsz_filter->transform_enter (_rsz_stream_in, _rsz_stream_out);
 

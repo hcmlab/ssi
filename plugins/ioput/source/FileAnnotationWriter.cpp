@@ -36,7 +36,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
-
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
 namespace ssi {
 
 	ssi_char_t *FileAnnotationWriter::ssi_log_name = "fannowriter";
@@ -44,9 +47,13 @@ namespace ssi {
 	FileAnnotationWriter::FileAnnotationWriter(const ssi_char_t *file)
 		: _file(0),
 		_annotation(0),	
+		_default_scheme_rate(0),
+		_default_scheme_type(SSI_SCHEME_TYPE::DISCRETE),
 		_borrowed(false),
 		_confidence(0),
-		_label(0) {
+		_label(0),
+		_offset (0),
+		_first_call (true) {
 
 		if (file) {
 			if (!OptionList::LoadXML(file, &_options)) {
@@ -70,7 +77,7 @@ namespace ssi {
 		}
 	}
 
-	bool FileAnnotationWriter::load_scheme()
+	bool FileAnnotationWriter::open()
 	{
 		if (_annotation)
 		{
@@ -89,44 +96,91 @@ namespace ssi {
 			if (_options.meta[0] != '\0')
 			{
 				parse_meta(annotation, _options.meta, ';');
-			}
-			
-			_annotation = annotation;
+			}		
 		}
 		else
-		{			
-			if (annotation->setDiscreteScheme("noname"))
+		{
+			switch (_default_scheme_type)
 			{
-				_annotation = annotation;
+			case SSI_SCHEME_TYPE::DISCRETE:			
+				annotation->setDiscreteScheme(_options.defaultSchemeName);
+				break;
+			case SSI_SCHEME_TYPE::CONTINUOUS:
+				annotation->setContinuousScheme(_options.defaultSchemeName, _default_scheme_rate, _options.defaultMinScore, _options.defaultMaxScore);
+				break;
+			case SSI_SCHEME_TYPE::FREE:
+				annotation->setFreeScheme(_options.defaultSchemeName);
+				break;
+			default:
+				return false;
 			}
 		}
+		
+		_annotation = annotation;
 
 		return true;
 	}
 
-	void FileAnnotationWriter::save_annotation()
+	bool FileAnnotationWriter::close()
 	{
-		if (!_borrowed && _annotation)
-		{
+		bool result = false;
+
+		if (!_borrowed && _annotation && (_annotation->getSize() > 0 || _options.keepEmpty))
+		{			
 			if (_options.annotationPath[0] != '\0')
-			{
-				if (!ssi_pcast(Annotation, _annotation)->save(_options.annotationPath, File::ASCII))
+			{				
+				ssi_char_t *path = 0;
+
+				if (_options.overwrite)
 				{
-					ssi_wrn("could not save annotation file '%s'", _options.annotationPath);
+					ssi_mkdir_r(FilePath(_options.annotationPath).getDir());
+					path = ssi_strcpy(_options.annotationPath);
 				}
+				else
+				{
+					path = FilePath(_options.annotationPath, SSI_FILE_TYPE_ANNOTATION).getUnique(true);
+				}
+
+				if (_offset > 0)
+				{
+					if (_annotation->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE
+						|| _annotation->getScheme()->type == SSI_SCHEME_TYPE::FREE)
+					{
+						_annotation->addOffset(-_offset, -_offset);
+					}
+					ssi_char_t offset_s[25];
+					ssi_sprint(offset_s, "%g", _offset);
+;					_annotation->setMeta("offsetInSeconds", offset_s);
+				}
+
+				if (!ssi_pcast(Annotation, _annotation)->save(path, File::ASCII))
+				{
+					ssi_wrn("could not save annotation '%s'", path);
+				}
+				else
+				{
+					result = true;
+				}
+
+				delete[] path;
 			}
 			delete _annotation; _annotation = 0;			
 		}
+
+		_offset = 0;
+
+		return result;
 	}
 
 	void FileAnnotationWriter::listen_enter()
 	{		
-		load_scheme();
+		open();
 		if (!_label)
 		{
 			_label = ssi_strcpy(_options.defaultLabel);
 			_confidence = _options.defaultConfidence;
 		}
+		_first_call = true;
 	}
 
 	void FileAnnotationWriter::setLabel(const ssi_char_t *label, ssi_real_t confidence) {
@@ -141,6 +195,8 @@ namespace ssi {
 	}
 
 	bool FileAnnotationWriter::update(IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
+
+		_first_call = false;
 
 		if (n_new_events > 0) {
 			ssi_event_t **es = new ssi_event_t *[n_new_events];
@@ -181,7 +237,7 @@ namespace ssi {
 	bool FileAnnotationWriter::update(ssi_event_t &e) {
 
 		Lock lock(_mutex);
-
+		
 		if (!_annotation)
 		{
 			return false;
@@ -191,15 +247,13 @@ namespace ssi {
 		{
 			return false;		
 		}
-
-		Annotation *annotation = ssi_pcast(Annotation, _annotation);
-
+		
 		ssi_label_t label;
 		label.discrete.from = e.time / 1000.0;
 		label.discrete.to = (e.time + e.dur) / 1000.0;
 		label.confidence = _confidence;
 
-		if (annotation->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
+		if (_annotation->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
 			label.continuous.score = 0;
 
@@ -236,14 +290,14 @@ namespace ssi {
 			}
 
 		} 
-		else if (annotation->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
+		else if (_annotation->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 		{
 			ssi_int_t id = SSI_SAMPLE_GARBAGE_CLASS_ID;
 
 			if (_options.eventNameAsLabel)
 			{
 				const ssi_char_t *string = Factory::GetString(e.event_id);
-				if (!get_class_id(annotation, string, id))
+				if (!get_class_id(_annotation, string, id))
 				{
 					return false;
 				}
@@ -251,21 +305,21 @@ namespace ssi {
 			else if (_options.eventNameAsLabel)
 			{
 				const ssi_char_t *string = Factory::GetString(e.sender_id);
-				if (!get_class_id(annotation, string, id))
+				if (!get_class_id(_annotation, string, id))
 				{
 					return false;
 				}
 			}
 			else if (e.type == SSI_ETYPE_EMPTY || _options.forceDefaultLabel)
 			{
-				if (!get_class_id(annotation, _label, id))
+				if (!get_class_id(_annotation, _label, id))
 				{
 					return false;
 				}
 			}
 			else if (e.type == SSI_ETYPE_STRING)
 			{
-				if (!get_class_id(annotation, e.ptr, id))
+				if (!get_class_id(_annotation, e.ptr, id))
 				{
 					return false;
 				}
@@ -289,7 +343,7 @@ namespace ssi {
 							}
 						}
 						const ssi_char_t *string = Factory::GetString(t[max_index].id);
-						if (!get_class_id(annotation, string, id))
+						if (!get_class_id(_annotation, string, id))
 						{
 							return false;
 						}
@@ -301,7 +355,7 @@ namespace ssi {
 					else
 					{
 						const ssi_char_t *string = Factory::GetString(t[min(n, _options.mapKeyIndex)].id);
-						if (!get_class_id(annotation, string, id))
+						if (!get_class_id(_annotation, string, id))
 						{
 							return false;
 						}
@@ -327,7 +381,7 @@ namespace ssi {
 				return false;
 			}
 		}
-		else if (annotation->getScheme()->type == SSI_SCHEME_TYPE::FREE)
+		else if (_annotation->getScheme()->type == SSI_SCHEME_TYPE::FREE)
 		{
 			if (e.type == SSI_ETYPE_EMPTY || _options.forceDefaultLabel)
 			{
@@ -365,26 +419,28 @@ namespace ssi {
 		}
 		else
 		{
-			ssi_wrn("scheme type not supported '%s'", SSI_SCHEME_NAMES[annotation->getScheme()->type]);
+			ssi_wrn("scheme type not supported '%s'", SSI_SCHEME_NAMES[_annotation->getScheme()->type]);
 			return false;
 		}
 
-
-		annotation->add(label);
+		_annotation->add(label);
 
 		return true;
 	}
 
 	void FileAnnotationWriter::listen_flush()
 	{
-		save_annotation();
+		close();
 		delete _label; _label = 0;
 	}
 
 	void FileAnnotationWriter::consume_enter(ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[])
 	{
-		load_scheme();
+		_default_scheme_type = SSI_SCHEME_TYPE::CONTINUOUS;
+		_default_scheme_rate = stream_in[0].sr;
+
+		open();
 		if (!_label)
 		{
 			_label = ssi_strcpy(_options.defaultLabel);
@@ -393,12 +449,11 @@ namespace ssi {
 
 		if (_annotation)
 		{
-			Annotation *annotation = ssi_pcast(Annotation, _annotation);
-			if (annotation->getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
+			if (_annotation->getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
 			{
-				if (annotation->getScheme()->continuous.sr != stream_in[0].sr)
+				if (_annotation->getScheme()->continuous.sr != stream_in[0].sr)
 				{
-					ssi_wrn("sample rates in stream and annotation differ '%g != %g'", stream_in[0].sr, annotation->getScheme()->continuous.sr);
+					ssi_wrn("sample rates in stream and annotation differ '%g != %g'", stream_in[0].sr, _annotation->getScheme()->continuous.sr);
 				}
 			}
 		}
@@ -407,12 +462,16 @@ namespace ssi {
 		{
 			ssi_wrn("stream type not supported '%s'", SSI_TYPE_NAMES[stream_in[0].type]);
 		}
+
+		_first_call = true;
 	}
 
 	void FileAnnotationWriter::consume(IConsumer::info consume_info,
 		ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[])
 	{
+		_first_call = false;
+
 		if (!_annotation)
 		{
 			return;
@@ -423,9 +482,7 @@ namespace ssi {
 			return;
 		}
 
-		Annotation *annotation = ssi_pcast(Annotation, _annotation);
-
-		if (annotation->getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
+		if (_annotation->getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
 		{
 			return;
 		}
@@ -451,15 +508,17 @@ namespace ssi {
 				label.confidence = _confidence;
 			}
 
-			annotation->add(label);
+			_annotation->add(label);
 		}
-
 	}
 
 	void FileAnnotationWriter::consume_flush(ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[])
 	{
-		save_annotation();
+		if (!_first_call)
+		{
+			close();
+		}
 		delete _label; _label = 0;
 	}
 
@@ -508,6 +567,26 @@ namespace ssi {
 		{
 			_label = ssi_strcpy(_options.defaultLabel);
 			_confidence = _options.defaultConfidence;
+		}
+
+		return false;
+	}
+
+	bool FileAnnotationWriter::notify(INotify::COMMAND::List command, const ssi_char_t *message)
+	{
+		switch (command)
+		{
+		case INotify::COMMAND::SLEEP_POST:
+		{			
+			close();							
+			return true;
+		}
+		case INotify::COMMAND::WAKE_PRE:
+		{			
+			open();
+			_offset = Factory::GetFramework()->GetElapsedTime();
+			return true;
+		}
 		}
 
 		return false;

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <HTML>
     <HEAD>
-        <TITLE>ssiioput.dll  - Social Signal Interpretation (SSI) API [v1.0.2]
+        <TITLE>ssiioput.dll  - Social Signal Interpretation (SSI) API [v1.0.3]
         </TITLE>
     </HEAD>
     <BODY>
@@ -72,6 +72,26 @@
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
                     <CODE>
                         <A HREF="#SocketEventReader">SocketEventReader</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>NotifySender</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#NotifySender">NotifySender</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>NotifyReceiver</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#NotifyReceiver">NotifyReceiver</A>
                     </CODE>
                 </TD>
             </TR>
@@ -179,7 +199,7 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;host&nbsp;</CODE>
+                                <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;CHAR&nbsp;</CODE>
@@ -188,79 +208,13 @@
                                 <CODE>&nbsp;1024&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                                <CODE>&nbsp;''&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;host name (empty for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;port&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;INT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'1234'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;port number (-1 for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;type&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'0'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;osc&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;use osc format (deprecated, use format instead)&nbsp;</CODE>
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. upd://*:-1, tcp://172.0.0.1:1234)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -396,6 +350,94 @@
                             </TD>
                         </TR>
                         <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;host&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;host name (empty for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;port&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;port number (-1 for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;type&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;osc&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;use osc format [deprecated, use 'format']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
                             <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
                         </TR>
                     </TABLE>
@@ -432,7 +474,7 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;host&nbsp;</CODE>
+                                <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;CHAR&nbsp;</CODE>
@@ -447,95 +489,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;host name (empty for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;port&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;INT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'-1'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;port number (-1 for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;size&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UINT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'65507'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;size of buffer&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;type&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'0'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;osc&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;BOOL&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;use osc format (deprecated, use format instead)&nbsp;</CODE>
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -781,6 +735,94 @@
                             </TD>
                         </TR>
                         <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;host&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;host name (empty for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;port&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;port number (-1 for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;type&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;osc&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;use osc format [deprecated, use 'format']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
                             <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
                         </TR>
                         <TR>
@@ -839,7 +881,7 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;host&nbsp;</CODE>
+                                <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;CHAR&nbsp;</CODE>
@@ -848,57 +890,13 @@
                                 <CODE>&nbsp;1024&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                                <CODE>&nbsp;''&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;host name (empty for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;port&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;INT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'1234'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;port number (-1 for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;type&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'0'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP)&nbsp;</CODE>
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -936,7 +934,7 @@
                                 <CODE>&nbsp;1&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
@@ -987,6 +985,72 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;send relative time stamps (osc or xml)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;host&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;host name (empty for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;port&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;port number (-1 for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;type&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP) [deprecated use 'url']&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1048,7 +1112,7 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;host&nbsp;</CODE>
+                                <CODE>&nbsp;url&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;CHAR&nbsp;</CODE>
@@ -1063,29 +1127,7 @@
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
-                                <CODE>&nbsp;host name (empty for any)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;port&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;INT&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'-1'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;port number (-1 for any)&nbsp;</CODE>
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1108,28 +1150,6 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;size of buffer&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;type&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'0'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP)&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1202,6 +1222,72 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;host&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'localhost'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;host name (empty for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;port&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;INT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;port number (-1 for any) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;type&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;protocol type (0=UDP, 1=TCP) [deprecated use 'url']&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;sname&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -1211,7 +1297,7 @@
                                 <CODE>&nbsp;1024&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'socketreceiver'&nbsp;</CODE>
+                                <CODE>&nbsp;'event'&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
@@ -1233,13 +1319,189 @@
                                 <CODE>&nbsp;1024&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'socketevent'&nbsp;</CODE>
+                                <CODE>&nbsp;'socket'&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%">
                                 <CODE>&nbsp;LOCK&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;event name [deprecated use address]&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="NotifySender">NotifySender</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>NotifySender</B>&nbsp;
+                                <CODE>OBJECT</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Forwards notifictions through a socket connection.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;url&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'upd://172.0.0.1:1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. upd://:-1, tcp://172.0.0.1:1234)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="NotifyReceiver">NotifyReceiver</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>NotifyReceiver</B>&nbsp;
+                                <CODE>OBJECT</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Receives events through a UDP or TCP socket connection.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;url&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'upd://172.0.0.1:1234'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;url of the form 'scheme://host:port' (e.g. upd://:-1, tcp://172.0.0.1:1234)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;id&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;object id(s) (if several separate by comma)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;size&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UINT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1472'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;size of buffer&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;timeout&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;UINT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;time out in milliseconds&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1301,6 +1563,50 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;overwrite&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;overwrite file if it already exists (otherwise a unique path will be created)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;keepEmpty&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;store stream even if it is empty&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;type&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -1339,28 +1645,6 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;file access mode (1=w, 2=a, 3=r+, 4=w+, 5=a+)&nbsp;</CODE>
-                            </TD>
-                        </TR>
-                        <TR>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;version&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;UCHAR&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;1&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;'2'&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="1%">
-                                <CODE>&nbsp;LOCK&nbsp;</CODE>
-                            </TD>
-                            <TD WIDTH="100%">
-                                <CODE>&nbsp;file version (0=V0, 1=V1, 2=V2(xml))&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1917,7 +2201,7 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
-                                <CODE>&nbsp;annotationPath&nbsp;</CODE>
+                                <CODE>&nbsp;path&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;CHAR&nbsp;</CODE>
@@ -1933,6 +2217,72 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;path of annotation file (will be created)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;annotationPath&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;path of annotation file (will be created) [deprecated use path]&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;overwrite&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;overwrite file if it already exists (otherwise a unique path will be created)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;keepEmpty&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;store annotation even if it is empty&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -1955,6 +2305,28 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;path of scheme file (labels that do not fit the scheme will be ignored)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;defaultSchemeName&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'noname'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;default scheme name if not scheme was loaded&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>
@@ -2159,6 +2531,50 @@
                             <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
                             <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;defaultMinScore&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0.00000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;default min score&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;defaultMaxScore&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1.00000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;default max score&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
                                 <CODE>&nbsp;defaultConfidence&nbsp;</CODE>
                             </TD>
                             <TD WIDTH="1%" style="white-space: nowrap">
@@ -2351,7 +2767,7 @@
         </TABLE>
         <HR />
         <FONT SIZE="-1">
-            <P>Built with Social Signal Interpretation (SSI) [v1.0.2]
+            <P>Built with Social Signal Interpretation (SSI) [v1.0.3]
                 <BR />(c) University of Augsburg
                 <BR />
                 <A HREF="http://openssi.net" TARGET="new">http://openssi.net</A>

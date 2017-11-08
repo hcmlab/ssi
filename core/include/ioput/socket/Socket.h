@@ -58,15 +58,27 @@ class Socket {
 
 public:
 
-enum TYPE {
-	UDP = 0,
-	TCP
+struct TYPE 
+{
+	enum List
+	{
+		UDP = 0,
+		TCP,
+		NUM,
+	};
 };
+static ssi_char_t *TYPE_NAMES[TYPE::NUM];
 
-enum MODE {
-	CLIENT = 0,
-	SERVER
+struct MODE
+{
+	enum List
+	{
+		CLIENT = 0,
+		SERVER,
+		NUM,
+	};
 };
+static ssi_char_t *MODE_NAMES[MODE::NUM];
 
 static const ssi_size_t DEFAULT_MTU_SIZE = 1472;
 static const ssi_size_t MAX_MTU_SIZE	 = 65507;
@@ -74,15 +86,19 @@ static const long INFINITE_TIMEOUT       = 0xFFFFFFFF;
 
 public:
 
-	static Socket *Create (TYPE type,
-		MODE mode,
+	static Socket *Create(const ssi_char_t *url,
+		MODE::List mode);
+	static Socket *Create (TYPE::List type,
+		MODE::List mode,
 		IpEndpointName ip);
-	static Socket *Create (TYPE type,
-		MODE mode,
+	static Socket *Create (TYPE::List type,
+		MODE::List mode,
 		int port = IpEndpointName::ANY_PORT,
 		const char *host = 0);
-	static Socket *CreateAndConnect (TYPE type,
-		MODE mode,
+	static Socket *CreateAndConnect(const ssi_char_t *url,
+		MODE::List mode);
+	static Socket *CreateAndConnect (TYPE::List type,
+		MODE::List mode,
 		int port = IpEndpointName::ANY_PORT,
 		const char *host = 0);
 	virtual ~Socket ();
@@ -99,11 +115,13 @@ public:
 	bool sendFile (const ssi_char_t *filepath);
 	bool recvFile (ssi_char_t **filepath, long timeout_in_ms = INFINITE_TIMEOUT);
 
+	static ssi_char_t *ParseUrl(const ssi_char_t *url, TYPE::List &type, int &port);
+
 	bool isConnected () { return _is_connected; };
-	TYPE getType () { return _type; };
-	MODE getMode () { return _mode; };
+	TYPE::List getType () { return _type; };
+	MODE::List getMode () { return _mode; };
 	IpEndpointName getIp () { return _ip; };
-	const ssi_char_t *getIpString () { return _ipstr; };
+	const ssi_char_t *getUrl() { return _url; };	
 
 	static void SetLogLevel (int level) {
 		Socket::ssi_log_level = level;
@@ -113,10 +131,11 @@ protected:
 
 	Socket ();
 
-	TYPE _type;
-	MODE _mode;
+	TYPE::List _type;
+	MODE::List _mode;
 	IpEndpointName _ip;
 	ssi_char_t _ipstr[IpEndpointName::ADDRESS_AND_PORT_STRING_LENGTH];
+	ssi_char_t _url[SSI_MAX_CHAR];
 	bool _is_connected;
 
 	static int ssi_log_level;

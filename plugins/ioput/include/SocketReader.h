@@ -82,17 +82,13 @@ public:
 	public:
 
 		Options ()
-			: port (-1), type (Socket::UDP), ssr (0), sdim (0), sbyte (0), stype (SSI_UNDEF), swidth (640), sheight (480), sdepth (8), schannels (3), size (Socket::MAX_MTU_SIZE), timeout (1000), osc (false), format (FORMAT::BINARY) {
+			: port (-1), type (Socket::TYPE::UDP), ssr (0), sdim (0), sbyte (0), stype (SSI_UNDEF), swidth (640), sheight (480), sdepth (8), schannels (3), size (Socket::MAX_MTU_SIZE), timeout (1000), osc (false), format (FORMAT::BINARY) {
 
+			setUrl("");
 			delim[0] = ',';
-			delim[1] = '\0';
-			setHost("");
+			delim[1] = '\0';			
 
-			addOption ("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any)");
-			addOption ("port", &port, 1, SSI_INT, "port number (-1 for any)");		
-			addOption ("size", &size, 1, SSI_UINT, "size of buffer");
-			addOption ("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP)");
-			addOption ("osc", &osc, 1, SSI_BOOL, "use osc format (deprecated, use format instead)");
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)");			
 			addOption ("format", &format, 1, SSI_INT, "streaming format: 0=BINARY, 1=ASCII, 2=OSC, 3=IMAGE");
 			addOption ("delim", &delim, SSI_MAX_CHAR, SSI_CHAR, "delim chars if streaming in ascii format");
 			addOption ("ssr", &ssr, 1, SSI_DOUBLE, "sample rate in Hz");
@@ -103,7 +99,19 @@ public:
 			addOption ("sheight", &sheight, 1, SSI_INT, "image height in pixels (if format is set to IMAGE)");
 			addOption ("sdepth", &sdepth, 1, SSI_INT, "number of bits per pixel (if format is set to IMAGE)");
 			addOption ("schannels", &schannels, 1, SSI_INT, "number of channels per pixel (if format is set to IMAGE)");
-			addOption ("timeout", &timeout, 1, SSI_UINT, "time out in milliseconds");			
+			addOption ("timeout", &timeout, 1, SSI_UINT, "time out in milliseconds");		
+
+			// deprecated
+
+			type = Socket::TYPE::UDP;
+			port = 1234;
+			setHost("localhost");
+			osc = false;
+
+			addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
+			addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
+			addOption("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP) [deprecated use 'url']");
+			addOption("osc", &osc, 1, SSI_BOOL, "use osc format [deprecated, use 'format']");
 		};
 
 		void setHost (const ssi_char_t *host) {
@@ -122,11 +130,21 @@ public:
 			swidth = vparams.widthInPixels;
 			sheight = vparams.heightInPixels;
 		}
+		void setUrl(const ssi_char_t *url) {
+			this->url[0] = '\0';
+			if (url) {
+				ssi_strcpy(this->url, url);
+			}
+		}
+		void setUrl(Socket::TYPE::List type, const ssi_char_t *host, int port) {
+			ssi_sprint(url, "%s://%s:%d", Socket::TYPE_NAMES[type], host, port);
+		}
 
+		ssi_char_t url[SSI_MAX_CHAR];
 		ssi_char_t host[SSI_MAX_CHAR];
 		int port;
 		ssi_size_t size;
-		Socket::TYPE type;	
+		Socket::TYPE::List type;	
 		FORMAT::VALUE format;
 		char delim[SSI_MAX_CHAR];
 		ssi_time_t ssr;

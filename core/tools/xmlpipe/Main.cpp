@@ -196,7 +196,7 @@ bool Parse_and_Run(int argc, char **argv)
 			ssi_split_string(n, tokens, params.debug_path, ':');
 			ssi_size_t port = 0;
 			sscanf(tokens[1], "%u", &port);
-			ssimsg = new SocketMessage(Socket::UDP, port, tokens[0]);
+			ssimsg = new SocketMessage(Socket::TYPE::UDP, port, tokens[0]);
 			for (ssi_size_t i = 0; i < n; i++) {
 				delete[] tokens[i];
 			}
@@ -293,8 +293,8 @@ void Run(const ssi_char_t *exepath, params_t params) {
 	}
 
 	if (!result) {
-		ssi_print("ERROR: could not parse pipeline from '%s'\n", pipepath);
-		ssi_print("\n\n\t\tpress enter to quit\n");
+		ssi_err("could not parse pipeline from '%s'", pipepath);
+		ssi_print("\n\n\n\t\tpress enter to quit\n");
 		getchar();
 	}
 	else {

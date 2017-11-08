@@ -3,10 +3,10 @@
 	
 	<!-- register dlls -->
 	<register>
-		<load name="ssiioput"/>
-		<load name="ssimouse"/>
-		<load name="ssigraphic"/>
-		<load name="ssisignal"/>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
 	</register>
 
 	<framework sync="true" slisten="true" sport="1234"/>
@@ -18,13 +18,13 @@
 	Make sure to adjust the options to fit the incoming signal.
 	
 	-->
-	<sensor create="SocketReader" type="0" port="7777" format="0" ssr="50.0" sdim="2" sbyte="4" stype="9">		
+	<sensor create="SocketReader" url="upd://localhost:7777" format="0" ssr="50.0" sdim="2" sbyte="4" stype="9">		
 		<output channel="socket" pin="cursor1"/>
 	</sensor>
-	<sensor create="SocketReader" type="0" port="8888" format="1" delim=";" ssr="50.0" sdim="2" sbyte="4" stype="9">		
+	<sensor create="SocketReader" url="upd://localhost:8888" format="1" delim=";" ssr="50.0" sdim="2" sbyte="4" stype="9">		
 		<output channel="socket" pin="cursor2"/>
 	</sensor>
-	<sensor create="SocketReader" type="0" port="9999" format="2" ssr="50.0" sdim="2" sbyte="4" stype="9">		
+	<sensor create="SocketReader" url="upd://localhost:9999" format="2" ssr="50.0" sdim="2" sbyte="4" stype="9">		
 		<output channel="socket" pin="cursor3"/>
 	</sensor>	
 	
@@ -35,10 +35,8 @@
 	Make sure to adjust the options to fit the incoming event stream.
 	
 	-->
-	<object create="SocketEventReader" port="6666" address="event@button"/>	
-	<object create="FileEventWriter" path="button">
-		<listen address="event@button"/>
-	</object>
+	<object create="SocketEventReader" url="upd://localhost:5555" address="cursor@remote"/>	
+	<object create="SocketEventReader" url="upd://localhost:6666" address="cursor@remote" osc="true"/>	
 	
 	<!-- visualization -->
 	<consumer create="SignalPainter:plot" title="cursor" size="10.0">

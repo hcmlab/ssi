@@ -54,7 +54,7 @@ ClockEventSender::ClockEventSender (const ssi_char_t *file)
 		_file = ssi_strcpy (file);
 	}
 
-	ssi_event_init (_event, SSI_ETYPE_TUPLE);
+	ssi_event_init (_event, SSI_ETYPE_EMPTY);
 	_frame = Factory::GetFramework();
 }
 
@@ -70,10 +70,7 @@ ClockEventSender::~ClockEventSender () {
 
 bool ClockEventSender::setEventListener (IEventListener *listener) {
 
-	if (_options.empty) {
-		ssi_event_init(_event, SSI_ETYPE_EMPTY);
-	}
-	else {
+	if (!_options.empty) {
 		ssi_event_init(_event, SSI_ETYPE_STRING);
 		ssi_event_adjust(_event, ssi_strlen(_options.string) + 1);
 		ssi_strcpy(_event.ptr, _options.string);

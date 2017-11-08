@@ -53,6 +53,7 @@ public:
 			update_ms(0),
 			relative(false), 
 			list(true), 
+			lineReturn(false),
 			fontSize(SSI_DEFAULT_FONT_SIZE) {
 
 			screen[0] = 0;
@@ -67,6 +68,10 @@ public:
 			addOption("fontSize", &fontSize, 1, SSI_SIZE, "font size");
 			addOption("fontName", fontName, SSI_MAX_CHAR, SSI_CHAR, "font name");
 			addOption("list", &list, 1, SSI_BOOL, "display a list of events (otherwise only the last event will be displayed)");
+
+			// non list options
+
+			addOption("lineReturn", &lineReturn, 1, SSI_BOOL, "add line return before new line (if not displayed as list)");
 
 			// list options
 			
@@ -106,6 +111,7 @@ public:
 		ssi_char_t fontName[SSI_MAX_CHAR];
 		ssi_size_t fontSize;
 		bool list;
+		bool lineReturn;
 	};
 
 public: 	

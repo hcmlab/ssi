@@ -574,7 +574,7 @@ void MatrixOps<T>::Print (File *file, const Matrix<T> *const matrix) {
         }
 
         if (!status) {
-                ssi_err ("Print failed ()");
+                ssi_wrn ("Print failed ()");
         }
 }
 

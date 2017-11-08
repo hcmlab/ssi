@@ -46,7 +46,11 @@ Buffer::Buffer (ssi_size_t size_)
 
 	// create buffer array and fill it with zeros
 	buffer = (ssi_byte_t*)malloc(size);
-	if(buffer == 0) ssi_err("Failed creating buffer (size = %.2f MB). Not enough memory.", size / 1048576.0f);
+	if (buffer == 0)
+	{
+		ssi_err("not enough memory to create buffer (size = %.2f MB)", size / 1048576.0f);
+		return;
+	}
 
 	for (ssi_size_t i = 0; i < size; i++) {
 		buffer[i] = 0;

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins -->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="control"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- Sensor -->
+	<sensor create="Mouse:mouse" sr="50.0">		
+		<output channel="cursor" pin="pos" />
+	</sensor>
+	
+	<!-- Limiter
+	
+	Keeps stream values in a certain range defined by 'min' and 'max'.
+	
+	-->
+	<transformer create="Limits:limits" min="0.0" max="1.0">
+		<input pin="pos" frame="0.2s"/>
+		<output pin="pos-lim"/>
+	</transformer>
+	
+	<!-- Controller
+	
+	Gives access to options that are editable at run-time (here 'min' and 'max').
+	
+	-->
+	<runnable create="ControlGrid:control" id="limits"/>
+	
+	<!-- Visualization -->
+	<consumer create="SignalPainter:plot" title="RAW;LIMITED" size="10.0">
+		<input pin="pos;pos-lim" frame="0.2s" />		
+	</consumer>		
+
+	<!-- Decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,400">plot</area>
+		<area pos="400,400,400,200">control</area>
+	</object>
+
+</pipeline>

@@ -60,11 +60,13 @@ public:
 	public:
 
 		Options ()
-			: flip (true), mode (0), mirror(false) {
+			: flip (true), mode (0), mirror(false), overwrite(false), keepEmpty(true) {
 
 			path[0] = '\0';
 			compression[0] = '\0';
 			addOption ("path", path, SSI_MAX_CHAR, SSI_CHAR, "file path (empty for stdout)");
+			addOption ("overwrite", &overwrite, 1, SSI_BOOL, "overwrite file if it already exists (otherwise a unique path will be created)");
+			addOption ("keepEmpty", &keepEmpty, 1, SSI_BOOL, "store stream even if it is empty");
 			addOption ("compression", compression, SSI_MAX_CHAR, SSI_CHAR, "name of compression filter ('None' for none, if empty dialog is shown)");
 			addOption ("flip", &flip, 1, SSI_BOOL, "flip video image");
 			addOption ("mirror", &mirror, 1, SSI_BOOL, "mirror video image");
@@ -89,7 +91,7 @@ public:
 		bool flip;
 		bool mirror;
 		int mode;
-
+		bool overwrite, keepEmpty;
 	};
 
 public:
@@ -100,13 +102,6 @@ public:
 	CameraWriter::Options *getOptions () { return &_options; };
 	const ssi_char_t *getName () { return GetCreateName (); };
 	const ssi_char_t *getInfo () { return "Writes a video (and an optional audio) stream to an avi file"; };
-
-	CameraWriter (ssi_char_t *fileToWrite, 
-		ssi_video_params_t videoParams, 
-		WAVEFORMATEX *audioParams = NULL,
-		const ssi_char_t *nameOfCompressionFilter = NULL, 
-		bool flipSamples = false, 
-		int interleavingMode = 0);
 
 	void consume_enter (ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]);
@@ -120,10 +115,13 @@ public:
 		ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]);
 
+	bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
+
 	void setVideoFormat (ssi_video_params_t	video_format) { _video_format = video_format; };
 	void setMetaData (ssi_size_t size, const void *meta) {
 		if (sizeof (_video_format) != size) {
 			ssi_err ("invalid meta size");
+			return;
 		}
 		memcpy (&_video_format, meta, size);
 	}
@@ -147,6 +145,13 @@ protected:
 	static char *ssi_log_name_static;
 	int ssi_log_level;
 	static int ssi_log_level_static;
+
+	bool _first_call;
+	bool _ready;
+	ssi_char_t *_filepath;
+	ssi_stream_t _stream;
+	void open();
+	void close();
 
 	int								_comInitCountConstructor;
 	int								_comInitCountEnterConsumeFlush;

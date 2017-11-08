@@ -68,13 +68,13 @@ bool SocketUdp::connect () {
 
 	switch (_mode)
 	{
-	case Socket::CLIENT:
+	case Socket::MODE::CLIENT:
 		_socket->Connect(_ip); //configures broadcast if ip is ANY_ADDRESS and allows the use of send()
-		ssi_msg(SSI_LOG_LEVEL_BASIC, "connected to '%s' [udp]", _ipstr);
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "connect to '%s' [udp]", _ipstr);
 		break;
-	case Socket::SERVER:
+	case Socket::MODE::SERVER:
 		_socket->Bind(_ip);
-		ssi_msg(SSI_LOG_LEVEL_BASIC, "bound to '%s' [udp]", _ipstr);
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "bind to '%s' [udp]", _ipstr);
 		break;
 	}
 
@@ -93,7 +93,7 @@ bool SocketUdp::disconnect () {
 	delete _socket; _socket = 0;
 	_is_connected = false; 
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "closed '%s' [udp]", _ipstr);
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "close '%s' [udp]", _ipstr);
 	return true;
 }
 
@@ -104,7 +104,7 @@ int SocketUdp::recv (void *ptr, ssi_size_t size, long timeout) {
 		return -1;
 	}
 
-	if (_mode == SocketUdp::CLIENT) {
+	if (_mode == SocketUdp::MODE::CLIENT) {
 		ssi_wrn("UDP clients cannot receive packages");
 		return -1;
 	}
@@ -115,7 +115,7 @@ int SocketUdp::recv (void *ptr, ssi_size_t size, long timeout) {
 		ssi_wrn ("receive() failed\n");
 		return -1;
 	} else {
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "received %d bytes", result);
+		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "receive %d bytes", result);
 	}
 
 	return result;
@@ -128,8 +128,8 @@ int SocketUdp::send (const void *ptr, ssi_size_t size) {
 		return -1;
 	}
 
-	if (_mode == SocketUdp::SERVER) {
-		ssi_wrn("sending package to %s. Use sendTo to send to different address", _ipstr);
+	if (_mode == SocketUdp::MODE::SERVER) {
+		ssi_wrn("sending package to %s (use sendTo to send to different address)", _ipstr);
 	}
 
 	int result;
@@ -160,7 +160,7 @@ int SocketUdp::send (const void *ptr, ssi_size_t size) {
 		return -1;
 
 	} else {
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "sent %d bytes", result);
+		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "send %d bytes", result);
 	}
 
 	return result;
@@ -197,7 +197,7 @@ int SocketUdp::sendTo(const void *ptr, ssi_size_t size, const char* host, int po
 		return -1;
 	}
 	else {
-		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "sent %d bytes", result);
+		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "send %d bytes", result);
 	}
 
 	return result;

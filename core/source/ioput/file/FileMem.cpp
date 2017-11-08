@@ -64,10 +64,11 @@ FileMem *FileMem::Create (TYPE type,
 		}
 		case FileMem::BINARY: {
 			ssi_err ("sorry, not yet implemented");
-			break;
+			return 0;			
 		}
 		default:
 			ssi_err ("type not supported");
+			return 0;
 	}
 
 	file->_type = type;	

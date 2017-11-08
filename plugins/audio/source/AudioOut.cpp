@@ -116,7 +116,7 @@ HWAVEOUT AudioOut::init (int device_id, WAVEFORMATEX wfx, ssi_size_t bufferSizeI
         (DWORD_PTR)this,  
         CALLBACK_FUNCTION 
     ) != MMSYSERR_NOERROR) { 
-        ssi_err ("Unable to open wave mapper device"); 
+        ssi_err ("unable to open wave mapper device"); 
     }
 
 	return hWaveOut;
@@ -205,7 +205,8 @@ void AudioOut::allocateBuffers(int size, int count)
         HEAP_ZERO_MEMORY,  
         totalBufferSize 
     ))) == NULL) { 
-        ssi_err ("Memory allocation error");       
+        ssi_err ("memory allocation error");       
+		return;
     } 
  
     /* 

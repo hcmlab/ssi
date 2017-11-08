@@ -130,7 +130,7 @@ bool ex_ioput(void *args) {
 	SocketWriter *sockwrite = ssi_create (SocketWriter, 0, true);
 	sockwrite->getOptions()->port = 1111;
 	sockwrite->getOptions()->setHost("localhost");
-	sockwrite->getOptions()->type = Socket::UDP;
+	sockwrite->getOptions()->type = Socket::TYPE::UDP;
 	frame->AddConsumer(sensor_p, sockwrite, "0.5s");
 
 	SignalPainter *sigpaint = ssi_create_id (SignalPainter, 0, "plot");

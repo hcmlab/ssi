@@ -32,8 +32,8 @@ project(openssi-tools)
 add_subdirectory(xmlpipe)
 add_dependencies(xmlpipe ssi )
 
-#add_subdirectory(xmlchain)
-#add_dependencies(xmlchain ssi )
+add_subdirectory(xmlchain)
+add_dependencies(xmlchain ssi )
 
 
 #install(TARGETS ssi DESTINATION bin)

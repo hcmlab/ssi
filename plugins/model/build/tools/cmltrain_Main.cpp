@@ -249,9 +249,11 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("to", &params.classname_new, "new class names (separated by ;)");
 
 	cmd.addText("\nOptions:");
+	cmd.addSCmdOption("-scheme", &params.scheme, "", "scheme name");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
 
 	cmd.addMasterSwitch("--train");
 
@@ -935,7 +937,7 @@ void mapClassNames(params_t &params)
 			}			
 
 			Annotation anno_new;
-			anno_new.setDiscreteScheme(params.annotation_new, to_unique);
+			anno_new.setDiscreteScheme(params.scheme[0] == '\0' ? params.annotation_new : params.scheme, to_unique );
 
 			for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
 			{

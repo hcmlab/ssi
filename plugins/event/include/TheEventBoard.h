@@ -29,6 +29,7 @@
 
 #include "base/IObject.h"
 #include "base/ITheEventBoard.h"
+#include "base/ITheFramework.h"
 #include "base/Array1D.h"
 #include "ioput/option/OptionList.h"
 
@@ -105,6 +106,8 @@ protected:
 	EventBoardWorker *_worker;
 	bool _is_running;
 	Mutex *_mutex;
+
+	ITheFramework *_frame;
 
 	Array1D<IObject *> _sender;
 	Array1D<IObject *> _listener;

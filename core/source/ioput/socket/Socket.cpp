@@ -43,16 +43,41 @@ namespace ssi {
 int Socket::ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
 const ssi_char_t *Socket::ssi_log_name = "socket____";
 
-Socket *Socket::Create (TYPE type,
-	MODE mode,
+ssi_char_t *Socket::TYPE_NAMES[Socket::TYPE::NUM] = {
+	"udp",
+	"tcp",
+};
+
+ssi_char_t *Socket::MODE_NAMES[Socket::MODE::NUM] = {
+	"client",
+	"server",
+};
+
+Socket *Socket::Create(const ssi_char_t *url,
+	MODE::List mode)
+{			
+	ssi_char_t *host = 0;	
+	TYPE::List type = TYPE::List::UDP;
+	int port = 0;
+	host = ParseUrl(url, type, port);
+
+	IpEndpointName ip = IpEndpointName(host, port);
+
+	delete[] host;
+	
+	return Socket::Create(type, mode, ip);
+}
+
+Socket *Socket::Create (TYPE::List type,
+	MODE::List mode,
 	IpEndpointName ip) {
 
 	Socket *socket = 0;
 	switch (type) {
-		case UDP:
+		case TYPE::List::UDP:
 			socket = new SocketUdp ();
 			break;
-		case TCP:
+		case TYPE::List::TCP:
 			#if (defined(ANDROID))
 			#else
 			socket = new SocketTcp ();
@@ -60,19 +85,22 @@ Socket *Socket::Create (TYPE type,
 			break;
 		default:
 			ssi_err ("type not supported");
+			return 0;
 	}	
 
 	socket->_type = type;
 	socket->_mode = mode;
 	socket->_ip = ip;
 	socket->_ip.AddressAndPortAsString (socket->_ipstr);
+	ssi_sprint(socket->_url, "%s://%s", TYPE_NAMES[socket->_type], socket->_ipstr);
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "created socket (type=%d, mode=%d, ip=%s)", socket->_type, socket->_mode, socket->_ipstr);
+	ssi_msg (SSI_LOG_LEVEL_DETAIL, "create '%s@%s' [%s]", MODE_NAMES[socket->_mode], socket->_ipstr, TYPE_NAMES[socket->_type]);
+
 	return socket;
 }
 
-Socket *Socket::Create (TYPE type,
-	MODE mode,
+Socket *Socket::Create (TYPE::List type,
+	MODE::List mode,
 	int port,
 	const char *host) {
 
@@ -84,8 +112,17 @@ Socket *Socket::Create (TYPE type,
 	return Socket::Create (type, mode, IpEndpointName (address, port));
 }
 
-Socket *Socket::CreateAndConnect (TYPE type,
-	MODE mode,
+Socket *Socket::CreateAndConnect(const ssi_char_t *url,
+	MODE::List mode)
+{
+	Socket *socket = Socket::Create(url, mode);
+	socket->connect();
+
+	return socket;
+}
+
+Socket *Socket::CreateAndConnect (TYPE::List type,
+	MODE::List mode,
 	int port,
 	const char *host) {
 
@@ -101,7 +138,80 @@ Socket::Socket ()
 
 Socket::~Socket () {
 
-	ssi_msg (SSI_LOG_LEVEL_DETAIL, "destroyed socket (type=%d, mode=%d, ip=%s)", _type, _mode, _ipstr);
+	ssi_msg (SSI_LOG_LEVEL_DETAIL, "destroy '%s@%s' [%s]", MODE_NAMES[_mode], _ipstr, TYPE_NAMES[_type]);
+}
+
+ssi_char_t *Socket::ParseUrl(const ssi_char_t *url, TYPE::List &type, int &port)
+{
+	ssi_char_t *host = 0;
+	type = TYPE::List::UDP;
+	port = -1;
+
+	// upd://127.0.0.1:1234
+
+	int from = 0;
+	int to = 0;
+	bool found = false;
+	
+	// parse type
+
+	from = 0;
+	to = ssi_strfind(url + from, "://");
+	if (to <= 0)
+	{
+		ssi_wrn("could not parse type '%s'", url);
+		return 0;
+	}
+	to = from + to;
+	
+	found = false;	
+	for (int i = 0; i < TYPE::NUM; i++)
+	{
+		if (ssi_strcmp(url + from, TYPE_NAMES[i], false, to))
+		{
+			found = true;
+			type = (TYPE::List) i;
+			break;
+		}
+	}
+
+	// parse host
+
+	from = to + 3;
+	to = ssi_strfind(url + from, ":");
+	if (to < 0)
+	{
+		ssi_wrn("could not parse host '%s'", url);
+		return 0;
+	}
+	to = from + to;
+	host = ssi_strsub(url, from, to);
+
+	if (ssi_strcmp(host, "localhost", false))
+	{
+		delete[] host;
+		host = ssi_strcpy("127.0.0.1");
+	}
+	else if (host[0] == '\0' || ssi_strcmp(host, "*"))
+	{
+		delete[] host;
+		host = ssi_strcpy("255.255.255.255");
+	}
+	
+	// parse port
+
+	from = to + 1;
+	to = ssi_strlen(url);
+
+	if (to <= from)
+	{
+		ssi_wrn("could not parse port '%s'", url);
+		return 0;
+	}
+
+	port = atoi(url + from);
+
+	return host;
 }
 
 
@@ -208,7 +318,8 @@ bool Socket::recvFile (ssi_char_t **filepath, long timeout_in_ms) {
 		fwrite (buffer, result, 1, fp);
 	}
 	
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "received file (path=%s)", *filepath);
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "receive file (path=%s)", *filepath);
+
 	fclose (fp);
 
 	delete[] buffer;

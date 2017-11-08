@@ -67,11 +67,6 @@ void FileMemAscii::setFormat (const char *delim,
 	ssi_strcpy (_delim, delim);
 	ssi_strcpy (_flags, flags);
 
-	delete[] _format_with_delim;
-	delete[] _format_with_newline;
-	delete[] _format_with_delim_read;
-	delete[] _format_with_newline_read;
-
 	switch (_type) {
 		case SSI_CHAR:
 			sprintf (_format, "%%%sc", _flags);
@@ -105,7 +100,14 @@ void FileMemAscii::setFormat (const char *delim,
 			break;
 		default:
 			ssi_err ("unsupported sample type");
+			return;
 	}
+
+	delete[] _format_with_delim;
+	delete[] _format_with_newline;
+	delete[] _format_with_delim_read;
+	delete[] _format_with_newline_read;
+
 	_format_with_delim = ssi_strcat (_format, _delim);
 	_format_with_newline = ssi_strcat (_format, "\n");
 	_format_with_delim_read = ssi_strcat (_format_with_delim, "%n");

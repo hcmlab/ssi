@@ -143,7 +143,7 @@ protected:
 	int ssi_log_level;
 
 	bool prepare_file ();
-	void setProvider (IProvider *provider);
+	bool setProvider (IProvider *provider);
 
 	FileChannel _file_channel;
 	IProvider *_provider;

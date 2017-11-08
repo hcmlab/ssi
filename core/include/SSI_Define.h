@@ -35,7 +35,7 @@
 #define SSI_INLINE inline
 
 // version (major.minor.maintenance)
-#define SSI_VERSION "v1.0.2"
+#define SSI_VERSION "v1.0.3"
 
 // copyright
 #define SSI_COPYRIGHT "Built with Social Signal Interpretation (SSI)\n\n\

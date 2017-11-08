@@ -304,6 +304,7 @@ SSI_INLINE static void ssi_cast2type(ssi_size_t n, tin* in, void* out, ssi_type_
 
 	default:
 		ssi_err("unsupported sample type");
+		return;
 	}
 }
 
@@ -391,7 +392,7 @@ SSI_INLINE static void  ssi_sleep(int32_t ms)
 #else
 SSI_INLINE static void  ssi_sleep(int32_t ms)
 {
-    std::this_thread::sleep_for(std::chrono::microseconds(ms));
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 #endif
 
@@ -537,7 +538,41 @@ SSI_INLINE bool ssi_strcmp (const ssi_char_t *s1, const ssi_char_t *s2, bool cas
 	}
 
 	return true;
+}
 
+SSI_INLINE static char *ssi_strsub(const ssi_char_t *str, ssi_size_t from, ssi_size_t to)
+{
+	if (!str)
+	{		
+		return 0;
+	}
+
+	to = min(ssi_strlen(str), to);
+	from = min(from, to);
+	
+	ssi_char_t *sub = new ssi_char_t[to - from + 1];
+	if (to > from)
+	{
+		memcpy(sub, str + from, to - from);
+	}
+	sub[to - from] = '\0';
+
+	return sub;
+}
+
+SSI_INLINE static int ssi_strfind(const ssi_char_t *str, const ssi_char_t *substr)
+{
+	const ssi_char_t *pos = strstr(str, substr);
+	if (pos)
+	{
+		return (int)(pos - str);
+	}
+	return -1;
+}
+
+SSI_INLINE static bool ssi_strhas(const ssi_char_t *str, const ssi_char_t *substr)
+{
+	return ssi_strfind(str, substr) >= 0;
 }
 
 SSI_INLINE static ssi_size_t ssi_val2str(ssi_type_t type, void *ptr, ssi_size_t n_string, ssi_char_t *string, int32_t precision = -1) {
@@ -611,6 +646,7 @@ SSI_INLINE static ssi_size_t ssi_val2str(ssi_type_t type, void *ptr, ssi_size_t 
 	}
 	default: {
 		ssi_err("sample type not supported");
+		return 0;
 	}
 	}
 
@@ -1140,7 +1176,7 @@ SSI_INLINE void ssi_stream_print (const ssi_stream_t &stream, FILE *file) {
 			break;
 		}
 		default:
-			ssi_err("sample type not supported");
+			ssi_wrn("sample type not supported");
 	}
 }
 

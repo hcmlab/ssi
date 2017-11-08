@@ -39,5 +39,7 @@
 #include "ioput/include/FileSampleWriter.h"
 #include "ioput/include/FileAnnotationWriter.h"
 #include "ioput/include/FakeSignal.h"
+#include "ioput/include/NotifySender.h"
+#include "ioput/include/NotifyReceiver.h"
 
 #endif

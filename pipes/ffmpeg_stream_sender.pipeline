@@ -9,6 +9,8 @@
 		<load name="ssiffmpeg" />
 		<load name="ssiimage" />
 	</register>
+	
+	<framework sync="true" slisten="false" sport="1234"/>
 
 	<!-- camera sensor -->
 	<sensor create="Camera" option="camera" width="320" height="240" fps="25.0" channel="3" depth="8">
@@ -21,10 +23,10 @@
 	</sensor>
 		
 	<!-- visualization -->	
-	<consumer create="VideoPainter:plot" title="server - video" flip="false">
+	<consumer create="VideoPainter:plot" title="VIDEO (SENDER)" flip="false">
 		<input pin="video" frame="1" delta="0"/>
 	</consumer>
-	<consumer create="SignalPainter:plot" title="server - audio" size="10" type="2">
+	<consumer create="SignalPainter:plot" title="AUDIO (SENDER)" size="10" type="2">
 		<input pin="audio" frame="0.04s"/>
 	</consumer>
 	

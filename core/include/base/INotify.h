@@ -40,8 +40,10 @@ namespace ssi {
 		struct COMMAND {
 			enum List {
 				MESSAGE = 0,
+				SLEEP_INIT,
 				SLEEP_PRE,
 				SLEEP_POST,
+				WAKE_INIT,
 				WAKE_PRE,
 				WAKE_POST,
 				OPTIONS_CHANGE,
@@ -50,7 +52,7 @@ namespace ssi {
 				WINDOW_SHOW,
 				WINDOW_HIDE,
 				MINMAX_SHOW,
-				MINMAX_HIDE
+				MINMAX_HIDE,
 			};
 		};
 

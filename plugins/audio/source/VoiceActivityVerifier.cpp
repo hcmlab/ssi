@@ -49,6 +49,7 @@ VoiceActivityVerifier::VoiceActivityVerifier (const ssi_char_t *file)
 	_lpc = ssi_pcast(AudioLpc, Factory::Create(AudioLpc::GetCreateName(), 0, false));	
 	if (!_lpc) {
 		ssi_err("could not create 'AudioLpc'");
+		return;
 	}
 	for (ssi_size_t i = 0; i < _lpc->getOptions()->getSize(); i++) {
 		ssi_option_t *o = _lpc->getOptions()->getOption(i);
@@ -100,6 +101,7 @@ void VoiceActivityVerifier::consume_enter (ssi_size_t stream_in_num,
 
 	if (stream_in[0].type != SSI_REAL) {
 		ssi_err ("type '%s' not supported", SSI_TYPE_NAMES[stream_in[0].type]);
+		return;
 	}
 }
 

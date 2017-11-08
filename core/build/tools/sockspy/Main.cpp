@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-host", &host, "", "host (if not set, any) \t\t[<any>]");
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addICmdOption ("-buffer", &buffer_size, Socket::MAX_MTU_SIZE, "max buffer size in bytes\t[MTU size]");
 	cmd.addICmdOption ("-type", &type, SSI_FLOAT, "sample type (1=CHAR, 2=UCHAR, 3=SHORT 4=USHORT, 5=INT, 6=UINT, 7=LONG, 8=ULONG, 9=FLOAT, 10=DOUBLE, 11=LDOUBLE, 14=BOOL)");			
 	cmd.addICmdOption ("-dim", &dim, 1, "samples dimension \t[1]");				
@@ -83,7 +83,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-host", &host, "", "host (if not set, any) \t\t[<any>]");
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addICmdOption ("-buffer", &buffer_size, Socket::MAX_MTU_SIZE, "max buffer size in bytes\t[MTU size]");
 
 	cmd.addMasterSwitch ("--osc");
@@ -99,7 +99,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-host", &host, "", "host (if not set, any) \t\t[<any>]");
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addBCmdOption ("-console", &log_console, false, "print stream on console \t\t[false]");
 	cmd.addBCmdOption ("-binary", &log_binary, false, "log streams (binary) \t\t[false]");
 	cmd.addBCmdOption ("-ascii", &log_ascii, false, "log streams (ascii) \t\t[false]");
@@ -116,7 +116,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-host", &host, "", "host (if not set, any) \t\t[<any>]");
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addICmdOption ("-buffer", &buffer_size, Socket::MAX_MTU_SIZE, "max buffer size in bytes\t[MTU size]");
 	cmd.addICmdOption ("-width", &vparams.widthInPixels, 640, "video width in pixels\t[640]");
 	cmd.addICmdOption ("-height", &vparams.heightInPixels, 480, "video height in pixels\t[480]");
@@ -134,7 +134,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addBCmdOption ("-console", &log_console, false, "debug on console \t\t[false]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addICmdOption ("-buffer", &buffer_size, Socket::MAX_MTU_SIZE, "max buffer size in bytes\t[MTU size]");
 
 	cmd.addMasterSwitch ("--peek");
@@ -146,7 +146,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption ("-dir", &work_dir, ".", "working directory \t\t[.]");
 	cmd.addBCmdOption ("-console", &log_console, false, "debug on console \t\t[false]");
 	cmd.addSCmdOption ("-debug", &debug, "", "directs debug output to file \t[]");
-	cmd.addICmdOption ("-protocol", &protocol, Socket::UDP, "protocol (0=UDP,1=TCP) \t[0]");
+	cmd.addICmdOption ("-protocol", &protocol, Socket::TYPE::UDP, "protocol (0=UDP,1=TCP) \t[0]");
 	cmd.addICmdOption ("-buffer", &buffer_size, Socket::MAX_MTU_SIZE, "max buffer size in bytes\t[MTU size]");
 
 	cmd.addText ("\n\n!!! Please note that command arguments are case sensitive !!!");
@@ -177,7 +177,7 @@ int main (int argc, char **argv) {
 			case 1: {
 				
 				opts.format = SocketSpy::FORMAT::BINARY;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.work_dir = work_dir;
@@ -191,7 +191,7 @@ int main (int argc, char **argv) {
 			case 2: {
 				
 				opts.format = SocketSpy::FORMAT::ASCII;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.work_dir = work_dir;
@@ -203,7 +203,7 @@ int main (int argc, char **argv) {
 			case 3: {
 			
 				opts.format = SocketSpy::FORMAT::OSC;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.work_dir = work_dir;
@@ -221,7 +221,7 @@ int main (int argc, char **argv) {
 			case 4: {
 				
 				opts.format = SocketSpy::FORMAT::IMAGE;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.work_dir = work_dir;
@@ -234,7 +234,7 @@ int main (int argc, char **argv) {
 			case 5: {
 				
 				opts.format = SocketSpy::FORMAT::FORK;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.log_console = log_console;
@@ -248,7 +248,7 @@ int main (int argc, char **argv) {
 			case 6: {
 				
 				opts.format = SocketSpy::FORMAT::PEEK;
-				opts.protocol = ssi_cast (Socket::TYPE, protocol);
+				opts.protocol = ssi_cast (Socket::TYPE::List, protocol);
 				opts.port = port;
 				opts.host = host;
 				opts.log_console = log_console;

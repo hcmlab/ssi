@@ -71,6 +71,7 @@ bool OptionList::addOption (const ssi_char_t *name,
 
 	if (ssi_strcmp(name, "option")) {
 		ssi_err("sorry, you are not allowed to have an option with name 'option'");
+		return false;
 	}
 	
 	if (OptionList::getOption (name)) {
@@ -333,11 +334,13 @@ bool OptionList::LoadXML (FILE *file, IOptions *list) {
 			ssi_name2type (item->Attribute ("type"), type);
 			if (o->type != ssi_cast (ssi_type_t, type)) {
 				ssi_err ("incompatible option type ('%s')", name);
+				return false;
 			}
 			int num = 0;
 			item->QueryIntAttribute ("num", &num);
 			if (o->num != ssi_cast (ssi_size_t, num)) {
 				ssi_err ("incompatible option size ('%s')", name);
+				return false;
 			}			
 			OptionList::FromString (item->Attribute ("value"), *o);	
 			bool lock = false;
@@ -682,6 +685,7 @@ ssi_char_t *OptionList::ToString(ssi_option_t &option,
 		}
 		default:
 			ssi_err ("type not supported");
+			return 0;
 	}
 
 	return string;

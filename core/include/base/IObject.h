@@ -47,10 +47,10 @@ public:
 	typedef IObject * (*create_fptr_t) (const ssi_char_t *file); 
 	virtual ~IObject () {};
 
-	void setEnabled(bool enabled) {
+	virtual void setEnabled(bool enabled) {
 		_enabled = enabled;
 	}
-	bool isEnabled() {
+	virtual bool isEnabled() {
 		return _enabled;
 	}
 

@@ -232,6 +232,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblinear-2.1", "plugins\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fastDTW", "plugins\fastDTW\build\dlls\fastDTW.v14.vcxproj", "{70BA16F1-B6B5-47C1-941F-CC4B53EB7129}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json", "plugins\json\build\dlls\json.v14.vcxproj", "{644D0323-D4E2-467D-BDDC-E5F62C595214}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -486,6 +488,10 @@ Global
 		{70BA16F1-B6B5-47C1-941F-CC4B53EB7129}.Debug|x64.Build.0 = Debug|x64
 		{70BA16F1-B6B5-47C1-941F-CC4B53EB7129}.Release|x64.ActiveCfg = Release|x64
 		{70BA16F1-B6B5-47C1-941F-CC4B53EB7129}.Release|x64.Build.0 = Release|x64
+		{644D0323-D4E2-467D-BDDC-E5F62C595214}.Debug|x64.ActiveCfg = Debug|x64
+		{644D0323-D4E2-467D-BDDC-E5F62C595214}.Debug|x64.Build.0 = Debug|x64
+		{644D0323-D4E2-467D-BDDC-E5F62C595214}.Release|x64.ActiveCfg = Release|x64
+		{644D0323-D4E2-467D-BDDC-E5F62C595214}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -572,5 +578,6 @@ Global
 		{127D19AE-B272-4996-A95E-946E79DC20EC} = {23A8E0BC-87FF-4EC2-A7E1-FCEF64F8C8FA}
 		{8114F45C-6D0C-4391-A961-0EC805561BC9} = {8DBD23EE-1443-486D-8179-B902EA79A63A}
 		{70BA16F1-B6B5-47C1-941F-CC4B53EB7129} = {23A8E0BC-87FF-4EC2-A7E1-FCEF64F8C8FA}
+		{644D0323-D4E2-467D-BDDC-E5F62C595214} = {3855B125-DBD2-442E-A7E7-249A1D792F94}
 	EndGlobalSection
 EndGlobal

@@ -8,8 +8,10 @@
 		<load name="ssiaudio" />
 	</register>
 
+	<framework waitid="close"/>
+	
 	<!-- read -->
-	<sensor create="FFMPEGReader" url="ffmpeg.mp4">		
+	<sensor create="FFMPEGReader:close" url="ffmpeg_01.mp4">		
 		<output channel="video" pin="video" size="2.0s"/>
 		<output channel="audio" pin="audio" size="2.0s"/>
 	</sensor>	

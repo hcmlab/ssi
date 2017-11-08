@@ -53,6 +53,7 @@ TheEventBoard::TheEventBoard (const ssi_char_t *file)
 	_worker (0),
 	_mutex (0),
 	_is_running (false),
+	_frame (0),
 	_file (0) {
 
 	if (file) {
@@ -70,6 +71,8 @@ TheEventBoard::TheEventBoard (const ssi_char_t *file)
 	_sender.init (_options.n_sender);
 	_ieselect.init (_options.n_listener);
 	_concerns_listener.init (_options.n_listener);
+
+	_frame = Factory::GetFramework();
 }
 
 TheEventBoard::~TheEventBoard () {
@@ -155,6 +158,11 @@ void TheEventBoard::Stop () {
 bool TheEventBoard::update (ssi_event_t &e) {
 
 	if (!_is_running) {
+		return false;
+	}
+
+	if (_frame && _frame->IsInIdleMode())
+	{
 		return false;
 	}
 

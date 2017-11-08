@@ -37,7 +37,7 @@ class FilePath {
 
 public:
 
-	FilePath (const ssi_char_t *_filepathfull);	
+	FilePath (const ssi_char_t *path, const ssi_char_t *ext = 0);	
 	virtual ~FilePath ();
 
 	const ssi_char_t *getPath () { return _filepath; };
@@ -47,6 +47,8 @@ public:
 	const ssi_char_t *getNameFull () { return _filenamefull; };
 	const ssi_char_t *getExtension () { return _extension; };
 	bool isRelative () { return _is_relative; };
+	bool hasExtension() { return _extension && _extension[0] != '\0'; }
+	ssi_char_t *getUnique(bool createDirectory = false);
 
 	void print (FILE *file = stdout);
 

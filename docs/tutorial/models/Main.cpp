@@ -177,7 +177,7 @@ bool ex_online(void *args) {
 	frame->AddSensor(mouse); 
 				
 	Classifier *classifier = ssi_create(Classifier, 0, true);
-	classifier->setTrainer(&trainer);
+	classifier->addTrainer("trainer", &trainer);
 	frame->AddConsumer(cursor_p, classifier, "0.5s");
 
 	decorator->add("console", 0, 0, 650, 800);

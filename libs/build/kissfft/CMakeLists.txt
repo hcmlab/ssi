@@ -54,7 +54,7 @@ IF(UNIX)
 ENDIF(UNIX)
 
 add_library(kissFFT STATIC ${SRC_FILES} )
-
+target_link_libraries(kissFFT ssi  )
 #add_executable(myapp main.c)
 
 #rename targets if debug

@@ -67,13 +67,13 @@ void PythonManager::Init()
 
 void PythonManager::Quit()
 {
-	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "restore thread");
+	printf("restore thread\n");
 	PyEval_RestoreThread(_state);
 
-	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "finalize");
+	printf("finalize\n");
 	Py_Finalize();
 
-	ssi_msg(SSI_LOG_LEVEL_DEFAULT, "quit");
+	printf("quit\n");
 }
 
 

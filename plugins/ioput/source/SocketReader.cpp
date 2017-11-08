@@ -133,8 +133,17 @@ bool SocketReader::connect () {
 		ssi_wrn ("using deprecated option 'osc', use 'format' instead");
 		_options.format = Options::FORMAT::OSC;
 	}
-	
-	_socket = Socket::CreateAndConnect (_options.type, Socket::SERVER, _options.port, _options.host);	
+		
+	if (_options.url[0] != '\0')
+	{
+		_socket = Socket::CreateAndConnect(_options.url, Socket::MODE::SERVER);
+	}
+	else
+	{
+		ssi_wrn("using deprecated option 'host,type,port', use 'url' instead");
+		_socket = Socket::CreateAndConnect(_options.type, Socket::MODE::SERVER, _options.port, _options.host);
+	}
+
 	switch (_options.format) {
 		case Options::FORMAT::BINARY:			
 			_n_buffer = _options.size;
@@ -160,9 +169,11 @@ bool SocketReader::connect () {
 	}
 
 	// set thread name
-	ssi_char_t *thread_name = ssi_strcat ("ssi_sensor_SocketReader@", _socket->getIpString ());
+	ssi_char_t *thread_name = ssi_strcat ("SocketReader@", _socket->getUrl ());
 	Thread::setName (thread_name);
 	delete[] thread_name;
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "start receiving stream from %s", _socket->getUrl());
 
 	return true;
 };
@@ -207,11 +218,13 @@ void SocketReader::run () {
 		::Sleep (10);
 	}	
 
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "received %d bytes", result);
+	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "receive %d bytes", result);
 };
 
 void SocketReader::terminate () {
 	
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "stop receiving stream from %s", _socket->getUrl());
+
 	delete _socket; _socket = 0;
 	delete _socket_osc; _socket_osc = 0;
 	delete _socket_img; _socket_img = 0;

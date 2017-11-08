@@ -46,7 +46,7 @@ public:
 
 	public:
 
-		Options () : clock (true), empty(true), init(false), silence(false) {
+		Options () : clock (1000), empty(true), init(false), silence(false) {
 
 			setSenderName ("clock");
 			setEventName ("tick");	

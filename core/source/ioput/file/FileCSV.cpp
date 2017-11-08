@@ -75,6 +75,7 @@ const ssi_char_t *FileCSV::getColumnName(ssi_size_t index) {
 
 	if (index > _n_columns) {
 		ssi_err("#index '%u' exceeds #columns '%u'", index, _n_columns);
+		return 0;
 	}
 
 	return _column_names[index];
@@ -84,6 +85,8 @@ FileCSV::Column &FileCSV::operator[] (ssi_size_t index) {
 
 	if (index > _n_columns) {
 		ssi_err("#index '%u' exceeds #columns '%u'", index, _n_columns);
+		Column column;
+		return column;
 	}
 
 	return _columns[index];
@@ -93,6 +96,8 @@ FileCSV::Column &FileCSV::operator[] (const ssi_char_t *name) {
 
 	if (_n_columns == 0) {
 		ssi_err("empty, nothing to return");
+		Column column;
+		return column;
 	}
 
 	for (ssi_size_t i = 0; i < _n_columns; i++) {
@@ -102,6 +107,7 @@ FileCSV::Column &FileCSV::operator[] (const ssi_char_t *name) {
 	}
 
 	ssi_wrn("invalid column name '%s', return 1st column", name);
+
 	return _columns[0];
 }
 

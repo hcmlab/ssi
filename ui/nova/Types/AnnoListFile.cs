@@ -216,7 +216,7 @@ namespace ssi
             return true;
         }
 
-        public bool SaveToCSVFile(string delimiter = ";")
+        public bool ExportToCSV(string delimiter = ";")
         {
             string filePath = FileTools.SaveFileDialog(Source.File.Path != "" ? Source.File.Name : DefaultName(), ".csv", "Annotation(*.csv)|*.csv", "");
 
@@ -844,6 +844,41 @@ namespace ssi
             return list;
         }
 
+
+        public static AnnoList ConvertFreetoDiscreteAnnotation(AnnoList list)
+        {
+            if(list.Scheme.Type != AnnoScheme.TYPE.FREE)
+            {
+                return list;
+            }
+
+
+            AnnoList al = new AnnoList();
+            AnnoScheme scheme = new AnnoScheme();
+            scheme.Type = AnnoScheme.TYPE.DISCRETE;
+
+            foreach (AnnoListItem ali in list)
+            {
+                al.Add(ali);
+                if (scheme.Labels.Find(x => x.Name == ali.Label) == null)
+                {
+                    AnnoScheme.Label l = new AnnoScheme.Label(ali.Label, Colors.Black);
+                    scheme.Labels.Add(l);
+                }
+                    
+            }
+
+            scheme.Name = list.Scheme.Name;
+            al.Scheme = scheme;
+            al.Meta = list.Meta;
+ 
+            return al;
+        }
+
+
+
+
+
         public static List<AnnoList> LoadfromElanFile(String filepath)
         {
             List<AnnoList> list = new List<AnnoList>();
@@ -871,12 +906,20 @@ namespace ssi
                 {
                     AnnoList al = new AnnoList();
                     AnnoScheme scheme = new AnnoScheme();
-                    scheme.Type = AnnoScheme.TYPE.DISCRETE;
+
+
+                    scheme.Type = AnnoScheme.TYPE.FREE;
                     
                 
-                    string tierid;
-                    if (tier.Attributes.Count == 2) tierid = tier.Attributes[1].Value.ToString();
-                    else tierid = tier.Attributes[2].Value.ToString();
+                    string tierid = tier.Attributes.GetNamedItem("TIER_ID").Value.ToString();
+  
+                    string role = "";
+                    try
+                    {
+                       role = tier.Attributes.GetNamedItem("PARTICIPANT").Value.ToString();
+                    }
+                    catch { }
+                    
 
                     al = new AnnoList();
                     al.Source.File.Path = filepath;
@@ -898,20 +941,24 @@ namespace ssi
                         label = alignable_annotation.FirstChild.InnerText;
                         AnnoScheme.Label l = new AnnoScheme.Label(label, Colors.Black);
 
-                        if (scheme.Labels.Find(x => x.Name == label) == null) scheme.Labels.Add(l);
 
-                      
+                        if(scheme.Type == AnnoScheme.TYPE.DISCRETE && scheme.Labels.Find(x => x.Name == label) == null) scheme.Labels.Add(l);
+                                     
 
                         duration = end - start;
                         al.AddSorted(new AnnoListItem(start, duration, label, "", Colors.Black));
-                        al.Scheme.Name = tierid;
-                       
+
+                 
                         //The tier is used as metainformation as well. Might be changed if thats relevant in the future
                     }
                     i++;
 
                     al.Scheme = scheme;
+                    al.Meta.Role = role;
+                    al.Scheme.Name = tierid;
+                   
                     list.Add(al);
+
                 }
             }
             catch (Exception ex)

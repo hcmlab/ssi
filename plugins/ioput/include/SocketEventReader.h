@@ -45,22 +45,29 @@ class SocketEventReader :  public SSI_IRunnableObject, public Thread, public Soc
 	public:
 
 		Options ()
-			: port (-1), type (Socket::UDP), size (Socket::DEFAULT_MTU_SIZE), timeout (1000), osc (false), reltime(false) {
+			: size (Socket::DEFAULT_MTU_SIZE), timeout (1000), osc (false), reltime(false) {
 
-			strcpy (sname, "socketreceiver");
-			strcpy (ename, "socketevent");
-
-			host[0] = '\0';
+			setUrl("");
+			strcpy (sname, "event");
+			strcpy (ename, "socket");
 
 			SSI_OPTIONLIST_ADD_ADDRESS(address);
 
-			addOption ("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any)");
-			addOption ("port", &port, 1, SSI_INT, "port number (-1 for any)");		
-			addOption ("size", &size, 1, SSI_UINT, "size of buffer");
-			addOption ("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP)");
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)");			
+			addOption ("size", &size, 1, SSI_UINT, "size of buffer");			
 			addOption ("timeout", &timeout, 1, SSI_UINT, "time out in milliseconds");
 			addOption ("osc", &osc, 1, SSI_BOOL, "use osc format");
 			addOption ("reltime", &reltime, 1, SSI_BOOL, "send relative time stamps (osc or xml)");
+
+			// deprecated
+
+			type = Socket::TYPE::UDP;
+			port = 1234;
+			setHost("localhost");
+
+			addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
+			addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
+			addOption("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP) [deprecated use 'url']");
 
 			addOption ("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "sender name [deprecated use address]");
 			addOption ("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "event name [deprecated use address]");
@@ -72,25 +79,38 @@ class SocketEventReader :  public SSI_IRunnableObject, public Thread, public Soc
 				ssi_strcpy (this->host, host);
 			}
 		}
-		
+		void setAddress(const ssi_char_t *address) {
+			if (address) {
+				ssi_strcpy(this->address, address);
+			}
+		}
 		void setSenderName (const ssi_char_t *sname) {
 			this->sname[0] = '\0';
 			if (sname) {
 				ssi_strcpy (this->sname, sname);
 			}
 		}
-
 		void setEventName (const ssi_char_t *ename) {
 			this->ename[0] = '\0';
 			if (ename) {
 				ssi_strcpy (this->ename, ename);
 			}
 		}
-		
+		void setUrl(const ssi_char_t *url) {
+			this->url[0] = '\0';
+			if (url) {
+				ssi_strcpy(this->url, url);
+			}
+		}
+		void setUrl(Socket::TYPE::List type, const ssi_char_t *host, int port) {
+			ssi_sprint(url, "%s://%s:%d", Socket::TYPE_NAMES[type], host, port);
+		}
+
+		ssi_char_t url[SSI_MAX_CHAR];
 		ssi_char_t host[SSI_MAX_CHAR];
 		int port;
 		ssi_size_t size;
-		Socket::TYPE type;	
+		Socket::TYPE::List type;	
 		ssi_size_t timeout;
 		bool osc;
 		bool reltime;

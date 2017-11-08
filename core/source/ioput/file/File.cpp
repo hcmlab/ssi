@@ -93,6 +93,7 @@ File *File::Create (TYPE type,
 		}
 		default:
 			ssi_err ("type not supported");
+			return 0;
 	}
 
 	file->_type = type;

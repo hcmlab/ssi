@@ -90,6 +90,7 @@ public:
 
 		if (sample_type_in != SSI_REAL && sample_type_in != SSI_SHORT) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 
 		if (sample_type_in == SSI_REAL) {

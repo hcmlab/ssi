@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- Plug-ins -->
+	<register>		
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="control"/>
+		<load name="signal"/>
+	</register>
+
+	<!-- Sensor -->
+	<sensor create="Mouse:mouse" sr="50.0">		
+		<output channel="cursor" pin="pos" />
+	</sensor>
+	
+	<!-- slider
+	
+	Add control to turn components on/off
+	
+	-->
+	<runnable create="ControlCheckBox:control" id="plot" name="" title="CONTROL" label="PLOTTING ON/OFF" default="false"/>
+	
+	<!-- Visualization -->
+	<consumer create="SignalPainter:plot" title="PLOT" size="10.0">
+		<input pin="pos" frame="0.2s" />		
+	</consumer>		
+
+	<!-- Decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,400">plot</area>
+		<area pos="400,400,400,200">control*</area>
+	</object>
+
+</pipeline>

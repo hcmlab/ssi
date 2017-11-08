@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	
+	<register>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="control"/>
+	</register>
+	
+	<framework sync="true" slisten="true" sport="1234"/>	
+	
+	<!-- sensors -->
+	
+	<sensor create="Mouse" mask="1">
+		<output channel="cursor" pin="cursor" />
+	</sensor>	
+	
+	<runnable create="ClockEventSender" address="tick@clock" clock="1000"/>	
+	
+
+	<!-- storage
+
+	use unique file names
+	
+	-->
+	
+	<consumer create="FileWriter" path="record/cursor" overwrite="false">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>	
+	<consumer create="FileAnnotationWriter" defaultSchemeName="cursor" path="record/cursor" overwrite="false">
+		<input pin="cursor" frame="0.2s"/>
+	</consumer>				
+	<object create="FileAnnotationWriter" defaultSchemeName="clock" addUnkownLabel="true" eventNameAsLabel="true" path="record/clock" overwrite="false">
+		<listen address="tick@clock"/>
+	</object>
+	
+	<!--storage -->
+	
+	
+	<!-- storage
+	
+	record on demand, receives notifications from a socket connection
+	
+	-->
+	
+	<runnable create="NotifyReceiver:receiver" id="plot*,writer*" url="udp://255.255.255.255:1111"/>
+	
+	<consumer create="FileWriter:writer" path="record/$(num,2)/cursor" overwrite="false">
+		<input pin="cursor" frame="0.2s" />
+	</consumer>
+	<consumer create="FileAnnotationWriter:writer" defaultSchemeName="cursor" path="record/$(num,2)/cursor" overwrite="false">
+		<input pin="cursor" frame="0.2s"/>
+	</consumer>			
+	<object create="FileAnnotationWriter:writer" defaultSchemeName="clock" addUnkownLabel="true" eventNameAsLabel="true" path="record/$(num,2)/clock" overwrite="false">
+		<listen address="tick@clock"/>
+	</object>
+
+	<!-- visualization 	-->
+	
+	<consumer create="SignalPainter:plot" title="cursor" size="10.0">
+		<input pin="cursor" frame="0.2s" />		
+	</consumer>		
+	<object create="EventMonitor:monitor">
+		<listen address="@"/>
+	</object>
+	
+	
+	<object create="Decorator" icon="true" title="Pipeline" origin="400,0">
+		<area pos="0,0,400,600">console</area>		
+		<area pos="400,0,400,600" nh="1">plot*</area>		
+		<area pos="800,0,400,600" nh="1">monitor</area>		
+	</object>
+	
+	<!-- start message -->
+
+	<message text="
+	
+TO START RECORDING 
+RUN PIPELINE 'TOGGLE'	
+
+	"/>		
+
+</pipeline>

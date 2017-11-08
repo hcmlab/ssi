@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	
+	<register>
+		<load name="ioput"/>
+		<load name="control"/>
+	</register>
+	
+	<framework waitid="close" sync="true" slisten="false" sport="1234"/>
+	<runnable create="WaitButton:close" title="button" label="CLOSE"/>	
+	
+	<!-- 
+	
+	send notifications to a socket
+	
+	!!! place sender before control !!! 
+	
+	-->
+		
+	<runnable create="NotifySender:sender" url="udp://255.255.255.255:1111"/>	
+	<runnable create="ControlCheckBox:record" id="sender" label="RECORD" default="false"/>		
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,450">console</area>
+		<area pos="0,450,400,150">record,close</area>		
+	</object>
+
+</pipeline>

@@ -131,8 +131,18 @@ void FFMPEGReader::setAudioProvider(IProvider *provider){
 
 };
 
+bool FFMPEGReader::isStream(const ssi_char_t *url)
+{
+	return ssi_strcmp(url, "udp://", false, 6);
+}
 
 bool FFMPEGReader::connect () {
+
+	if (!isStream(_options.url) && !ssi_exists(_options.url))
+	{
+		ssi_err("file not found '%s'", _options.url);
+		return false;
+	}
 
 	if (!_client)
 	{

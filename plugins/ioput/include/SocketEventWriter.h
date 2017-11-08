@@ -45,16 +45,25 @@ public:
 	public:
 
 		Options ()
-			: port (1234), type (Socket::UDP), osc (false), xml (false), reltime (false), cdata(false) {
+			: osc (false), xml (true), reltime (false), cdata(false) {
 
-			strcpy (host, "localhost");	
-			addOption ("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any)");
-			addOption ("port", &port, 1, SSI_INT, "port number (-1 for any)");		
-			addOption ("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP)");	
+			setUrl("");
+
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. udp://172.0.0.1:1234)");
 			addOption ("osc", &osc, 1, SSI_BOOL, "use osc format");
 			addOption ("xml", &xml, 1, SSI_BOOL, "output in xml format (not for osc)");
 			addOption ("cdata", &cdata, 1, SSI_BOOL, "wrap xml strings in cdata");
 			addOption ("reltime", &reltime, 1, SSI_BOOL, "send relative time stamps (osc or xml)");
+
+			// deprecated
+
+			type = Socket::TYPE::UDP;
+			port = 1234;
+			setHost("localhost");
+
+			addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
+			addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
+			addOption("type", &type, 1, SSI_UCHAR, "protocol type (0=UDP, 1=TCP) [deprecated use 'url']");
 		};
 
 		void setHost (const ssi_char_t *host) {
@@ -63,10 +72,20 @@ public:
 				ssi_strcpy (this->host, host);
 			}
 		}
+		void setUrl(const ssi_char_t *url) {
+			this->url[0] = '\0';
+			if (url) {
+				ssi_strcpy(this->url, url);
+			}
+		}
+		void setUrl(Socket::TYPE::List type, const ssi_char_t *host, int port) {
+			ssi_sprint(url, "%s://%s:%d", Socket::TYPE_NAMES[type], host, port);
+		}
 
+		ssi_char_t url[SSI_MAX_CHAR];
 		ssi_char_t host[SSI_MAX_CHAR];
 		int port;
-		Socket::TYPE type;	
+		Socket::TYPE::List type;	
 		bool osc;
 		bool xml;
 		bool reltime;

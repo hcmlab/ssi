@@ -48,8 +48,11 @@ void EventBoardWorker::run () {
 	}
 
 	ssi_size_t n = _board->_queue->fetch (*_board->_events);
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "process %u events", n);		
-	_board->process (n);
+	if (n > 0)
+	{
+		SSI_DBG(SSI_LOG_LEVEL_DEBUG, "process %u events", n);
+		_board->process(n);
+	}
 
 	_timer->wait ();	
 }

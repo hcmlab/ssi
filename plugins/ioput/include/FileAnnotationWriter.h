@@ -55,15 +55,24 @@ namespace ssi {
 				mapKeyIndex(0),
 				mapKeySelectMax(false),
 				streamScoreIndex(0), 
-				streamConfidenceIndex(1) {
+				streamConfidenceIndex(1),
+				defaultMinScore(0),
+				defaultMaxScore(1),
+				overwrite (false),
+				keepEmpty (true) {
 
 				setAnnoPath("");
 				setSchemePath("");
 				setDefaultLabel("");
+				setDefaultSchemeName("noname");
 				setMeta("");
 
-				addOption("annotationPath", &annotationPath, SSI_MAX_CHAR, SSI_CHAR, "path of annotation file (will be created)");
-				addOption("schemePath", &schemePath, SSI_MAX_CHAR, SSI_CHAR, "path of scheme file (labels that do not fit the scheme will be ignored)");
+				addOption("path", &annotationPath, SSI_MAX_CHAR, SSI_CHAR, "path of annotation file (will be created)");
+				addOption("annotationPath", &annotationPath, SSI_MAX_CHAR, SSI_CHAR, "path of annotation file (will be created) [deprecated use path]");
+				addOption("overwrite", &overwrite, 1, SSI_BOOL, "overwrite file if it already exists (otherwise a unique path will be created)");
+				addOption("keepEmpty", &keepEmpty, 1, SSI_BOOL, "store annotation even if it is empty");
+				addOption("schemePath", &schemePath, SSI_MAX_CHAR, SSI_CHAR, "path of scheme file (labels that do not fit the scheme will be ignored)");				
+				addOption("defaultSchemeName", &defaultSchemeName, SSI_MAX_CHAR, SSI_CHAR, "default scheme name if not scheme was loaded");
 				
 				// discrete				
 				addOption("defaultLabel", &defaultLabel, SSI_MAX_CHAR, SSI_CHAR, "default label e.g. to label empty events (applies to discrete annotations only)");
@@ -77,6 +86,8 @@ namespace ssi {
 				// continuous
 				addOption("streamScoreIndex", &streamScoreIndex, 1, SSI_SIZE, "stream dimension of score value (applies to continuous annotations only)");
 				addOption("streamConfidenceIndex", &streamConfidenceIndex, 1, SSI_SIZE, "stream dimension of confidence value (applies to continuous annotations only)");
+				addOption("defaultMinScore", &defaultMinScore, 1, SSI_REAL, "default min score");
+				addOption("defaultMaxScore", &defaultMaxScore, 1, SSI_REAL, "default max score");
 				
 				addOption("defaultConfidence", &defaultConfidence, 1, SSI_REAL, "default confidence");
 				addOption("forceDefaultConfidence", &forceDefaultConfidence, 1, SSI_BOOL, "force use of default confidence");
@@ -95,6 +106,11 @@ namespace ssi {
 				ssi_strcpy(schemePath, string);
 			}
 
+			void setDefaultSchemeName(const ssi_char_t *string)
+			{
+				ssi_strcpy(defaultSchemeName, string);
+			}
+
 			void setDefaultLabel(const ssi_char_t *string)
 			{
 				ssi_strcpy(defaultLabel, string);
@@ -105,18 +121,21 @@ namespace ssi {
 				ssi_strcpy(meta, string);
 			}
 
+			bool overwrite, keepEmpty;
 			ssi_char_t annotationPath[SSI_MAX_CHAR];
 			ssi_char_t schemePath[SSI_MAX_CHAR];
-			ssi_char_t defaultLabel[SSI_MAX_CHAR];			
+			ssi_char_t defaultLabel[SSI_MAX_CHAR];		
+			ssi_char_t defaultSchemeName[SSI_MAX_CHAR];
 			bool forceDefaultLabel;
 			bool addUnkownLabel;
 			ssi_char_t meta[SSI_MAX_CHAR];
 			ssi_size_t mapKeyIndex;
 			bool mapKeySelectMax;
-			ssi_real_t defaultConfidence;
+			ssi_real_t defaultConfidence;			
 			bool forceDefaultConfidence;
 			ssi_size_t streamScoreIndex, streamConfidenceIndex;
-
+			ssi_real_t defaultMinScore, defaultMaxScore;
+			
 			bool eventNameAsLabel;
 			bool senderNameAsLabel;
 		};
@@ -143,17 +162,11 @@ namespace ssi {
 			ssi_stream_t stream_in[]);
 		void consume_flush(ssi_size_t stream_in_num,
 			ssi_stream_t stream_in[]);
+
+		bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
 		
 		virtual bool setAnnotation(Annotation *annotation);		
-		
-		ssi_size_t getStringId(const ssi_char_t *str) {
-			return 0;
-		}
-		ssi_size_t getGlueId() {
-			return SSI_FACTORY_UNIQUE_INVALID_ID;
-		}
-
-		void setLabel(const ssi_char_t *label, ssi_real_t confidence = 1.0f);		
+		virtual void setLabel(const ssi_char_t *label, ssi_real_t confidence = 1.0f);	
 
 	protected:
 
@@ -162,13 +175,17 @@ namespace ssi {
 		Options _options;
 		static ssi_char_t *ssi_log_name;
 
-		bool load_scheme();
-		void save_annotation();
+		bool open();
+		bool close();
 		void parse_meta(Annotation *annotation, const ssi_char_t *string, char delim);
 		bool get_class_id(Annotation *annotation, const ssi_char_t *string, ssi_int_t &id);
 		
 		Annotation *_annotation;
 		bool _borrowed;
+		ssi_time_t _offset;
+		bool _first_call;
+		SSI_SCHEME_TYPE::List _default_scheme_type;
+		ssi_time_t _default_scheme_rate;
 
 		ssi_char_t *_label;
 		ssi_real_t _confidence;

@@ -73,7 +73,15 @@ void SocketWriter::consume_enter (ssi_size_t stream_in_num,
 
 	_bytes_per_sample = stream_in[0].byte * stream_in[0].dim;
 
-	_socket = Socket::CreateAndConnect (_options.type, Socket::CLIENT, _options.port, _options.host);
+	if (_options.url[0] != '\0')
+	{
+		_socket = Socket::CreateAndConnect(_options.url, Socket::MODE::CLIENT);
+	}
+	else
+	{	
+		ssi_wrn("using deprecated option 'host,type,port', use 'url' instead");
+		_socket = Socket::CreateAndConnect(_options.type, Socket::MODE::CLIENT, _options.port, _options.host);
+	}
 
 	if (_options.osc) {
 		ssi_wrn ("using deprecated option 'osc', use 'format' instead");
@@ -108,6 +116,8 @@ void SocketWriter::consume_enter (ssi_size_t stream_in_num,
 			stream_in[0].byte
 		);
 	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "start sending stream to %s", _socket->getUrl());
 }
 
 void SocketWriter::consume (IConsumer::info consume_info,
@@ -156,6 +166,8 @@ void SocketWriter::consume (IConsumer::info consume_info,
 
 void SocketWriter::consume_flush (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "start sending stream from %s", _socket->getUrl());
 
 	delete _socket_osc; _socket_osc = 0;
 	delete _socket_img; _socket_img = 0;

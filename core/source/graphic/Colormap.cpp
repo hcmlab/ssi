@@ -254,6 +254,7 @@ void Colormap::loadDefault(COLORMAP::List type) {
 
 		default:
 			ssi_err ("unkown colormap type");
+			return;
 	}
 }
 

@@ -3,35 +3,34 @@
 	
 	<!-- register dlls -->
 	<register>
-		<load name="ssiioput"/>
-		<load name="ssimouse"/>
-		<load name="ssigraphic"/>
-		<load name="ssisignal"/>
+		<load name="ioput"/>
+		<load name="mouse"/>
+		<load name="graphic"/>
+		<load name="signal"/>
 	</register>
+	
+	<framework sync="true" slisten="false" sport="1234"/>	
 
 	<!-- mouse sensor -->
-	<sensor create="Mouse" sr="50.0" mask="1">		
+	<sensor create="Mouse" sr="50.0" mask="1" event="true" address="pressed@button">		
 		<output channel="cursor" pin="cursor"/>
-		<output channel="button" pin="button" />
 	</sensor>
-	
-	<!-- trigger -->
-	<consumer create="TriggerEventSender" address="pressed@button" minDuration="0.5" maxDuration="2.0" sendStartEvent="true">
-		<input pin="button" frame="0.1s" />		
-	</consumer>	
+	<consumer create="MapEventSender" address="cursor@button" keys="x,y">
+		<input pin="cursor" address="pressed@button" />		
+	</consumer>			
 	
 	<!-- socket sender 
 	
 	Streams a signal to a socket in different formats (binary, ascii, osc)
 	
 	-->
-	<consumer create="SocketWriter" type="1" port="7777" host="192.168.137.101" format="0">
+	<consumer create="SocketWriter" url="tcp://localhost:7777" format="0">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
-	<consumer create="SocketWriter" type="1" port="8888" host="localhost" format="1" delim=";">
+	<consumer create="SocketWriter" url="tcp://localhost:8888"  format="1" delim=";">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
-	<consumer create="SocketWriter" type="1" port="9999" host="localhost" format="2">
+	<consumer create="SocketWriter" url="tcp://localhost:9999"  host="localhost" format="2">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
 	
@@ -40,8 +39,11 @@
 	Sends detected events to a socket port
 	
 	-->
-	<object create="SocketEventWriter" port="6666" type="1" xml="true">
-		<listen address="pressed@button"/>
+	<object create="SocketEventWriter" url="tcp://localhost:5555" xml="true">
+		<listen address="cursor@button"/>
+	</object>		
+	<object create="SocketEventWriter" url="tcp://localhost:6666" xml="false" osc="true">
+		<listen address="cursor@button"/>
 	</object>		
 	
 	<!-- visualization -->

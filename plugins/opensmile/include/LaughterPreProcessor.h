@@ -116,6 +116,7 @@ public:
 
 		if (sample_type_in != SSI_REAL) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 
 		return SSI_REAL;

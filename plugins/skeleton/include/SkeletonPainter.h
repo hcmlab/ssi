@@ -81,6 +81,7 @@ public:
 	void setMetaData (ssi_size_t size, const void *meta) {
 		if (sizeof (SSI_SKELETON_META) != size) {
 			ssi_err ("invalid meta size");
+			return;
 		}				
 	};
 
@@ -107,6 +108,7 @@ public:
 	ssi_size_t getSampleBytesOut (ssi_size_t sample_bytes_in) { 
 		if (sample_bytes_in != sizeof (ssi_real_t)) {
 			ssi_err ("invalid byte size");
+			return 0;
 		}
 		ssi_video_params (_format, _options.width, _options.height, 0, 8, 3);
 		return ssi_video_size (_format); 
@@ -114,6 +116,7 @@ public:
 	ssi_type_t getSampleTypeOut (ssi_type_t sample_type_in) {
 		if (sample_type_in != SSI_REAL) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 		return SSI_IMAGE;
 	};

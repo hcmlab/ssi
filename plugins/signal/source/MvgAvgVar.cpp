@@ -268,6 +268,10 @@ void MvgAvgVar::Moving::transform_flush (ssi_stream_t &stream_in,
 	delete[] _history; _history = 0;
 }
 
+void MvgAvgVar::Moving::reset()
+{
+	_first_call = true;
+}
 
 MvgAvgVar::Sliding::Sliding (Options &options)
 	: _format (options.format),	
@@ -424,6 +428,25 @@ void MvgAvgVar::Sliding::transform_flush (ssi_stream_t &stream_in,
 	_var_hist = 0;	
 	_alpha = 0;	
 	_1_alpha = 0;
+}
+
+void MvgAvgVar::Sliding::reset()
+{
+	_first_call = true;
+}
+
+bool MvgAvgVar::notify(INotify::COMMAND::List command, const ssi_char_t *message) {
+
+	switch (command) {
+
+	case INotify::COMMAND::RESET:
+
+		_impl->reset();
+
+		return true;
+	}
+
+	return false;
 }
 
 

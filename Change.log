@@ -1791,3 +1791,22 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 18.10.17 CHG : ioput/XMLEventSender : added new field option 'isnew' : Johannes
 - 19.10.17 CHG : nova : export signals to csv : Johannes
 - 19.10.17 CHG : ioput/XMLEventSender, activemq/ActiveMQEvent : can be paused by sending an SLEEP notification : Johannes
+- 23.10.17 BUG : ffmpeg/FFMPEGReader: does not try to reconnect if input is a file : Johannes
+- 23.10.17 CHG : ioput/XMLEventSender, activemq/ActiveMQEvent : revert SLEEP notification (instead turn components on/off) : Johannes
+- 23.10.17 BUG : nova : supports space in cml and data folder : Johannes
+- 24.10.17 ADD : json : json plugin to convert xml to json and possibly other json related stuff in the future : Johannes
+- 25.10.17 CHG : ioput/FileWriter,audio/WavWriter,camera/CameraWriter : now support record on demand : Johannes
+- 26.10.17 CHG : ioput/FileWriter,audio/WavWriter,camera/CameraWriter : delete file if nothing was recorded : Johannes
+- 26.10.17 CHG : SSI_Debug.h : ssi_err() and ssi_err_static() do not call exit() any more : Johannes
+- 26.10.17 CHG : ioput/FileAnnotationWriter : now supports record on demand : Johannes
+- 26.10.17 CHG : base/INotify : added SLEEP_INIT and WAKE_INIT : Johannes
+- 26.10.17 CHG : ioput/FileWriter,audio/WavWriter,camera/CameraWriter : new option 'keepEmpty' : Johannes
+- 07.11.17 BUG : praat/PraatScriptBase : temp wav path can be in working directory : Johannes
+- 07.11.17 BUG : audio/AudioMono : output stream is initialized with zeros : Johannes
+- 07.11.17 ADD : ipout/NotifySender,NotifyReceiver : share notifications between pipelines : Johannes
+- 07.11.17 CHG : ioput/socket/Socket : supports url string in format "protocol://host:port", use host=* and port=-1 for broadcast : Johannes
+- 07.11.17 CHG : ioput/socket/Socket : TYPE and MODE wrapped in struct : Johannes
+- 08.11.17 CHG : ffmpeg/FFMPEGWriter : supports record-on-demand and support for all resolutions : Johannes
+- 08.11.17 CHG : frame/XMLPipeline : add <message text="..."/> element to display a start message : Johannes
+
+*** Version 1.0.3 *** 

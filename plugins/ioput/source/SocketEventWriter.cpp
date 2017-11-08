@@ -68,14 +68,23 @@ SocketEventWriter::~SocketEventWriter () {
 	}
 }
 
-void SocketEventWriter::listen_enter () {
+void SocketEventWriter::listen_enter () {	
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "start streaming events (%s:%u)", _options.host, _options.port);
+	if (_options.url[0] != '\0')
+	{
+		_socket = Socket::CreateAndConnect(_options.url, Socket::MODE::CLIENT);
+	}
+	else
+	{
+		ssi_wrn("using deprecated option 'host,type,port', use 'url' instead");
+		_socket = Socket::CreateAndConnect(_options.type, Socket::MODE::CLIENT, _options.port, _options.host);
+	}
 
-	_socket = Socket::CreateAndConnect (_options.type, Socket::CLIENT, _options.port, _options.host);	
 	if (_options.osc) {
 		_socket_osc = new SocketOsc (*_socket);
 	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "start sending events to '%s'", _socket->getUrl());
 }
 
 bool SocketEventWriter::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
@@ -242,7 +251,7 @@ bool SocketEventWriter::update (IEvents &events, ssi_size_t n_new_events, ssi_si
 
 void SocketEventWriter::listen_flush () {
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "stop streaming events (%s:%u)", _options.host, _options.port);
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "stop sending events to %s", _socket->getUrl());
 
 	delete _socket_osc; _socket_osc = 0;
 	delete _socket; _socket = 0;

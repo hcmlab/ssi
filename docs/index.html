@@ -349,7 +349,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         <li><a href="#xml-advanced-network-sharing"><span class="toc-section-number">4.2.2.2</span> Stream and Event Sharing</a></li>
         <li><a href="#xml-advanced-network-xmlsender"><span class="toc-section-number">4.2.2.3</span> XML Sender</a></li>
         </ul></li>
-        <li><a href="#xml-advanced-options"><span class="toc-section-number">4.2.3</span> Options</a></li>
+        <li><a href="#xml-advanced-control"><span class="toc-section-number">4.2.3</span> More Control</a></li>
+        <li><a href="#xml-advanced-record"><span class="toc-section-number">4.2.4</span> Record On Demand</a></li>
         </ul></li>
         </ul></li>
         <li><a href="#python"><span class="toc-section-number">5</span> Python</a><ul>
@@ -1181,10 +1182,10 @@ To share the xml string with an external application, we use <code>SocketEventWr
 <blockquote>
 <p>Check out the full <a href="code/xml/network/xmlsender.pipeline">pipeline</a> and the according <a href="code/xml/network/xmlsender.xml">template</a>.</p>
 </blockquote>
-<h3 id="xml-advanced-options"><span class="header-section-number">4.2.3</span> Options</h3>
-<p>So far, we have learned about <a href="#xml-basics-component">options</a> as a way to configure the behaviour of a component before the execution of a pipeline. However, some options also allow it to change the behaviour of a component <em>at</em> run-time. We can read this from the API when an option is marked as <code>FREE</code> (see <a href="#fig:xml-advanced-options-0">here</a>).</p>
+<h3 id="xml-advanced-control"><span class="header-section-number">4.2.3</span> More Control</h3>
+<p>So far, we have learned about <a href="#xml-basics-component">options</a> as a way to configure the behaviour of a component before the execution of a pipeline. However, some options can be changed <em>at</em> run-time, too. We can read this from the API when an option is marked as <code>FREE</code> (see <a href="#fig:xml-advanced-control-0">here</a>).</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-0.png" alt="Options marked as FREE can be changed at run-time." id="fig:xml-advanced-options-0" style="width:80.0%" />
+<img src="pics/xml-advanced-control-0.png" alt="Options marked as FREE can be changed at run-time." id="fig:xml-advanced-control-0" style="width:80.0%" />
 <p class="caption"><em>Options marked as <code>FREE</code> can be changed at run-time.</em></p>
 </div>
 <p>First, we add an instance of <code>Limits</code>, which keeps stream values in a certain range. The range is defined by options <code>min</code> and <code>max</code>, which we initialize with default values:</p>
@@ -1196,27 +1197,50 @@ To share the xml string with an external application, we use <code>SocketEventWr
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlGrid:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="kw">/&gt;</span>    </code></pre></div>
 <p>When the pipeline is started editable options are listed and can be changed (press enter to confirm) as shown <a href="#fig:xml-advanced-options-1">here</a>. Note that we used the <code>runnable</code> tag to include the component. We do this because GUI elements have their own thread and this way we make sure it will be started.</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-1.png" alt="ControlGrid lists options that are editable at run-time." id="fig:xml-advanced-options-1" style="width:80.0%" />
+<img src="pics/xml-advanced-control-1.png" alt="ControlGrid lists options that are editable at run-time." id="fig:xml-advanced-control-1" style="width:80.0%" />
 <p class="caption"><em><code>ControlGrid</code> lists options that are editable at run-time.</em></p>
 </div>
 <p>To target a specific option we can use <code>ControlTextBox</code>:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlTextBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;min&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlTextBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;max&quot;</span><span class="kw">/&gt;</span></code></pre></div>
-<p>It gives us an individual text box for each option as shown <a href="#fig:xml-advanced-options-2">here</a>:</p>
+<p>It gives us an individual text box for each option as shown <a href="#fig:xml-advanced-control-2">here</a>:</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-2.png" alt="ContolTextBox allows it to target specific options." id="fig:xml-advanced-options-2" style="width:80.0%" />
+<img src="pics/xml-advanced-control-2.png" alt="ContolTextBox allows it to target specific options." id="fig:xml-advanced-control-2" style="width:80.0%" />
 <p class="caption"><em><code>ContolTextBox</code> allows it to target specific options.</em></p>
 </div>
 <p>Or in case of a floating point option (single value) we can use <code>ControlSlider</code>:</p>
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlSlider:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;min&quot;</span><span class="ot"> defval=</span><span class="st">&quot;0.0&quot;</span><span class="ot"> minval=</span><span class="st">&quot;0.0&quot;</span><span class="ot"> maxval=</span><span class="st">&quot;0.5&quot;</span><span class="kw">/&gt;</span>
 <span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlSlider:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;limits&quot;</span><span class="ot"> name=</span><span class="st">&quot;max&quot;</span><span class="ot"> defval=</span><span class="st">&quot;0.5&quot;</span><span class="ot"> minval=</span><span class="st">&quot;0.5&quot;</span><span class="ot"> maxval=</span><span class="st">&quot;1.0&quot;</span><span class="kw">/&gt;</span></code></pre></div>
-<p>It creates a slider for each option as shown <a href="#fig:xml-advanced-options-3">here</a>:</p>
+<p>It creates a slider for each option as shown <a href="#fig:xml-advanced-control-3">here</a>:</p>
 <div class="figure">
-<img src="pics/xml-advanced-options-3.png" alt="ControlSlider adds a slider to floating point options." id="fig:xml-advanced-options-3" style="width:80.0%" />
+<img src="pics/xml-advanced-control-3.png" alt="ControlSlider adds a slider to floating point options." id="fig:xml-advanced-control-3" style="width:80.0%" />
 <p class="caption"><em><code>ControlSlider</code> adds a slider to floating point options.</em></p>
 </div>
+<p>Finally, any component that is not a <code>Transformer</code> or a <code>Sensor</code> can be turned on and off at run-time. Therefore, we add a <code>ControlCheckBox</code>.</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlCheckBox:control&quot;</span><span class="ot"> id=</span><span class="st">&quot;plot&quot;</span><span class="ot"> name=</span><span class="st">&quot;&quot;</span><span class="ot"> title=</span><span class="st">&quot;CONTROL&quot;</span><span class="ot"> label=</span><span class="st">&quot;PLOTTING ON/OFF&quot;</span><span class="kw">/&gt;</span>      </code></pre></div>
+<p>It creates a check box to turn the component with the id <code>plot</code> on and off as shown <a href="#fig:xml-advanced-control-4">here</a>:</p>
+<div class="figure">
+<img src="pics/xml-advanced-control-4.png" alt="Use a ControlCheckBox to turn a component on/off." id="fig:xml-advanced-control-4" style="width:80.0%" />
+<p class="caption"><em>Use a <code>ControlCheckBox</code> to turn a component on/off.</em></p>
+</div>
+<p>Note that a <code>ControlCheckBox</code> can also be used to control a boolean option. Therefore, the <code>name</code> option has to be set to the name of the option.</p>
 <blockquote>
-<p>Check out the full code: <a href="code/xml/options/controller.pipeline">controller</a>, <a href="code/xml/options/textbox.pipeline">textbox</a>, <a href="code/xml/options/slider.pipeline">slider</a>.</p>
+<p>Check out the full code: <a href="code/xml/control/controller.pipeline">controller</a>, <a href="code/xml/control/textbox.pipeline">textbox</a>, <a href="code/xml/control/slider.pipeline">slider</a>, <a href="code/xml/control/component.pipeline">component</a>.</p>
+</blockquote>
+<h3 id="xml-advanced-record"><span class="header-section-number">4.2.4</span> Record On Demand</h3>
+<p>When a component is disabled (e.g. using a <code>ControlCheckBox</code> in the previous example), it does no longer receive input (neither streams, nor events). Some components, however, implement a special behaviour on top of this. A <a href="#xml-basics-visualization-storage"><code>FileWriter</code></a>, for instance, closes the output file and when it is enabled again it begins writing to a new file. By default, this means the previous file will be overwritten. To prevent a <code>FileWriter</code> to overwrite an existing file we have to set the option <code>overwrite=false</code>. Now, a new filename is automatically generated if the file exists. By default a running index will be added. E.g. if the file <code>my.stream</code> already exists, it will be changed to <code>my1.stream</code>. And if <code>my1.stream</code> also exists, it will be set to <code>my2.stream</code> and so on. To have more control on the new path, we can use the variable <code>$(num)</code> to place a running index anywhere in the path. E.g. <code>my/unique/path_$(num)/my.stream</code> creates <code>my/unique/path_&lt;1,2,3,...&gt;/my.stream</code>. To add trailing zeros to the running index, we can use <code>$(num,[length])</code>.</p>
+<p>The following example uses a <code>ControlCheckBox</code> to control a <code>FileWriter</code> and uses a new file path each time it is enabled:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlCheckBox:record&quot;</span><span class="ot"> id=</span><span class="st">&quot;plot*,writer*&quot;</span><span class="ot"> label=</span><span class="st">&quot;RECORD&quot;</span><span class="ot"> default=</span><span class="st">&quot;false&quot;</span><span class="kw">/&gt;</span>   
+<span class="kw">&lt;consumer</span><span class="ot"> create=</span><span class="st">&quot;FileWriter:writer&quot;</span><span class="ot"> path=</span><span class="st">&quot;record/$(num,2)/cursor&quot;</span><span class="ot"> overwrite=</span><span class="st">&quot;false&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;input</span><span class="ot"> pin=</span><span class="st">&quot;cursor&quot;</span><span class="ot"> frame=</span><span class="st">&quot;0.2s&quot;</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/consumer&gt;</span></code></pre></div>
+<p>It is also possible to enable/disable components of a pipeline via a socket connection. This is useful if several pipelines are involved in a recording session. Therefore, we add a <code>NotifySender</code> in one of the pipelines and connect it a <code>ControlCheckBox</code> (note that it is important to place the sender before the control!). Whenever the <code>NotifySender</code> receives a notification it will publish it on the socket:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;NotifySender:sender&quot;</span><span class="ot"> url=</span><span class="st">&quot;udp://255.255.255.255:1111&quot;</span><span class="kw">/&gt;</span>   
+<span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;ControlCheckBox:record&quot;</span><span class="ot"> id=</span><span class="st">&quot;sender&quot;</span><span class="ot"> label=</span><span class="st">&quot;RECORD&quot;</span><span class="ot"> default=</span><span class="st">&quot;false&quot;</span><span class="kw">/&gt;</span>  </code></pre></div>
+<p>Then we add a <code>NotifyReceiver</code> to the other pipelines, which will receive the notifications and forward it to the connected components:</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;runnable</span><span class="ot"> create=</span><span class="st">&quot;NotifyReceiver:receiver&quot;</span><span class="ot"> id=</span><span class="st">&quot;plot*,writer*&quot;</span><span class="ot"> url=</span><span class="st">&quot;udp://255.255.255.255:1111&quot;</span><span class="kw">/&gt;</span></code></pre></div>
+<blockquote>
+<p>Check out the full code: <a href="code/xml/control/toggle.pipeline">toggle</a> and <a href="code/xml/control/record.pipeline">record</a>.</p>
 </blockquote>
 <h1 id="python"><span class="header-section-number">5</span> Python</h1>
 <p>SSI allows it to develop new components with <a href="https://www.Python.org/">Python</a>. If the aim is to write extensions to SSI without having to use Visual Studio or some other C++ developing environment Python is a good choice. In this chapter we will learn how to write and use Python components in SSI.</p>

@@ -26,6 +26,7 @@
 
 #include "FFMPEGWriter.h"
 #include "FFMPEGWriterClient.h"
+#include "ioput/file/FilePath.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -46,6 +47,9 @@ FFMPEGWriter::FFMPEGWriter(const char *file)
 	_audio_index (-1),
 	_video_index (-1),
 	_mode (FFMPEGWriter::MODE::UNDEFINED),
+	_ready(false),
+	_is_url(false),
+	_path_or_url(0),
 	_file (0) {
 
 	ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
@@ -70,19 +74,90 @@ FFMPEGWriter::~FFMPEGWriter() {
 	}
 }
 
-void FFMPEGWriter::consume_enter (ssi_size_t stream_in_num,
-	ssi_stream_t stream_in[]) {
+void FFMPEGWriter::open()
+{
+	if (_ready)
+	{
+		return;
+	}
 
-	if (stream_in[0].type == SSI_IMAGE) {
+	_ready = false;
+
+	if (!_is_url)
+	{
+		if (_options.overwrite)
+		{
+			ssi_mkdir_r(FilePath(_options.path).getDir());
+			_path_or_url = ssi_strcpy(_options.path);
+		}
+		else
+		{
+			FilePath fp(_options.path);
+			ssi_char_t *ext = 0;
+			if (fp.hasExtension())
+			{
+				ext = ssi_strcpy(fp.getExtension());
+			}
+			else
+			{
+				ext = ssi_strcat(".", _options.format);
+			}
+
+			_path_or_url = FilePath(_options.path, ext).getUnique(true);
+
+			delete[] ext;
+		}
+
+		if (ssi_exists(_path_or_url))
+		{
+			remove(_path_or_url);
+		}
+	}
+	else
+	{
+		_path_or_url = ssi_strcpy(_options.url);
+	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "open '%s'", _path_or_url);
+
+	_client->setLogLevel(ssi_log_level);
+
+	if (!_client->open())
+	{
+		ssi_err("could not start encoder");
+		return;
+	}
+
+	_ready = true;
+}
+
+void FFMPEGWriter::consume_enter (ssi_size_t stream_in_num,
+	ssi_stream_t stream_in[]) {	
+
+	_ready = false;
+
+	if (_options.path[0] == '\0' && _options.url[0] == '\0')
+	{
+		ssi_err("path/url are empty");
+		return;
+	}
+
+	_is_url = _options.path[0] == '\0';
+
+	if (stream_in[0].type == SSI_IMAGE)
+	{
 		_video_index = 0;
 		_mode = FFMPEGWriter::MODE::VIDEO;
-	} else {
+	} else 
+	{
 		_audio_index = 0;
 		_mode = FFMPEGWriter::MODE::AUDIO;
 	}
 
-	if (stream_in_num > 1) {
-		if (stream_in[1].type == SSI_IMAGE && _mode != FFMPEGWriter::MODE::VIDEO) {
+	if (stream_in_num > 1)
+	{
+		if (stream_in[1].type == SSI_IMAGE && _mode != FFMPEGWriter::MODE::VIDEO) 
+		{
 			_video_index = 1;
 			_mode = FFMPEGWriter::MODE::AUDIOVIDEO;
 		} else if (_mode != FFMPEGWriter::MODE::AUDIO) {
@@ -91,64 +166,84 @@ void FFMPEGWriter::consume_enter (ssi_size_t stream_in_num,
 		}				
 	}
 
-	if (ssi_exists (_options.url)) {
-		remove (_options.url);
-	}	
-
-	if (_mode != FFMPEGWriter::MODE::VIDEO) {
-		_audio_format = new WAVEFORMATEX (ssi_create_wfx (stream_in[_audio_index].sr, stream_in[_audio_index].dim, stream_in[_audio_index].byte));
+	if (_mode != FFMPEGWriter::MODE::VIDEO)
+	{
+		_audio_format = new WAVEFORMATEX(ssi_create_wfx(stream_in[_audio_index].sr,
+			stream_in[_audio_index].dim,
+			stream_in[_audio_index].byte));
 	}
 
-	if (_mode != FFMPEGWriter::MODE::AUDIO) {
-		SSI_ASSERT (stream_in[_video_index].sr == _video_format.framesPerSecond
+	if (_mode != FFMPEGWriter::MODE::AUDIO)
+	{
+		if (!(stream_in[_video_index].sr == _video_format.framesPerSecond
 			&& stream_in[_video_index].byte == ssi_video_stride(_video_format) * _video_format.heightInPixels
-			&& stream_in[_video_index].dim == 1);
+			&& stream_in[_video_index].dim == 1))
+		{
+			ssi_err("invalid video format");
+			return;
+		}
 	}
 
-	_client->setLogLevel (ssi_log_level);
-	if (!_client->open ()) {
-		ssi_err ("could not start encoder");
-	}
-
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "start encoding (url=%s)", _options.url);
+	open();	
 }
 
 void FFMPEGWriter::consume (IConsumer::info consume_info,
 	ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
-	if (_mode != FFMPEGWriter::MODE::VIDEO) {	
-		if (!_client->writeAudio (stream_in[_audio_index].num, stream_in[_audio_index].tot, stream_in[_audio_index].ptr)) {
-			ssi_wrn ("could not write audio chunk");
+	if (!_ready)
+	{
+		return;
+	}
+
+	if (_mode != FFMPEGWriter::MODE::VIDEO) {
+		if (!_client->writeAudio(stream_in[_audio_index].num, stream_in[_audio_index].tot, stream_in[_audio_index].ptr)) {
+			ssi_wrn("could not write audio chunk");
 		}
 	}
 
 	if (_mode != FFMPEGWriter::MODE::AUDIO) {
-		if (!_client->writeVideo (stream_in[_video_index].byte, stream_in[_video_index].ptr)) {
-			ssi_wrn ("could not write video frame");
+		if (!_client->writeVideo(stream_in[_video_index].byte, stream_in[_video_index].ptr)) {
+			ssi_wrn("could not write video frame");
 		}
 	}
 
-	if (!_client->flushBuffer ()) {
-		ssi_wrn ("could not flush buffer");
+	if (!_client->flushBuffer()) {
+		ssi_wrn("could not flush buffer");
 	}
-	
+
 }
+
+void FFMPEGWriter::close()
+{
+	if (!_ready)
+	{
+		return;
+	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "close '%s'", _path_or_url);
+
+	if (!_client->close())
+	{
+		ssi_err("could not stop encoder");
+	}
+
+	_ready = false;
+}
+
 
 void FFMPEGWriter::consume_flush (ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "stop encoding (url=%s)", _options.url);
-
-	if (!_client->close ()) {
-		ssi_err ("could not stop encoder");
-	}
+	close();
 
 	delete _audio_format;
 	_audio_format = 0;
 
 	_audio_index = _video_index = -1;
 	_mode = FFMPEGWriter::MODE::UNDEFINED;
+
+	_ready = false;
 }
 
 // add empty frames
@@ -156,6 +251,11 @@ void FFMPEGWriter::consume_fail (const ssi_time_t fail_time,
 	const ssi_time_t fail_duration,
 	ssi_size_t stream_in_num,
 	ssi_stream_t stream_in[]) {
+
+	if (!_ready)
+	{
+		return;
+	}
 
 	if (_mode != FFMPEGWriter::MODE::AUDIO) {
 
@@ -194,5 +294,32 @@ void FFMPEGWriter::consume_fail (const ssi_time_t fail_time,
 
 	ssi_msg (SSI_LOG_LEVEL_BASIC, "added %.2Lfs empty frames/chunks", fail_duration); 
 }
+
+bool FFMPEGWriter::notify(INotify::COMMAND::List command, const ssi_char_t *message)
+{
+
+	switch (command)
+	{
+	case INotify::COMMAND::SLEEP_POST:
+	{
+		if (!_is_url)
+		{
+			close();
+		}
+		return true;
+	}
+	case INotify::COMMAND::WAKE_PRE:
+	{
+		if (!_is_url)
+		{
+			open();
+		}
+		return true;
+	}
+	}
+
+	return false;
+}
+
 
 }

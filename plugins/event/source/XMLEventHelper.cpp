@@ -103,22 +103,24 @@ void XMLEventHelper::clearMapping() {
 	mapping.clear();
 }
 
-void XMLEventHelper::resetMapping(ssi_size_t time) {
+void XMLEventHelper::resetMapping(bool force) {
+
+	ssi_size_t time = Factory::GetFramework()->GetElapsedTimeMs();
 
 	std::vector <Mapping>::iterator it;
 	for (it = mapping.begin(); it != mapping.end(); it++) {
 		switch (it->target) {
 		case XMLEventHelper::MapTarget::ATTRIBUTE: {
-			if (it->span != -1 && time - it->last > it->span) {
+			if (force || (it->span != -1 && time - it->last > it->span)) {
 				ssi_pcast(TiXmlAttribute, it->node)->SetValue("");
-			} else if (it->field == XMLEventHelper::Field::ISNEW) {
+			} if (it->field == XMLEventHelper::Field::ISNEW) {
 				ssi_pcast(TiXmlAttribute, it->node)->SetValue("0");
 			}
 			break;
 		}
 		case XMLEventHelper::MapTarget::ELEMENT: {
 			TiXmlNode *content = ssi_pcast(TiXmlElement, it->node)->FirstChild();
-			if (it->span != -1 && time - it->last > it->span) {
+			if (force || (it->span != -1 && time - it->last > it->span)) {
 				content->SetValue("");
 			} else if (it->field == XMLEventHelper::Field::ISNEW) {
 				content->SetValue("0");
@@ -127,6 +129,12 @@ void XMLEventHelper::resetMapping(ssi_size_t time) {
 		}
 		}
 	}
+}
+
+void XMLEventHelper::reset()
+{
+	Lock lock(*_mutex);
+	resetMapping(true);
 }
 
 bool XMLEventHelper::parse() {
@@ -1014,9 +1022,8 @@ void XMLEventHelper::run() {
 		if (_sender->_options.console) {
 			_sender->_doc->Print();
 		}
-
-		ssi_size_t time = Factory::GetFramework ()->GetElapsedTimeMs ();
-		resetMapping(time);
+		
+		resetMapping();
 	}
 
 	_timer->wait();
@@ -1049,7 +1056,7 @@ void XMLEventHelper::send(ssi_size_t time, ssi_size_t dur) {
 		_sender->_doc->Print();
 	}
 
-	resetMapping(Factory::GetFramework()->GetElapsedTimeMs());
+	resetMapping();
 
 }
 

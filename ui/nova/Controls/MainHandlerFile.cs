@@ -57,12 +57,7 @@ namespace ssi
                 return false;
             }
 
-            control.Cursor = Cursors.Wait;
-            Action EmptyDelegate = delegate () { };
-            control.ShadowBoxText.Text = "Loading '" + filepath + "'";
-            control.ShadowBox.Visibility = Visibility.Visible;
-            control.UpdateLayout();
-            control.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+            showShadowBox("Loading '" + filepath + "'");
 
             bool loaded = false;
 
@@ -200,8 +195,7 @@ namespace ssi
                     break;
             }
 
-            control.ShadowBox.Visibility = Visibility.Collapsed;
-            control.Cursor = Cursors.Arrow;
+            hideShadowBox();            
 
             return loaded;
         }
@@ -235,21 +229,40 @@ namespace ssi
 
             if(Mediabackend == MEDIABACKEND.MEDIAKIT)
             {
-                MediaKit media = new MediaKit(filename, type);
-                media.OnMediaMouseDown += OnMediaMouseDown;
-                media.OnMediaMouseUp += OnMediaMouseUp;
-                media.OnMediaMouseMove += OnMediaMouseMove;
-                addMedia(media);
-                return media;
+                try
+                {
+                    MediaKit media = new MediaKit(filename, type);
+                    media.OnMediaMouseDown += OnMediaMouseDown;
+                    media.OnMediaMouseUp += OnMediaMouseUp;
+                    media.OnMediaMouseMove += OnMediaMouseMove;
+                    addMedia(media);
+                    return media;
+                }
+
+                catch
+                {
+                    return null;
+                    //ignore the file
+                }
+              
             }
            else if(Mediabackend == MEDIABACKEND.MEDIA)
             {
+                try
+                {
                 Media media = new Media(filename, type);
                 media.OnMediaMouseDown += OnMediaMouseDown;
                 media.OnMediaMouseUp += OnMediaMouseUp;
                 media.OnMediaMouseMove += OnMediaMouseMove;
                 addMedia(media);
                 return media;
+                }
+
+                catch
+                {
+                    return null;
+                    //ignore the file
+                }
             }
 
 
@@ -316,8 +329,10 @@ namespace ssi
                 MessageTools.Error("Stream file not found '" + filename + "'");
                 return;
             }
-
-            Signal signal = Signal.LoadStreamFile(filename);
+            Signal signal = null;
+        
+             signal = Signal.LoadStreamFile(filename);
+         
             if (signal != null && signal.loaded)
             {                
                 if (signal.Meta.ContainsKey("name") && signal.Meta["name"] == "face")
@@ -328,36 +343,32 @@ namespace ssi
                         IMedia media = new Face(filename, signal, Face.FaceType.OPENFACE);
                         addMedia(media);
                     }
-
-                   
-
                     else if (signal.Meta.ContainsKey("type") && signal.Meta["type"] == "kinect1")
                     {
                         IMedia media = new Face(filename, signal, Face.FaceType.KINECT1);
                         addMedia(media);
                     }
-
-                    //default case
-                    else
+                    else if (signal.Meta.ContainsKey("type") && signal.Meta["type"] == "kinect2")
                     {
                         IMedia media = new Face(filename, signal, Face.FaceType.KINECT2);
                         addMedia(media);
                     }
-
-
-
                 }
                 else if (signal.Meta.ContainsKey("name") && signal.Meta["name"] == "skeleton")
                 {
                     IMedia media = new Skeleton(filename, signal);
                     addMedia(media);
                 }
-                else
-                {
+
+                //else
+                //{
+
+                    this.control.signalbar.Height = new GridLength(control.signalAndAnnoGrid.ActualHeight /2 - 30);
+                    this.control.signalstatusbar.Visibility = Visibility.Visible;
                     signalCursor.signalLoaded = true;
                     annoCursor.signalLoaded = true;
                     addSignalTrack(signal, signalColor, backgroundColor);                  
-                }
+                //}
             }
         }
 
@@ -372,6 +383,8 @@ namespace ssi
             Signal signal = Signal.LoadWaveFile(filename);
             if (signal != null && signal.loaded)
             {
+                this.control.signalbar.Height = new GridLength(control.signalAndAnnoGrid.ActualHeight / 2 - 30);
+                this.control.signalstatusbar.Visibility = Visibility.Visible;
                 addSignalTrack(signal, signalColor, backgroundColor);
             }
 
@@ -698,23 +711,33 @@ namespace ssi
 
         private void ImportAnnoFromElan(string filename)
         {
+
+            bool addemptytiers = false;
             List<AnnoList> lists = AnnoList.LoadfromElanFile(filename);
+
+            if (lists.Exists(n => n.Count == 0))
+            {
+                MessageBoxResult mb = MessageBox.Show("At least one tier is empty, should empty tiers be excluded?", "Attention", MessageBoxButton.YesNo);
+                if (mb == MessageBoxResult.No)
+                {
+                    addemptytiers = true;
+                }
+            }
+
             double maxdur = 0;
 
             if (lists != null)
             {
                 foreach (AnnoList list in lists)
                 {
-                    foreach (AnnoListItem it in list)
-                    {
-                        if (it.Stop > maxdur)
-                        {
-                            maxdur = it.Stop;
-                        }
-                    }
+                    if (list.Count > 0) maxdur = list[list.Count - 1].Stop;
 
-                    annoLists.Add(list);
-                    addAnnoTier(list);
+                    if (list.Count > 0 || addemptytiers)
+                    {
+                        annoLists.Add(list);
+                        addAnnoTier(list);
+                    }
+                  
                 }
             }
             updateTimeRange(maxdur);
@@ -1131,7 +1154,25 @@ namespace ssi
 
         private void convertAnnoContinuousToDiscrete_Click(object sender, RoutedEventArgs e)
         {
-            ExportAnnoContinuousToDiscrete();
+            if(AnnoTierStatic.Selected != null)
+            {
+                if(AnnoTierStatic.Selected.AnnoList.Scheme.Type  == AnnoScheme.TYPE.CONTINUOUS)
+                {
+                    ExportAnnoContinuousToDiscrete();
+                }
+
+                else if (AnnoTierStatic.Selected.AnnoList.Scheme.Type == AnnoScheme.TYPE.FREE)
+                {
+
+                   AnnoList newlist = AnnoList.ConvertFreetoDiscreteAnnotation(AnnoTierStatic.Selected.AnnoList);
+                   AnnoTier.Unselect();
+                   addAnnoTierFromList(newlist);
+                }
+               
+               
+
+            }
+          
         }
 
         private void convertSignalToAnnoContinuous_Click(object sender, RoutedEventArgs e)
@@ -1144,35 +1185,67 @@ namespace ssi
             ExportAnnoToSignal();
         }
 
+        private void exportAnnoToCSV_Click(object sender, RoutedEventArgs e)
+        {
+            if (AnnoTierStatic.Selected != null)
+            {
+                showShadowBox("Export annotation to CSV'");
+                AnnoTierStatic.Selected.AnnoList.ExportToCSV();
+                hideShadowBox();
+            }
+        }
 
-     
-        
-
-
-        private void exportTierToXPS_Click(object sender, RoutedEventArgs e)
+        private void exportAnnoToXPS_Click(object sender, RoutedEventArgs e)
         {
             if (AnnoTierStatic.Selected != null)
             {
                 string filepath = FileTools.SaveFileDialog(AnnoTierStatic.Selected.AnnoList.Scheme.Name, "xps", "XPS (*.xps)|*.xps", AnnoTierStatic.Selected.AnnoList.Source.File.Directory);
                 if (filepath != null)
                 {
-                    var uri = new Uri(filepath);                    
-                    AnnoTierStatic.Selected.ExportToXPS(uri, AnnoTierStatic.Selected);
-                    AnnoTierStatic.Selected.TimeRangeChanged(Time);
+                    var uri = new Uri(filepath);
+
+                    if (AnnoTierStatic.Selected != null)
+                    {
+                        AnnoTierStatic.Selected.ExportToXPS(uri, AnnoTierStatic.Selected);
+                        AnnoTierStatic.Selected.TimeRangeChanged(Time);
+                    }
                 }
             }
         }
 
-        private void exportTierToPNG_Click(object sender, RoutedEventArgs e)
+        private void exportAnnoToPNG_Click(object sender, RoutedEventArgs e)
         {
             if (AnnoTierStatic.Selected != null)
             {
                 string filepath = FileTools.SaveFileDialog(AnnoTierStatic.Selected.AnnoList.Scheme.Name, "xps", "PNG (*.png)|*.png", AnnoTierStatic.Selected.AnnoList.Source.File.Directory);
                 if (filepath != null)
                 {
-                    var uri = new Uri(filepath);                    
-                    AnnoTierStatic.Selected.ExportToPng(uri, AnnoTierStatic.Selected);
-                    AnnoTierStatic.Selected.TimeRangeChanged(Time);
+                    var uri = new Uri(filepath);
+
+                    if (AnnoTierStatic.Selected != null)
+                    {
+                        AnnoTierStatic.Selected.ExportToPNG(uri, AnnoTierStatic.Selected);
+                        AnnoTierStatic.Selected.TimeRangeChanged(Time);
+                    }
+                }
+            }
+        }
+
+        private void exportSignalToCSV_Click(object sender, RoutedEventArgs e)
+        {
+            if (SignalTrackStatic.Selected != null)
+            {
+                string filepath = FileTools.SaveFileDialog(SignalTrackStatic.Selected.Name, "csv", "CSV (*.csv)|*.csv", SignalTrackStatic.Selected.Signal.Directory);
+                if (filepath != null)
+                {
+                    var uri = new Uri(filepath);
+
+                    if (SignalTrackStatic.Selected != null)
+                    {
+                        showShadowBox("Export signal to CSV '" + uri.LocalPath + "'");
+                        SignalTrackStatic.Selected.ExportToCSV(uri, SignalTrackStatic.Selected.Signal);
+                        hideShadowBox();
+                    }
                 }
             }
         }
@@ -1185,7 +1258,11 @@ namespace ssi
                 if (filepath != null)
                 {
                     var uri = new Uri(filepath);
-                    SignalTrackStatic.Selected.ExportToXPS(uri, SignalTrackStatic.Selected);
+
+                    if (SignalTrackStatic.Selected != null)
+                    {
+                        SignalTrackStatic.Selected.ExportToXPS(uri, SignalTrackStatic.Selected);
+                    }
                 }
             }
         }
@@ -1201,19 +1278,13 @@ namespace ssi
 
                     if (SignalTrackStatic.Selected != null)
                     {
-                        SignalTrackStatic.Selected.ExportToPng(uri, SignalTrackStatic.Selected);
+                        SignalTrackStatic.Selected.ExportToPNG(uri, SignalTrackStatic.Selected);
                     }
                 }
             }
         }
 
-        private void exportAnnoToCSV_Click(object sender, RoutedEventArgs e)
-        {
-            if (AnnoTierStatic.Selected != null)
-            {
-                AnnoTierStatic.Selected.AnnoList.SaveToCSVFile();
-            }
-        }
+
 
         #endregion EVENTHANDLER
     }

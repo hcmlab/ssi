@@ -502,7 +502,7 @@ bool ex_gestrec_online(void *args) {
 	ssi_print ("start testing..\n");
 
 	Classifier *classifier = ssi_create (Classifier, 0, true);
-	classifier->setTrainer(&trainer);
+	classifier->addTrainer("trainer", &trainer);
 	trigger->AddConsumer(cursor_p, classifier);
 
 	decorator->add("console", 0, 0, 650, 800);

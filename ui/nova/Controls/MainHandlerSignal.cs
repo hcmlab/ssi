@@ -79,6 +79,8 @@ namespace ssi
             control.signalPositionLabel.Text = "00:00:00.00";
             control.signalStatsButton.Visibility = Visibility.Hidden;
             control.signalCloseButton.Visibility = Visibility.Hidden;
+            this.control.signalbar.Height = new GridLength(30);
+            this.control.signalstatusbar.Visibility = Visibility.Hidden;
         }
 
         private void updateSignalTrack(SignalTrack track)
@@ -171,7 +173,7 @@ namespace ssi
 
         private void signalVolumeControl_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (SignalTrackStatic.Selected != null && SignalTrackStatic.Selected.Signal.Media != null && MediaBoxStatic.Selected.Media.HasAudio())
+            if (SignalTrackStatic.Selected != null && (SignalTrackStatic.Selected.Signal.Media != null || MediaBoxStatic.Selected != null && MediaBoxStatic.Selected.Media.HasAudio()))
             {
                 SignalTrackStatic.Selected.Signal.Media.SetVolume(control.signalVolumeControl.volumeSlider.Value);
             }

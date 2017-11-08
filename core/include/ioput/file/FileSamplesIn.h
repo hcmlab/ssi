@@ -66,6 +66,7 @@ public:
 	ssi_size_t getSize (ssi_size_t class_index) {
 		if (class_index >= _n_classes) {
 			ssi_err ("index '%u' excees #classes '%u'", class_index, _n_classes);
+			return 0;
 		}
 		return _n_per_class[class_index];
 	}
@@ -78,6 +79,7 @@ public:
 			return SSI_SAMPLE_GARBAGE_CLASS_NAME;
 		} else if (class_index >= _n_classes) {
 			ssi_err ("index '%u' exceeds #classes '%u'", class_index, _n_classes);
+			return 0;
 		}
 		return _classes[class_index];
 	}
@@ -88,6 +90,7 @@ public:
 	const ssi_char_t *getUserName (ssi_size_t user_index) {
 		if (user_index >= _n_users) {
 			ssi_err ("index '%u' exceeds #users '%u'", user_index, _n_users);
+			return 0;
 		}
 		return _users[user_index];
 	}
@@ -98,6 +101,9 @@ public:
 	ssi_stream_t getStream (ssi_size_t stream_index) {
 		if (stream_index >= _n_streams) {
 			ssi_err ("index '%u' exceeds #streams '%u'", stream_index, _n_streams);
+			ssi_stream_t stream;
+			ssi_stream_init(stream, 0, 0, 0, SSI_UNDEF, 0, 0);
+			return stream;
 		}
 		return _streams[stream_index];
 	}

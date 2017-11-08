@@ -67,6 +67,7 @@ int main (int argc, char **argv) {
 	ssi_char_t *label = 0;
 	bool noscale = false;
 	bool ascii = false;
+    bool oldannos=false;
 	
 	cmd.addText("\nArguments:");
 	cmd.addSCmdArg("user", &username, "user name");
@@ -82,7 +83,8 @@ int main (int argc, char **argv) {
 	cmd.addDCmdOption("-frame", &frame, 0, "generate samples at a continuous frame size (given in seconds), will be turned on if > 0");
 	cmd.addDCmdOption("-delta", &delta, 0, "overlap with next frame in seconds (applied if frame > 0)");
 	cmd.addDCmdOption("-percent", &percent, 0.5, "percentage of a frame a annotation segment has to cover (applied if frame > 0)");
-	cmd.addSCmdOption("-label", &label, "", "default label if not covered by an annotation segment (applied if frame > 0)");
+    cmd.addSCmdOption("-label", &label, "", "default label if not covered by an annotation segment (applied if frame > 0)");
+    cmd.addBCmdOption("-oldannos", &oldannos, false, "use old ssi annotation format");
 
 
 	if (cmd.read (argc, argv)) {		
@@ -91,10 +93,21 @@ int main (int argc, char **argv) {
 			ssi_log_file_begin (log);
 		}
 
-		old::Annotation anno;
-		ssi_print("READ ANNOTATION\t\t'%s'\n", annopath);		
-		ModelTools::LoadAnnotation(anno, annopath, tier);
+        old::Annotation anno_old;
+        Annotation anno;
 
+        if(oldannos){
+
+            ssi_print("READ ANNOTATION\t\t'%s'\n", annopath);
+            ModelTools::LoadAnnotation(anno_old, annopath, tier);
+        }
+        else
+        {
+
+            ssi_print("READ ANNOTATION\t\t'%s'\n", annopath);
+            anno.load(annopath);
+
+        }
 		ssi_size_t n_streams = ssi_split_string_count(streampath, ';');
 		ssi_char_t **tokens = new ssi_char_t *[n_streams];
 		ssi_stream_t **streams = new ssi_stream_t *[n_streams];
@@ -112,17 +125,36 @@ int main (int argc, char **argv) {
 		
 		SampleList samples;
 		if (frame > 0) {
-			old::Annotation anno_c;
 
-			if (strlen(label) == 0){				
-				ssi_wrn("dropping samples with empty annotation")
-			}
-				
-			ModelTools::ConvertToContinuousAnnotation(anno, anno_c, frame, delta, percent, strlen(label) == 0 ? 0 : label);
-			ModelTools::LoadSampleList(samples, n_streams, streams, anno_c, username);
-		} else {
-			ModelTools::LoadSampleList(samples, n_streams, streams, anno, username);
-		}
+                if (strlen(label) == 0){
+                    ssi_wrn("dropping samples with empty annotation")
+                }
+
+                if(oldannos){
+                    old::Annotation anno_c;
+
+
+                    ModelTools::ConvertToContinuousAnnotation(anno_old, anno_c, frame, delta, percent, strlen(label) == 0 ? 0 : label);
+                    ModelTools::LoadSampleList(samples, n_streams, streams, anno_c, username);
+                }
+                else
+                {
+                    // no delta with new annos?
+                    anno.convertToFrames(frame,strlen(label) == 0 ? 0 : label,0.0 /*duration*/,percent);
+                    anno.extractSamples( *streams[0], &samples, username);
+                }
+            }
+        else
+            {
+                if(oldannos){
+                    ModelTools::LoadSampleList(samples, n_streams, streams, anno_old, username);
+                }
+                else
+                {
+                    anno.extractSamples( *streams[0], &samples, username);
+                }
+            }
+
 
 		ssi_print("SAVE SAMPLES\t\t'%s'\n", annopath);
 		ModelTools::SaveSampleList(samples, samplepath, ascii ? File::ASCII : File::BINARY);
@@ -137,7 +169,8 @@ int main (int argc, char **argv) {
 		}
 
 		Factory::Clear ();
-	}
+    }
+
 
 	delete[] username;
 	delete[] annopath;

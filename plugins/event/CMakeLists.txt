@@ -60,6 +60,7 @@ source/ZeroEventSender.cpp
 source/TheEventBoard.cpp
 source/ThresEventSender.cpp
 source/TupleEventSender.cpp
+source/TriggerEventSender.cpp
 source/StringEventSender.cpp
 source/ClockEventSender.cpp
 source/EventToStream.cpp

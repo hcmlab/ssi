@@ -62,6 +62,7 @@ public:
 	void setMetaData (ssi_size_t size, const void *meta) {
 		if (sizeof (_format_in) != size) {
 			ssi_err ("invalid meta size");
+			return;
 		}
 		memcpy (&_format_in, meta, size);		
 	};

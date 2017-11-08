@@ -55,9 +55,11 @@ public:
 
 	public:
 
-		Options () {
+		Options ()
+			 : overwrite(false) {
 
-			setUrl ("out.mp4");
+			setPath ("");
+			setUrl ("");
 			setFormat ("mp4");
 			setACodec ("");
 			setVCodec ("");
@@ -68,9 +70,13 @@ public:
 			abuffer = 3.0;
 			vbuffer = 1.0;
 
-			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "url (file path or streaming address, e.g. udp://<ip:port>)");			
-			addOption ("stream", &stream, 1, SSI_BOOL, "set this flag for very fast encoding in streaming applications (forces h264/aac codec)");
-			addOption ("format", format, SSI_MAX_CHAR, SSI_CHAR, "default output format (if not determined from url), set to 'mpegts' in streaming applications");
+			addOption("path", path, SSI_MAX_CHAR, SSI_CHAR, "file path (leave empty to use url)");
+			addOption("overwrite", &overwrite, 1, SSI_BOOL, "overwrite file if it already exists (otherwise a unique path will be created)");			
+
+			addOption ("url", url, SSI_MAX_CHAR, SSI_CHAR, "streaming address in the format udp://<ip:port>");			
+			addOption ("stream", &stream, 1, SSI_BOOL, "set this flag for very fast encoding in streaming applications (forces h264/aac codec)");			
+
+			addOption ("format", format, SSI_MAX_CHAR, SSI_CHAR, "default output format if not determined from url or path (forced to 'mpegts' if in streaming mode)");
 			addOption ("acodec", acodec, SSI_MAX_CHAR, SSI_CHAR, "force audio codec name (otherwise leave empty)");
 			addOption ("vcodec", vcodec, SSI_MAX_CHAR, SSI_CHAR, "force video codec name (otherwise leave empty)");
 			addOption ("video_bitrate", &video_bit_rate_kb, 1, SSI_SIZE, "average bit rate in kB (0 for default)");
@@ -80,6 +86,9 @@ public:
 			addOption ("sdp", sdp, SSI_MAX_CHAR, SSI_CHAR, "sdp path (leave empty if you don't want to create a sdp file)");			
 		};
 
+		void setPath(const ssi_char_t *path) {
+			ssi_strcpy(this->path, path);
+		}
 		void setUrl (const ssi_char_t *url) {
 			ssi_strcpy (this->url, url);
 		}
@@ -96,6 +105,8 @@ public:
 			strcpy (this->vcodec, vcodec);
 		}
 
+		ssi_char_t path[SSI_MAX_CHAR];
+		bool overwrite;
 		ssi_char_t url[SSI_MAX_CHAR];
 		ssi_char_t sdp[SSI_MAX_CHAR];
 		ssi_char_t format[SSI_MAX_CHAR];
@@ -130,10 +141,13 @@ public:
 		ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]);
 
+	bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
+
 	void setVideoFormat (ssi_video_params_t	video_format) { _video_format = video_format; };
 	void setMetaData (ssi_size_t size, const void *meta) {
 		if (sizeof (_video_format) != size) {
 			ssi_err ("invalid meta size");
+			return;
 		}
 		memcpy (&_video_format, meta, size);
 	}
@@ -161,6 +175,13 @@ protected:
 
 	MODE::item _mode;
 	FFMPEGWriterClient *_client;
+
+	void open();
+	void close();
+
+	bool _ready;
+	bool _is_url;
+	ssi_char_t *_path_or_url;
 	
 };
 

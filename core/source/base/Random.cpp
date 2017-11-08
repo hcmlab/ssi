@@ -116,7 +116,8 @@ namespace ssi
 #else
 		if (!_engine)
 		{
-			ssi_err("engine not initialized")
+			ssi_wrn("engine not initialized");
+			return 0;
 		}
 
 		std::mt19937 *engine = (std::mt19937*)_engine;
@@ -196,7 +197,8 @@ namespace ssi
 #else
 		if (!_engine)
 		{
-			ssi_err("engine not initialized")
+			ssi_wrn("engine not initialized")
+			return 0;
 		}
 
 		std::mt19937 *engine = (std::mt19937*)_engine;

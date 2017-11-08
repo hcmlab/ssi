@@ -83,14 +83,14 @@ bool SocketTcp::connect () {
 
 	switch (_mode) {
 
-		case SocketTcp::CLIENT: {
+		case SocketTcp::MODE::CLIENT: {
 
 			_thread = new RunAsThread (&waitForServer, this, true);
 			_thread->start ();
 
 			break;
 		}
-		case SocketTcp::SERVER: {
+		case SocketTcp::MODE::SERVER: {
 
 			if (!_socket->listen (_ip.port)) {
 				ssi_wrn ("listening on port %d failed [tcp]", _ip.port);
@@ -118,7 +118,7 @@ void SocketTcp::waitForServer(void *ptr) {
 
 	}
 			
-	ssi_msg_static (SSI_LOG_LEVEL_BASIC, "connected to '%s' [tcp]", me->_ipstr);
+	ssi_msg_static (SSI_LOG_LEVEL_BASIC, "connect to '%s' [tcp]", me->_ipstr);
 
 	me->_is_connected = true;
 }
@@ -159,7 +159,7 @@ bool SocketTcp::disconnect () {
 	_is_connected = false;
 	delete _thread; _thread = 0;
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "closed [tcp]");
+	ssi_msg (SSI_LOG_LEVEL_BASIC, "close [tcp]");
 	return true;
 }
 
@@ -173,10 +173,10 @@ int SocketTcp::recv (void *ptr, ssi_size_t size, long timeout) {
 	int result = -1;
 
 	switch (_mode) {
-		case SocketTcp::CLIENT:
+		case SocketTcp::MODE::CLIENT:
 			result = _socket->recv(ptr, size, timeout);
 			break;		
-		case SocketTcp::SERVER:
+		case SocketTcp::MODE::SERVER:
 			result = _client->recv(ptr, size, timeout);
 			break;
 	}
@@ -189,7 +189,7 @@ int SocketTcp::recv (void *ptr, ssi_size_t size, long timeout) {
 			return - 1;
 		}
 	} else {
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "received %d bytes", result);
+		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "receive %d bytes", result);
 	}
 #else
 	if (result == SOCKET_ERROR) {
@@ -220,10 +220,10 @@ int SocketTcp::send (const void *ptr, ssi_size_t size) {
 		Lock lock (_send_mutex);		
 
 		switch (_mode) {
-			case SocketTcp::CLIENT:
+			case SocketTcp::MODE::CLIENT:
 				result = _socket->send(ptr, size);
 				break;
-			case SocketTcp::SERVER:
+			case SocketTcp::MODE::SERVER:
 				result = _client->send(ptr, size);
 				break;
 		}
@@ -233,7 +233,7 @@ int SocketTcp::send (const void *ptr, ssi_size_t size) {
 		ssi_wrn("send() failed\n");
 		return -1;
 	} else {
-		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "sent %d bytes", result);
+		SSI_DBG (SSI_LOG_LEVEL_DEBUG, "send %d bytes", result);
 	}
 
 	return result;
@@ -254,10 +254,10 @@ const char *SocketTcp::getRecvAddress () {
 void SocketTcp::setBlockingMode(bool block)
 {
 	switch (_mode) {
-		case SocketTcp::CLIENT:
+		case SocketTcp::MODE::CLIENT:
 			_socket->setBlockingMode(block);
 			break;
-		case SocketTcp::SERVER:
+		case SocketTcp::MODE::SERVER:
 			_client->setBlockingMode(block);
 			break;
 	}

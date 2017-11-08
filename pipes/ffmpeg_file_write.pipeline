@@ -2,13 +2,18 @@
 <pipeline>
 
 	<register>
-		<load name="ssigraphic" />
-		<load name="ssiioput" />
-		<load name="ssiffmpeg" />
-		<load name="ssicamera" />
-		<load name="ssiaudio" />
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="ffmpeg" />
+		<load name="camera" />
+		<load name="audio" />
+		<load name="control" />
 	</register>
 
+	<framework waitid="close"/>
+	<runnable create="WaitButton:close" title="button" label="CLOSE"/>
+	<runnable create="ControlCheckBox:record" id="plot*,writer*" label="RECORD" default="false"/>		
+	
 	<!-- camera sensor -->
 	<sensor create="Camera" option="camera" width="640" height="480" fps="25.0" channel="3" depth="8" flip="true">
 		<output channel="video" pin="video" size="2.0s"/>
@@ -20,7 +25,7 @@
 	</sensor>	
 	
 	<!-- write -->
-	<consumer create="FFMPEGWriter" url="ffmpeg.mp4">
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg_$(num,2)">
 		<input pin="video" frame="1"/>
 		<xinput size="1">
 			<input pin="audio"/>
@@ -34,6 +39,8 @@
 	
 	<!-- decoration -->
 	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,450">console</area>
+		<area pos="0,450,400,150">record,close</area>	
 		<area pos="0,0,400,600">console</area>
 		<area pos="400,0,640,480">plot*</area>		
 	</object>

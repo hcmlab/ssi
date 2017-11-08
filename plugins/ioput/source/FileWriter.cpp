@@ -27,6 +27,7 @@
 #include "FileWriter.h"
 #include "ioput/file/FileTools.h"
 #include "base/Factory.h"
+#include "ioput/file/FilePath.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -42,12 +43,14 @@ namespace ssi {
 ssi_char_t *FileWriter::ssi_log_name = "filewriter";
 
 FileWriter::FileWriter (const ssi_char_t *file)
-	: _file (0),
+	: _filepath(0),
+	_file (0),
 	_fileptr (0),
 	_total_sample_number (0),
 	_position (0),
 	_n_meta (0),
 	_meta (0),
+	_first_call(true),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 
 	if (file) {
@@ -69,126 +72,58 @@ FileWriter::~FileWriter () {
 
 	delete[] _meta; _meta = 0;	
 	_n_meta = 0;
-	_keys_values.clear();
 }
 
-void FileWriter::consume_enter (ssi_size_t stream_in_num,
-	ssi_stream_t stream_in[]) {
-
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "open stream output > '%s'", _options.path);
-
-	if (_options.version <= File::V1) {
-
-		_total_sample_number = 0;
-		// open file	
-		_fileptr = File::CreateAndOpen (_options.type, _options.mode, _options.path);		
-		_fileptr->setFormat (_options.delim, SSI_FILE_DEFAULT_FLAGS);
-		_fileptr->setType (stream_in[0].type);
-		
-		// write header
-		FileTools::WriteStreamHeader (*_fileptr, stream_in[0], _options.version);
-
-		// if continuous stream add zero timestamp, store position and 
-		// add enough space to insert in total sample number
-		if (_options.version <= File::V1) {
-			if (_options.stream) {
-				_position = _fileptr->tell ();
-				if (_fileptr->getType () == File::ASCII) {
-					sprintf (_string, "                        ");
-					_fileptr->writeLine (_string);
-				} else {
-					ssi_time_t consume_time = 0.0;
-					_fileptr->write (&consume_time, sizeof (ssi_time_t), 1);
-					_fileptr->write (&_total_sample_number, sizeof (ssi_size_t), 1);
-				}
-			}
-		}
-	} else {
-		if (_options.type == File::ASCII) {
-			_out.setDelim(_options.delim);
-		}
-
-		if (_options.meta[0] != '\0')
-		{
-			parse_meta(_options.meta, ';');
-		}
-
-		ssi_size_t n_keys = 0;
-		ssi_char_t **keys = 0;
-		ssi_char_t **values = 0;
-		if (_keys_values.size() > 0)
-		{
-			n_keys = ssi_size_t(_keys_values.size());
-			keys = new ssi_char_t *[n_keys];
-			values = new ssi_char_t *[n_keys];	
-			for (ssi_size_t i = 0; i < n_keys; i++)
-			{
-				keys[i] = _keys_values[i].key.str();
-				values[i] = _keys_values[i].value.str();
-			}
-		}
-
-		_out.open (stream_in[0], _options.path, _n_meta, _meta, n_keys, keys, values, _options.type, _options.version);
-
-		delete[] keys;
-		delete[] values;
+void FileWriter::open()
+{
+	if (_out.ready())
+	{
+		return;
 	}
+
+	if (_options.overwrite)
+	{
+		ssi_mkdir_r(FilePath(_options.path).getDir());
+		_filepath = ssi_strcpy(_options.path);
+	}
+	else
+	{
+		_filepath = FilePath(_options.path, SSI_FILE_TYPE_STREAM).getUnique(true);
+	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "open '%s'", _filepath);
+
+	if (_options.type == File::ASCII)
+	{
+		_out.setDelim(_options.delim);
+	}
+
+	if (_options.meta[0] != '\0')
+	{
+		parse_meta(_options.meta, ';');
+	}
+
+	ssi_size_t n_keys = 0;
+	ssi_char_t **keys = 0;
+	ssi_char_t **values = 0;
+	if (_keys_values.size() > 0)
+	{
+		n_keys = ssi_size_t(_keys_values.size());
+		keys = new ssi_char_t *[n_keys];
+		values = new ssi_char_t *[n_keys];
+		for (ssi_size_t i = 0; i < n_keys; i++)
+		{
+			keys[i] = _keys_values[i].key.str();
+			values[i] = _keys_values[i].value.str();
+		}
+	}
+
+	_out.open(_stream, _filepath, _n_meta, _meta, n_keys, keys, values, _options.type);
+
+	delete[] keys;
+	delete[] values;
 
 	_first_call = true;
-}
-
-void FileWriter::consume (IConsumer::info consume_info,
-	ssi_size_t stream_in_num,
-	ssi_stream_t stream_in[]) {
-
-	if (_options.version <= File::V1) {
-		FileTools::WriteStreamData (*_fileptr, stream_in[0], _options.version, !_options.stream);
-		_total_sample_number += stream_in[0].num;
-	} else {
-		if (_first_call && _out.getInfoFile ()) {
-			ssi_size_t lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond;
-			_frame->GetStartTimeLocal (lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond);
-			ssi_size_t syear, smonth, sday, shour, sminute, ssecond, smsecond;
-			_frame->GetStartTimeSystem (syear, smonth, sday, shour, sminute, ssecond, smsecond);
-			ssi_size_t time = _frame->GetStartTimeMs ();			
-			/*ssi_char_t time_s[100];			
-			ssi_time_sprint (time, time_s);*/
-			ssi_sprint (_string, "\t<time ms=\"%u\" local=\"%02u/%02u/%02u %02u:%02u:%02u:%u\" system=\"%02u/%02u/%02u %02u:%02u:%02u:%u\"/>", time, lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond, syear, smonth, sday, shour, sminute, ssecond, smsecond);
-			_out.getInfoFile ()->writeLine (_string);
-			_first_call = false;
-		}
-		_out.write (stream_in[0], _options.stream);
-	}
-
-	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "%u samples written", stream_in[0].num);
-}
-
-void FileWriter::consume_flush (ssi_size_t stream_in_num,
-	ssi_stream_t stream_in[]) {
-
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "close stream output > '%s'", _options.path);	
-
-	if (_options.version <= File::V1) {
-
-		// if continuous fill in total sample number
-		if (_options.stream) {	
-			_fileptr->seek (_position, File::BEGIN);
-			if (_fileptr->getType () == File::ASCII) {
-				sprintf (_string, "%.1lf %20u", 0.0, _total_sample_number);
-				_fileptr->writeLine (_string);
-			} else {
-				ssi_time_t consume_time = 0.0;
-				_fileptr->write (&consume_time, sizeof (ssi_time_t), 1);
-				_fileptr->write (&_total_sample_number, sizeof (ssi_size_t), 1);
-			}
-		}
-
-		delete _fileptr;
-		_fileptr = 0;
-
-	} else {
-		_out.close ();	
-	}
 }
 
 void FileWriter::parse_meta(const ssi_char_t *string, char delim)
@@ -215,6 +150,88 @@ void FileWriter::parse_meta(const ssi_char_t *string, char delim)
 		}
 		delete[] split;
 	}
+}
+
+void FileWriter::consume_enter (ssi_size_t stream_in_num,
+	ssi_stream_t stream_in[]) {
+
+	_stream = stream_in[0];		
+	open();
+}
+
+void FileWriter::consume (IConsumer::info consume_info,
+	ssi_size_t stream_in_num,
+	ssi_stream_t stream_in[]) {
+
+	if (!_out.ready())
+	{
+		return;
+	}
+
+	if (_first_call && _out.getInfoFile ())
+	{
+		ssi_size_t lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond;
+		_frame->GetStartTimeLocal (lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond);
+		ssi_size_t syear, smonth, sday, shour, sminute, ssecond, smsecond;
+		_frame->GetStartTimeSystem (syear, smonth, sday, shour, sminute, ssecond, smsecond);
+		ssi_size_t time = _frame->GetStartTimeMs ();				
+		ssi_sprint (_string, "\t<time ms=\"%u\" local=\"%02u/%02u/%02u %02u:%02u:%02u:%u\" system=\"%02u/%02u/%02u %02u:%02u:%02u:%u\"/>", time, lyear, lmonth, lday, lhour, lminute, lsecond, lmsecond, syear, smonth, sday, shour, sminute, ssecond, smsecond);
+		_out.getInfoFile ()->writeLine (_string);		
+	}
+
+	if (_out.write(stream_in[0], _options.stream))
+	{
+		_first_call = false;
+	}	
+	
+	SSI_DBG (SSI_LOG_LEVEL_DEBUG, "%u samples written", stream_in[0].num);
+}
+
+void FileWriter::close()
+{
+	if (!_out.ready())
+	{
+		return;
+	}
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "close '%s'", _filepath);
+
+	_out.close();
+
+	if (_first_call && !_options.keepEmpty)
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "remove '%s'", _filepath);
+		ssi_remove(_filepath);
+		ssi_remove((String(_filepath) + "~").str());
+	}
+
+	delete[] _filepath; _filepath = 0;
+	_keys_values.clear();
+}
+
+void FileWriter::consume_flush (ssi_size_t stream_in_num,
+	ssi_stream_t stream_in[]) 
+{
+	close();
+}
+
+bool FileWriter::notify(INotify::COMMAND::List command, const ssi_char_t *message) {
+
+	switch (command) 
+	{
+	case INotify::COMMAND::SLEEP_POST:
+	{	
+		close();					
+		return true;
+	}
+	case INotify::COMMAND::WAKE_PRE:
+	{		
+		open();
+		return true;
+	}	
+	}
+
+	return false;
 }
 
 }

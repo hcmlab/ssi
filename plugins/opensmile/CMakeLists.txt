@@ -46,6 +46,7 @@ include_directories(
 			../../core/include
 			../../core/include/frame
 			../
+                        ../../libs/build/opencv/include/
 			${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS}
 			)
 

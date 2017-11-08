@@ -15,7 +15,7 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "1.0.0.0";
+        public static string BuildVersion = "1.0.0.5";
         public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
 
 
@@ -101,7 +101,6 @@ namespace ssi
         public MainHandler(MainControl view)
         {
             control = view;
-            control.Drop += controlDrop;
 
             // Shadow box
 
@@ -173,11 +172,12 @@ namespace ssi
 
             control.exportSamplesMenu.Click += exportSamples_Click;
             control.exportToGenie.Click += exportToGenie_Click;
-            control.exportTierToXPSMenu.Click += exportTierToXPS_Click;
-            control.exportTierToPNGMenu.Click += exportTierToPNG_Click;
-            control.exportSignalToXPSMenu.Click += exportSignalToXPS_Click;
-            control.exportSignalToPNGMenu.Click += exportSignalToPNG_Click;
             control.exportAnnoToCSVMenu.Click += exportAnnoToCSV_Click;
+            control.exportAnnoToXPSMenu.Click += exportAnnoToXPS_Click;
+            control.exportAnnoToPNGMenu.Click += exportAnnoToPNG_Click;
+            control.exportSignalToCSVMenu.Click += exportSignalToCSV_Click;
+            control.exportSignalToXPSMenu.Click += exportSignalToXPS_Click;
+            control.exportSignalToPNGMenu.Click += exportSignalToPNG_Click;            
 
             control.convertAnnoContinuousToDiscreteMenu.Click += convertAnnoContinuousToDiscrete_Click;
             control.convertAnnoToSignalMenu.Click += convertAnnoToSignal_Click;
@@ -280,11 +280,12 @@ namespace ssi
 
             if (Properties.Settings.Default.CheckUpdateOnStart && Properties.Settings.Default.LastUpdateCheckDate.Date != DateTime.Today.Date)
             {
+                alreadycheckedcmlupdate = true;
                 Properties.Settings.Default.LastUpdateCheckDate = DateTime.Today.Date;
                 Properties.Settings.Default.Save();
                 checkForUpdates(true);
                 checkForCMLUpdates(true);
-                alreadycheckedcmlupdate = true;
+               
             }
 
 
@@ -326,23 +327,35 @@ namespace ssi
             }
 
 
-
             // Clear
 
             clearSignalInfo();
             clearAnnoInfo();
             clearMediaBox();
+
+            // allow drag and drop
+
+            control.Drop += controlDrop;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-     
 
+        public void showShadowBox(string message)
+        {
+            control.Cursor = Cursors.Wait;
+            Action EmptyDelegate = delegate () {};
+            control.ShadowBoxText.Text = message;
+            control.ShadowBox.Visibility = Visibility.Visible;
+            control.UpdateLayout();
+            control.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+        }
 
+        public void hideShadowBox()
+        {
+            control.ShadowBox.Visibility = Visibility.Collapsed;
+            control.Cursor = Cursors.Arrow;
+        }
 
-
-        private void signalAndAnnoControlSizeChanged(object sender, SizeChangedEventArgs e)
+        public void signalAndAnnoControlSizeChanged(object sender, SizeChangedEventArgs e)
         {
             timeline.SelectionInPixel = control.signalAndAnnoAdorner.ActualWidth;
             control.timeLineControl.rangeSlider.Update();
@@ -387,7 +400,7 @@ namespace ssi
                 }
             }
 
-            if (Time.TotalDuration > 0) fixTimeRange(Properties.Settings.Default.DefaultZoomInSeconds);
+            //if (Time.TotalDuration > 0) fixTimeRange(Properties.Settings.Default.DefaultZoomInSeconds);
 
             while (mediaBoxes.Count > 0)
             {
@@ -424,17 +437,18 @@ namespace ssi
 
         private void updatePositionLabels(double time)
         {
+
+            control.signalPositionLabel.Text = FileTools.FormatSeconds(time) + "/" + FileTools.FormatSeconds(timeline.TotalDuration);
             if (SignalTrackStatic.Selected != null && SignalTrackStatic.Selected.Signal != null)
             {
                 Signal signal = SignalTrackStatic.Selected.Signal;
-                control.signalPositionLabel.Text = FileTools.FormatSeconds(time);
                 control.signalStatusValueLabel.Text = signal.Value(time).ToString();
                 control.signalStatusValueMinLabel.Text = "min " + signal.min[signal.ShowDim].ToString();
                 control.signalStatusValueMaxLabel.Text = "max " + signal.max[signal.ShowDim].ToString();
             }
             if (MediaBoxStatic.Selected != null && MediaBoxStatic.Selected.Media != null)
             {
-                control.mediaPositionLabel.Text = "#" + FileTools.FormatFrames(time, MediaBoxStatic.Selected.Media.GetSampleRate());
+                control.mediaPositionLabel.Text = "#" + FileTools.FormatFrames(time, MediaBoxStatic.Selected.Media.GetSampleRate()) + "/" + FileTools.FormatFrames(timeline.TotalDuration, MediaBoxStatic.Selected.Media.GetSampleRate());
             }
         }
 

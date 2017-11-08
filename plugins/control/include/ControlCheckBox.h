@@ -135,6 +135,7 @@ protected:
 	ssi_char_t **_target_ids;
 	bool *_ready;
 
+	void init(bool value);
 	void update (bool value);
 };
 

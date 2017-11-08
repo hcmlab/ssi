@@ -29,75 +29,80 @@
 #include "ioput/file/FilePath.h"
 
 #ifdef USE_SSI_LEAK_DETECTOR
-	#include "SSI_LeakWatcher.h"
-	#ifdef _DEBUG
-		#define new DEBUG_NEW
-		#undef THIS_FILE
-		static char THIS_FILE[] = __FILE__;
-	#endif
+#include "SSI_LeakWatcher.h"
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 #endif
 
 namespace ssi {
 
 const ssi_char_t *WavReader::ssi_log_name = "wavreader_";
 
-WavReader::WavReader (const ssi_char_t *file) 
-	: _provider (0),
-	_frame_counter (0),
-	_frame_timer (0),
-	_total_size (0),
-	_frame_size (0),
-	_offset_in_bytes (0),
-	_offset_in_samples (0),
-	_wait_event (false, false),
-	_is_providing (false),
-	_wav_path (0),
-	_wav_file (0),	
-	_loop_pos (0),
-	_file (0) {		
+WavReader::WavReader(const ssi_char_t *file)
+	: _provider(0),
+	_frame_counter(0),
+	_frame_timer(0),
+	_total_size(0),
+	_frame_size(0),
+	_offset_in_bytes(0),
+	_offset_in_samples(0),
+	_wait_event(false, false),
+	_is_providing(false),
+	_wav_path(0),
+	_wav_file(0),
+	_loop_pos(0),
+	_file(0) {
 
 	if (file) {
 		if (!OptionList::LoadXML(file, &_options)) {
 			OptionList::SaveXML(file, &_options);
 		}
-		_file = ssi_strcpy (file);
+		_file = ssi_strcpy(file);
 	}
 }
 
-bool WavReader::setProvider (const ssi_char_t *name, IProvider *provider) {
+bool WavReader::setProvider(const ssi_char_t *name, IProvider *provider) {
 
-	if (strcmp (name, SSI_WAVREADER_PROVIDER_NAME) == 0) {
-		setProvider (provider);
-		return true;
+	if (strcmp(name, SSI_WAVREADER_PROVIDER_NAME) == 0) {
+		return setProvider(provider);
 	}
 
-	ssi_wrn ("unkown provider name '%s'", name);
+	ssi_wrn("unkown provider name '%s'", name);
 
 	return false;
 }
 
-void WavReader::setProvider (IProvider *provider) {
+bool WavReader::setProvider(IProvider *provider) {
 
 	if (!provider) {
-		return;
+		return false;
 	}
 
 	if (_provider) {
-		ssi_wrn ("provider already set");
-		return;
+		ssi_wrn("provider already set");
+		return false;
 	}
 
 	_provider = provider;
 
 	// open file	
 	FilePath fp(_options.path);
-	if (strcmp(fp.getExtension(), SSI_FILE_TYPE_WAV) != 0) 
+	if (strcmp(fp.getExtension(), SSI_FILE_TYPE_WAV) != 0)
 	{
 		_wav_path = ssi_strcat(_options.path, SSI_FILE_TYPE_WAV);
 	}
-	else 
+	else
 	{
 		_wav_path = ssi_strcpy(_options.path);
+	}
+
+	if (!ssi_exists(_wav_path))
+	{
+		ssi_wrn("file not found '%s'", _wav_path);
+		return false;
 	}
 
 	ssi_msg(SSI_LOG_LEVEL_BASIC, "open file '%s'", _wav_path);
@@ -105,7 +110,8 @@ void WavReader::setProvider (IProvider *provider) {
 	_wav_file = File::CreateAndOpen (File::BINARY, File::READ, _wav_path);
 	if (!_wav_file)
 	{
-		ssi_err("could open stream '%s'", _wav_path);
+		ssi_wrn("could open stream '%s'", _wav_path);
+		return false;
 	}
 
 	// read wav header
@@ -129,7 +135,8 @@ void WavReader::setProvider (IProvider *provider) {
 	}
 	_offset_in_bytes = _offset_in_samples * _sample_dimension * _sample_bytes;
 	if (_offset_in_bytes > ssi_cast (ssi_size_t, _chunk.chunkLen)) {
-		ssi_err ("offset exceeds #bytes in file (%u > %d)", _offset_in_bytes, _chunk.chunkLen);
+		ssi_wrn ("offset exceeds #bytes in file (%u > %d)", _offset_in_bytes, _chunk.chunkLen);
+		return false;
 	}
 	_loop_pos = _wav_file->tell () + _offset_in_bytes;
 
@@ -157,6 +164,7 @@ void WavReader::setProvider (IProvider *provider) {
 		ssi_stream_adjust (_stream_scale, _frame_size);		
 	}
 
+	return true;
 }
 
 WavReader::~WavReader() {

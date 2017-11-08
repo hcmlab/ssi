@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,12 @@ namespace ssi
     public class StreamItem
     {
         public string Name { get; set; }
+
+        public string Role { get; set; }
+
+        public string Type { get; set; }
+
+        public string Extension { get; set; }
         public bool Exists { get; set; }
     }
 
@@ -51,6 +58,9 @@ namespace ssi
     {
         private List<DatabaseAnnotation> annotations = new List<DatabaseAnnotation>();
         private CancellationTokenSource cancellation = new CancellationTokenSource();
+        GridViewColumnHeader _lastHeaderClicked = null;
+        ListSortDirection _lastDirection = ListSortDirection.Ascending;
+
 
         public DatabaseAnnoMainWindow()
         {
@@ -96,15 +106,15 @@ namespace ssi
             else return null;
         }
 
-        public List<string> SelectedStreams()
+        public List<StreamItem> SelectedStreams()
         {
-            List<string> selectedStreams = new List<string>();
+            List<StreamItem> selectedStreams = new List<StreamItem>();
             
             if (StreamsBox.SelectedItems != null)
             {
                 foreach (StreamItem stream in StreamsBox.SelectedItems)
                 {
-                    selectedStreams.Add(stream.Name);                    
+                    selectedStreams.Add(stream);                    
                 }
             }
 
@@ -181,6 +191,7 @@ namespace ssi
         {
             if (SessionsBox.SelectedItem != null)
             {
+                searchTextBox.Text = "";
                 DatabaseSession session = (DatabaseSession)SessionsBox.SelectedItem;
                 GetAnnotations(session);
                 GetStreams();
@@ -213,7 +224,7 @@ namespace ssi
                         string filename = role.Name + "." + stream.Name + "." + stream.FileExt;
                         string directory = Properties.Settings.Default.DatabaseDirectory + "\\" + DatabaseHandler.DatabaseName + "\\" + session + "\\";
                         string filepath = directory + filename;
-                        items.Add(new StreamItem() { Name = filename, Exists = File.Exists(filepath) });
+                        items.Add(new StreamItem() { Name = filename, Extension = stream.FileExt, Role = role.Name, Type = stream.Name, Exists = File.Exists(filepath) });
                     }
                 }
             }
@@ -296,13 +307,16 @@ namespace ssi
             }
             catch  { }
 
+            bool isOwner = Properties.Settings.Default.MongoDBUser == annotatorName || DatabaseHandler.CheckAuthentication() > DatabaseAuthentication.DBADMIN;
+
+
             if (!onlyMe && !onlyUnfinished ||
                 onlyMe && !onlyUnfinished && Properties.Settings.Default.MongoDBUser == annotatorName ||
                 !onlyMe && onlyUnfinished && !isFinished ||
                 onlyMe && onlyUnfinished && !isFinished && Properties.Settings.Default.MongoDBUser == annotatorName)
             {
 
-                annotations.Add(new DatabaseAnnotation() { Id = id, Role = roleName, Scheme = schemeName, Annotator = annotatorName, AnnotatorFullName = annotatorFullName, Session = session.Name, IsFinished = isFinished, IsLocked = islocked, Date = date });
+                annotations.Add(new DatabaseAnnotation() { Id = id, Role = roleName, Scheme = schemeName, Annotator = annotatorName, AnnotatorFullName = annotatorFullName, Session = session.Name, IsFinished = isFinished, IsLocked = islocked, Date = date, IsOwner = isOwner });
             }
         }
         
@@ -602,5 +616,80 @@ namespace ssi
                 CollectionViewSource.GetDefaultView(AnnotationsBox.ItemsSource).Refresh();
             }
         }
+
+
+        private void SortListView(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader headerClicked =
+             e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
+
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    string header = headerClicked.Column.Header as string;
+                    ICollectionView dataView =  CollectionViewSource.GetDefaultView(((ListView)sender).ItemsSource);
+
+                    dataView.SortDescriptions.Clear();
+                    SortDescription sd = new SortDescription(header, direction);
+                    dataView.SortDescriptions.Add(sd);
+                    dataView.Refresh();
+
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header  
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = null;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        private void AnnotationsBox_Click(object sender, RoutedEventArgs e)
+        {
+            SortListView(sender, e);
+        }
+
+        private void SessionsBox_Click(object sender, RoutedEventArgs e)
+        {
+            SortListView(sender, e);
+        }
+
+        private void StreamsBox_Click(object sender, RoutedEventArgs e)
+        {
+            SortListView(sender, e);
+        }
     }
 }
+

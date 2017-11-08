@@ -25,6 +25,7 @@
 //*************************************************************************************************
 
 #include "ssi.h"
+#include "ssiml.h"
 #include "ssipraat.h"
 #include "audio\include\ssiaudio.h"
 #include "ioput\include\ssiioput.h"
@@ -35,8 +36,8 @@ using namespace ssi;
 
 ssi_char_t sstring[SSI_MAX_CHAR];
 
-void ex_praat();
-void ex_offline(const char* path, int id);
+bool ex_praat(void *args);
+bool ex_offline(void *args);
 
 int main () {	
 
@@ -46,34 +47,18 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssievent.dll");
-	Factory::RegisterDLL ("ssiioput.dll");
-	Factory::RegisterDLL ("ssipraat.dll");	
-	Factory::RegisterDLL("ssiaudio.dll");
-	Factory::RegisterDLL("ssisignal.dll");
-
-	ex_praat(); 
-
-	//char path[256];
-	//for (int i = 2; i <= 15; i++)
-	//{
-	//	for (int j = 1; j <= 4; j++)
-	//	{
-	//		sprintf(path, "D:\\Workspaces\\Publications\\2016\\ICMI\\study\\cc\\g%d", i);
-	//		ssi_msg(SSI_LOG_LEVEL_BASIC, "computing %s (%d)", path, j);
-	//		ex_offline(path, j);
-
-	//		sprintf(path, "D:\\Workspaces\\Publications\\2016\\ICMI\\study\\ec\\g%d", i);
-	//		ssi_msg(SSI_LOG_LEVEL_BASIC, "computing %s (%d)", path, j);
-	//		ex_offline(path, j);
-	//	}
-	//}
-	//ssi_msg(SSI_LOG_LEVEL_BASIC, "done");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("ioput");
+	Factory::RegisterDLL ("praat");	
+	Factory::RegisterDLL ("audio");
+	Factory::RegisterDLL ("signal");
 	
-	ssi_print ("\n\n\tpress a key to quit\n");
-	getchar ();
+	Exsemble ex;
+	ex.add(ex_praat, 0, "ONLINE", "Extract praat features online");
+	ex.add(ex_offline, 0, "OFFLINE", "Extract praat features offline");	
+	ex.show();
 
 	Factory::Clear ();
 
@@ -85,9 +70,8 @@ int main () {
 	return 0;
 }
 
-void ex_praat () {
+bool ex_praat (void *args) {
 
-	//general
 	ITheFramework *frame = Factory::GetFramework ();
 
 	Decorator *decorator = ssi_create (Decorator, 0, true);
@@ -112,26 +96,27 @@ void ex_praat () {
 	frame->AddSensor(audio);
 #endif
 
-	AudioActivity *activity = ssi_create (AudioActivity, 0, true); 
-	activity->getOptions()->method = AudioActivity::INTENSITY;
-	activity->getOptions()->threshold = 0.0001f;
-	ssi::ITransformable *activity_t = frame->AddTransformer(audio_p, activity, "0.01s");
+	AudioActivity *activity = ssi_pcast(AudioActivity, Factory::Create(AudioActivity::GetCreateName()));
+	activity->getOptions()->method = ssi::AudioActivity::METHOD::LOUDNESS;
+	activity->getOptions()->threshold = 0.05f;
+	ssi::ITransformable *activity_t = frame->AddTransformer(audio_p, activity, "0.01s", "0.02s");
 	
-	ZeroEventSender *zes = ssi_create (ZeroEventSender, 0, true);
-	zes->getOptions()->hangin = 5;	
-	zes->getOptions()->hangout = 30;
-	zes->getOptions()->setSender("VAD");
-	zes->getOptions()->setEvent("ACTIVITY");
-	zes->getOptions()->mindur = 1;
-	zes->getOptions()->maxdur = 10;
-	frame->AddConsumer(activity_t, zes, "1");
-	board->RegisterSender(*zes);
+	TriggerEventSender *vad = ssi_create(TriggerEventSender, 0, true);
+	vad->getOptions()->setAddress("VoiceActivity@Audio");
+	vad->getOptions()->hangOutSamples = 10;
+	vad->getOptions()->hangInSamples = 3;
+	vad->getOptions()->sendStartEvent = false;
+	vad->getOptions()->maxDuration = 5.0;
+	vad->getOptions()->minDuration = 0.5;
+	vad->getOptions()->triggerType = ssi::TriggerEventSender::TRIGGER::NOT_EQUAL;
+	frame->AddConsumer(activity_t, vad, "1");
+	board->RegisterSender(*vad);
 	
 	PraatVoiceReport *praat_vr = ssi_create (PraatVoiceReport, "praatvoicereport", true);
 	praat_vr->getOptions()->setExe("..\\bin\\praatcon.exe");
 	praat_vr->getOptions()->setScript("..\\..\\scripts\\voicereport.praat");
 	praat_vr->getOptions()->setTmpWav("praatvoicereport.wav");
-	frame->AddEventConsumer(audio_p, praat_vr, board, zes->getEventAddress());
+	frame->AddEventConsumer(audio_p, praat_vr, board, vad->getEventAddress());
 	board->RegisterSender(*praat_vr);
 
 	PraatVoiceReportT *praat_vr_transformer = ssi_create (PraatVoiceReportT, "praatvoicereport_t", true);
@@ -146,7 +131,7 @@ void ex_praat () {
 	praat_uni->getOptions()->setScriptArgs("0 2 yes");
 	praat_uni->getOptions()->setTmpWav("praatuniversal.wav");
 	praat_uni->getOptions()->undefined_value = 0;
-	frame->AddEventConsumer(audio_p, praat_uni, board, zes->getEventAddress());
+	frame->AddEventConsumer(audio_p, praat_uni, board, vad->getEventAddress());
 	//frame->AddConsumer(audio_p, praat_uni, "1.0s");
 	board->RegisterSender(*praat_uni);
 
@@ -181,11 +166,11 @@ void ex_praat () {
 
 	plot = ssi_create_id (SignalPainter, 0, "plot");
 	plot->getOptions()->setTitle("trigger");		
-	frame->AddEventConsumer(audio_p, plot, board, zes->getEventAddress());
+	frame->AddEventConsumer(audio_p, plot, board, vad->getEventAddress());
 
 	FileEventWriter *ewriter = ssi_create (FileEventWriter, 0, true);
 	ewriter->getOptions()->setPath("vad");
-	board->RegisterListener(*ewriter, zes->getEventAddress());
+	board->RegisterListener(*ewriter, vad->getEventAddress());
 
 	ewriter = ssi_create (FileEventWriter, 0, true);
 	ewriter->getOptions()->setPath("universal");
@@ -219,76 +204,68 @@ void ex_praat () {
 	board->Stop();
 	frame->Clear();
 	board->Clear();
-
+	
+	return true;
 }
 
-void ex_offline(const char* path, int id) {
+bool ex_offline(void *args) {
+	
+	// Read wav file	
 
-	/*
-	* Read wav file
-	*/
-	ssi_stream_t audio;
-	char file[256];
-	ssi_sprint(file, "%s\\audio%d.wav", path, id);
-	WavTools::ReadWavFile(file, audio, true);
+	ssi_stream_t audio_raw, audio;
+	WavTools::ReadWavFile("audio.wav", audio_raw, true);
 
-	ssi_stream_t audio_snr;
-	ssi_stream_t audio_snrf;
+	// add silence
+	ssi_size_t add_num = ssi_size_t(audio_raw.sr * 3);
+	ssi_stream_init(audio, audio_raw.num + add_num, audio_raw.dim, audio_raw.byte, audio_raw.type, audio_raw.sr);
+	ssi_stream_zero(audio);
+	memcpy(audio.ptr, audio_raw.ptr, audio_raw.tot);
 
-	/*
-	* Annotate file for voice activty
-	*/
-	SNRatio *snratio = ssi_pcast(SNRatio, Factory::Create(SNRatio::GetCreateName()));
-	SignalTools::Transform(audio, audio_snr, *snratio, ssi_cast(ssi_size_t, 0.01 * audio.sr + 0.5));
+	ssi_stream_destroy(audio_raw);
 
-	MvgAvgVar *filter = ssi_pcast(MvgAvgVar, Factory::Create(MvgAvgVar::GetCreateName()));
-	filter->getOptions()->win = 0.5;
-	filter->getOptions()->format = MvgAvgVar::AVG;
-	SignalTools::Transform(audio_snr, audio_snrf, *filter, ssi_cast(ssi_size_t, 0.01 * audio.sr + 0.5));
+	ssi_stream_t audio_aa;
 
-	char path_anno[256];
-	sprintf(path_anno, "%s\\vad.anno", path);
-	FileAnnotationWriter faw(path_anno, "vad");
+	ssi_stream_t audio_mono;
+	AudioMono *am = ssi_create(AudioMono, 0, true);
+	SignalTools::Transform(audio, audio_mono, *am, ssi_cast(ssi_size_t, 0.01 * audio.sr + 0.5));
 
-	ThresEventSender *vad = ssi_create(ThresEventSender, 0, true);
+	// voice activity
+
+	AudioActivity *activity = ssi_pcast(AudioActivity, Factory::Create(AudioActivity::GetCreateName()));
+	activity->getOptions()->method = ssi::AudioActivity::METHOD::LOUDNESS;
+	activity->getOptions()->threshold = 0.05f;
+	SignalTools::Transform(audio_mono, audio_aa, *activity, "0.01s", "0.02s");
+	
+	old::FileAnnotationWriter faw("vad.csv", "vad");
+
+	TriggerEventSender *vad = ssi_create(TriggerEventSender, 0, true);
 	vad->getOptions()->setAddress("VoiceActivity@Audio");
-	vad->getOptions()->thres = 4;
-	vad->getOptions()->thresout = 2;
-	vad->getOptions()->hangin = 20; //0.2s	
-	vad->getOptions()->hangout = 50; //0.5s
-	vad->getOptions()->mindur = 1;
-	vad->getOptions()->maxdur = 10;
-	vad->getOptions()->eager = false;
-	vad->getOptions()->eall = true;
+	vad->getOptions()->hangOutSamples = 10;
+	vad->getOptions()->hangInSamples = 3;
+	vad->getOptions()->sendStartEvent = false;
+	vad->getOptions()->maxDuration = 0;
+	vad->getOptions()->minDuration = 0.5;
+	vad->getOptions()->triggerType = ssi::TriggerEventSender::TRIGGER::NOT_EQUAL;
 	vad->setEventListener(&faw);
 
-	SignalTools::Consume(audio_snrf, *vad, 1);
+	SignalTools::Consume(audio_aa, *vad, "0.1s");
 
-	char path_snr[256];
-	sprintf(path_snr, "%s\\snr", path);
-	FileTools::WriteStreamFile(File::ASCII, path_snr, audio_snr);
-
-	/*
-	* Start-up PRAAT
-	*/
-	PraatUniversal *praat = ssi_factory_create(PraatUniversal, 0, true);
+	// run praat
+	
+	PraatVoiceReport *praat = ssi_factory_create(PraatVoiceReport, 0, true);
 	praat->getOptions()->setExe("..\\bin\\praatcon.exe");
-	praat->getOptions()->setScript("..\\..\\scripts\\ssi.praat");
-	praat->getOptions()->setScriptArgs("0 2 yes");
+	praat->getOptions()->setScript("..\\..\\scripts\\voicereport.praat");	
+	praat->getOptions()->setTmpWav("praatvoicereport.wav");
 	praat->getOptions()->setSender("Praat");
 
-	FileEventWriter *writer = ssi_create(FileEventWriter, 0, true);
-	char path_report[256];
-	sprintf(path_report, "%s\\praat_new%d", path, id);
-	writer->getOptions()->setPath(path_report);
+	FileEventWriter *writer = ssi_create(FileEventWriter, 0, true);	
+	writer->getOptions()->setPath("praat");
 	praat->setEventListener(writer);
 
-	/*
-	* Segment audio data using annotation and run segments through PRAAT
-	*/
-	Annotation vad_events;
-	ModelTools::LoadAnnotation(vad_events, path_anno);
-	Annotation::Entry *e;
+	old::Annotation vad_events;
+
+	ModelTools::LoadAnnotation(vad_events, "vad.csv");
+	old::Annotation::Entry *e;
 	ssi_stream_t chunk;
 	IConsumer::info info;
 	info.status = IConsumer::COMPLETED;
@@ -298,7 +275,11 @@ void ex_offline(const char* path, int id) {
 	praat->consume_enter(1, &chunk);
 
 	while (e = vad_events.next()) {
-		ssi_stream_copy(audio, chunk, ssi_cast(ssi_size_t, e->start * audio.sr + 0.5), ssi_cast(ssi_size_t, e->stop * audio.sr + 0.5));
+		ssi_size_t from = ssi_cast(ssi_size_t, e->start * audio.sr + 0.5);
+		ssi_size_t to = ssi_cast(ssi_size_t, e->stop * audio.sr + 0.5);
+		to = min(to, audio_mono.num);
+		from = min(from, to);
+		ssi_stream_copy(audio_mono, chunk, from, to);
 		info.time = e->start;
 		info.dur = e->stop - e->start;
 		praat->consume(info, 1, &chunk);
@@ -309,4 +290,8 @@ void ex_offline(const char* path, int id) {
 	writer->listen_flush();
 
 	ssi_stream_destroy(audio);
+	ssi_stream_destroy(audio_mono);
+	ssi_stream_destroy(audio_aa);
+
+	return true;
 }

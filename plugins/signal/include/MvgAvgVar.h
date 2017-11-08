@@ -51,6 +51,8 @@ public:
 				ssi_stream_t &stream_out) = 0;
 			virtual void transform_flush (ssi_stream_t &stream_in,
 				ssi_stream_t &stream_out) = 0;
+
+			virtual void reset() = 0;
 	};
 
 	enum METHOD {
@@ -122,9 +124,12 @@ public:
 	ssi_type_t getSampleTypeOut (ssi_type_t sample_type_in) {
 		if (sample_type_in != SSI_REAL) {
 			ssi_err ("type %s not supported", SSI_TYPE_NAMES[sample_type_in]);
+			return SSI_UNDEF;
 		}
 		return SSI_REAL;
 	}
+
+	bool notify(INotify::COMMAND::List command, const ssi_char_t *message);
 
 protected:
 
@@ -150,6 +155,8 @@ protected:
 			ssi_stream_t &stream_out);
 		 void transform_flush (ssi_stream_t &stream_in,
 			ssi_stream_t &stream_out);
+
+		 void reset();
 
 	protected:
 
@@ -180,6 +187,8 @@ protected:
 			ssi_stream_t &stream_out);
 		 void transform_flush (ssi_stream_t &stream_in,
 			ssi_stream_t &stream_out);
+
+		 void reset();
 
 	protected:
 		

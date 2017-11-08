@@ -6,6 +6,8 @@
 		<load name="ssiioput" />
 		<load name="ssiffmpeg" />
 	</register>
+	
+	<framework sync="true" slisten="true" sport="1234"/>	
 
 	<!-- video -->
 	<sensor create="FFMPEGReader" url="udp://127.0.0.1:2222" fps="25.0" width="320" height="240" stream="true">		
