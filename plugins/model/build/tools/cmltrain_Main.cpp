@@ -300,9 +300,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-list", &params.list, "", "list with sessions separated by ; (overrides filter)");
 	cmd.addSCmdOption("-username", &params.username, "", "database username");
-	cmd.addSCmdOption("-password", &params.password, "", "database password");
-	cmd.addICmdOption("-left", &params.contextLeft, 0, "left context (number of frames added to the left of center frame)");
-	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
+	cmd.addSCmdOption("-password", &params.password, "", "database password");;
 	cmd.addSCmdOption("-balance", &params.balance, "none", "set sample balancing strategy (none,under,over)");
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
@@ -1099,6 +1097,15 @@ void eval(params_t &params)
 
 	StringList sessions;
 	getSessions(sessions, params);
+
+	if (trainer.Meta.count("leftContext") > 0)
+	{
+		params.contextLeft = atoi(trainer.Meta["leftContext"].str());
+	}
+	if (trainer.Meta.count("rightContext") > 0)
+	{
+		params.contextRight = atoi(trainer.Meta["rightContext"].str());
+	}
 
 	CMLTrainer cmltrainer;
 	cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);

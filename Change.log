@@ -1810,3 +1810,11 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 08.11.17 CHG : frame/XMLPipeline : add <message text="..."/> element to display a start message : Johannes
 
 *** Version 1.0.3 *** 
+- 09.11.17 CHG : plugins/ssjbridge : added support for multiple stream inputs : Johnny
+- 14.11.17 BUG : plugins/image/OCVResize : correctly auto assignment of scaled parameter : Johannes
+- 14.11.17 BUG : plugins/camera/CameraScreen : correctly initializes resize component : Johannes
+- 14.11.17 ADD : python/nnet/tensor/soundnet : e2e audio feature from soundnet : Johannes
+- 14.11.17 CHG : python/nnet/tensor/soundnet : allow parallel feature extraction : Johannes
+- 14.11.17 ADD : plugins/webrtc_vad : cleaned up test code and added pipeline : Johannes
+- 14.11.17 BUG : model/cmltrain : applies left/right context during evaluation : Johannes
+- 14.11.17 BUG : nova : confusion matrix handles zero : Johannes
