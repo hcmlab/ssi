@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="audio"/>
+		<load name="python"/>
+	</register>
+	<!-- audio sensor -->
+	
+	<sensor create="Audio:audio" option="audio" sr="22050" scale="true" blockInSamples="221">
+		<output channel="audio" pin="audio" size="20.0s"/>
+	</sensor>
+	
+	<!-- soundnet transformer
+		
+		pool1
+		
+	-->
+	<transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=4;n_feature=16;n_samples=221">	
+		<input pin="audio" frame="221"/>	
+		<output pin="pool1"/>
+	</transformer>
+
+	<!-- soundnet transformer
+		
+		pool2
+		
+	-->
+	<transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=8;n_feature=32;n_samples=441">	
+		<input pin="audio" frame="441"/>	
+		<output pin="pool2"/>
+	</transformer>
+	
+	<!-- soundnet transformer
+		
+		pool5
+		
+	-->	
+	<transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=18;n_feature=256;n_samples=7350">	
+		<input pin="audio" frame="882" delta="6468"/>	
+		<output pin="pool5"/>
+	</transformer>
+	
+	
+	<!-- soundnet transformer
+		
+		conv8
+		
+	-->
+	<!--transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=26;n_feature=401;n_samples=220500">	
+		<input pin="audio" frame="220500"/>	
+		<output pin="conv8"/>
+	</transformer-->	
+	
+	<!-- storage -->		
+	
+	<consumer create="FileWriter:write" path="data/pool1" overwrite="true">
+		<input pin="pool1" frame="0.1s"/>
+	</consumer>
+	<consumer create="FileWriter:write" path="data/pool2" overwrite="true">
+		<input pin="pool2" frame="0.1s"/>
+	</consumer>
+	<consumer create="FileWriter:write" path="data/pool5" overwrite="true">
+		<input pin="pool5" frame="0.1s"/>
+	</consumer>
+	<!--consumer create="FileWriter:write" path="data/conv8" overwrite="true">
+		<input pin="conv8" frame="1"/>
+	</consumer-->
+
+	
+	<!-- visualization -->	
+	
+	<consumer create="SignalPainter:plot" title="AUDIO" size="10" type="2" autoscale="false" fix="-1,1">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="POOL 1" size="10">
+		<input pin="pool1" frame="0.1s"/>			
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="POOL 5" size="10" type="1">
+		<input pin="pool2" frame="0.1s"/>			
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="POOL 5" size="10" type="1">
+		<input pin="pool5" frame="0.1s"/>			
+	</consumer>	
+		
+	<!-- decoration -->
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600" nh="1">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+	
+</pipeline>

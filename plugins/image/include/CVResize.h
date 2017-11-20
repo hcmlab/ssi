@@ -66,6 +66,10 @@ public:
 			{
 				scaled = true;
 			}
+			else
+			{
+				scaled = false;
+			}
 
 			this->width = width;
 			this->height = height;

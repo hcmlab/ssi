@@ -29,6 +29,7 @@ using namespace ssi;
 
 extern "C" {
 #include "ssipy.h"
+#include "ssipylog.h"
 }
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -99,6 +100,14 @@ ssipyevent *convert(ssi_event_t &event)
 	return ssipyevent_New(event.time, event.dur, ea.getAddress(), data, event.state, event.glue_id, event.prob);
 }
 
+void mystdout(const char *str)
+{
+	if (str[0] != '\n')
+	{
+		printf("log: %s\n", str);
+	}
+}
+
 int main () {
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -107,8 +116,13 @@ int main () {
 
 	ssi_print("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 		
-	Py_Initialize();
+	//PyImport_AppendInittab("ssipyemb", PyInit_ssipylog);
+	Py_Initialize();	
+	//PyImport_ImportModule("ssipyemb");
 	PyInit_ssipy();
+	PyInit_ssipylog();
+
+	ssipylog_stdout_set(mystdout);
 
 	PyObject* sysPath = PySys_GetObject((char*)"path");
 	ssi_char_t *full = ssi_fullpath(".");
@@ -129,6 +143,8 @@ int main () {
 	ex.add(ex_ssipy_script_arg_npy, &type, "SSIPY - SCRIPT + ARGUMENT + NUMPY", "Converting a stream to a numpy array.");
 #endif
 	ex.show();
+
+	ssipylog_stdout_reset();
 
 	Py_Finalize();
 

@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Main_ssipy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\ssipy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main_ssipy.cpp">
+    <ClCompile Include="..\..\source\ssipylog.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ssipy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ssipylog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

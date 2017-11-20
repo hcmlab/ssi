@@ -50,6 +50,8 @@ protected:
 	static ssi_char_t *ssi_log_name;
 	PyThreadState *_state;
 
+	static void log(const char *str);
+
 	PythonManager();
 	virtual ~PythonManager();
 };

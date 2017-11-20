@@ -1,0 +1,22 @@
+------------------------------------------------------------
+    Model
+------------------------------------------------------------
+
+Download model ('sound8.npy') and place in this folder:
+
+https://drive.google.com/uc?export=download&id=0B9wE6h4m--wjR015M1RLZW45OEU
+
+------------------------------------------------------------
+    Dependencies
+------------------------------------------------------------
+
+* tensorflow
+* numpy
+* resampy
+
+------------------------------------------------------------
+    Credits
+------------------------------------------------------------
+
+https://github.com/eborboihuc/SoundNet-tensorflow
+https://github.com/cvondrick/soundnet

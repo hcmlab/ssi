@@ -31,5 +31,9 @@
 #include "Openface.h"
 #include "OpenfacePainter.h"
 #include "OpenfaceSelector.h"
+#include "OpenfaceAdditionalFeat.h"
+
+
+
 
 #endif

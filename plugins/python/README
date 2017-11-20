@@ -18,6 +18,9 @@
 	https://www.python.org/
 	see LICENSE.PYTHON
 	
+	Mateusz Loskot, Python sys.stdout redirection in C++
+	http://mateusz.loskot.net/post/2011/12/01/python-sys-stdout-redirection-in-cpp/
+	
 ------------------------------------------------------------
 	Bug report to support@openssi.net
 ------------------------------------------------------------

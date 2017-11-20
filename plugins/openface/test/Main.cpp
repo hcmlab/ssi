@@ -56,6 +56,7 @@ using namespace ssi;
 bool ex_test(void *arg);
 bool ex_test_kinect(void *arg);
 bool ex_offline(void *arg);
+bool ex_test_add_feat(void *arg);
 
 
 std::vector<std::string> listFolders(std::string dir);
@@ -187,6 +188,8 @@ int main() {
 		ex.add(ex_test, 0, "TEST", "Demonstrates the use of openface");
 		ex.add(ex_test_kinect, 0, "TEST Kinect", "Demonstrates the use of openface with kinect");
 		ex.add(ex_offline, 0, "Offline", "Demonstrates the use of openface with a file");
+		ex.add(ex_test_add_feat, 0, "TEST Additional Features", "Testing additional feature extraction");
+
 		ex.show();
 
 		Factory::Clear();
@@ -375,3 +378,69 @@ bool ex_offline(void *arg) {
 	return true;
 }
 
+bool ex_test_add_feat(void *arg) {
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	// sensor
+
+	Camera *camera = ssi_create(ssi::Camera, "cam", true);
+	camera->getOptions()->flip = true;
+	ssi_video_params_t video_params = camera->getFormat();
+	ITransformable* camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME);
+	frame->AddSensor(camera);
+
+	Openface *openface = ssi_create(Openface, 0, true);
+	openface->getOptions()->setModelPath("..\\lib\\local\\LandmarkDetector\\model");
+	openface->getOptions()->setTriPath("..\\lib\\local\\LandmarkDetector\\model\\tris_68_full.txt");
+	openface->getOptions()->setAuPath("..\\lib\\local\\FaceAnalyser\\AU_predictors\\AU_all_best.txt");
+	ITransformable *openface_t = frame->AddTransformer(camera_p, openface, "1");
+
+	OpenfaceAdditionalFeat * openfaceadf = ssi_create(OpenfaceAdditionalFeat, 0, true);
+	ITransformable *openfaceadf_t = frame->AddTransformer(openface_t, openfaceadf, "1", "4");
+
+	//OpenfaceSelector *sel_au_r = ssi_create(OpenfaceSelector, 0, true);
+	//sel_au_r->getOptions()->aureg = true;
+	//ITransformable *sel_au_r_t = frame->AddTransformer(openface_t, sel_au_r, "1");
+
+	//OpenfaceSelector *sel_au_c = ssi_create(OpenfaceSelector, 0, true);
+	//sel_au_c->getOptions()->auclass = true;
+	//ITransformable *sel_au_c_t = frame->AddTransformer(openface_t, sel_au_c, "1");
+
+	OpenfacePainter *openface_painter = ssi_create(OpenfacePainter, 0, true);
+	ITransformable* in[] = { openface_t };
+	ITransformable *openface_painter_t = frame->AddTransformer(camera_p, 1, in, openface_painter, "1");
+
+	VideoPainter *vidplot = vidplot = ssi_create_id(VideoPainter, 0, "video");
+	vidplot->getOptions()->setTitle("video");
+	vidplot->getOptions()->flip = false;
+	frame->AddConsumer(openface_painter_t, vidplot, "1");
+
+	SignalPainter *openfaceadf_painter = ssi_create_id(SignalPainter, 0, "plot");
+	openfaceadf_painter->getOptions()->size = 100.0;
+	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
+
+	//SignalPainter *sig_au_r = ssi_create_id(SignalPainter, 0, "plot");
+	//sig_au_r->getOptions()->type = PaintSignalType::BAR_POS;
+	//sig_au_r->getOptions()->setBarNames("Inner|Brow|Raiser,Outer|Brow|Raiser,Brow|Lowerer,Upper|Lid|Raiser,Cheek|Raiser,Nose|Wrinkler,Upper|Lip|Raiser,Lip|Corner|Puller,Dimpler,Lip|Corner|Depressor,Chin|Raiser,Lip|Stretcher,Lips|Part,Jaw|Drop");
+	//sig_au_r->getOptions()->setTitle("AU Regression");
+	//frame->AddConsumer(sel_au_r_t, sig_au_r, "1");
+
+	//SignalPainter *sig_au_c = ssi_create_id(SignalPainter, 0, "plot");
+	//sig_au_c->getOptions()->type = PaintSignalType::BAR_POS;
+	//sig_au_c->getOptions()->setTitle("AU Classification");
+	//sig_au_c->getOptions()->setBarNames("Brow|Lowerer,Lip|Corner|Puller,Lip|Corner|Depressor,Lip|Tightener,Lip|Suck,Blink");
+	//frame->AddConsumer(sel_au_c_t, sig_au_c, "1");
+
+	decorator->add("video*", 0, 0, 640, 480);
+	decorator->add("console", 640, 0, 640, 480);
+	decorator->add("plot*", 0, 480, 1280, 480);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+	return true;
+}

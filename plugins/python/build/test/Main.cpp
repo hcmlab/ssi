@@ -58,6 +58,8 @@ int main ()
 	{
 #endif
 
+	ssimsg = new FileMessage("ssi.log");
+
 	ssi_print("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
 	Factory::RegisterDLL("frame");
@@ -65,13 +67,13 @@ int main ()
 	Factory::RegisterDLL("mouse");
 	Factory::RegisterDLL("graphic");
 	Factory::RegisterDLL("ioput");
-	Factory::RegisterDLL("python");
+	Factory::RegisterDLL("python", 0, ssimsg);
 
 	ssi_type_t type = SSI_INT;
 
 #if SSI_RANDOM_LEGACY_FLAG	
 	ssi_random_seed();
-#endif
+#endif	
 
 	Exsemble ex;
 	ex.console(0, 0, 650, 600);		
@@ -92,6 +94,9 @@ int main ()
 	ex.show();
 
 	Factory::Clear();
+
+	delete ssimsg;
+	ssimsg = 0;
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	}

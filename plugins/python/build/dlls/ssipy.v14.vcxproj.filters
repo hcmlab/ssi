@@ -18,9 +18,15 @@
     <ClInclude Include="..\..\include\ssipy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ssipylog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ssipy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ssipylog.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

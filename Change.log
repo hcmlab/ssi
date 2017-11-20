@@ -1818,3 +1818,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 14.11.17 ADD : plugins/webrtc_vad : cleaned up test code and added pipeline : Johannes
 - 14.11.17 BUG : model/cmltrain : applies left/right context during evaluation : Johannes
 - 14.11.17 BUG : nova : confusion matrix handles zero : Johannes
+- 16.11.17 CHG : plugins/python : added ssipylog module to capture python's stdout in ssi : Johannes

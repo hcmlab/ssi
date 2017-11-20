@@ -49,7 +49,8 @@ namespace ssi {
 		public:
 
 			Options()
-				: aggr_mode(0), sendEvent(false) {
+				: aggr_mode(3), sendEvent(false) {
+
 				addOption("aggressiveness", &aggr_mode, 1, SSI_INT,  "Range: [0;3]. A more aggressive (higher mode) VAD is more restrictive in reporting speech.");
 				
 				addOption("event", &sendEvent, 1, SSI_BOOL, "send an event on voice activity");

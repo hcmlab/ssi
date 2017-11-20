@@ -399,7 +399,7 @@ void Chain::parse () {
 	TiXmlElement *load = body->FirstChildElement("register");
 	if (load)
 	{
-		Factory::RegisterXML(load);
+		Factory::RegisterXML(load, ssiout, ssimsg);
 	}
 
 	TiXmlElement *filter = body->FirstChildElement ("filter");

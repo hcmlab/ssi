@@ -107,12 +107,14 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\Openface.cpp" />
+    <ClCompile Include="..\..\source\OpenfaceAdditionalFeat.cpp" />
     <ClCompile Include="..\..\source\OpenfaceHelper.cpp" />
     <ClCompile Include="..\..\source\OpenfacePainter.cpp" />
     <ClCompile Include="..\..\source\OpenfaceSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Openface.h" />
+    <ClInclude Include="..\..\include\OpenfaceAdditionalFeat.h" />
     <ClInclude Include="..\..\include\OpenfaceHelper.h" />
     <ClInclude Include="..\..\include\OpenfacePainter.h" />
     <ClInclude Include="..\..\include\OpenfaceSelector.h" />

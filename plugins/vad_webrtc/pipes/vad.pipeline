@@ -2,8 +2,34 @@
 <pipeline>
 
 	<register>
-		<load name="ssivad_webrtc" />		
+		<load name="vad_webrtc" />		
+		<load name="graphic" />		
+		<load name="audio" />		
 	</register>	
+	
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+	
+	<!-- activity -->
+	<transformer create="VadWebRTC" aggressiveness="3">
+		<input pin="audio" frame="10ms"/>
+		<output pin="vad"/>
+	</transformer>
+	
+	<!-- activity detection -->
+	<consumer create="TriggerEventSender" minDuration="0.3" maxDuration="5.0" sendStartEvent="true" hangInDuration="0.1s" hangOutDuration="0.3s" address="vad@audio">
+		<input pin="vad" frame="0.1s"/>
+	</consumer>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" title="audio" size="10" type="2">
+		<input pin="audio" frame="0.2s" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" size="10" type="0" title="activity">
+		<input pin="vad" frame="0.02s" />
+	</consumer>
 
 	<!-- decoration -->
 	<object create="Decorator" icon="true" title="Pipeline">

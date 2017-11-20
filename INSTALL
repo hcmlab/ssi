@@ -2,44 +2,44 @@
     Development Enviroment
 ------------------------------------------------------------
 
-    SSI has been developed under Visual Studio 2010 and
-	supports 32-bit and 64-bit Window systems.
-	
-------------------------------------------------------------
-    Python
-------------------------------------------------------------
-	
-	Install the 64 bit version of Python3.5x to C:\%ProgramFiles%\Python35
-	(default installation directory if you check 'install for all users')
-	
-	https://www.python.org/downloads/
-	
+    SSI is developed under Windows x64 using Visual Studio 2015
+
 ------------------------------------------------------------
     Installation
 ------------------------------------------------------------
 
     Run setup.exe to set up enviroment variables for SSI
+		
+------------------------------------------------------------
+    Python
+------------------------------------------------------------
 	
+	Install Python3.51 x64 to C:\%ProgramFiles%\Python35
+	
+	(default installation directory if you check 'install for all users')
+	
+	https://www.python.org/downloads/
+		
 ------------------------------------------------------------
     Getting Started
 ------------------------------------------------------------
 
     Run pipelines in pipes\ 
 	
-	ssi_core.sln core libraries and dlls	
-	ssi_plugins.sln plugin libraries and dlls
-	ssiui.sln graphical interfaces	
+	ssi_core.sln 		core libraries and dlls	
+	ssi_plugins.sln 	plugin libraries and dlls
+	ssiui.sln 			graphical interfaces	
 	   
 ------------------------------------------------------------
     Documentation
 ------------------------------------------------------------	
 
-	pipes\ contains example pipelines	
+	pipes\ 				contains example pipelines	
 	
-	docs\api\ contains reference html files for available components	   
-    docs\tutorial\ contains a comprehensive tutorial (tutorial.pdf) and sample code (tutorial.sln)	  
-	docs\ui\ contains documentation for the graphical training interface	
-	docs\xml\ contains documentation on how to build xml pipelines
+	docs\api\ 			contains reference html files for available components	   
+    docs\tutorial\ 		contains a comprehensive tutorial (tutorial.pdf) and sample code (tutorial.sln)	  
+	docs\ui\ 			contains documentation for the graphical training interface	
+	docs\xml\ 			contains documentation on how to build xml pipelines
 
 ------------------------------------------------------------
     Troubleshooting
@@ -56,14 +56,7 @@
 	   the x64 configuration and try again.
 	   
 	* When running Windows 8 & Visual Studio 2013, some test projects of plugins that use external libraries might crash by default (Debugger stops in ThreadFun). To fix this problem go to test: right click: project->properties->linker->all options and set random base address to No (/DYNAMICBASE:NO).
-	
-	
-------------------------------------------------------------
-    Known Issues
-------------------------------------------------------------	
-	
-	* XMLedit does not (yet) compile on Visual Studio 2015
-	
+		
 ------------------------------------------------------------
     Bug report to support@openssi.net
 ------------------------------------------------------------
