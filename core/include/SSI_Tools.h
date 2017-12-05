@@ -120,6 +120,12 @@ typedef struct _SYSTEMTIME {
 #define WAVE_FORMAT_PCM 0x0001
 #define ULONG_PTR uint64_t
 
+
+using std::min;
+using std::max;
+
+
+
 #endif
 
 SSI_INLINE static ssi_size_t ssi_sec2ms(ssi_time_t time) {

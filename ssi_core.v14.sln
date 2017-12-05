@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
 EndProject
@@ -134,6 +134,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libs\build\curl\curl-7.21.6\lib\libcurl.vc14.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmlchain", "core\build\tools\xmlchain\xmlchain.v14.vcxproj", "{C57B7A44-8027-402B-874D-DA1A48CF2A28}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F256A6B4-8E7E-47E2-B447-E62D2E2E51EF} = {F256A6B4-8E7E-47E2-B447-E62D2E2E51EF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmltrain", "plugins\model\build\tools\xmltrain.v14.vcxproj", "{F501E0B2-89E5-408E-9ABD-4106BE050C5E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -366,5 +369,8 @@ Global
 		{87EE9DA4-DE1E-4448-8324-183C98DCA588} = {1C38265A-7E94-46BE-8A02-8677DC696F73}
 		{C57B7A44-8027-402B-874D-DA1A48CF2A28} = {7C37B23D-BD44-44CC-8D6A-2E1900960AE2}
 		{F501E0B2-89E5-408E-9ABD-4106BE050C5E} = {7C37B23D-BD44-44CC-8D6A-2E1900960AE2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ECE173B-E2EE-4D10-94EC-CCC5A33C29D1}
 	EndGlobalSection
 EndGlobal

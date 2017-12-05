@@ -28,6 +28,11 @@
 
 #include <memory.h>
 
+#if __gnu_linux__
+using std::min;
+using std::max;
+#endif
+
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
 	#ifdef _DEBUG

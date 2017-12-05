@@ -29,6 +29,7 @@
 #ifndef SSI_IOPUT_H
 #define	SSI_IOPUT_H
 
+#include "ioput/include/MemoryWriter.h"
 #include "ioput/include/FileWriter.h"
 #include "ioput/include/FileReader.h"
 #include "ioput/include/FileEventWriter.h"

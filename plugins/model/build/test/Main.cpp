@@ -28,6 +28,9 @@
 #include "ssiml/include/ssiml.h"
 #include "ssimodel.h"
 #include "signal/include/ssisignal.h"
+#include "libsvm/include/ssilibsvm.h"
+
+
 using namespace ssi;
 
 #define N_COLORS 7
@@ -44,6 +47,7 @@ unsigned short COLORS[][3] = {
 bool ex_random (void *arg);
 bool ex_samplelist(void *arg);
 bool ex_eval(void *arg);
+bool ex_eval_regression(void*arg);
 bool ex_model(void *arg);
 bool ex_model_norm(void *arg);
 bool ex_fusion(void *arg);
@@ -66,9 +70,10 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssimodel.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssisignal.dll");
+	Factory::RegisterDLL ("model");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("signal");
+	Factory::RegisterDLL ("libsvm");
 
 #if SSI_RANDOM_LEGACY_FLAG
 	ssi_random_seed ();
@@ -77,6 +82,7 @@ int main () {
 	Exsemble exsemble;
 	exsemble.console(0, 0, 650, 800);	
 	exsemble.add(&ex_eval, 0, "EVALUATION", "How to do an evaluation.");
+	exsemble.add(&ex_eval_regression, 0, "EVALUATION REGRESSION", "How to do an evaluation for a regression task.");
 	exsemble.add(&ex_model, 0, "MODEL", "How to train a single model.");
 	exsemble.add(&ex_model_norm, 0, "MODEL+NORM", "How to train a single model + normalization.");
 	exsemble.add(&ex_hierarchical, 0, "HIERARCHICAL", "How to train a hierarchical model.");
@@ -154,6 +160,58 @@ bool ex_eval(void *arg) {
 	fclose(fp);
 
 	return true;
+}
+
+bool ex_eval_regression(void *arg) {
+
+	Trainer::SetLogLevel(SSI_LOG_LEVEL_DEBUG);
+
+	ssi_size_t n_samples = 1000;
+
+	SampleList strain;
+	SampleList sdevel;
+	SampleList stest;
+	ModelTools::CreateTestSamplesRegression(strain, n_samples, 0.1f);
+	ModelTools::CreateTestSamplesRegression(stest, n_samples, 0.1f);
+
+	LibSVM *model = ssi_create(LibSVM, 0, true);
+	model->getOptions()->seed = 1234;
+	model->getOptions()->silent = false;
+	model->getOptions()->params.svm_type = LibSVM::TYPE::EPSILON_SVR;
+	model->getOptions()->params.kernel_type = LibSVM::KERNEL::RADIAL;
+	
+
+	Trainer trainer(model);
+	ISNorm::Params params;
+	ISNorm::ZeroParams(params, ISNorm::METHOD::SCALE);
+	params.limits[0] = 0.0f;
+	params.limits[1] = 1.0f;
+	trainer.setNormalization(&params);
+	//ModelTools::PlotSamplesRegression(strain, "TRAINING", ssi_rect(640, 0, 400, 400));
+	trainer.train(strain);
+	
+	Evaluation eval;
+	eval.eval(&trainer, stest, IModel::TASK::REGRESSION);
+
+	ssi_real_t pcc = eval.get_metric(Evaluation::METRIC::PEARSON_CC);
+	ssi_real_t mse = eval.get_metric(Evaluation::METRIC::MSE);
+	ssi_real_t rmse = eval.get_metric(Evaluation::METRIC::RMSE);
+
+	ssi_print("\n -------------------------------------");
+	ssi_print("\n PCC: %.4f", pcc);
+	ssi_print("\n MSE: %.4f", mse);
+	ssi_print("\n RMSE: %.4f", rmse);
+	ssi_print("\n -------------------------------------\n");
+
+
+	FILE *fp = fopen("eval_regression.csv", "w");
+	eval.print(fp, Evaluation::PRINT::CSV_EX);
+	fclose(fp);
+
+	//ModelTools::PlotSamplesRegression(stest, "TEST", ssi_rect(640, 0, 400, 400));
+
+	return true;
+
 }
 
 bool ex_model_norm(void *arg) {

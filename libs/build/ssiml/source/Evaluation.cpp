@@ -856,7 +856,12 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 		else
 		{
 			ssi_fprint(file, "\n");
-			ssi_fprint(file, "correlation:   %f\n", get_correlation());
+			ssi_fprint(file, "#metrics\n");
+
+			//ssi_fprint(file, "correlation:   %f\n", get_correlation());
+			for (int i = 0; i < METRIC::NUM; i++) {
+				ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
+			}
 
 			if (format == PRINT::CSV_EX) {
 				ssi_fprint(file, "\ntruth;prediction");
@@ -915,7 +920,11 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 		else
 		{
 			ssi_fprint(file, "\n");
-			ssi_fprint_off(file, "correlation:   %f\n", get_correlation());
+			ssi_fprint(file, "#metrics\n");
+			//ssi_fprint_off(file, "correlation:   %f\n", get_correlation());
+			for (int i = 0; i < METRIC::NUM; i++) {
+				ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
+			}
 		}
 	}
 
@@ -1004,7 +1013,11 @@ void Evaluation::print_intermediate_louo(FILE *file, PRINT::List format) {
 			else
 			{
 				ssi_fprint(file, "\n");
-				ssi_fprint(file, "correlation:   %f\n", get_correlation());
+				ssi_fprint(file, "#metrics\n");
+				//ssi_fprint(file, "correlation:   %f\n", get_correlation());
+				for (int i = 0; i < METRIC::NUM; i++) {
+					ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
+				}
 
 				if (format == PRINT::CSV_EX) {
 					ssi_fprint(file, "\ntruth;prediction");
@@ -1075,7 +1088,11 @@ void Evaluation::print_intermediate_louo(FILE *file, PRINT::List format) {
 			else
 			{
 				ssi_fprint(file, "\n");
-				ssi_fprint_off(file, "correlation:   %f\n", get_correlation());
+				ssi_fprint(file, "#metrics\n");
+				//ssi_fprint_off(file, "correlation:   %f\n", get_correlation());
+				for (int i = 0; i < METRIC::NUM; i++) {
+					ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
+				}
 			}
 
 		}
@@ -1296,15 +1313,61 @@ ssi_real_t Evaluation::corrcoef(ssi_size_t n, ssi_real_t *values)
 	return r;
 }
 
-// get correlation coefficient
+ssi_real_t Evaluation::mse(ssi_size_t n, ssi_real_t *values) {
+	
+	ssi_real_t squared_error_sum = 0;
+	ssi_real_t error;
+	for (int i = 0; i<n; i++)
+	{
+		error = values[i * 2] - values[i * 2 + 1];
+		squared_error_sum += error * error;
+	}
+
+	ssi_real_t mean = squared_error_sum / n;
+	return mean;
+
+}
+
+ssi_real_t Evaluation::rmse(ssi_size_t n, ssi_real_t *values) {
+	return sqrt(mse(n, values));
+}
+
+
+
+// get correlation coefficient 
 ssi_real_t Evaluation::get_correlation()
 {
+	ssi_wrn("get_correlation is deprecated. Use get_metric instead.")
 	if (_n_classified == 0 || _result_vec_reg == 0)
 	{
 		return 0;
 	}
 
 	return corrcoef(_n_classified, _result_vec_reg);
+}
+
+
+// retreiving the respective metric
+ssi_real_t Evaluation::get_metric(METRIC m)
+{
+	if (_n_classified == 0 || _result_vec_reg == 0)
+	{
+		return 0;
+	}
+
+	
+
+	switch (m)
+	{
+	case METRIC::PEARSON_CC:
+		return corrcoef(_n_classified, _result_vec_reg);
+	case METRIC::MSE:
+		return mse(_n_classified, _result_vec_reg);
+	case METRIC::RMSE:
+		return rmse(_n_classified, _result_vec_reg);
+	default:
+		return 0;
+	}
 }
 
 

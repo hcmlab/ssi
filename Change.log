@@ -1819,3 +1819,10 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 14.11.17 BUG : model/cmltrain : applies left/right context during evaluation : Johannes
 - 14.11.17 BUG : nova : confusion matrix handles zero : Johannes
 - 16.11.17 CHG : plugins/python : added ssipylog module to capture python's stdout in ssi : Johannes
+- 24.11.17 BUG : python/nnet/tensor/soundnet : makes a copy of the input stream before it is preprocessed : Johannes
+- 24.11.17 BUG : python/nnet/tensor/soundnet : makes a copy of the input stream before it is preprocessed : Johannes
+- 28.11.17 BUG : ffmpeg/FFMPEGReaderClient : correctly determines sample rate for mp3 files : Johannes
+- 28.11.17 ADD : ffmpeg/FFMPEGReader : new method 'initAudioStream()' to initalize a stream that fits the complete audio file : Johannes
+- 28.11.17 ADD : ioput/MemoryWriter : writes pipeline stream to memory (getStream() returns stream after pipeline was stopped) : Johannes
+- 28.11.17 CHG : tools/xmlchain : added support for various audio codec (aac, flac,mp3, ogg, opus, wma) : Johannes
+- 28.11.17 BUG : tools/xmlchain : if video feature file exists it will be overwritten, which is the desired behaviour : Johannes

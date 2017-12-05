@@ -91,7 +91,7 @@ int main () {
 	ex.add(&ex_file, 0, "FILE", "How to use 'File' to write to an ascii/binary file.");
 	ex.add(&ex_lz4, 0, "FILE-LZ4", "How to use 'File' to write to a compressed file.");
 	ex.add(&ex_memory, 0, "MEMORY", "How to use 'FileMem' to write into memory.");
-	ex.add(&ex_writer, 0, "WRITER", "How to use 'FileWriter' to store a stream to a file from a pipeline.");
+	ex.add(&ex_writer, 0, "WRITER", "How to use 'MemoryWriter' and 'FileWriter' to store a stream to memory / to a file.");
 	ex.add(&ex_stream, 0, "STREAM", "How to write/read a stream to a file.");
 	ex.add(&ex_event, 0, "EVENT", "How to write/read events to a file.");
 	ex.add(&ex_csv, 0, "CSV", "How to read a comma separated file.");
@@ -473,6 +473,12 @@ bool ex_writer(void *arg) {
 
 	bool continuous = true;
 
+	MemoryWriter *memory;
+
+	memory = ssi_create(MemoryWriter, 0, true);
+	memory->getOptions()->setSize("10.0s");
+	frame->AddConsumer(cursor_p, memory, "0.5s");
+
 	FileWriter *writer;
 
 	writer = ssi_create(FileWriter, 0, true);
@@ -510,6 +516,8 @@ bool ex_writer(void *arg) {
 	frame->Wait();
 	frame->Stop();
 	frame->Clear();
+
+	ssi_stream_print(memory->getStream(), stdout);
 
 	return true;
 }

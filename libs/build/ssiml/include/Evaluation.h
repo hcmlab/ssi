@@ -50,13 +50,29 @@ class Evaluation {
 public:
 
 	struct PRINT {
-		enum List {		
-			CONSOLE,			
+		enum List {
+			CONSOLE,
 			CONSOLE_EX,
 			CSV,
 			CSV_EX
 		};
 	};
+
+
+	enum METRIC  {
+		PEARSON_CC,
+		MSE,
+		RMSE,
+		NUM
+
+	};
+
+	char* METRICNAMES[METRIC::NUM]  { 
+		"PEARSON_CC",
+		"MSE", 
+		"RMSE" 
+	};
+
 
 public:
 
@@ -128,6 +144,8 @@ public:
 	std::vector<ssi_size_t*const*> get_intermediate_louo_conf_mat();
 	// get correlation coefficient
 	ssi_real_t get_correlation();
+	ssi_real_t get_metric(METRIC m);
+
 	// get result vector
 	const ssi_size_t *get_result_vec (ssi_size_t &size) { size = _n_total; return _result_vec; };
 	// get result regression vector
@@ -164,7 +182,13 @@ protected:
 	ssi_size_t cutString(const ssi_char_t *str, ssi_size_t n, ssi_char_t *cut);
 	void init(ISamples &samples, Trainer *trainer, IModel::TASK::List task);
 	void eval_h(ISamples &samples);
+	//metrics
+	//pearsons correlation coefficient
 	ssi_real_t corrcoef(ssi_size_t n, ssi_real_t *values);
+	//mean squared error
+	ssi_real_t mse(ssi_size_t n, ssi_real_t *values);
+	//root mean square error
+	ssi_real_t rmse(ssi_size_t n, ssi_real_t *values);
 
 	ssi_size_t **_conf_mat_ptr;
 	ssi_size_t *_conf_mat_data;	

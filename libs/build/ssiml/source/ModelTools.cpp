@@ -735,7 +735,7 @@ namespace ssi {
 			if (!first_label_name) {
 				fprintf(file, ",");
 			}
-			fprintf(file, sample_list.getClassName(i));
+			fprintf(file, "%s" ,sample_list.getClassName(i));
 			first_label_name = false;
 		}
 		fprintf(file, "}\n\n");

@@ -229,10 +229,22 @@ bool IsVideoFile(const ssi_char_t *path)
 		|| ssi_strcmp(fp.getExtension(), ".avi", false));
 }
 
+bool IsAudioFile(const ssi_char_t *path)
+{
+	FilePath fp(path);
+	return (ssi_strcmp(fp.getExtension(), ".aac", false)
+		|| ssi_strcmp(fp.getExtension(), ".flac", false)
+		|| ssi_strcmp(fp.getExtension(), ".mp3", false)
+		|| ssi_strcmp(fp.getExtension(), ".ogg", false)
+		|| ssi_strcmp(fp.getExtension(), ".opus", false)
+		|| ssi_strcmp(fp.getExtension(), ".wma", false));
+}
+
 void ResolveDependencies(params_t &params)
 {
 	Factory::RegisterDLL("frame", ssiout, ssimsg);
-	if (IsVideoFile(params.inList[0].str()))
+	if (IsVideoFile(params.inList[0].str())
+		|| IsAudioFile(params.inList[0].str()))
 	{
 		Factory::RegisterDLL("ioput", ssiout, ssimsg);
 		Factory::RegisterDLL("ffmpeg", ssiout, ssimsg);
@@ -460,11 +472,14 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 	ssi_stream_t from;
 	bool result = false;
 
-	if (IsVideoFile(inPath->getNameFull()))
+	bool isVideoFile = IsVideoFile(inPath->getNameFull());
+	bool isAudioFile = IsAudioFile(inPath->getNameFull());
+
+	if (isVideoFile)
 	{				
 		if (annoPath)
 		{
-			ssi_wrn("cannot extract video features from an annotation");
+			ssi_wrn("cannot extract video features for an annotation");
 			return false;
 		}
 
@@ -473,6 +488,7 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 		reader->getOptions()->bestEffort = true;
 
 		FileWriter *writer = ssi_create(FileWriter, 0, false);
+		writer->getOptions()->overwrite = true;
 		writer->getOptions()->setPath(toPath);
 		writer->getOptions()->type = File::BINARY;
 		
@@ -488,6 +504,37 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 		delete provider;
 		delete reader;
 		delete writer;
+	}
+	else if (isAudioFile)
+	{
+		FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
+		reader->getOptions()->setUrl(inPath->getPathFull());
+		reader->getOptions()->ablock = 0.1;
+		reader->getOptions()->bestEffort = true;
+
+		if (!reader->initAudioStream(inPath->getPathFull(), from)
+			|| from.num == 0)
+		{			
+			return false;
+		}
+
+		MemoryWriter *writer = ssi_create(MemoryWriter, 0, false);
+		writer->setStream(from);
+
+		FileProvider *provider = new FileProvider(writer);
+		reader->setProvider(SSI_FFMPEGREADER_AUDIO_PROVIDER_NAME, provider);
+
+		reader->connect();
+		reader->start();
+		reader->wait();
+		reader->stop();
+		reader->disconnect();
+
+		delete provider;
+		delete reader;
+		delete writer;
+
+ 		result = true;
 	}
 	else
 	{
