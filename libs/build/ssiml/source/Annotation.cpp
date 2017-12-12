@@ -1729,8 +1729,11 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 	it += context_left;
 	for (ssi_size_t i = 0; i < n_samples; i++)
 	{
-		sample->score = it->continuous.score;
-		samples->addSample(sample, true);
+		if (!isnan(it->continuous.score))
+		{
+			sample->score = it->continuous.score;
+			samples->addSample(sample, true);
+		}
 
 		sample->time += delta;
 		chunk.ptr += stream.dim * stream.byte;

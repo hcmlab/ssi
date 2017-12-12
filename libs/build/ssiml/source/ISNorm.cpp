@@ -40,6 +40,8 @@
 
 namespace ssi {
 
+ssi_char_t *ISNorm::ssi_log_name = "normalize_";
+
 const ssi_char_t *ISNorm::METHOD_NAMES[] = { "None", "Scale", "ZScore" };
 
 ISNorm::ISNorm (ISamples *samples)

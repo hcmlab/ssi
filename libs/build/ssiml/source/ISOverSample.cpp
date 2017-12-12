@@ -41,6 +41,8 @@
 
 namespace ssi {
 
+ssi_char_t *ISOverSample::ssi_log_name = "oversample";
+
 ISOverSample::ISOverSample (ISamples *samples)
 	: _samples (*samples),
 	_n_over (0),

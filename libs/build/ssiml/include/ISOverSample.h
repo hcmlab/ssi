@@ -78,6 +78,8 @@ public:
 
 protected:
 
+	static ssi_char_t *ssi_log_name;
+
 	void release ();
 
 	ISamples &_samples;	

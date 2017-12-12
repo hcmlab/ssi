@@ -100,6 +100,8 @@ public:
 
 protected:
 
+	static ssi_char_t *ssi_log_name;
+
 	ISamples &_samples;
 	ssi_sample_t _sample;
 	

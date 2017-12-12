@@ -41,6 +41,8 @@
 
 namespace ssi {
 
+ssi_char_t *ISUnderSample::ssi_log_name = "undersampl";
+
 ISUnderSample::ISUnderSample (ISamples *samples)
 	: _samples (*samples),
 	_n_under (0),
@@ -83,7 +85,11 @@ bool ISUnderSample::setUnder (Strategy strategy) {
 	ssi_size_t min = _samples.getSize (0);
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		tmp[i] = _samples.getSize (i);
-		if (tmp[i] < min) {
+		if (tmp[i] == 0)
+		{
+			ssi_wrn("skip empty class '%s'", _samples.getClassName(i));
+		}
+		else if (tmp[i] < min) {
 			min = tmp[i];
 		}
 	}
@@ -121,9 +127,13 @@ bool ISUnderSample::setUnder (ssi_size_t n_classes, ssi_size_t *n_reduce, Strate
 
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		ssi_size_t n = _samples.getSize (i);
+		if (n == 0)
+		{
+			continue;
+		}
 		if (n_reduce[i] > n) {
-			ssi_wrn ("n_reduce (%u) exceeds #samples (%u) for class %u", n_reduce[i], n, i);
-			return false;
+			ssi_wrn ("n_reduce (%u) exceeds #samples (%u) for class '%s'", n_reduce[i], n, _samples.getClassName(i));
+			continue;
 		}
 		_n_under_per_class[i] = n - n_reduce[i];
 		_n_under += _n_under_per_class[i];

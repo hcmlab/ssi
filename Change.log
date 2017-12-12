@@ -1826,3 +1826,7 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 28.11.17 ADD : ioput/MemoryWriter : writes pipeline stream to memory (getStream() returns stream after pipeline was stopped) : Johannes
 - 28.11.17 CHG : tools/xmlchain : added support for various audio codec (aac, flac,mp3, ogg, opus, wma) : Johannes
 - 28.11.17 BUG : tools/xmlchain : if video feature file exists it will be overwritten, which is the desired behaviour : Johannes
+- 05.12.17 CHG : ssiml/ISUnderSample : ignores empty classes : Johannes
+- 06.12.17 CHG : ssiml/Annotation : skips labels with NaN score when extracting a sample list : Johannes
+- 06.12.17 CHG : ssiml/Annotation : support for completing continuous annotations : Johannes
+- 07.12.17 CHG : ssicml/CMLAnnotation : predicts scores within scheme range : Johannes
