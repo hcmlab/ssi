@@ -65,7 +65,7 @@ void Dollar$1::release () {
 	_n_classes = 0;
 }
 
-bool Dollar$1::train (ISamples &samples, 
+bool Dollar$1::train (ISamples &samples,
 	ssi_size_t stream_index) {
 
 	if (samples.getSize () == 0) {
@@ -116,7 +116,8 @@ void Dollar$1::addToPath (ssi_real_t *ptr,
 
 bool Dollar$1::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 	
 	if (stream.type != SSI_REAL) {
 		ssi_wrn ("stream type not compatible");
@@ -140,6 +141,8 @@ bool Dollar$1::forward (ssi_stream_t &stream,
 			probs[i] /= sum;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	return true;
 }

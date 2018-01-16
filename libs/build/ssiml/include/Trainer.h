@@ -136,20 +136,25 @@ public:
 	bool train ();
 	
 	bool forward (ssi_stream_t &stream,
-		ssi_size_t &class_index);
+		ssi_size_t &class_index,
+		ssi_real_t &confidence);
 	bool forward(ssi_stream_t &stream,
 		ssi_size_t &class_index,
-		ssi_real_t &class_prob);
+		ssi_real_t &class_prob,
+		ssi_real_t &confidence);
 	bool forward_probs (ssi_stream_t &stream,
 		ssi_size_t class_num,
-		ssi_real_t *class_probs);
+		ssi_real_t *class_probs,
+		ssi_real_t &confidence);
 	bool forward (ssi_size_t num,
 		ssi_stream_t **streams,
-		ssi_size_t &class_index);
+		ssi_size_t &class_index,
+		ssi_real_t &confidence);
 	bool forward_probs (ssi_size_t num,
 		ssi_stream_t **streams,
 		ssi_size_t class_num,
-		ssi_real_t *class_probs);
+		ssi_real_t *class_probs,
+		ssi_real_t &confidence);
 	bool cluster (ISamples &samples);
 
 	void release ();
@@ -167,9 +172,10 @@ public:
 		const ssi_char_t *filename);
 	bool save (const ssi_char_t *filename, VERSION version = DEFAULT_VERSION, File::TYPE type = File::BINARY);
 	
+	IModel::TYPE::List getModelType();
 	ssi_size_t getModelSize ();
 	IModel *getModel (ssi_size_t index);
-	IFusion *getFusion ();
+	IFusion *getFusion ();	
 	const ssi_char_t *getName ();
 	const ssi_char_t *getInfo ();
 
@@ -198,7 +204,7 @@ protected:
 	void free_class_names ();
 
 	void init_user_names (ISamples &samples);
-	void free_user_names ();
+	void free_user_names ();	
 
 	bool train_h (ISamples &samples);
 	static bool Load_V1to3 (Trainer &trainer, FilePath &fp, TiXmlElement *body, VERSION version);

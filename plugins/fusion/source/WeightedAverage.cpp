@@ -143,7 +143,8 @@ bool WeightedAverage::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -207,7 +208,7 @@ bool WeightedAverage::forward (ssi_size_t n_models,
 			model = models[models_actual[n_model]];
 			stream = streams[models_actual[n_model]];
 			if (stream->num > 0) {
-				model->forward (*stream, n_probs, probs);
+				model->forward (*stream, n_probs, probs, confidence);
 				found_data = true;
 				//fill decision_profile DP
 				for (ssi_size_t num_probs = 0; num_probs < n_probs; num_probs++){

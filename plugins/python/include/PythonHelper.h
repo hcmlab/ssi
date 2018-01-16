@@ -35,6 +35,7 @@
 #include "base/IEvents.h"
 #include "base/IOptions.h"
 #include "base/ISamples.h"
+#include "base/IModel.h"
 
 typedef struct _object PyObject;
 typedef struct _ts PyThreadState;
@@ -80,6 +81,7 @@ struct FUNCTIONS
 		CONNECT,
 		READ,
 		DISCONNECT,
+		GET_MODEL_TYPE,
 		TRAIN,
 		FORWARD,
 		SAVE,
@@ -130,8 +132,9 @@ public:
 	bool disconnect();
 	bool read(ssi_time_t seconds, bool reset);
 
-	bool train(ISamples &samples, ssi_size_t stream_index);
-	bool forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs);
+	bool getModelType(IModel::TYPE::List &type);
+	bool train(IModel::TYPE::List type, ISamples &samples, ssi_size_t stream_index);
+	bool forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence);
 	bool save(const ssi_char_t *filepath);
 	bool load(const ssi_char_t *filepath);
 

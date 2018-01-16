@@ -64,6 +64,7 @@ namespace ssi {
 		"connect",
 		"read",
 		"disconnect",
+		"getModelType",
 		"train",
 		"forward",
 		"save",
@@ -1555,7 +1556,42 @@ namespace ssi {
 	}
 
 	//model
-	bool PythonHelper::train(ISamples &samples, ssi_size_t stream_index) {
+
+	bool PythonHelper::getModelType(IModel::TYPE::List &type)
+	{
+		if (!_pFunctions[FUNCTIONS::GET_MODEL_TYPE])
+		{
+			ssi_wrn("function is missing '%s:%s'", _script_name, FUNCTION_NAMES[FUNCTIONS::TRAIN]);
+			return false;
+		}
+
+		GIL gil;
+
+		bool result = false;
+
+		PyObject *pArgs = PyTuple_New(3);
+
+		PyTuple_SetItem(pArgs, 0, (PyObject *)ssipymodeltype_New());		
+		PyTuple_SetItem(pArgs, 1, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, 2, _pVariables);
+		Py_INCREF(_pVariables);
+
+		PyObject *pValue = call_function(FUNCTIONS::GET_MODEL_TYPE, pArgs);
+		Py_DECREF(pArgs);
+
+		if (pValue)
+		{
+			type = (IModel::TYPE::List)PyLong_AsUnsignedLong(pValue);
+			Py_DECREF(pValue);
+
+			result = true;
+		}
+
+		return result;
+	}
+
+	bool PythonHelper::train(IModel::TYPE::List type, ISamples &samples, ssi_size_t stream_index) {
 
 		if (!_pFunctions[FUNCTIONS::TRAIN])
 		{
@@ -1570,12 +1606,21 @@ namespace ssi {
 
 		bool result = false;
 
-		PyObject *pArgs = PyTuple_New(5);
+		PyObject *pArgs = PyTuple_New(4);
 		int valcount = 0;
-
+		
 		PyTuple_SetItem(pArgs, valcount++, samplelist_to_object(samples_c, stream_index));
-		PyTuple_SetItem(pArgs, valcount++, labels_to_object(samples_c, stream_index));
-		PyTuple_SetItem(pArgs, valcount++, score_to_object(samples_c, stream_index));
+		
+		switch (type)
+		{
+		case IModel::TYPE::CLASSIFICATION:
+			PyTuple_SetItem(pArgs, valcount++, labels_to_object(samples_c, stream_index));
+			break;
+		case IModel::TYPE::REGRESSION:
+			PyTuple_SetItem(pArgs, valcount++, score_to_object(samples_c, stream_index));
+			break;
+		}
+		
 		PyTuple_SetItem(pArgs, valcount++, _pOptions);
 		Py_INCREF(_pOptions);
 		PyTuple_SetItem(pArgs, valcount++, _pVariables);
@@ -1594,7 +1639,8 @@ namespace ssi {
 
 	}
 
-	bool PythonHelper::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs) {
+	bool PythonHelper::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence) {
+		
 		if (!_pFunctions[FUNCTIONS::FORWARD])
 		{
 			return false;
@@ -1606,10 +1652,9 @@ namespace ssi {
 
 		PyObject *pArgs = PyTuple_New(4);
 		int valcount = 0;
-		PyTuple_SetItem(pArgs, valcount++, stream_to_object(&stream));
-		//PyTuple_SetItem(pArgs, valcount++, PyLong_FromLong(n_probs));
-		PyObject * arr = (PyObject *)ssipyarray_From(n_probs, probs);
-		PyTuple_SetItem(pArgs, valcount++, arr);
+		PyTuple_SetItem(pArgs, valcount++, stream_to_object(&stream));		
+		PyObject *pProbs = (PyObject *)ssipyarray_From(n_probs, probs);
+		PyTuple_SetItem(pArgs, valcount++, pProbs);
 		PyTuple_SetItem(pArgs, valcount++, _pOptions);
 		Py_INCREF(_pOptions);
 		PyTuple_SetItem(pArgs, valcount++, _pVariables);
@@ -1620,8 +1665,17 @@ namespace ssi {
 
 		if (pValue)
 		{
+			confidence = (ssi_real_t)PyFloat_AsDouble(pValue);		
 			Py_DECREF(pValue);
-			result = true;
+
+			if (confidence < 0)
+			{
+				ssi_wrn("negative confidence '%g'", confidence);
+			}
+			else
+			{
+				result = true;
+			}
 		}
 
 		return result;

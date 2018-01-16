@@ -25,7 +25,7 @@ endif()
 #http://www.cmake.org/Wiki/CMake:Install_Commands
 cmake_minimum_required(VERSION 2.8)
 
-project(openssi-biosig)
+project(ssibiosig)
 
 
 if(ANDROID)

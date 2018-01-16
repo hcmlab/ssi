@@ -48,6 +48,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register(ssi::OpenfacePainter::GetCreateName(), ssi::OpenfacePainter::Create) && result;
 	result = ssi::Factory::Register(ssi::OpenfaceSelector::GetCreateName(), ssi::OpenfaceSelector::Create) && result;
 	result = ssi::Factory::Register(ssi::OpenfaceAdditionalFeat::GetCreateName(), ssi::OpenfaceAdditionalFeat::Create) && result;
+	result = ssi::Factory::Register(ssi::OpenfaceNormalizer::GetCreateName(), ssi::OpenfaceNormalizer::Create) && result;
 	
 	return result;
 }

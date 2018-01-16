@@ -190,6 +190,7 @@ bool FileEventsOut::write (ssi_event_t &data) {
 
 		sample.Print (_file->getFile (), 1);
 		ssi_fprint (_file->getFile (), "\n");
+		fflush(_file->getFile());
 
 	}
 

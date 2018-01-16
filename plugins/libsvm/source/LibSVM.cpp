@@ -90,6 +90,19 @@ void LibSVM::release () {
 	_n_samples = 0;
 }
 
+IModel::TYPE::List LibSVM::getModelType()
+{
+	if (_options.params.svm_type == C_SVC
+		|| _options.params.svm_type == NU_SVC)
+	{
+		return IModel::TYPE::CLASSIFICATION;
+	}
+	else
+	{
+		return IModel::TYPE::REGRESSION;
+	}
+}
+
 bool LibSVM::train (ISamples &samples,
 	ssi_size_t stream_index) {
 
@@ -149,6 +162,8 @@ bool LibSVM::train (ISamples &samples,
 		}
 	}
 
+	IModel::TYPE::List task = getModelType();
+
 	// prepare problem
 
 	_problem = new svm_problem;
@@ -164,7 +179,7 @@ bool LibSVM::train (ISamples &samples,
 	while (sample = s_balance->next()) {
 		ptr = ssi_pcast (float, sample->streams[stream_index]->ptr);		
 		_problem->x[n_sample] = new svm_node[_n_features + 1];
-		_problem->y[n_sample] = ssi_cast (float, _n_classes == 1 ? sample->score : sample->class_id);
+		_problem->y[n_sample] = ssi_cast (float, task == IModel::TYPE::REGRESSION ? sample->score : sample->class_id);
 		node = _problem->x[n_sample];
 		for (ssi_size_t nfeat = 0; nfeat < _n_features; nfeat++) {
 			node->index = nfeat+1;
@@ -224,7 +239,8 @@ bool LibSVM::train (ISamples &samples,
 
 bool LibSVM::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -270,11 +286,12 @@ bool LibSVM::forward (ssi_stream_t &stream,
 			probs[j] /= sum;
 		}
 
+		ssi_max(n_probs, 1, probs, &confidence);
 		delete[] prob_estimates;
 	}
 	else // REGRESSION
 	{
-		probs[0] = ssi_real_t(svm_predict(_model, x));
+		confidence = probs[0] = ssi_real_t(svm_predict(_model, x));
 	}
 
 	delete[] x;

@@ -45,14 +45,16 @@ public:
 	public:
 
 		Options ()
-			: minval (0), maxval (1) {
+            : minval (0), maxval (1), replace(false) {
 
 			addOption ("min", &minval, 1, SSI_REAL, "minimum value (lower range)", false);		
 			addOption ("max", &maxval, 1, SSI_REAL, "maximum value (upper range)", false);
+            addOption ("replaceZero", &replace, 1, SSI_BOOL, "replace data out of range with zero (false by default)", false);
 		};
 
 		ssi_real_t minval;
 		ssi_real_t maxval;
+        bool replace;
 	};
 
 public:

@@ -130,6 +130,8 @@ public:
 	bool wait();
 	bool cancel();
 		
+	virtual bool initAudioStream(const ssi_char_t *path, ssi_stream_t &stream);
+
 	void setLogLevel (int level) {
 		ssi_log_level = level;
 	};

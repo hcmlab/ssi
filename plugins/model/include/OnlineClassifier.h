@@ -256,6 +256,7 @@ protected:
 	bool _is_loaded;
 	ssi_size_t _n_classes;
 	ssi_real_t *_probs;
+	ssi_real_t _confidence;
 
 	bool annotate(ssi_sample_t sample);
 

@@ -115,10 +115,8 @@ int main () {
 #endif
 
 	ssi_print("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
-		
-	//PyImport_AppendInittab("ssipyemb", PyInit_ssipylog);
-	Py_Initialize();	
-	//PyImport_ImportModule("ssipyemb");
+			
+	Py_Initialize();		
 	PyInit_ssipy();
 	PyInit_ssipylog();
 
@@ -184,6 +182,9 @@ bool ex_ssipy(void *args)
 {	
 	ssipytype *type = ssipytype_New();
 	Py_DECREF(type);
+
+	ssipymodeltype *modeltype = ssipymodeltype_New();
+	Py_DECREF(modeltype);
 
 	ssipyinfo *info = ssipyinfo_New(1.0, 2.0, 30, 40);	
 	Py_DECREF(info);
@@ -397,6 +398,9 @@ bool ex_ssipy_script(void *args)
 
 bool ex_ssipy_script_arg(void *args)
 {
+	ssipytype *pStreamType = ssipytype_New();
+	ssipymodeltype *pModelType = ssipymodeltype_New();
+
 	ssipystream *pStream = ssipystream_New(5, 3, *((ssi_type_t *)args), 0, 0);
 	ssipyarray *pArray = ssipyarray_New(5);
 	ssipyarray_Print(pArray);
@@ -415,6 +419,27 @@ bool ex_ssipy_script_arg(void *args)
 	if (pModule)
 	{
 		PyObject *pFunc = 0;
+
+		// types
+
+		pFunc = PyObject_GetAttrString(pModule, "types");
+		if (pFunc)
+		{
+			PyObject *pArgs = PyTuple_New(2);
+			PyTuple_SetItem(pArgs, 0, (PyObject*)pStreamType);
+			Py_INCREF(pStreamType);
+			PyTuple_SetItem(pArgs, 1, (PyObject*)pModelType);
+			Py_INCREF(pModelType);
+
+			PyObject_Call(pFunc, pArgs, NULL);
+
+			Py_DECREF(pArgs);
+			Py_DECREF(pFunc);
+		}
+		else
+		{
+			PyErr_Print();
+		}
 
 		// send event
 
@@ -507,6 +532,8 @@ bool ex_ssipy_script_arg(void *args)
 	ssipystream_Print(pStream);
 	printf("\n");
 
+	Py_DECREF(pStreamType);
+	Py_DECREF(pModelType);
 	Py_DECREF(pStream);
 	Py_DECREF(pEvent);
 	Py_DECREF(pBoard);

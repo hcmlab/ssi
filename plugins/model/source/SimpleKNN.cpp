@@ -118,7 +118,8 @@ bool SimpleKNN::train (ISamples &samples,
 
 bool SimpleKNN::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_data) {
 		ssi_wrn ("not trained");
@@ -204,6 +205,8 @@ bool SimpleKNN::forward (ssi_stream_t &stream,
 	{
 		*probptr++ /= k;
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	return true;
 }

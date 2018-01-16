@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Collections.Generic;
-
+using System.IO;
 
 namespace ssi
 {
@@ -29,7 +29,12 @@ namespace ssi
                     case 1:
                         if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
                         {
-                            if (e.KeyboardDevice.IsKeyDown(Key.C))
+                            if (e.KeyboardDevice.IsKeyDown(Key.B))
+                            {
+                                reloadBackupSelectedAnno();
+                                e.Handled = true;
+                            }
+                            else if (e.KeyboardDevice.IsKeyDown(Key.C))
                             {
                                 CopySegment();
 
@@ -109,7 +114,15 @@ namespace ssi
                     case 0:
                         if (e.KeyboardDevice.IsKeyDown(Key.S))
                         {
-                            SplitSegment(sender, e);
+                            if (AnnoTierStatic.Label != null)
+                            {
+                                SplitSegment(sender, e);
+                            }
+
+                            else
+                            {
+                                annoCursor.X = signalCursor.X;
+                            }
                             e.Handled = true;
                         }
                         else if (e.KeyboardDevice.IsKeyDown(Key.T) && e.KeyboardDevice.IsKeyDown(Key.Down))
@@ -216,7 +229,7 @@ namespace ssi
                     /*One Modifier keys are pressed*/
                     case 1:
                         if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
-                        {
+                        {                            
                             if (e.KeyboardDevice.IsKeyDown(Key.S))
                             {
                                 saveSelectedAnno();
@@ -259,7 +272,7 @@ namespace ssi
                         {
                             ToggleLiveMode();
                             e.Handled = true;
-                        }
+                        }                        
                         else if (e.KeyboardDevice.IsKeyDown(Key.M))
                         {
                             ToggleMouseMode();
@@ -316,18 +329,43 @@ namespace ssi
 
         private void SplitSegment(object sender, KeyEventArgs e)
         {
-            if (AnnoTierStatic.Label != null)
-            {
+            
                 AnnoTierStatic.SplitPressed(sender, e);
-            }
+            
         }
 
         private void RemoveSegment(object sender, KeyEventArgs e)
         {
+
+            if(AnnoTier.Selected != null && AnnoTier.Selected.IsDiscreteOrFree)
+            {
+
+           
             if (AnnoTierStatic.Label != null)
             {
                 AnnoTierStatic.RemoveSegmentPressed(sender, e);
             }
+
+
+            }
+
+            else if(AnnoTier.Selected != null && AnnoTier.Selected.IsContinuous)
+            {
+               
+
+                AnnoListItem[] selected = new AnnoListItem[control.annoListControl.annoDataGrid.SelectedItems.Count];
+                control.annoListControl.annoDataGrid.SelectedItems.CopyTo(selected, 0);
+                control.annoListControl.annoDataGrid.SelectedIndex = -1;
+                foreach (AnnoListItem s in selected)
+                {
+                    s.Score = double.NaN;
+                }
+                AnnoTier.Selected.TimeRangeChanged(MainHandler.Time);
+
+            }
+           
+
+
         }
 
         private void SelectSegmentStart()
@@ -806,7 +844,7 @@ namespace ssi
                 {
                     if (AnnoTierStatic.Label != null)
                     {
-                        ShowLabelBoxCont();
+                        ShowLabelBoxContinuous();
                         AnnoTierStatic.Label.select(true);
                     }
 
@@ -863,7 +901,33 @@ namespace ssi
         {
             if (AnnoTierStatic.Selected != null)
             {
-                databaseCMLCompleteStep();
+                saveSelectedAnno(true);
+                if (AnnoTierStatic.Selected.CMLCompleteTrainOptions != null
+                    && AnnoTierStatic.Selected.CMLCompletePredictOptions != null)
+                {
+                    runCMLProcess("cmltrain", AnnoTierStatic.Selected.CMLCompleteTrainOptions);
+                    runCMLProcess("cmltrain", AnnoTierStatic.Selected.CMLCompletePredictOptions);
+
+                    ReloadAnnoTierFromDatabase(AnnoTierStatic.Selected, false);
+
+                    string[] tokens = AnnoTierStatic.Selected.CMLCompleteTrainOptions.Split(' ');
+                    if (tokens.Length > 1)
+                    {
+                        string tempTrainerPath = tokens[tokens.Length - 2];
+                        tempTrainerPath = tempTrainerPath.Trim();
+                        tempTrainerPath = tempTrainerPath.Replace("\"", "");
+                        var dir = new DirectoryInfo(Path.GetDirectoryName(tempTrainerPath));
+                        foreach (var file in dir.EnumerateFiles(Path.GetFileName(tempTrainerPath) + "*.trainer*"))
+                        {
+                            file.Delete();
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    databaseCMLCompleteStep();
+                }
             }
         }
 
@@ -871,14 +935,34 @@ namespace ssi
         {
             if (AnnoTierStatic.Selected != null)
             {
-                double selectedtime = MainHandler.Time.TimeFromPixel(annoCursor.X);
+               
 
-                List<AnnoTierSegment> SegmentsToRemove =  AnnoTierStatic.Selected.segments.FindAll(s => s.Item.Start > selectedtime);
 
-                foreach(AnnoTierSegment segment in SegmentsToRemove)
+                if(AnnoTier.Selected.IsDiscreteOrFree)
                 {
-                    AnnoTierStatic.Selected.RemoveSegment(segment);
+                    double selectedtime = MainHandler.Time.TimeFromPixel(annoCursor.X);
+                    List<AnnoTierSegment> SegmentsToRemove = AnnoTierStatic.Selected.segments.FindAll(s => s.Item.Start > selectedtime);
+                    foreach (AnnoTierSegment segment in SegmentsToRemove)
+                    {
+                        AnnoTierStatic.Selected.RemoveSegment(segment);
+                    }
                 }
+                else if (AnnoTier.Selected.IsContinuous)
+                {
+                    for(int i=0; i< AnnoTierStatic.Selected.AnnoList.Count; i++)
+                    {
+                        double selectedtime = MainHandler.Time.TimeFromPixel(signalCursor.X);
+                        if (AnnoTierStatic.Selected.AnnoList[i].Start > selectedtime)
+                        {
+                            AnnoTierStatic.Selected.AnnoList[i].Score = double.NaN;
+                        }
+                    }
+
+                    AnnoTier.Selected.TimeRangeChanged(Time);
+
+                }
+
+                
             }
         }
 

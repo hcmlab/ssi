@@ -49,6 +49,7 @@ bool ex_stream(void *arg);
 bool ex_event(void *arg);
 bool ex_samples(void *arg);
 bool ex_annotation(void *arg);
+bool ex_annotation_offline(void *arg);
 bool ex_socket(void *arg);
 bool ex_tcp2way(void *arg);
 bool ex_sender(void *arg);
@@ -97,6 +98,7 @@ int main () {
 	ex.add(&ex_csv, 0, "CSV", "How to read a comma separated file.");
 	ex.add(&ex_simulator, 0, "SIMULATOR", "How to use 'FileReader' to feed a stream from a file into a pipeline.");
 	ex.add(&ex_annotation, 0, "ANNOTATION", "How to use 'FileAnnotationWriter' to create annotations from events.");
+	ex.add(&ex_annotation_offline, 0, "ANNOTATION OFFLINE", "How to use 'FileAnnotationWriter' offline.");
 	ex.add(&ex_samples, 0, "SAMPLES", "How to use 'FileSampleWriter' to store samples to a file from a pipeline.");
 	ex.add(&ex_socket, 0, "BASICS", "How to send/receive socket messages.");
 	ex.add(&ex_tcp2way, 0, "TCP2WAY", "How to establish a two way tcp connection.");
@@ -571,19 +573,21 @@ bool ex_annotation(void *arg) {
 	ITransformable *button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 
-	ZeroEventSender *ezero = 0;
+	TriggerEventSender *ezero = 0;
 	
-	ezero = ssi_create(ZeroEventSender, 0, true);
+	ezero = ssi_create(TriggerEventSender, 0, true);
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
 	ezero->getOptions()->setAddress("click@mouse");
-	ezero->getOptions()->mindur = 0.2;
+	ezero->getOptions()->minDuration = 0.2;
 	frame->AddConsumer(button_p, ezero, "0.25s");
 	board->RegisterSender(*ezero);
 
-	ezero = ssi_create(ZeroEventSender, 0, true);
+	ezero = ssi_create(TriggerEventSender, 0, true);
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
 	ezero->getOptions()->setAddress("click@mouse");
-	ezero->getOptions()->mindur = 0.2;
-	ezero->getOptions()->empty = false;
-	ezero->getOptions()->setString("string");
+	ezero->getOptions()->minDuration = 0.2;
+	ezero->getOptions()->eventType = SSI_ETYPE_STRING;
+	ezero->getOptions()->setEventString("string");
 	frame->AddConsumer(button_p, ezero, "0.25s");
 	board->RegisterSender(*ezero);
 
@@ -656,6 +660,40 @@ bool ex_annotation(void *arg) {
 	board->Stop();
 	frame->Clear();
 	board->Clear();
+
+	return true;
+}
+
+bool ex_annotation_offline(void *arg) {
+
+	ssi_stream_t button, cursor;
+
+	FileTools::ReadStreamFile("button", button);
+	FileTools::ReadStreamFile("cursor", cursor);
+
+	FileAnnotationWriter *annotation = 0;
+
+	annotation = ssi_create(FileAnnotationWriter, 0, true);
+	annotation->getOptions()->setAnnoPath("offline_annotation");
+	annotation->getOptions()->setSchemePath("scheme_discrete.annotation");
+	annotation->getOptions()->setDefaultLabel("empty");
+	annotation->getOptions()->defaultConfidence = 1.0f;
+	annotation->getOptions()->setMeta("annotator=hans;role=wurscht");
+
+	TriggerEventSender *ezero = 0;
+
+	ezero = ssi_create(TriggerEventSender, 0, true);
+	ezero->getOptions()->triggerType = TriggerEventSender::TRIGGER::NOT_EQUAL;
+	ezero->getOptions()->setAddress("click@mouse");
+	ezero->getOptions()->minDuration = 0.2;
+	ezero->setEventListener(annotation);
+
+	annotation->listen_enter();
+	SignalTools::Consume(button, *ezero, "0.25s");
+	annotation->listen_flush();
+	
+	ssi_stream_destroy(button);
+	ssi_stream_destroy(cursor);
 
 	return true;
 }

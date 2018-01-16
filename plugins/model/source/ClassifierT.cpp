@@ -95,6 +95,7 @@ void ClassifierT::transform (ITransformer::info info,
 	ssi_stream_t xtra_stream_in[]) {
 
 	ssi_real_t *class_probs = ssi_pcast (ssi_real_t, stream_out.ptr);
+	ssi_real_t confidence = 0.0f;
 
 	if (xtra_stream_in_num > 0) {
 		ssi_stream_t tmp;
@@ -108,7 +109,7 @@ void ClassifierT::transform (ITransformer::info info,
 			memcpy (tmp_ptr, xtra_stream_in[i].ptr, xtra_stream_in[i].tot);
 			tmp_ptr += xtra_stream_in[i].tot;
 		}
-		_trainer->forward_probs (tmp, _n_classes, class_probs);
+		_trainer->forward_probs (tmp, _n_classes, class_probs, confidence);
 		ssi_stream_destroy (tmp);
 	} else {
 		ssi_stream_t stream = stream_in;
@@ -117,7 +118,7 @@ void ClassifierT::transform (ITransformer::info info,
 			stream.dim = stream.num * stream.dim;
 			stream.num = 1;
 		}
-		_trainer->forward_probs (stream, _n_classes, class_probs);
+		_trainer->forward_probs (stream, _n_classes, class_probs, confidence);
 	}	
 }
 

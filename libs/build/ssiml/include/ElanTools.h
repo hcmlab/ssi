@@ -72,7 +72,13 @@ public:
                                     AnnoBoolOp boolOp);
 
         //convert ssi annotation to elan document
+        static void Ssi2elan(Annotation anno,
+                             ElanDocument* elanDoc);
+
         static void Ssi2elan(const char* annopath,
+                             ElanDocument* elanDoc);
+
+        static void Ssi2elanOld(const char* annopath,
                              ElanDocument* elanDoc);
 
         //merge second eland docs annotations into first
@@ -82,6 +88,10 @@ public:
         //convert elan annotation to ssi annotation
         static void Elan2ssi(ElanDocument* elanDoc,
                              old::Annotation *ssiAnno);
+
+        static void Elan2ssi(ElanDocument* elanDoc,
+                             Annotation *ssiAnno);
+
 
 
 protected:

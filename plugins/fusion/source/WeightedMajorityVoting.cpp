@@ -141,7 +141,8 @@ bool WeightedMajorityVoting::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -194,11 +195,12 @@ bool WeightedMajorityVoting::forward (ssi_size_t n_models,
 	if(found_data){
 
 		ssi_size_t *votes = new ssi_size_t[(n_models - miss_counter)];
+		ssi_real_t confidence = 0.0f;
 
 		for (ssi_size_t n_model = 0; n_model < (n_models - miss_counter); n_model++) {
 			model = models[models_actual[n_model]];
 			stream = streams[models_actual[n_model]];
-			model->forward (*stream, n_probs, probs);
+			model->forward (*stream, n_probs, probs, confidence);
 
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = probs[0];
@@ -277,6 +279,8 @@ bool WeightedMajorityVoting::forward (ssi_size_t n_models,
 		}
 	}
 	
+	ssi_max(n_probs, 1, probs, &confidence);
+
 	if(draw && (max_ind == max_ind_draw)){
 		return false;
 	}else{

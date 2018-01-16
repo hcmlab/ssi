@@ -46,7 +46,7 @@
 	This creates the files "cursor_b.stream" and "cursor_b.stream~".
 	
 	-->
-	<consumer create="FileWriter" path="cursor_b" type="0">
+	<consumer create="FileWriter" path="cursor_b" overwrite="true" type="0">
 		<input pin="cursor" frame="0.2s" />
 	</consumer>
 	
@@ -56,7 +56,7 @@
 	"pin" of the FileWriter to "button" (channel name of the provider).
 	
 	-->
-	<consumer create="FileWriter" path="button" type="1">
+	<consumer create="FileWriter" path="button" overwrite="true" type="1">
 		<input pin="button" frame="0.2s" />
 	</consumer>
 	

@@ -1806,15 +1806,17 @@ The following example shows all four versions. Note that we use a <code>OrderedD
         points.append((x[i<span class="op">*</span><span class="dv">2</span>],x[i<span class="op">*</span><span class="dv">2</span><span class="op">+</span><span class="dv">1</span>]))
 
     <span class="cf">return</span> points</code></pre></div>
-<p>To match an unknown gesture, we implement a function <code>forward</code> and store for each class the best matching template in the <code>probs</code> array (that is we look for the class template with the smallest distance).</p>
+<p>To match an unknown gesture, we implement a function <code>forward</code> and store for each class the best matching template in the <code>probs</code> array (that is we look for the class template with the smallest distance). We return a single number to express the confidence of our prediction (here the probability of the recognized class, which is certainly not a reliable measure):</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> forward(x, probs, opts, <span class="bu">vars</span>):
     
     recognizer <span class="op">=</span> <span class="bu">vars</span>[<span class="st">&#39;recognizer&#39;</span>]
 
     <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:        
         points <span class="op">=</span> x2p(x)
-        recognizer.RecognizeProbs(points, probs)       </code></pre></div>
-<p>Finally, we add functions to save and load our model:</p>
+        recognizer.RecognizeProbs(points, probs) 
+
+    <span class="cf">return</span> <span class="bu">max</span>(probs)</code></pre></div>
+<p>And we add functions to save and load our model:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> load(path, opts, <span class="bu">vars</span>):
 
     recognizer <span class="op">=</span> dollar.Recognizer ()
@@ -1827,6 +1829,9 @@ The following example shows all four versions. Note that we use a <code>OrderedD
 
     <span class="cf">if</span> <span class="kw">not</span> recognizer <span class="kw">is</span> <span class="va">None</span>:
         pickle.dump (recognizer.Templates, <span class="bu">open</span>(path, <span class="st">&#39;wb&#39;</span>))  </code></pre></div>
+<p>Finally, we tell ssi that this is a multi-class problem (in case of a regression problem we would return <code>types.CLASSIFICATION</code> instead):</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> getModelType(types, opts, <span class="bu">vars</span>):
+    <span class="cf">return</span> types.CLASSIFICATION</code></pre></div>
 <blockquote>
 <p>Check out the <a href="code/ml/dollar/ssi_dollar.py">code</a>.</p>
 </blockquote>

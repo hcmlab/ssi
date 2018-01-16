@@ -104,7 +104,8 @@ bool SumRule::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -140,7 +141,7 @@ bool SumRule::forward (ssi_size_t n_models,
 		model = models[n_model];
 		stream = streams[n_model];
 		if (stream->num > 0) {
-			model->forward (*stream, n_probs, probs);
+			model->forward (*stream, n_probs, probs, confidence);
 			found_data = true;
 			//fill decision_profile DP
 			for (ssi_size_t num_probs = 0; num_probs < n_probs; num_probs++){
@@ -208,6 +209,8 @@ bool SumRule::forward (ssi_size_t n_models,
 			probs[i] /= sum;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

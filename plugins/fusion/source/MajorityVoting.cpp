@@ -105,7 +105,8 @@ bool MajorityVoting::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -157,7 +158,7 @@ bool MajorityVoting::forward (ssi_size_t n_models,
 		for (ssi_size_t n_model = 0; n_model < (n_models - miss_counter); n_model++) {
 			model = models[models_actual[n_model]];
 			stream = streams[models_actual[n_model]];
-			model->forward (*stream, n_probs, probs);
+			model->forward (*stream, n_probs, probs, confidence);
 
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = probs[0];

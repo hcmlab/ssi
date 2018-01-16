@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ssi"
         mc:Ignorable="d"
-        Title="Load Session" Height="700" Width="1000" PreviewKeyDown="Window_PreviewKeyDown"  Icon="..\Resources\ui.ico">
+        Title="Load Session" Height="800" Width="1000" PreviewKeyDown="Window_PreviewKeyDown"  Icon="..\Resources\ui.ico">
 
     <Window.Resources>
         <Style x:Key="StreamItemColorStyle" TargetType="{x:Type ListViewItem}">
@@ -19,16 +19,37 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
             <Style.Triggers>
-                <!-- When a file exists color it green. -->                
+
+
                 <DataTrigger Binding="{Binding Exists, Converter={StaticResource StreamColorConverter}}" Value="+1">
                     <Setter Property="Foreground" Value="{StaticResource ExistsBrush}" />
+                    <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
-                <!-- When a file is missing color it red. -->
-                <DataTrigger Binding="{Binding Exists, Converter={StaticResource StreamColorConverter}}" Value="-1">
+                
+            
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition  Binding="{Binding Exists, Converter={StaticResource StreamColorConverter}}" Value="-1" />
+                        <Condition  Binding="{Binding ElementName=hideMissing,Path=IsChecked}" Value="False" />
+                    </MultiDataTrigger.Conditions>
                     <Setter Property="Foreground" Value="{StaticResource IsMissingBrush}" />
-                </DataTrigger>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition  Binding="{Binding Exists, Converter={StaticResource StreamColorConverter}}" Value="-1" />
+                        <Condition  Binding="{Binding ElementName=hideMissing,Path=IsChecked}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="{StaticResource IsMissingBrush}" />
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger>
+
             </Style.Triggers>
         </Style>
+
+  
     </Window.Resources>
 
     <Grid>
@@ -41,26 +62,26 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0">
+        <Grid Grid.Row="0" Grid.Column="0" Margin="5">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <DockPanel Grid.Column="0" Grid.Row="0" Margin="10">
+            <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,5,0">
                 <Label Content="Databases" DockPanel.Dock="Top" Margin="-3,0,0,0" />
                 <ListBox Name="DatabaseBox" SelectionMode="Single" SelectionChanged="DatabaseResultsBox_SelectionChanged" ToolTip="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}}"></ListBox>
             </DockPanel>
 
-            <DockPanel Grid.Column="1" Grid.Row="0" Margin="10">
+            <DockPanel Grid.Column="1" Grid.Row="0" Margin="0,0,5,0">
                 <Label Content="Sessions"  DockPanel.Dock="Top" Margin="-3,0,0,0" />
-                <ListView Name="SessionsBox" Margin="0,0,5,0" DockPanel.Dock="Top" SelectionMode="Single" SelectionChanged="SessionsBox_SelectionChanged"  GridViewColumnHeader.Click="SessionsBox_Click" >
+                <ListView Name="SessionsBox" DockPanel.Dock="Top" SelectionMode="Single" SelectionChanged="SessionsBox_SelectionChanged"  GridViewColumnHeader.Click="SortListView" >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Width="Auto" Header="Name">
@@ -90,7 +111,7 @@
                 </ListView>
             </DockPanel>
 
-            <DockPanel Grid.Column="2" Grid.Row="0" Margin="10">
+            <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,5,0">
                 <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top" >
                     <Label Content="Annotations" />
                     <StackPanel Grid.Row="0" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
@@ -107,7 +128,7 @@
                     <CheckBox Name="showonlymine" Content="Mine only" Checked="showOnlyMine_Checked" Unchecked="showOnlyMine_Unchecked" />
                     <CheckBox Name="showOnlyUnfinished" Content="Unfinished only" Checked="showOnlyUnfinished_Checked" Unchecked="showOnlyUnfinished_Unchecked" />
                 </StackPanel>
-                <ListView Name="AnnotationsBox" SelectionChanged="AnnotationResultBox_SelectionChanged" SelectionMode="Extended" GridViewColumnHeader.Click="AnnotationsBox_Click"  >
+                <ListView Name="AnnotationsBox" SelectionChanged="AnnotationResultBox_SelectionChanged" SelectionMode="Extended" GridViewColumnHeader.Click="SortListView"  >
                     
                     <ListView.View>
                         <GridView>
@@ -138,9 +159,11 @@
                 </ListView>
             </DockPanel>
 
-            <DockPanel Grid.Column="3" Grid.Row="0"  Margin="10">
+            <DockPanel Grid.Column="3" Grid.Row="0"  Margin="0,0,5,0">
                 <Label Content="Streams"  DockPanel.Dock="Top" Margin="-3,0,0,0" />
-                <StackPanel Name="ServerLoginPanel"  Orientation="Vertical" DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                <CheckBox Name="hideMissing" Content="Hide Missing Streams"  DockPanel.Dock="Bottom" Checked="hideMissing_Checked" Unchecked="hideMissing_Unchecked"/>
+                
+                <StackPanel Name="ServerLoginPanel"  Orientation="Vertical" DockPanel.Dock="Bottom" Margin="0,5,0,0">
                     <DockPanel LastChildFill="True">
                         <Label Content="Username" Width="70" />
                         <TextBox x:FieldModifier="public" x:Name="serverLogin" Margin="0,0,5,5" Height="25" Focusable="True" VerticalContentAlignment="Center" />
@@ -150,8 +173,9 @@
                         <PasswordBox x:FieldModifier="public" x:Name="serverPassword" Margin="0,0,5,0" Height="25" Focusable="True" VerticalContentAlignment="Center" />
                     </DockPanel>
                 </StackPanel>
+                
 
-                <ListView Name="StreamsBox" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" ItemContainerStyle="{StaticResource StreamItemColorStyle}" ItemsSource="{Binding}" GridViewColumnHeader.Click="StreamsBox_Click" >
+                <ListView Name="StreamsBox" Grid.Row="0" Grid.Column="0" ItemContainerStyle="{StaticResource StreamItemColorStyle}" ItemsSource="{Binding}" GridViewColumnHeader.Click="SortListView" >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Role" Width="Auto">
@@ -181,11 +205,12 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+            
             </DockPanel>
         </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
                 <Label Name="LoadingLabel" Visibility="Collapsed">Loading...</Label>
                 <Button Name="Ok" Margin="0,0,5,0"  Content="Ok" Grid.Column="0" Height="25" Width="50"  Click="Ok_Click" />
                 <Button Name="Cancel" Content="Cancel" Height="25" Width="50" Click="Cancel_Click" />

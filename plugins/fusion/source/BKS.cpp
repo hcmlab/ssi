@@ -107,9 +107,10 @@ bool BKS::train (ssi_size_t n_models,
 		samples.reset ();
 		const ssi_sample_t *sample = 0;
 		ssi_size_t real_index, sample_index = 0;
+		ssi_real_t confidence = 0.0f;
 		while (sample = samples.next ()) {
 			real_index = sample->class_id;
-			models[n_model]->forward (*sample->streams[n_model], _n_classes, _probs);
+			models[n_model]->forward (*sample->streams[n_model], _n_classes, _probs, confidence);
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = _probs[0];
 			for (ssi_size_t i = 1; i < _n_classes; i++) {
@@ -155,7 +156,8 @@ bool BKS::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -174,11 +176,11 @@ bool BKS::forward (ssi_size_t n_models,
 
 	IModel *model = 0;
 	ssi_size_t *votes = 0;;
-	votes = new ssi_size_t[n_models];
+	votes = new ssi_size_t[n_models];	
 	
 	for (ssi_size_t n_model = 0; n_model < n_models; n_model++) {
 		model = models[n_model];
-		model->forward (*streams[n_model], n_probs, probs);
+		model->forward (*streams[n_model], n_probs, probs, confidence);
 
 		ssi_size_t max_ind = 0;
 		ssi_real_t max_val = probs[0];
@@ -234,6 +236,8 @@ bool BKS::forward (ssi_size_t n_models,
 		delete[] votes;
 		votes = 0;
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	if (hit){
 		if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {

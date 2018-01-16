@@ -6,6 +6,9 @@ def getOptions (opts, vars):
     vars['recognizer'] = None
 
 
+def getModelType(types, opts, vars):
+    return types.CLASSIFICATION
+
 def x2p (x):
 
     points = []
@@ -15,7 +18,7 @@ def x2p (x):
     return points
 
 
-def train(xs, ys, scores, opts, vars):
+def train(xs, ys, opts, vars):
     
     recognizer = dollar.Recognizer ()
 
@@ -34,6 +37,8 @@ def forward(x, probs, opts, vars):
     if not recognizer is None:        
         points = x2p(x)
         recognizer.RecognizeProbs(points, probs)       
+
+    return max(probs)
 
 
 def load(path, opts, vars):

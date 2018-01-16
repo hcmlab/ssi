@@ -80,7 +80,8 @@ public:
 		ssi_size_t n_streams,
 		ssi_stream_t *streams[],
 		ssi_size_t n_probs,
-		ssi_real_t *probs);
+		ssi_real_t *probs,
+		ssi_real_t &confidence);
 	void release ();
 	ssi_real_t coin();
 	bool save (const ssi_char_t *filepath);

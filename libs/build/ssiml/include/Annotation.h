@@ -186,9 +186,12 @@ public:
 	// filter	
 	bool filter(double threshold, FILTER_PROPERTY::List prop, FILTER_OPERATOR::List op, const ssi_char_t *class_name = 0);
 
-	// stream
+	// stream and samples
 
 	bool extractStream(const ssi_stream_t &from, ssi_stream_t &to);
+	bool convertToStream(ssi_stream_t &stream,
+		ssi_time_t sr = 0.0, // choose a sr for discrete annotations
+		ssi_time_t duration_s = 0.0); // choose a duration for discrete annotations in seconds (if <= 0 defined by last label)
 	bool extractSamples(const ssi_stream_t &stream, 
 		SampleList *samples,
 		const ssi_char_t *user = SSI_SAMPLE_GARBAGE_USER_NAME);

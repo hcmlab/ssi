@@ -48,7 +48,7 @@ public:
 
 	void setLogLevel (ssi_size_t log_level) {};
 
-	bool train (ssi_size_t n_models,
+	bool train(ssi_size_t n_models,
 		IModel **models,
 		ISamples &samples);
 	bool isTrained () { return _is_trained; };
@@ -57,7 +57,8 @@ public:
 		ssi_size_t n_streams,
 		ssi_stream_t **streams,
 		ssi_size_t n_probs,
-		ssi_real_t *probs);	
+		ssi_real_t *probs,
+		ssi_real_t &confidence);	
 	void release ();
 	bool save (const ssi_char_t *filepath);
 	bool load (const ssi_char_t *filepath);

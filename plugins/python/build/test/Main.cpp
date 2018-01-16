@@ -565,35 +565,62 @@ bool ex_offline(void *args)
 
 bool ex_model(void *args)
 {
-	ssi_size_t n_classes = 2;
-	ssi_size_t n_samples = 5;
-	ssi_size_t n_streams = 3;
-	ssi_real_t distr[][3] = { 0.3f, 0.3f, 0.2f, 0.3f, 0.6f, 0.2f };
-	
-	SampleList samples;
-	ModelTools::CreateTestSamples(samples, n_classes, n_samples, n_streams, distr, "user");
-	
-	ModelTools::PrintInfo(samples);
-
 	{
+		ssi_size_t n_classes = 2;
+		ssi_size_t n_samples = 5;
+		ssi_size_t n_streams = 3;
+		ssi_real_t distr[][3] = { 0.3f, 0.3f, 0.2f, 0.3f, 0.6f, 0.2f };
+
+		SampleList samples;
+		ModelTools::CreateTestSamples(samples, n_classes, n_samples, n_streams, distr, "user");
+
+		ModelTools::PrintInfo(samples);
+
+		{
+			PythonModel *model = ssi_create(PythonModel, 0, true);
+			model->getOptions()->setScript("ssi_model");
+
+			model->train(samples, 0);
+			model->save("path/to/model");
+			model->load("path/to/model");
+
+			ssi_real_t score = 0.0f;
+			ssi_real_t confidence = 0.0f;
+			model->forward(*samples.get(0)->streams[0], 1, &score, confidence);
+
+			Evaluation eval;
+			eval.eval(*model, samples, 0);
+			eval.print();
+		}
+	}
+
+	{		
+		ssi_size_t n_samples = 5;
+		ssi_real_t noise = 0.1f;
+	
+		SampleList samples;
+		ModelTools::CreateTestSamplesRegression(samples, n_samples, noise, "user");
+
+		ModelTools::PrintInfo(samples);
+		
 		PythonModel *model = ssi_create(PythonModel, 0, true);
 		model->getOptions()->setScript("ssi_model");
+		model->getOptions()->add("is_regression", true);
+
 		model->train(samples, 0);
 		model->save("path/to/model");
+		model->load("path/to/model");			
+
+		ssi_real_t score = 0.0f;				
+		ssi_real_t confidence = 0.0f;
+		model->forward(*samples.get(0)->streams[0], 1, &score, confidence);
+
+		Evaluation eval;
+		eval.eval(*model, samples, 0);
+		eval.print();
+		
 	}
-	
-	{
-		PythonModel *model = ssi_create(PythonModel, 0, true);
-		model->getOptions()->setScript("ssi_model");
-		model->load("path/to/model");
-		ssi_size_t nProbs = n_classes;
-		ssi_real_t* probs = new ssi_real_t[n_classes];
-		for (ssi_size_t i = 0; i < nProbs; i++)
-		{
-			probs[i] = 1.0f;
-		}
-		model->forward(*samples.get(0)->streams[0], nProbs, probs);
-	}
+
 
 	return true;
 }

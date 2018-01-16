@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace ssi
@@ -58,9 +59,9 @@ namespace ssi
     {
         private List<DatabaseAnnotation> annotations = new List<DatabaseAnnotation>();
         private CancellationTokenSource cancellation = new CancellationTokenSource();
+
         GridViewColumnHeader _lastHeaderClicked = null;
         ListSortDirection _lastDirection = ListSortDirection.Ascending;
-
 
         public DatabaseAnnoMainWindow()
         {
@@ -73,6 +74,7 @@ namespace ssi
 
             showonlymine.IsChecked = Properties.Settings.Default.DatabaseShowOnlyMine;
             showOnlyUnfinished.IsChecked = Properties.Settings.Default.DatabaseShowOnlyFinished;
+            hideMissing.IsChecked = Properties.Settings.Default.DBHideMissingStreams;
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)
@@ -588,6 +590,8 @@ namespace ssi
             }
         }
 
+
+
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -676,19 +680,19 @@ namespace ssi
             }
         }
 
-        private void AnnotationsBox_Click(object sender, RoutedEventArgs e)
+        private void hideMissing_Checked(object sender, RoutedEventArgs e)
         {
-            SortListView(sender, e);
+
+            Properties.Settings.Default.DBHideMissingStreams = true;
+            Properties.Settings.Default.Save();
         }
 
-        private void SessionsBox_Click(object sender, RoutedEventArgs e)
+        private void hideMissing_Unchecked(object sender, RoutedEventArgs e)
         {
-            SortListView(sender, e);
-        }
 
-        private void StreamsBox_Click(object sender, RoutedEventArgs e)
-        {
-            SortListView(sender, e);
+            Properties.Settings.Default.DBHideMissingStreams = false;
+            Properties.Settings.Default.Save();
+
         }
     }
 }

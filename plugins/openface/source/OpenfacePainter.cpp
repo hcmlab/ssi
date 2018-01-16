@@ -94,7 +94,6 @@ namespace ssi {
 				(double)xtra_in[Openface::FEATURE::CORRECTED_POSE_CAMERA_ROT_X],
 				(double)xtra_in[Openface::FEATURE::CORRECTED_POSE_CAMERA_ROT_Y], 
 				(double)xtra_in[Openface::FEATURE::CORRECTED_POSE_CAMERA_ROT_Z]);
-
 			
 			double vis_certainty = (double)xtra_in[Openface::FEATURE::DETECTION_CERTAINTY];
 			if (vis_certainty > 1)

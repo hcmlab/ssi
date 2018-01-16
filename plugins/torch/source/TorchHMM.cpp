@@ -285,7 +285,8 @@ void TorchHMM::setTransitions (ssi_real_t** transitions,
 
 bool TorchHMM::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_hmms) {
 		ssi_wrn ("not trained");
@@ -357,6 +358,8 @@ bool TorchHMM::forward (ssi_stream_t &stream,
 			probs[i] /= sumval;			
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	delete sequence;
 

@@ -39,12 +39,12 @@ class IModel : public IObject {
 
 public:
 
-	struct TASK
+	struct TYPE
 	{
 		enum List
-		{
+		{			
 			CLASSIFICATION = 0,
-			REGRESSION = 1
+			REGRESSION = 1			
 		};
 	};
 
@@ -55,12 +55,14 @@ public:
 	virtual bool isTrained () = 0;
 	virtual bool forward (ssi_stream_t &stream,
 		ssi_size_t n_probs,
-		ssi_real_t *probs) = 0;	
+		ssi_real_t *probs,
+		ssi_real_t &confidence) = 0;	
 	virtual void release () = 0;
 
 	virtual bool save (const ssi_char_t *filepath) = 0;	
 	virtual bool load (const ssi_char_t *filepath) = 0;	
 
+	virtual TYPE::List getModelType() = 0;
 	virtual ssi_size_t getClassSize () = 0;
 	virtual ssi_size_t getStreamDim () = 0;
 	virtual ssi_size_t getStreamByte () = 0;

@@ -1390,6 +1390,54 @@ bool Annotation::extractStream(const ssi_stream_t &from, ssi_stream_t &to)
 	return true;
 }
 
+bool Annotation::convertToStream(ssi_stream_t &stream,
+	ssi_time_t sr,
+	ssi_time_t duration_s)
+{
+	if (!_scheme || (_scheme->type != SSI_SCHEME_TYPE::DISCRETE && _scheme->type != SSI_SCHEME_TYPE::CONTINUOUS))
+	{
+		ssi_wrn("not a discrete or continuous scheme");
+		return false;
+	}	
+	
+	if (_scheme->type == SSI_SCHEME_TYPE::CONTINUOUS)
+	{
+		ssi_stream_init(stream, (ssi_size_t)size(), 1, sizeof(ssi_real_t), SSI_REAL, _scheme->continuous.sr);
+		ssi_real_t *ptr = ssi_pcast(ssi_real_t, stream.ptr); 
+		for (iterator it = begin(); it != end(); it++)
+		{
+			*ptr++ = it->continuous.score;
+		}
+	}
+	else 
+	{
+		if (sr <= 0.0)
+		{
+			ssi_wrn("invalid sample rate '%lf'", sr);
+			return false;
+		}
+
+		if (duration_s <= 0.0)
+		{
+			duration_s = this->back().discrete.to;
+		}
+
+		Annotation anno(*this);
+		anno.convertToFrames(1 / sr, SSI_SAMPLE_REST_CLASS_NAME, duration_s);
+		ssi_int_t rest_id = 0;
+		anno.getClassId(SSI_SAMPLE_REST_CLASS_NAME, rest_id);
+
+		ssi_stream_init(stream, (ssi_size_t)anno.size(), 1, sizeof(ssi_real_t), SSI_REAL, sr);
+		ssi_real_t *ptr = ssi_pcast(ssi_real_t, stream.ptr);
+		for (iterator it = anno.begin(); it != anno.end(); it++)
+		{
+			*ptr++ = (ssi_real_t)(it->discrete.id == rest_id ? 0 : (ssi_real_t)it->discrete.id + 1);
+		}
+	}
+
+	return true;
+}
+
 bool Annotation::addClass(const ssi_char_t *name)
 {
 	if (!_scheme || _scheme->type != SSI_SCHEME_TYPE::DISCRETE)
@@ -1729,7 +1777,7 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 	it += context_left;
 	for (ssi_size_t i = 0; i < n_samples; i++)
 	{
-		if (!isnan(it->continuous.score))
+        if (!std::isnan(it->continuous.score))
 		{
 			sample->score = it->continuous.score;
 			samples->addSample(sample, true);

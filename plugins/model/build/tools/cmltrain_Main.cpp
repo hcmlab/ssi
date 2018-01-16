@@ -81,6 +81,8 @@ struct params_t
 	bool force;
 	int scoreDim;
 	int confDim;
+	ssi_time_t sample_rate;
+	ssi_time_t duration;
 };
 
 void getSessions(StringList &list, params_t &params);
@@ -93,6 +95,7 @@ void removeAnnotations(params_t &params);
 void cutStreamFromLabel(params_t &params);
 void mapClassNames(params_t &params);
 void convertStreamToAnnotation(params_t &params);
+void convertAnnotationToStream(params_t &params);
 void train(params_t &params);
 void eval(params_t &params);
 void forward(params_t &params);
@@ -224,7 +227,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
-	cmd.addMasterSwitch("--convert");
+	cmd.addMasterSwitch("--convert-stream-to-anno");
 
 	cmd.addText("\nArguments:");
 	cmd.addSCmdArg("root", &params.root, "path to database on disk");
@@ -235,6 +238,20 @@ int main (int argc, char **argv) {
 	cmd.addText("\nOptions:");
 	cmd.addICmdOption("-scoreDim", &params.scoreDim, 0, "dimension of score values");
 	cmd.addICmdOption("-confDim", &params.confDim, -1, "dimension of confidence values (if -1 set to 1.0)");
+	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
+	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+
+	cmd.addMasterSwitch("--convert-anno-to-stream");
+
+	cmd.addText("\nArguments:");
+	cmd.addSCmdArg("root", &params.root, "path to database on disk");	
+	cmd.addSCmdArg("annotation", &params.annotation, "name of annotation");
+	cmd.addSCmdArg("stream", &params.stream, "name of stream (will be generated)");
+
+	cmd.addText("\nOptions:");	
+	cmd.addDCmdOption("-sr", &params.sample_rate, 1.0, "sample rate in Hz (discrete only)");
+	cmd.addDCmdOption("-duration", &params.duration, 0.0, "duration in seconds (discrete only)");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
@@ -455,33 +472,40 @@ int main (int argc, char **argv) {
 
 		case 6: {
 
+			convertAnnotationToStream(params);
+
+			break;
+		}
+
+		case 7: {
+
 			mapClassNames(params);
 			
 			break;
 		}
 
-		case 7: {
+		case 8: {
 
 			train(params);
 
 			break;
 		}
 
-		case 8: {
+		case 9: {
 
 			eval(params);
 
 			break;
 		}
 
-		case 9: {
+		case 10: {
 
 			forward(params);
 
 			break;
 		}
 
-		case 10: {
+		case 11: {
 
 			merge(params);
 
@@ -876,6 +900,49 @@ void convertStreamToAnnotation(params_t &params)
 		else
 		{
 			ssi_wrn("ERROR: stream file not found");
+			continue;
+		}
+	}
+}
+
+void convertAnnotationToStream(params_t &params)
+{
+	ssi_char_t string[SSI_MAX_CHAR];
+
+	StringList sessions;
+	getSessions(sessions, params);
+	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
+	{
+		ssi_sprint(string, "%s\\%s.annotation", it->str(), params.annotation);
+		
+
+		ssi_print("\n-------------------------------------------\n");
+		ssi_print("CONVERT ANNOTATION TO STREAM '%s>%s'\n\n", string, params.stream);
+
+		if (ssi_exists(string))
+		{
+			Annotation anno;
+			if (!anno.load(string))
+			{
+				ssi_wrn("ERROR: could not load annotation from file");
+				continue;
+			}
+
+			ssi_stream_t stream;
+			
+			if (!anno.convertToStream(stream, params.sample_rate, params.duration))
+			{
+				continue;
+			}			
+
+			ssi_sprint(string, "%s\\%s.stream", it->str(), params.stream);
+			FileTools::WriteStreamFile(File::BINARY, string, stream);
+
+			ssi_stream_destroy(stream);
+		}
+		else
+		{
+			ssi_wrn("ERROR: annotation file not found");
 			continue;
 		}
 	}

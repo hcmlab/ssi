@@ -230,7 +230,8 @@ bool SVM::train (ISamples &samples,
 
 bool SVM::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -275,6 +276,8 @@ bool SVM::forward (ssi_stream_t &stream,
 	for (ssi_size_t j = 0; j < _n_classes; j++) {
 		probs[j]/=sum;
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	delete[] x;
 	delete[] prob_estimates;

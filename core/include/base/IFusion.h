@@ -46,7 +46,8 @@ public:
 		ssi_size_t n_streams,
 		ssi_stream_t **streams,
 		ssi_size_t n_probs,
-		ssi_real_t *probs) = 0;
+		ssi_real_t *probs,
+		ssi_real_t &confidence) = 0;
 	virtual void release () = 0;
 	virtual bool save (const ssi_char_t *filepath) = 0;
 	virtual bool load (const ssi_char_t *filepath) = 0;

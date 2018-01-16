@@ -109,6 +109,7 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
     <ClCompile Include="..\..\source\Openface.cpp" />
     <ClCompile Include="..\..\source\OpenfaceAdditionalFeat.cpp" />
     <ClCompile Include="..\..\source\OpenfaceHelper.cpp" />
+    <ClCompile Include="..\..\source\OpenfaceNormalizer.cpp" />
     <ClCompile Include="..\..\source\OpenfacePainter.cpp" />
     <ClCompile Include="..\..\source\OpenfaceSelector.cpp" />
   </ItemGroup>
@@ -116,6 +117,7 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
     <ClInclude Include="..\..\include\Openface.h" />
     <ClInclude Include="..\..\include\OpenfaceAdditionalFeat.h" />
     <ClInclude Include="..\..\include\OpenfaceHelper.h" />
+    <ClInclude Include="..\..\include\OpenfaceNormalizer.h" />
     <ClInclude Include="..\..\include\OpenfacePainter.h" />
     <ClInclude Include="..\..\include\OpenfaceSelector.h" />
     <ClInclude Include="..\..\include\ssiopenface.h" />

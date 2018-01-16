@@ -25,12 +25,12 @@ from soundnet_model import Model
 SAMPLE_RATE = 22050
 
 
-def error(text,opts,vars):
-    print('ERROR: ' + text + ' [{}]'.format(opts['layer']))
+def error(text):
+    print('ERROR: ' + text)
 
 
-def warning(text,opts,vars):
-    print('WARNING: ' + text + ' [{}]'.format(opts['layer']))
+def warning(text):
+    print('WARNING: ' + text)
 
 
 def getOptions(opts,vars):
@@ -38,10 +38,12 @@ def getOptions(opts,vars):
     opts['path'] = './sound8.npy'
     opts['layer'] = 18
     opts['n_feature'] = 256
-    opts['n_samples'] = 7350 # minimum length
+    opts['n_samples'] = 12765 # minimum length
+    opts['trim'] = True
 
     vars['model'] = None
     vars['warn_enlarge'] = False
+    vars['warn_trim'] = False
     vars['warn_reduce'] = False
     vars['warn_resample'] = False
 
@@ -53,7 +55,7 @@ def loadModel(opts,vars):
     print ('load model "{}"'.format(path))
    
     if not os.path.exists(path):
-        error('model not found "{}"'.format(path),opts,vars)
+        error('model not found "{}"'.format(path))
         return  
 
     param_G = np.load(path, encoding = 'latin1').item()
@@ -79,13 +81,13 @@ def loadModel(opts,vars):
     sess.run(init) 
        
     if not model.load():
-        error('could not load model'.format(path),opts,vars)
+        error('could not load model'.format(path))
         return
 
     # Check layer
     if opts['layer'] > len(model.layers)+1:
         opts['layer'] = len(model.layers)+1
-        warning('set layer to {}'.format(len(model.layers)+1),opts,vars)
+        warning('set layer to {}'.format(len(model.layers)+1))
 
     vars['model'] = model
 
@@ -101,21 +103,28 @@ def preprocess(raw_audio, sr, opts, vars):
     # Convert sample rate
     if sr != SAMPLE_RATE:
         if not vars['warn_resample']:
-            warning('resample audio from {} to {}'.format(sr, SAMPLE_RATE),opts,vars)
+            warning('resample audio from {} to {}'.format(sr, SAMPLE_RATE))
             vars['warn_resample'] = True
         raw_audio = resampy.resample(raw_audio, sr, SAMPLE_RATE, axis=0)
 
     # Make range [-256, 256]
     raw_audio *= 256.0
 
-    # Make minimum length available  
+    # Enlarge
     if length > raw_audio.shape[0]:
         if not vars['warn_enlarge']:
-            warning('enlarge audio from {} to {}'.format(raw_audio.shape[0], length),opts,vars)
+            warning('enlarge audio from {} to {}'.format(raw_audio.shape[0], length))
             vars['warn_enlarge'] = True
         reps = int(length/raw_audio.shape[0]) + 1
-        raw_audio = np.tile(raw_audio, reps)
+        raw_audio = np.tile(raw_audio, [reps,1])        
         raw_audio = raw_audio[0:length]
+
+    # Trim
+    if length < raw_audio.shape[0] and opts['trim']:
+        if not vars['warn_trim']:
+            warning('trim audio from {} to {}'.format(raw_audio.shape[0], length))
+            vars['warn_trim'] = True             
+        raw_audio = raw_audio[0:length]                   
 
     # Shape to 1 x DIM x 1 x 1
     raw_audio = np.reshape(raw_audio, [1, -1, 1, 1])
@@ -160,7 +169,7 @@ def transform(info, sin, sout, sxtra, board, opts, vars):
 
     # Extract feature    
 
-    sound = preprocess(input, sin.sr, opts, vars)
+    sound = preprocess(input.copy(), sin.sr, opts, vars)
     feed_dict = { model.sound_input_placeholder: sound }       
     features = model.sess.run(model.layers[layer], feed_dict=feed_dict)
     features = np.squeeze(features)
@@ -169,9 +178,14 @@ def transform(info, sin, sout, sxtra, board, opts, vars):
 
     if len(features.shape) > 1:    
         if not vars['warn_reduce']:
-            warning('reduce feature dimension from {} to 1'.format(features.shape[0]),opts,vars)
+            warning('reduce feature dimension from {} to 1'.format(features.shape[0]))
             vars['warn_reduce'] = True
         features = np.mean(features, axis=0)
     
     np.copyto(output, features)
 
+
+def transform_flush(sin, sout, sxtra, board, opts, vars): 
+
+    model = vars['model']
+    model.sess.close()

@@ -427,7 +427,8 @@ bool CascadingSpecialists::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -520,7 +521,7 @@ bool CascadingSpecialists::forward (ssi_size_t n_models,
 				}
 			}
 
-			model->forward(*streams[model_id], n_probs, probs);
+			model->forward(*streams[model_id], n_probs, probs, confidence);
 
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = probs[0];
@@ -578,7 +579,7 @@ bool CascadingSpecialists::forward (ssi_size_t n_models,
 			}
 		}
 
-		model->forward(*streams[model_id], n_probs, probs);
+		model->forward(*streams[model_id], n_probs, probs, confidence);
 
 	}
 
@@ -607,6 +608,8 @@ bool CascadingSpecialists::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

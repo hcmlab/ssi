@@ -2,11 +2,13 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 
@@ -18,6 +20,9 @@ namespace ssi
     public partial class DatabaseCMLExtractFeaturesWindow : Window
     {
         private MainHandler handler;
+
+        GridViewColumnHeader _lastHeaderClicked = null;
+        ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
         public class Chain
         {
@@ -70,12 +75,101 @@ namespace ssi
             Update();
         }
 
-
-
         private void Done_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
             Close();
+        }
+
+        private void UpdateFeatureName()
+        {
+            string name = "";
+
+            if (mode == Mode.MERGE)
+            {
+                var streams = StreamsBox.SelectedItems;
+
+                string streamList = "";
+                HashSet<string> mediaNames = new HashSet<string>();
+                HashSet<string> featureNames = new HashSet<string>();
+                double sampleRate = 0;
+                foreach (DatabaseStream stream in streams)
+                {
+                    string[] tokens = stream.Name.Split(new char[] { '.' }, 2);
+                    mediaNames.Add(tokens[0]);
+                    if (tokens.Length > 1)
+                    {
+                        featureNames.Add(tokens[1]);
+                    }
+
+                    if (streamList == "")
+                    {
+                        sampleRate = stream.SampleRate;
+                        streamList = stream.Name;
+                    }
+                    else
+                    {
+                        streamList += ";" + stream.Name;
+                    }
+                }
+
+                string[] arrmedias;
+                arrmedias = mediaNames.ToArray();
+                Array.Sort(arrmedias);
+                mediaNames.Clear();
+                mediaNames.UnionWith(arrmedias);
+
+                string medias = "";
+                foreach (string media in mediaNames)
+                {
+                    if (medias == "")
+                    {
+                        medias = media;
+                    }
+                    else
+                    {
+                        medias += "+" + media;
+                    }
+                }
+
+                string[] arrstreams;
+                arrstreams = featureNames.ToArray();
+                Array.Sort(arrstreams);
+                featureNames.Clear();
+                featureNames.UnionWith(arrstreams);
+
+                string features = "";
+                foreach (string feature in featureNames)
+                {
+                    if (features == "")
+                    {
+                        features = feature;
+                    }
+                    else
+                    {
+                        features += "+" + feature;
+                    }
+                }
+                
+                name = medias + "." + features;
+            }
+            else
+            {
+                if (ChainPathComboBox.SelectedItem != null && StreamsBox.SelectedItem != null)
+                {
+                    DatabaseStream stream = (DatabaseStream)StreamsBox.SelectedItem;
+                    Chain chain = (Chain)ChainPathComboBox.SelectedItem;
+
+                    string leftContext = LeftContextTextBox.Text;
+                    string frameStep = FrameStepTextBox.Text;
+                    string rightContext = RightContextTextBox.Text;
+                    string streamMeta = "[" + leftContext + "," + frameStep + "," + rightContext + "]";
+                    
+                    name = stream.Name + "." + chain.Name + streamMeta;;
+                }
+            }
+            
+            FeatureNameTextBox.Text = name;
         }
 
         private void Extract()
@@ -83,6 +177,13 @@ namespace ssi
             if (ChainPathComboBox.SelectedItem == null)
             {
                 MessageTools.Warning("select a chain first");
+                return;
+            }
+
+            string featureName = FeatureNameTextBox.Text;
+            if (featureName == "" || featureName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                MessageTools.Warning("not a valid feature name");
                 return;
             }
 
@@ -103,7 +204,7 @@ namespace ssi
             string leftContext = LeftContextTextBox.Text;
             string frameStep = FrameStepTextBox.Text;
             string rightContext = RightContextTextBox.Text;
-            string streamMeta = "[" + leftContext + "," + frameStep + "," + rightContext + "]";
+
             int nParallel = 1;
             int.TryParse(NParallelTextBox.Text, out nParallel);
 
@@ -126,8 +227,8 @@ namespace ssi
                             + role + "." + stream.Name + "." + stream.FileExt;
 
                             string toPath = Path.GetDirectoryName(fromPath) + "\\"
-                                + Path.GetFileNameWithoutExtension(fromPath)
-                                + "." + chain.Name + streamMeta + ".stream";
+                            + role + "." + featureName + ".stream";
+
                             if (force || !File.Exists(toPath))
                             {
                                 nFiles++;
@@ -149,11 +250,9 @@ namespace ssi
             DatabaseStream selectedStream = (DatabaseStream)StreamsBox.SelectedItem;
 
             if (nFiles > 0)
-            {
-             
-
+            {            
                 string type = Defaults.CML.StreamTypeNameFeature;
-                string name = stream.Name + "." + chain.Name + streamMeta;
+                string name = featureName;
                 string ext = "stream";
 
                 double sr = frameStepToSampleRate(frameStep, stream.SampleRate);
@@ -186,6 +285,13 @@ namespace ssi
 
         private void Merge()
         {
+            string featureName = FeatureNameTextBox.Text;
+            if (featureName == "" || featureName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                MessageTools.Warning("not a valid feature name");
+                return;
+            }
+
             string database = (string)DatabasesBox.SelectedItem;
 
             var sessions = SessionsBox.SelectedItems;
@@ -220,18 +326,9 @@ namespace ssi
             }
 
             string streamList = "";
-            HashSet<string> mediaNames = new HashSet<string>();
-            HashSet<string> featureNames = new HashSet<string>();
             double sampleRate = 0;
             foreach (DatabaseStream stream in streams)
             {
-                string[] tokens = stream.Name.Split(new char[] { '.' }, 2);
-                mediaNames.Add(tokens[0]);
-                if (tokens.Length > 1)
-                {
-                    featureNames.Add(tokens[1]);
-                }
-
                 if (streamList == "")
                 {
                     sampleRate = stream.SampleRate;
@@ -243,57 +340,14 @@ namespace ssi
                 }
             }
 
-
-            string[] arrmedias;
-            arrmedias = mediaNames.ToArray();
-            Array.Sort(arrmedias);
-            mediaNames.Clear();
-            mediaNames.UnionWith(arrmedias);
-
-
-            string medias = "";
-            foreach (string media in mediaNames)
-            {
-                if (medias == "")
-                {
-                    medias = media;
-                }
-                else
-                {
-                    medias += "+" + media;
-                }
-            }
-
-
-            string[] arrstreams;
-            arrstreams = featureNames.ToArray();
-            Array.Sort(arrstreams);
-            featureNames.Clear();
-            featureNames.UnionWith(arrstreams);
-
-            string features = "";
-            foreach (string feature in featureNames)
-            {
-                if (features == "")
-                {
-                    features = feature;
-                }
-                else
-                {
-                    features += "+" + feature;
-                }
-            }
-            string outputName = medias + "." + features;
-
             string rootDir = Properties.Settings.Default.DatabaseDirectory + "\\" + database;
 
-            logTextBox.Text = handler.CMLMergeFeature(rootDir, sessionList, roleList, streamList, outputName, force);
+            logTextBox.Text = handler.CMLMergeFeature(rootDir, sessionList, roleList, streamList, featureName, force);
 
             string type = Defaults.CML.StreamTypeNameFeature;
-            string name = outputName;
             string ext = "stream";            
 
-            DatabaseStream streamType = new DatabaseStream() { Name = name, Type = type, FileExt = ext, SampleRate = sampleRate };
+            DatabaseStream streamType = new DatabaseStream() { Name = featureName, Type = type, FileExt = ext, SampleRate = sampleRate };
             DatabaseHandler.AddStream(streamType);
 
             GetStreams(streamType);
@@ -457,11 +511,8 @@ namespace ssi
             {
                 RolesBox.SelectAll();
                 //RolesBox.SelectedItem = Properties.Settings.Default.CMLDefaultRole;
-            }
-
-            
+            }         
         }
-
 
         private bool parseChainFile(ref Chain chain)
         {
@@ -513,20 +564,16 @@ namespace ssi
                     "\\" + Defaults.CML.ChainFolderName +
                     "\\" + stream.Type;
             if (Directory.Exists(chainDir))
-            {
-                string[] chainDirs = Directory.GetDirectories(chainDir);
-                foreach (string searchDir in chainDirs)
+            {                
+                string[] chainFiles = Directory.GetFiles(chainDir, "*." + Defaults.CML.ChainFileExtension, SearchOption.AllDirectories);                    
+                foreach (string chainFile in chainFiles)
                 {
-                    string[] chainFiles = Directory.GetFiles(searchDir, "*." + Defaults.CML.ChainFileExtension);                    
-                    foreach (string chainFile in chainFiles)
+                    Chain chain = new Chain() { Path = chainFile };
+                    if (parseChainFile(ref chain))
                     {
-                        Chain chain = new Chain() { Path = chainFile };
-                        if (parseChainFile(ref chain))
-                        {
-                            chains.Add(chain);
-                        }
+                        chains.Add(chain);
                     }
-                }         
+                }                         
             }
 
             return chains;
@@ -560,11 +607,13 @@ namespace ssi
             if (ChainPathComboBox.SelectedItem != null)
             {
                 Chain chain = (Chain) ChainPathComboBox.SelectedItem;
+                ChainPathLabel.Content = chain.Path;
                 LeftContextTextBox.Text = chain.LeftContext;
                 FrameStepTextBox.Text = chain.FrameStep;
                 RightContextTextBox.Text = chain.RightContext;
             }
         }
+
 
         private void Update()
         {
@@ -603,7 +652,9 @@ namespace ssi
             LeftContextTextBox.IsEnabled = enable;
             FrameStepTextBox.IsEnabled = enable;
             RightContextTextBox.IsEnabled = enable;
+            FeatureNameTextBox.IsEnabled = enable;
 
+            UpdateFeatureName();           
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -612,6 +663,69 @@ namespace ssi
             {
                 Close();
             }
+        }
+
+        private void SortListView(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader headerClicked =
+            e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
+
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    string header = headerClicked.Column.Header as string;
+                    ICollectionView dataView = CollectionViewSource.GetDefaultView(((ListView)sender).ItemsSource);
+
+                    dataView.SortDescriptions.Clear();
+                    SortDescription sd = new SortDescription(header, direction);
+                    dataView.SortDescriptions.Add(sd);
+                    dataView.Refresh();
+
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header  
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = null;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        private void GenericTextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateFeatureName();
         }
     }
 }

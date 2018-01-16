@@ -191,7 +191,8 @@ bool FeatureFusion::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -242,7 +243,8 @@ bool FeatureFusion::forward (ssi_size_t n_models,
 			probs[num_probs] = 0.0f;
 		}
 
-		model->forward (*fusion_stream, n_probs, probs);
+		ssi_real_t confidence = 0.0f;
+		model->forward (*fusion_stream, n_probs, probs, confidence);
 
 		ssi_stream_destroy(*fusion_stream);
 		delete fusion_stream;
@@ -346,7 +348,7 @@ bool FeatureFusion::forward (ssi_size_t n_models,
 				probs[num_probs] = 0.0f;
 			}
 
-			model->forward (*fusion_stream, n_probs, probs);
+			model->forward (*fusion_stream, n_probs, probs, confidence);
 
 			ssi_stream_destroy(*fusion_stream);
 			delete fusion_stream;
@@ -392,7 +394,7 @@ bool FeatureFusion::forward (ssi_size_t n_models,
 				}
 			}
 
-			model->forward(*streams[model_id - 1], n_probs, probs);
+			model->forward(*streams[model_id - 1], n_probs, probs, confidence);
 
 		}
 

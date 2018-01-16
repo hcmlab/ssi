@@ -1831,7 +1831,7 @@ def x2p (x):
     return points
 ```	
 
-To match an unknown gesture, we implement a function ``forward`` and store for each class the best matching template in the ``probs`` array (that is we look for the class template with the smallest distance).
+To match an unknown gesture, we implement a function ``forward`` and store for each class the best matching template in the ``probs`` array (that is we look for the class template with the smallest distance). We return a single number to express the confidence of our prediction (here the probability of the recognized class, which is certainly not a reliable measure):
 
 ``` python
 def forward(x, probs, opts, vars):
@@ -1840,10 +1840,12 @@ def forward(x, probs, opts, vars):
 
     if not recognizer is None:        
         points = x2p(x)
-        recognizer.RecognizeProbs(points, probs)       
+        recognizer.RecognizeProbs(points, probs) 
+
+    return max(probs)
 ```		
 
-Finally, we add functions to save and load our model:
+And we add functions to save and load our model:
 
 ``` python
 def load(path, opts, vars):
@@ -1862,6 +1864,13 @@ def save(path, opts, vars):
     if not recognizer is None:
         pickle.dump (recognizer.Templates, open(path, 'wb'))  
 ```			
+
+Finally, we tell ssi that this is a multi-class problem (in case of a regression problem we would return ```types.CLASSIFICATION``` instead):
+
+``` python
+def getModelType(types, opts, vars):
+    return types.CLASSIFICATION
+```
 	
 > Check out the [code](code/ml/dollar/ssi_dollar.py).	
 	

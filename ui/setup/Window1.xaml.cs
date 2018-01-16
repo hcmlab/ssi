@@ -42,6 +42,7 @@ namespace ssi
         static string SSI_PIPELINE_EXECUTABLE = "xmlpipe.exe";
         static string SSI_STREAM_EXTENSION = ".stream";
         static string SSI_ANNOTATION_EXTENSION = ".annotation";
+        static string SSI_NOVA_DIRECTORY = "ui\\nova\\bin";
         static string SSI_NOVA_EXTENSION = ".nova";
         static string SSI_STREAM_EXECUTABLE = "nova.exe";
         static string SSI_PYTHON_VARIABLE = "SSI_PYTHON";
@@ -177,7 +178,7 @@ namespace ssi
 
             if (CheckBoxStream.IsChecked == true)
             {
-                string exe = Directory.GetCurrentDirectory() + "\\" + ApplyPlatformAndCompiler(SSI_BIN_DIRECTORY) + "\\" + SSI_STREAM_EXECUTABLE;
+                string exe = Directory.GetCurrentDirectory() + "\\" + SSI_NOVA_DIRECTORY + "\\" + SSI_STREAM_EXECUTABLE;
                 string icon = Directory.GetCurrentDirectory() + "\\core\\build\\tools\\ui.ico";
              
                 if (ApplyFileAssociation(undo, SSI_STREAM_EXTENSION, "ssiview", "SSI Viewer Association", icon, exe, "SSI Viewer"))

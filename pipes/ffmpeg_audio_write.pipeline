@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="ffmpeg" />
+		<load name="camera" />
+		<load name="audio" />
+		<load name="control" />
+	</register>
+
+	<framework waitid="close"/>
+	<runnable create="WaitButton:close" title="button" label="CLOSE"/>	
+	
+	<!-- audio sensor -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>	
+	
+	<!-- write -->
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.wav" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.mp3" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.aac" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.wma" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.flac" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.ogg" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	<consumer create="FFMPEGWriter:writer" path="ffmpeg.opus" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>	
+	
+	<!-- visualize -->	
+	<consumer create="SignalPainter:plot" title="AUDIO" type="2">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,450">console</area>
+		<area pos="0,450,400,150">close</area>	
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,640,480">plot*</area>		
+	</object>
+
+</pipeline>

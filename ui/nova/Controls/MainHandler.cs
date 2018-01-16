@@ -15,7 +15,7 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "1.0.0.8";
+        public static string BuildVersion = "1.0.1.7";
         public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
 
 
@@ -188,11 +188,10 @@ namespace ssi
             control.databaseLoadSessionMenu.Click += databaseLoadSession_Click;
             control.databaseCMLCompleteStepMenu.Click += databaseCMLCompleteStep_Click;
             control.databaseCMLFusionMenu.Click += databaseCMLFusion_Click;
+           // control.databaseCMLFusionMenu.Click += databaseCMLFusionPredict_Click;
             control.databaseCMLExtractFeaturesMenu.Click += databaseCMLExtractFeatures_Click;
             control.databaseCMLMergeFeaturesMenu.Click += databaseCMLMergeFeatures_Click;
-            control.databaseCMLTrainMenu.Click += databaseCMLTrain_Click;
-            control.databaseCMLEvaluateMenu.Click += databaseCMLEvaluate_Click;
-            control.databaseCMLPredictMenu.Click += databaseCMLPredict_Click;
+            control.databaseCMLTrainAndPredictMenu.Click += databaseCMLTrainAndPredict_Click;            
             control.databaseManageUsersMenu.Click += databaseManageUsers_Click;
             control.databaseManageDBsMenu.Click += databaseManageDBs_Click;
             control.databaseManageSessionsMenu.Click += databaseManageSessions_Click;
@@ -373,7 +372,7 @@ namespace ssi
         {
             tokenSource.Cancel();
             Stop();
-
+            updateTimeRange(1);
             bool anytrackchanged = false;
             foreach (AnnoTier track in annoTiers)
             {
@@ -400,8 +399,7 @@ namespace ssi
                 }
             }
 
-            //if (Time.TotalDuration > 0) fixTimeRange(Properties.Settings.Default.DefaultZoomInSeconds);
-
+           
             while (mediaBoxes.Count > 0)
             {
                 removeMediaBox(mediaBoxes[0]);
@@ -430,6 +428,8 @@ namespace ssi
 
             updateControl();
             control.timeLineControl.rangeSlider.Update();
+            control.timeLineControl.rangeSlider.slider.RangeStartSelected = 0;
+            control.timeLineControl.rangeSlider.slider.RangeStopSelected = 100000;
             control.geometricListControl.Visibility = Visibility.Collapsed;
 
             return true;

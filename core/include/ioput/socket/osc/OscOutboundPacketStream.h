@@ -1,31 +1,31 @@
 /*
-	oscpack -- Open Sound Control packet manipulation library
-	http://www.audiomulch.com/~rossb/oscpack
+    oscpack -- Open Sound Control packet manipulation library
+    http://www.audiomulch.com/~rossb/oscpack
 
-	Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
+    Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
 
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files
-	(the "Software"), to deal in the Software without restriction,
-	including without limitation the rights to use, copy, modify, merge,
-	publish, distribute, sublicense, and/or sell copies of the Software,
-	and to permit persons to whom the Software is furnished to do so,
-	subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-	Any person wishing to distribute modifications to the Software is
-	requested to send the modifications to the original developer so that
-	they can be incorporated into the canonical version.
+    Any person wishing to distribute modifications to the Software is
+    requested to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-	ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-	CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #ifndef INCLUDED_OSCOUTBOUNDPACKET_H
 #define INCLUDED_OSCOUTBOUNDPACKET_H
@@ -66,11 +66,11 @@ public:
 
 class OutboundPacketStream{
 public:
-	OutboundPacketStream( unsigned long capacity = 1472);
-	~OutboundPacketStream();
+    OutboundPacketStream( unsigned long capacity = 1472);
+    ~OutboundPacketStream();
 
     void Clear();
-	void Adjust (unsigned long capacity);
+    void Adjust (unsigned long capacity);
 
     unsigned int Capacity() const;
 
@@ -88,7 +88,7 @@ public:
 
     OutboundPacketStream& operator<<( const BundleInitiator& rhs );
     OutboundPacketStream& operator<<( const BundleTerminator& rhs );
-    
+
     OutboundPacketStream& operator<<( const BeginMessage& rhs );
     OutboundPacketStream& operator<<( const MessageTerminator& rhs );
 
@@ -97,10 +97,12 @@ public:
     OutboundPacketStream& operator<<( const InfinitumType& rhs );
     OutboundPacketStream& operator<<( osc_int32 rhs );
 
+// TODO fix 32bit
+    /*
 #ifndef x86_64
     OutboundPacketStream& operator<<( int rhs )
             { *this << (osc_int32)rhs; return *this; }
-#endif
+#endif*/
 
     OutboundPacketStream& operator<<( float rhs );
     OutboundPacketStream& operator<<( char rhs );
@@ -113,7 +115,7 @@ public:
     OutboundPacketStream& operator<<( const Symbol& rhs );
     OutboundPacketStream& operator<<( const Blob& rhs );
 
-	static long RoundUp4( long x );
+    static long RoundUp4( long x );
 
 private:
 
@@ -126,7 +128,7 @@ private:
     void CheckForAvailableArgumentSpace( long argumentLength );
 
     char *data_;
-	unsigned long capacity_;
+    unsigned long capacity_;
     char *end_;
 
     char *typeTagsCurrent_; // stored in reverse order

@@ -200,60 +200,71 @@ namespace ssi
 
                         tokenSource = new CancellationTokenSource();
 
+                        string url = "";
+                        bool requiresAuth = false;
+
+                        DatabaseDBMeta meta = new DatabaseDBMeta()
+                        {
+                            Name = DatabaseHandler.DatabaseName
+                        };
+                        if (!DatabaseHandler.GetDBMeta(ref meta))
+                        {
+                            return;
+                        }
+                        if (meta.Server == "")
+                        {
+                            return;
+                        }
+
+                        string localPath = Properties.Settings.Default.DatabaseDirectory + "\\" + DatabaseHandler.DatabaseName + "\\" + DatabaseHandler.SessionName + "\\";
+
+                        if (meta.UrlFormat == UrlFormat.NEXTCLOUD)
+                        {
+                            url = meta.Server + "/download?path=%2F" + DatabaseHandler.DatabaseName + "%2F" + DatabaseHandler.SessionName + "&files=";
+                        }
+                        else
+                        {
+                            url = meta.Server + '/' + DatabaseHandler.SessionName + '/';
+                            requiresAuth = meta.ServerAuth;
+                        }
+
+                        string[] split = url.Split(':');
+                        string connection = split[0];
+
+                        Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+
+
                         foreach (string stream in streamsAll)
                         {
-                            string localPath = Properties.Settings.Default.DatabaseDirectory + "\\" + DatabaseHandler.DatabaseName + "\\" + DatabaseHandler.SessionName + "\\" + stream;
-                            if (File.Exists(localPath))
+
+
+                            string llocal = localPath + stream;
+                            string lurl = url + stream;
+                            if (File.Exists(llocal))
                             {
-                                loadFile(localPath);
+                                loadFile(llocal);
                                 continue;
                             }
 
-                            string url = "";
-                            bool requiresAuth = false;
 
-                            DatabaseDBMeta meta = new DatabaseDBMeta()
-                            {
-                                Name = DatabaseHandler.DatabaseName
-                            };
-                            if (!DatabaseHandler.GetDBMeta(ref meta))
-                            {
-                                continue;
-                            }
-                            if (meta.Server == "")
-                            {
-                                continue;
-                            }
-  
+                            Thread.Sleep(100);
+                           
 
                             //TODO add more servers...
-                            
-                            if(meta.UrlFormat == UrlFormat.NEXTCLOUD)
-                            {
-                                url = meta.Server + "/download?path=%2F" + DatabaseHandler.DatabaseName + "%2F" + DatabaseHandler.SessionName + "&files=" + stream;
-                            }
-                            else
-                            { 
-                                url = meta.Server + '/' + DatabaseHandler.SessionName + '/' + stream;
-                                requiresAuth = meta.ServerAuth;
-                            }
-
-                            string[] split = url.Split(':');
-                            string connection = split[0];                        
-                        
-                            Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+        
 
                             if (connection == "sftp")
                             {                            
-                                SFTP(url, localPath);
+                                SFTP(lurl, llocal);
                             }
                             else if (connection == "http" || connection == "https" && requiresAuth == false)
-                            {                            
-                                httpGet(url, localPath);
+
+                            {
+                                httpGet(lurl, llocal);
                             }
                             else if (connection == "http" || connection == "https" && requiresAuth == true)
                             {
-                                httpPost(url, localPath);
+                                httpPost(lurl, llocal);
                             }
 
                             else
@@ -261,13 +272,18 @@ namespace ssi
                                 loadFile(localPath);
                             }
                         }
+                       
                     }
                     catch (Exception e)
                     {
                         MessageBox.Show("Error: " + e, "Connection to database not possible");
                     }
                 }
+
+              
             }
+
+           
         }
 
         public void ReloadAnnoTierFromDatabase(AnnoTier tier, bool loadBackup)
@@ -299,7 +315,7 @@ namespace ssi
             AnnoList annoList = DatabaseHandler.LoadAnnoList(annotation, loadBackup);
             double maxdur = 0;
 
-            if (annoList != null && annoList.Count > 0 && annoList.Scheme.Type == AnnoScheme.TYPE.DISCRETE)
+            if (annoList != null && annoList.Count > 0 && annoList.Scheme.Type == AnnoScheme.TYPE.DISCRETE || annoList.Scheme.Type == AnnoScheme.TYPE.FREE)
             {
                 maxdur = annoList[annoList.Count - 1].Stop;
 
@@ -318,6 +334,21 @@ namespace ssi
                 updateTimeRange(maxdur);
 
                 tier.AnnoList.HasChanged = false;          
+            }
+
+            else if (annoList != null && annoList.Count > 0 && annoList.Scheme.Type == AnnoScheme.TYPE.CONTINUOUS)
+            {
+                maxdur = annoList[annoList.Count - 1].Stop;
+
+                setAnnoList(annoList);
+                tier.AnnoList.Clear();
+                tier.AnnoList = annoList;
+                tier.TimeRangeChanged(Time);
+                updateTimeRange(maxdur);
+                AnnoTier.Selected.TimeRangeChanged(MainHandler.Time);
+
+                tier.AnnoList.HasChanged = false;
+
             }
 
             control.ShadowBox.Visibility = Visibility.Collapsed;
@@ -396,6 +427,7 @@ namespace ssi
         private void databaseLoadSession_Click(object sender, RoutedEventArgs e)
         {
             databaseLoadSession();
+            
         }
 
         private void databaseManageDBs_Click(object sender, RoutedEventArgs e)
@@ -422,8 +454,6 @@ namespace ssi
         {
             DatabaseAnnoMergeWindow window = new DatabaseAnnoMergeWindow();
             window.ShowDialog();
-
-         
         }
 
 

@@ -38,8 +38,8 @@
 		pool5
 		
 	-->	
-	<transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=18;n_feature=256;n_samples=7350">	
-		<input pin="audio" frame="882" delta="6468"/>	
+	<transformer create="PythonFeature:soundnet" script="soundnet" syspath="." optsstr="layer=18;n_feature=256;n_samples=12765">	
+		<input pin="audio" frame="882" delta="11883"/>	
 		<output pin="pool5"/>
 	</transformer>
 	

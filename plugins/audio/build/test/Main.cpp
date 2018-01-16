@@ -51,11 +51,11 @@ int main () {
 
 	ssi_print ("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-	Factory::RegisterDLL ("ssiframe.dll");
-	Factory::RegisterDLL ("ssievent.dll");
-	Factory::RegisterDLL ("ssigraphic.dll");
-	Factory::RegisterDLL ("ssiioput.dll");
-	Factory::RegisterDLL ("ssiaudio.dll");
+	Factory::RegisterDLL ("frame");
+	Factory::RegisterDLL ("event");
+	Factory::RegisterDLL ("graphic");
+	Factory::RegisterDLL ("ioput");
+	Factory::RegisterDLL ("audio");
 
 	Exsemble ex;
 	ex.add(&ex_audio, 0, "AUDIO", "How to record an audio file.");

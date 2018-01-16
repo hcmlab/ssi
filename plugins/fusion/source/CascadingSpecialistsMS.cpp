@@ -426,7 +426,8 @@ bool CascadingSpecialistsMS::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -527,7 +528,7 @@ bool CascadingSpecialistsMS::forward (ssi_size_t n_models,
 				for(ssi_size_t i = 0; i < (n_models - miss_counter); i++){
 					if( (model_id == models_actual[i]) && (win_counter < n_winning_models) ){
 						model = models[model_id];
-						model->forward(*streams[model_id], n_probs, probs);
+						model->forward(*streams[model_id], n_probs, probs, confidence);
 						for(ssi_size_t j = 0; j < _n_classes; j++){
 							decision_profile[win_counter][j] = probs[j];
 						}
@@ -635,7 +636,7 @@ bool CascadingSpecialistsMS::forward (ssi_size_t n_models,
 			}
 		}
 
-		model->forward(*streams[model_id], n_probs, probs);
+		model->forward(*streams[model_id], n_probs, probs, confidence);
 	}
 
 	if(available){
@@ -663,6 +664,8 @@ bool CascadingSpecialistsMS::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

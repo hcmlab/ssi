@@ -165,6 +165,14 @@ typedef struct _ssipyeventboard {
 } ssipyeventboard;
 PyAPI_DATA(PyTypeObject) ssipyeventboard_Type;
 
+// model type
+typedef struct _ssipymodeltype {
+	PyObject_HEAD
+	ssi_type_t CLASSIFICATION;
+	ssi_type_t REGRESSION;	
+} ssipymodeltype;
+PyAPI_DATA(PyTypeObject) ssipymodeltype_Type;
+
 // module
 static PyModuleDef ssipy_module = {
 	PyModuleDef_HEAD_INIT,
@@ -215,6 +223,7 @@ char *ssipyevent_ToString(ssipyevent *self);
 void ssipyeventboard_Init(ssipyeventboard *self, void *client, ssipyupdatefunc_t update);
 ssipyeventboard *ssipyeventboard_New(void *client, ssipyupdatefunc_t update);
 
-
+ssipymodeltype *ssipymodeltype_New();
+void ssipymodeltype_Init(ssipymodeltype *self);
 
 #endif

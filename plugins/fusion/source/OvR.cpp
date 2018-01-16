@@ -191,7 +191,8 @@ bool OvR::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -239,7 +240,7 @@ bool OvR::forward (ssi_size_t n_models,
 
 				found_data = true;
 				
-				model->forward (*stream, 2, hot_probs);
+				model->forward (*stream, 2, hot_probs ,confidence);
 
 				if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
 					ssi_print("\nEvaluating Class %i with Model %i on Stream %i\n", n_class, n_class + (n_strm * _n_classes), n_strm);
@@ -322,7 +323,7 @@ bool OvR::forward (ssi_size_t n_models,
 		}
 
 		ssi_real_t* ffusion_probs = new ssi_real_t [_n_classes];
-		model->forward (*fusion_stream, _n_classes, ffusion_probs);
+		model->forward (*fusion_stream, _n_classes, ffusion_probs, confidence);
 
 		if (ssi_log_level >= SSI_LOG_LEVEL_DEBUG) {
 			ssi_print("\nHybridProbs:\t");
@@ -391,6 +392,8 @@ bool OvR::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

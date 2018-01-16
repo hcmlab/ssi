@@ -19,7 +19,9 @@ The latest version of NOVA can be accessed at:
 
 Just download or check-out the release branch and start 'nova.exe' (yes, NOVA is available for Windows systems only).
 
-If you do not see videos on playback, please make also sure you have the right codecs installed. A good choice is the K-lite Codec Pack (You can leave all settings on default, but make sure to not not install any 3rd party software that comes with the installer).
+If you do not see videos on playback, please make also sure you have the right codecs installed. A good choice is the K-lite Codec Pack <https://www.codecguide.com/download_kl.htm> (You can leave all settings on default, but make sure to not not install any 3rd party software that comes with the installer).
+
+You might also need to install the VC140 Runtime Distributable if it is not installed on your system. <https://www.microsoft.com/en-US/download/details.aspx?id=48145>
 
 # Manual Annotation
 
@@ -107,17 +109,20 @@ Pressing 'Ctrl+Z' and 'Ctrl+Y' allows it to undo and redo the previous changes. 
  Shorcut					Description    
  -------					------ 
  0 - 9						Setting the label for the selected segment (For discrete schemes)
- S							Splitting the selected segment in two parts on the green annotation cursor
+ S (on Segment)			    Splitting the selected segment in two parts on the green annotation cursor
+ S (on Tier) 			    Move green Annotation Cursor to red Signal Cursor
  W							Creating a new label between the green annotation cursor and the red media position cursor, edit selected segment
- Q							Move the Signal Cursor to the beginning, the Annotation Cursor to the end of the selected segment
- E							Move the Annotation Cursor to the beginning, the Signal Cursor to the end of the selected segment
+ Q							Move signal cursor to the beginning, the annotation cursor to the end of the selected segment
+ E							Move annotation cursor to the beginning, the signal cursor to the end of the selected segment
  ctrl + C      				Copy the currently selected segment
  ctrl + K					Delete all annotations that are on the right side of the green annotation cursor 
  ctrl + L					Complete the current session automatically
- ctrl + V					Paste a copied segment
+ ctrl + R      				Reload current annotation
+ ctrl + B      				Reload current annotation from backup
  ctrl + X					Cut the selected segment
- ctrl + Y					Redo
- ctrl + Z					Undo
+ ctrl + V					Paste a copied segment
+ ctrl + Y					Redo last step
+ ctrl + Z					Undo last step
  shift + dragging			Creating a label from start to end position (same as dragg with right mouse)
 
 **Continuous Scheme**
@@ -466,12 +471,12 @@ Note that predictions with a low confidence will be marked with a special patter
 
 ## Model Training {#cl-model-training}
 
-Once annotations for a number of sessions have been accomplished a 'strong' classification model can be trained. This requires that [features](#cl-feature-extraction) have been extracted for the sessions and a compatible [trainer template](#cl-trainer-templates) is available. Now choose 'Train Model' from LEARNING and a dialogue pops up. Here you can select a scheme, one or more roles and an annotator. Sessions for which an annotation exists that satisfies the selection are now shown and can be selected. Finally, choose the stream for which a machine learning model should be trained. Note that only those streams are listed for which at least one [trainer template](#cl-trainer-templates) is found. By pressing 'Train' model training is started. Switch on 'Force' if you want to override an existing model.
+Once annotations for a number of sessions have been accomplished a 'strong' classification model can be trained. This requires that [features](#cl-feature-extraction) have been extracted for the sessions and a compatible [trainer template](#cl-trainer-templates) is available. Now choose 'Train and Predict' from LEARNING and a dialogue pops up. Stay within the 'Train' tab. Here you can select a scheme, one or more roles and an annotator. Sessions for which an annotation exists that satisfies the selection are now shown and can be selected. Finally, choose the stream for which a machine learning model should be trained. Note that only those streams are listed for which at least one [trainer template](#cl-trainer-templates) is found. By pressing 'Train' model training is started. Switch on 'Force' if you want to override an existing model.
 
 ![*Model training.*](pics/cl-training-dialog.png){#fig:cl-training-dialog}
 
 ## Annotation Prediction
 
-With a trained model it is now possible to predict annotations for one or more sessions. Therefore choose 'Prediction Annotations' from the LEARNING menu. Once you have selected a scheme, a role and an Annotator those sessions will be listed, which do not have a matching annotation yet. You can turn of the filter by selecting 'Show existing', however, make sure you are not occidentally overriding existing annotations (no undo available!). Finally, select the stream for which a machine learning [model](#cl-model-training) has been trained (only streams are listed for which at least one model is found). Depending on the scheme, there may be additional options that allow you to tune the generation of the prediction. E.g. in case of a discrete scheme you can automatically fill small gaps or remove segments below a threshold. After pressing 'Predict' annotations will be created based on the chosen model for all sessions that have been selected and stored under your name (if you are an administrator you may also generate annotations for another user).
+With a trained model it is now possible to predict annotations for one or more sessions. Therefore choose 'Train and Predict' from the LEARNING menu and switch to the 'Predict' tab. Once you have selected a scheme, a role and an Annotator those sessions will be listed, which do not have a matching annotation yet. You can turn of the filter by selecting 'Show existing', however, make sure you are not occidentally overriding existing annotations (no undo available!). Finally, select the stream for which a machine learning [model](#cl-model-training) has been trained (only streams are listed for which at least one model is found). Depending on the scheme, there may be additional options that allow you to tune the generation of the prediction. E.g. in case of a discrete scheme you can automatically fill small gaps or remove segments below a threshold. After pressing 'Predict' annotations will be created based on the chosen model for all sessions that have been selected and stored under your name (if you are an administrator you may also generate annotations for another user).
 
 ![*Annotation prediction dialogue.*](pics/cl-prediction-dialog.png){#fig:cl-prediction-dialog}

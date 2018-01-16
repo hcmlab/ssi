@@ -63,6 +63,7 @@ public:
 	const ssi_char_t *getName () { return GetCreateName (); };
 	const ssi_char_t *getInfo () { return "K-Nearest Neighbor"; };
 
+	IModel::TYPE::List getModelType() { return IModel::TYPE::CLASSIFICATION; }
 	ssi_size_t getClassSize () { return _n_classes; };
 	ssi_size_t getStreamDim () { return _n_features; };
 	ssi_size_t getStreamByte () { return sizeof (ssi_real_t); };
@@ -73,7 +74,8 @@ public:
 	bool isTrained () { return _knn != 0; };
 	bool forward (ssi_stream_t &stream,
 		ssi_size_t n_probs,
-		ssi_real_t *probs);	
+		ssi_real_t *probs,
+		ssi_real_t &confidence);
 	void release ();
 	bool save (const ssi_char_t *filepath);
 	bool load (const ssi_char_t *filepath);

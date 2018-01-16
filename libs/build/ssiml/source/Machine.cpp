@@ -1085,10 +1085,12 @@ bool Machine::CreateEventList (Config &config, const ssi_char_t *prefix, ISample
 	ssi_size_t count = 0;
 	samples.reset ();
 
+	ssi_real_t confidence = 0.0f;
+
 	while (sample = samples.next ()) {
 		events[count].time = ssi_cast (ssi_size_t, sample->time * 1000.0 + 0.5);
 		events[count].dur = 0;
-		if (trainer.forward_probs (sample->num, sample->streams, n_classes, probs)) {
+		if (trainer.forward_probs (sample->num, sample->streams, n_classes, probs, confidence)) {
 
 			ssi_real_t minval, maxval;
 			ssi_size_t minpos, maxpos;

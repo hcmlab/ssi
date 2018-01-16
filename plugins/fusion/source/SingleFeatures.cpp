@@ -173,9 +173,10 @@ bool SingleFeatures::train (ssi_size_t n_models,
 			
 			ssi_real_t* f_probs = new ssi_real_t[_n_classes];
 			ssi_real_t error = 0.0f;
+			ssi_real_t confidence = 0.0f;
 			samples_sel.reset();
 			while(_sample = samples_sel.next()){
-				models[pos]->forward(*_sample->streams[nstrm], _n_classes, f_probs);
+				models[pos]->forward(*_sample->streams[nstrm], _n_classes, f_probs, confidence);
 				ssi_size_t max_ind = 0;
 				ssi_real_t max_val = f_probs[0];
 				for (ssi_size_t j = 1; j < _n_classes; j++) {
@@ -220,7 +221,8 @@ bool SingleFeatures::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -252,7 +254,7 @@ bool SingleFeatures::forward (ssi_size_t n_models,
 			stream = streams[nstrm];
 			
 			ssi_stream_select(*stream, stream_s, 1, dims);
-			model->forward (stream_s, n_probs, probs);
+			model->forward (stream_s, n_probs, probs, confidence);
 
 			//fill decision_profile
 			for (ssi_size_t num_probs = 0; num_probs < n_probs; num_probs++){
@@ -311,6 +313,8 @@ bool SingleFeatures::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

@@ -838,35 +838,35 @@ void Trainer::eval(ISamples &samples, FILE *file, Evaluation::PRINT::List format
 	}
 
 	Evaluation eval;
-	eval.eval(this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
+	eval.eval(this, samples);
 	eval.print(file, format);
 }
 
 void Trainer::evalSplit(ISamples &samples, ssi_real_t split, FILE *file, Evaluation::PRINT::List format) {
 
 	Evaluation eval;
-	eval.evalSplit (this, samples, split, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
+	eval.evalSplit (this, samples, split);
 	eval.print(file, format);
 }
 
 void Trainer::evalKFold(ISamples &samples, ssi_size_t k, FILE *file, Evaluation::PRINT::List format) {
 
 	Evaluation eval;
-	eval.evalKFold (this, samples, k, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
+	eval.evalKFold (this, samples, k);
 	eval.print(file, format);
 }
 
 void Trainer::evalLOO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
 	Evaluation eval;
-	eval.evalLOO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
+	eval.evalLOO (this, samples);
 	eval.print(file, format);
 }
 
 void Trainer::evalLOUO(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 
 	Evaluation eval;
-	eval.evalLOUO (this, samples, samples.getClassSize() == 1 ? IModel::TASK::REGRESSION : IModel::TASK::CLASSIFICATION);
+	eval.evalLOUO (this, samples);
 	eval.print(file, format);
 }
 
@@ -924,7 +924,7 @@ void Trainer::evalLOUO(FILE *file, Evaluation::PRINT::List format) {
 bool Trainer::train_h (ISamples &samples_raw) {	
 
 	bool result = false;
-
+	
 	ISamples *samples = &samples_raw;
 	if (_balance != BALANCE::NONE)
 	{
@@ -993,10 +993,11 @@ bool Trainer::train_h (ISamples &samples_raw) {
 // test sample
 bool Trainer::forward(ssi_stream_t &stream,
 	ssi_size_t &class_index,
-	ssi_real_t &class_prob)
+	ssi_real_t &class_prob,
+	ssi_real_t &confidence)
 {
 	ssi_real_t *probs = new ssi_real_t[_n_classes];
-	if (!forward_probs(stream, _n_classes, probs))
+	if (!forward_probs(stream, _n_classes, probs, confidence))
 	{
 		return false;
 	}
@@ -1019,18 +1020,20 @@ bool Trainer::forward(ssi_stream_t &stream,
 }
 
 bool Trainer::forward (ssi_stream_t &stream, 
-	ssi_size_t &class_index) {	
+	ssi_size_t &class_index,
+	ssi_real_t &confidence) {
 
 	ssi_stream_t *s = &stream;
-	return forward (1, &s, class_index);
+	return forward (1, &s, class_index, confidence);
 }
 
 bool Trainer::forward (ssi_size_t num,
 	ssi_stream_t **streams,
-	ssi_size_t &class_index) {
+	ssi_size_t &class_index,
+	ssi_real_t &confidence) {
 
 	ssi_real_t *probs = new ssi_real_t[_n_classes];
-	if (!forward_probs (num, streams, _n_classes, probs)) {
+	if (!forward_probs (num, streams, _n_classes, probs, confidence)) {
 		delete[] probs;
 		return false;
 	}
@@ -1052,16 +1055,18 @@ bool Trainer::forward (ssi_size_t num,
 
 bool Trainer::forward_probs (ssi_stream_t &stream,
 	ssi_size_t class_num,
-	ssi_real_t *class_probs) {
+	ssi_real_t *class_probs,
+	ssi_real_t &confidence) {
 
 	ssi_stream_t *s = &stream;
-	return forward_probs (1, &s, class_num, class_probs);
+	return forward_probs (1, &s, class_num, class_probs, confidence);
 }
 
 bool Trainer::forward_probs (ssi_size_t n_streams,
 	ssi_stream_t **streams,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_is_trained) {
 		if (!_preventWarningsSpam)
@@ -1174,9 +1179,9 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 		}
 	}
 
-	bool result = false;
+	bool result = false;	
 	if (_fusion) {
-		result = _fusion->forward (_n_models, _models, n_streams, streams_ptr, n_probs, probs);		
+		result = _fusion->forward (_n_models, _models, n_streams, streams_ptr, n_probs, probs, confidence);		
 	} else {
 
 		/*ssi_stream_t *strm = streams_ptr[_stream_index];
@@ -1191,7 +1196,7 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 		ssi_fprint(fp, "\n", *ptr++);*/
 
 		if (streams_ptr[_stream_index]) {
-			result = _models[0]->forward(*streams_ptr[_stream_index], n_probs, probs);
+			result = _models[0]->forward(*streams_ptr[_stream_index], n_probs, probs, confidence);
 		}
 	}
 
@@ -3069,19 +3074,25 @@ bool Trainer::cluster (ISamples &samples) {
 	}
 
 	ssi_sample_t *sample;
+	ssi_real_t confidence = 0.0f;
 	samples.reset ();
 	while (sample = samples.next ()) {		
 		if (n_classes == 1) // REGRESSION
 		{			
-			forward_probs(sample->num, sample->streams, 1, &sample->score);
+			forward_probs(sample->num, sample->streams, 1, &sample->score, confidence);
 		}
 		else // MULTICLASS
 		{
-			forward(sample->num, sample->streams, sample->class_id);			 
+			forward(sample->num, sample->streams, sample->class_id, confidence);
 		}
 	}
 
 	return true;
+}
+
+IModel::TYPE::List Trainer::getModelType()
+{
+	return _models[0]->getModelType();
 }
 
 ssi_size_t Trainer::getModelSize() {

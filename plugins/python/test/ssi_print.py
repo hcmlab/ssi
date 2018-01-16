@@ -11,7 +11,7 @@ Output stream(s) to the console or a file.
 import sys
 
 
-def getOptions(opts,vars):
+def getOptions(opts, vars):
 
     opts['path'] = ''  
 

@@ -120,7 +120,8 @@ void FFMPEGReader::setAudioProvider(IProvider *provider){
 	if (_options.stream) {
 		_audio_sr = _options.asr;
 	} else {
-		if (!_client->peekAudioFormat (_audio_sr)) {
+		ssi_size_t n_samples = 0;
+		if (!_client->peekAudioFormat (_audio_sr, n_samples)) {
 			ssi_wrn ("could not determine audio format, use default options");
 			_audio_sr = _options.asr;
 		}
@@ -288,6 +289,25 @@ bool FFMPEGReader::cancel()
 {
 	_interrupted = true;
 	_wait_event.release();
+
+	return true;
+}
+
+bool FFMPEGReader::initAudioStream(const ssi_char_t *path, ssi_stream_t &stream)
+{
+	FFMPEGReaderClient reader(this);
+
+	ssi_time_t sr;
+	ssi_size_t num;
+
+	if (!reader.peekAudioFormat(sr, num))
+	{
+		ssi_wrn("could not determine audio format '%s'", path);
+		return false;
+	}
+
+	ssi_stream_init(stream, num, 1, sizeof(ssi_real_t), SSI_FLOAT, sr);
+	ssi_stream_zero(stream);
 
 	return true;
 }

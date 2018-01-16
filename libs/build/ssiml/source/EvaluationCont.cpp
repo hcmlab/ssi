@@ -109,6 +109,7 @@ void EvaluationCont::eval (ssi_stream_t *stream, old::Annotation* anno, ssi_real
 	ssi_size_t num = 0;
 	ssi_size_t index, real_index, old_index = 0;
 	ssi_real_t* probs = new ssi_real_t[_n_classes];
+	ssi_real_t confidence = 0.0f;
 
 	IContinuousModel *model = (IContinuousModel *)_trainer->getModel(0);
 	ssi_time_t out_time;
@@ -127,7 +128,7 @@ void EvaluationCont::eval (ssi_stream_t *stream, old::Annotation* anno, ssi_real
 		ssi_stream_copy(*stream, chunk, num, num + _chunk_size);
 		chunk.time = num * (1.0 / chunk.sr); //relative time counter
 		
-		_trainer->forward_probs (chunk, _n_classes, 0);
+		_trainer->forward_probs (chunk, _n_classes, 0, confidence);
 
 		//check for recognitions	
 		while(model->getOutput(_n_classes, probs, &out_time, 0))
@@ -204,7 +205,7 @@ void EvaluationCont::evalLOUO (Trainer &trainer, ISamples &samples, std::vector<
 	_annos = annos;
 	_repetitions = reps;
 
-	init (samples, &trainer, IModel::TASK::CLASSIFICATION);
+	init (trainer.getModelType(), samples, &trainer);
 
 	ssi_size_t n_users = samples.getUserSize ();
 
@@ -260,7 +261,7 @@ void EvaluationCont::evalFull (Trainer &trainer, ISamples &samples, std::vector<
 	_annos = annos;
 	_repetitions = reps;
 	
-	init (samples, &trainer, IModel::TASK::CLASSIFICATION);
+	init (trainer.getModelType(), samples, &trainer);
 		
 	ssi_size_t n_users = samples.getUserSize ();
 	for (ssi_size_t nuser = 0; nuser < n_users; ++nuser) 

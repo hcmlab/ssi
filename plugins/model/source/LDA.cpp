@@ -68,7 +68,8 @@ LDA::~LDA () {
 	}
 }
 
-bool LDA::train (ISamples &samples, ssi_size_t stream_index) {
+bool LDA::train (ISamples &samples, 
+	ssi_size_t stream_index) {
 
 	if (samples.getSize () == 0) {
 		ssi_wrn ("empty sample list");
@@ -163,7 +164,8 @@ bool LDA::train (ISamples &samples, ssi_size_t stream_index) {
 
 bool LDA::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {	
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -237,6 +239,8 @@ bool LDA::forward (ssi_stream_t &stream,
 			probs[j] = 1.0f - (probs[j] / sum);
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	ae_vector_clear (&samplev);
 	ae_vector_clear (&tmp);

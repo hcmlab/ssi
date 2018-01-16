@@ -29,6 +29,9 @@
     <ClCompile Include="..\..\source\OpenfaceAdditionalFeat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\OpenfaceNormalizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ssiopenface.h">
@@ -47,6 +50,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\OpenfaceAdditionalFeat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenfaceNormalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

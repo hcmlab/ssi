@@ -80,7 +80,8 @@ KMeans::~KMeans () {
 	}
 }
 
-bool KMeans::train (ISamples &samples, ssi_size_t stream_index) {
+bool KMeans::train (ISamples &samples,
+	ssi_size_t stream_index) {
 
 	if (samples.getSize () == 0) {
 		ssi_wrn ("empty sample list");
@@ -202,7 +203,8 @@ bool KMeans::train (ISamples &samples, ssi_size_t stream_index) {
 
 bool KMeans::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_clusters) {
 		ssi_wrn ("not trained");
@@ -250,6 +252,8 @@ bool KMeans::forward (ssi_stream_t &stream,
 	for (ssi_size_t i = 0; i < _n_clusters; i++) {
 		probs[i] /= sum;
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	if (_norm) {
 		delete[] ptr;

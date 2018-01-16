@@ -99,7 +99,8 @@ bool Grading::train (ssi_size_t n_models,
 		ssi_sample_t *sample = 0;
 	
 		ssi_real_t *base_probs = new ssi_real_t[_n_classes];
-	
+		ssi_real_t confidence = 0.0f;
+
 		samples.reset ();
 		while (sample = samples.next ()) {
 	
@@ -120,7 +121,7 @@ bool Grading::train (ssi_size_t n_models,
 			meta_streams[0]->type		= sample->streams[nstrm]->type;
 			meta_streams[0]->ptr		= sample->streams[nstrm]->ptr;
 
-			models[nstrm]->forward(*sample->streams[nstrm], _n_classes, base_probs);
+			models[nstrm]->forward(*sample->streams[nstrm], _n_classes, base_probs, confidence);
 
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = base_probs[0];
@@ -174,7 +175,8 @@ bool Grading::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -207,8 +209,8 @@ bool Grading::forward (ssi_size_t n_models,
 		meta_model = models[(n_models / 2) + n_model];
 		stream = streams[n_model];
 		tmp_probs[n_model] = new ssi_real_t[n_probs];
-		model->forward (*stream, n_probs, tmp_probs[n_model]);
-		meta_model->forward (*stream, 2, meta_probs);
+		model->forward (*stream, n_probs, tmp_probs[n_model], confidence);
+		meta_model->forward (*stream, 2, meta_probs, confidence);
 
 		ssi_size_t max_ind = 0;
 		ssi_real_t max_val = tmp_probs[n_model][0];
@@ -249,6 +251,9 @@ bool Grading::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
+
 	if(draw && (max_ind == max_ind_draw)){
 		return false;
 	}else{

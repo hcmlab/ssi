@@ -1,15 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Media;
-using System.Collections;
-using System.Collections.ObjectModel;
 
 namespace ssi
 {
@@ -20,32 +16,43 @@ namespace ssi
     {
         private GridViewColumnHeader listViewSortCol = null;
         private ListViewSortAdorner listViewSortAdorner = null;
-
- 
+        GridViewColumnHeader _lastHeaderClicked = null;
+        ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
         public AnnoListControl()
         {
             InitializeComponent();
-
-            annoDataGrid.SourceUpdated += AnnoDataGrid_SourceUpdated;
-           
-
         }
 
         private void AnnoDataGrid_SourceUpdated(object sender, DataTransferEventArgs e)
         {
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(annoDataGrid.ItemsSource);
             view.Filter = UserFilter;
+
+            if (AnnoTier.Selected != null && AnnoTier.Selected.IsContinuous)
+            {
+                NaNToDefaultMenu.Visibility = Visibility.Visible;
+            }
+
+            if (AnnoTier.Selected != null && AnnoTier.Selected.IsDiscreteOrFree)
+            {
+                NaNToDefaultMenu.Visibility = Visibility.Collapsed;
+            }
         }
-
-
 
         private bool UserFilter(object item)
         {
             if (String.IsNullOrEmpty(searchTextBox.Text))
                 return true;
-            else
+            else if (AnnoTier.Selected.IsDiscreteOrFree)
+            {
                 return ((item as AnnoListItem).Label.IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            else if (AnnoTier.Selected.IsContinuous)
+            {
+                return ((item as AnnoListItem).Score.ToString().IndexOf(searchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            else return false;
         }
 
         private void MenuItemDeleteClick(object sender, RoutedEventArgs e)
@@ -68,6 +75,17 @@ namespace ssi
                         }
                     }
                 }
+            }
+            else if (AnnoTierStatic.Selected.IsContinuous)
+            {
+                AnnoListItem[] selected = new AnnoListItem[annoDataGrid.SelectedItems.Count];
+                annoDataGrid.SelectedItems.CopyTo(selected, 0);
+                annoDataGrid.SelectedIndex = -1;
+                foreach (AnnoListItem s in selected)
+                {
+                    s.Score = double.NaN;
+                }
+                AnnoTier.Selected.TimeRangeChanged(MainHandler.Time);
             }
         }
 
@@ -196,12 +214,11 @@ namespace ssi
         private void MenuItemSetConfidenceZeroClick(object sender, RoutedEventArgs e)
         {
             if (annoDataGrid.SelectedItems.Count != 0)
-            {       
+            {
                 foreach (AnnoListItem s in annoDataGrid.SelectedItems)
                 {
                     s.Confidence = 0.0;
                 }
-              
             }
         }
 
@@ -213,61 +230,96 @@ namespace ssi
                 {
                     s.Confidence = 1.0;
                 }
-
             }
         }
 
-        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        private void MenuItemSetNanClick(object sender, RoutedEventArgs e)
         {
-            GridViewColumnHeader column = (sender as GridViewColumnHeader);
-            if (column.Tag != null)
-            {                
-                string sortBy = column.Tag.ToString();
-                if (sortBy == "Label")
+            if (AnnoTier.Selected.IsContinuous)
+            {
+                if (annoDataGrid.SelectedItems.Count != 0)
                 {
-
-                    if (listViewSortCol != null)
+                    double mean = (AnnoTier.Selected.AnnoList.Scheme.MinScore + AnnoTier.Selected.AnnoList.Scheme.MaxScore) / 2.0;
+                    foreach (AnnoListItem s in annoDataGrid.SelectedItems)
                     {
-                        AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
-                        annoDataGrid.Items.SortDescriptions.Clear();
+                        if (double.IsNaN(s.Score))
+                        {
+                            s.Score = mean;
+                        }
                     }
 
-                    if (listViewSortCol == null)
-                    {
-                        listViewSortCol = column;
-                        listViewSortAdorner = new ListViewSortAdorner(listViewSortCol, ListSortDirection.Ascending);
-                        AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
-                        annoDataGrid.Items.SortDescriptions.Add(new SortDescription(sortBy, ListSortDirection.Ascending));
-                    }
-                    else if (listViewSortAdorner.Direction == ListSortDirection.Ascending)
-                    {
-                        listViewSortAdorner = new ListViewSortAdorner(listViewSortCol, ListSortDirection.Descending);
-                        AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
-                        annoDataGrid.Items.SortDescriptions.Add(new SortDescription(sortBy, ListSortDirection.Descending));
-                    }
-                    else
-                    {
-                        listViewSortCol = null;
-                    }
-                }               
-            }     
+                    AnnoTier.Selected.TimeRangeChanged(MainHandler.Time);
+                    AnnoTier.Selected.TimeRangeChanged(MainHandler.Time);
+                }
+            }
         }
 
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(annoDataGrid.ItemsSource != null)
+            if (annoDataGrid.ItemsSource != null)
             {
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(annoDataGrid.ItemsSource);
                 view.Filter = UserFilter;
                 CollectionViewSource.GetDefaultView(annoDataGrid.ItemsSource).Refresh();
             }
-           
         }
 
+        private void SortListView(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader headerClicked =
+             e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
 
-    
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    string header = headerClicked.Column.Header as string;
+                    ICollectionView dataView = CollectionViewSource.GetDefaultView(((ListView)sender).ItemsSource);
+
+                    dataView.SortDescriptions.Clear();
+                    SortDescription sd = new SortDescription(header, direction);
+                    dataView.SortDescriptions.Add(sd);
+                    dataView.Refresh();
+
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header  
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = null;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
     }
-
-
-
 }

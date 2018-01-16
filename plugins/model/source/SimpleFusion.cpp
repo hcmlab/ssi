@@ -104,23 +104,28 @@ bool SimpleFusion::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t **streams,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	bool found_data = false;
 
 	ssi_real_t **tmp_probs = new ssi_real_t *[n_models];
+	ssi_real_t tmp_confidence = 0.0f;
 	
 	ssi_stream_t *stream = 0;
 	for (ssi_size_t n_model = 0; n_model < n_models; n_model++) {
 		stream = streams[n_streams == 1 ? 0 : n_model];
 		if (stream->num > 0) {
 			tmp_probs[n_model] = new ssi_real_t[n_probs];
-			models[n_model]->forward (*stream, n_probs, tmp_probs[n_model]);			
+			models[n_model]->forward (*stream, n_probs, tmp_probs[n_model], tmp_confidence);
+			confidence += tmp_confidence;
 			found_data = true;
 		} else {
 			tmp_probs[n_model] = 0;
 		}
 	}
+
+	confidence /= n_models;
 
 	if (found_data) {
 	

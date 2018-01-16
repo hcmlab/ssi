@@ -59,7 +59,8 @@ public:
 		ssi_size_t n_streams,
 		ssi_stream_t *streams[],
 		ssi_size_t n_probs,
-		ssi_real_t *probs);
+		ssi_real_t *probs,
+		ssi_real_t &confidence);
 	void release ();
 	ssi_real_t dotProd(ssi_real_t *arrayA, ssi_real_t *arrayb, ssi_size_t length);
 	bool printDT();

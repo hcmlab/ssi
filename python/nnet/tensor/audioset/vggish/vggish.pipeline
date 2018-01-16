@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="audio"/>
+		<load name="python"/>
+	</register>
+	<!-- audio sensor -->
+	
+	<sensor create="Audio:audio" option="audio" sr="16000" scale="true" blockInSamples="160">
+		<output channel="audio" pin="audio" size="20.0s"/>
+	</sensor>
+	
+	<!-- vggish feature transformer	-->
+	<transformer create="PythonFeature:vggish" script="vggish" syspath="." optsstr="">	
+		<!--input pin="audio" frame="10ms" delta="1000ms"/-->	
+		<input pin="audio" frame="40ms" delta="790ms"/>	
+		<output pin="vggish"/>
+	</transformer>	
+	
+	<!-- storage -->		
+	
+	<consumer create="FileWriter:write" path="data/vggish" overwrite="true">
+		<input pin="vggish" frame="0.1s"/>
+	</consumer>
+	
+	<!-- visualization -->	
+	
+	<consumer create="SignalPainter:plot" title="AUDIO" size="10" type="2" autoscale="false" fix="-1,1">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="VVGISH" size="10" type="1">
+		<input pin="vggish" frame="0.1s"/>			
+	</consumer>	
+		
+	<!-- decoration -->
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600" nh="1">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+	
+</pipeline>

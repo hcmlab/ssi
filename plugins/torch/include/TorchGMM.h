@@ -87,12 +87,14 @@ public:
 	ssi_size_t getStreamByte () { return sizeof (ssi_real_t); };
 	ssi_type_t getStreamType () { return SSI_REAL; };
 
+	IModel::TYPE::List getModelType() { return IModel::TYPE::CLASSIFICATION; }
 	bool train (ISamples &samples,
 		ssi_size_t stream_index);	
 	bool isTrained () { return _gmms != 0; };
 	bool forward (ssi_stream_t &stream,
 		ssi_size_t n_probs,
-		ssi_real_t *probs);	
+		ssi_real_t *probs,
+		ssi_real_t &confidence);
 	void release ();
 	bool save (const ssi_char_t *filepath);
 	bool load (const ssi_char_t *filepath);

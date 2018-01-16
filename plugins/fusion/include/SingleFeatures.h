@@ -86,7 +86,8 @@ public:
 		ssi_size_t n_streams,
 		ssi_stream_t *streams[],
 		ssi_size_t n_probs,
-		ssi_real_t *probs);
+		ssi_real_t *probs,
+		ssi_real_t &confidence);
 	void release ();
 	void print_DP(ssi_real_t ** decision_profile, ssi_real_t* probs);
 	bool save (const ssi_char_t *filepath);

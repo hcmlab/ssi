@@ -178,6 +178,7 @@ bool ex_online(void *args) {
 				
 	Classifier *classifier = ssi_create(Classifier, 0, true);
 	classifier->addTrainer("trainer", &trainer);
+	classifier->getOptions()->console = true;
 	frame->AddConsumer(cursor_p, classifier, "0.5s");
 
 	decorator->add("console", 0, 0, 650, 800);

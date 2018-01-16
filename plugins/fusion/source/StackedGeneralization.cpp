@@ -130,8 +130,9 @@ bool StackedGeneralization::train (ssi_size_t n_models,
 				meta_streams[0]->type		= sample->streams[0]->type;
 		
 				ssi_size_t counter = 0;
+				ssi_real_t confidence = 0.0f;
 				for (ssi_size_t n_model = 0; n_model < (_n_models - 1); n_model++) {
-					models[n_model]->forward(*sample->streams[n_model], _n_classes, base_probs);
+					models[n_model]->forward(*sample->streams[n_model], _n_classes, base_probs, confidence);
 
 					for(ssi_size_t nprobs = 0; nprobs < _n_classes; nprobs++){
 						data[counter+nprobs] = ssi_cast(ssi_real_t, base_probs[nprobs]); 
@@ -217,8 +218,9 @@ bool StackedGeneralization::train (ssi_size_t n_models,
 			meta_streams[0]->type		= sample->streams[0]->type;
 		
 			ssi_size_t counter = 0;
+			ssi_real_t confidence = 0.0f;
 			for (ssi_size_t n_model = 0; n_model < (_n_models - 1); n_model++) {
-				models[n_model]->forward(*sample->streams[n_model], _n_classes, base_probs);
+				models[n_model]->forward(*sample->streams[n_model], _n_classes, base_probs, confidence);
 
 				for(ssi_size_t nprobs = 0; nprobs < _n_classes; nprobs++){
 					data[counter+nprobs] = ssi_cast(ssi_real_t, base_probs[nprobs]); 
@@ -268,7 +270,8 @@ bool StackedGeneralization::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -305,7 +308,7 @@ bool StackedGeneralization::forward (ssi_size_t n_models,
 		ssi_size_t counter = 0;
 		for (ssi_size_t n_model = 0; n_model < (_n_models-1); n_model++) {
 			model = models[n_model];
-			model->forward (*streams[n_model], _n_classes, base_probs);
+			model->forward (*streams[n_model], _n_classes, base_probs, confidence);
 
 			for(ssi_size_t nprobs = 0; nprobs < _n_classes; nprobs++){
 				data[counter+nprobs] = ssi_cast(ssi_real_t, base_probs[nprobs]); 
@@ -329,7 +332,7 @@ bool StackedGeneralization::forward (ssi_size_t n_models,
 	
 		meta_stream->ptr		= (ssi_byte_t*)data;
 
-		models[_n_models-1]->forward(*meta_stream, _n_classes, probs);
+		models[_n_models-1]->forward(*meta_stream, _n_classes, probs, confidence);
 
 		delete [] data;
 		delete [] base_probs;
@@ -341,7 +344,7 @@ bool StackedGeneralization::forward (ssi_size_t n_models,
 		bool classified = false;
 		for (ssi_size_t n_model = 0; n_model < (_n_models - 1); n_model++) {
 			if(streams[n_model]->num != 0){
-				models[n_model]->forward(*streams[n_model], _n_classes, probs);
+				models[n_model]->forward(*streams[n_model], _n_classes, probs, confidence);
 				classified = true;
 			}				
 			if(classified){
@@ -367,6 +370,8 @@ bool StackedGeneralization::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

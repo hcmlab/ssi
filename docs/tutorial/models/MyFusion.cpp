@@ -81,19 +81,25 @@ bool MyFusion::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	ssi_real_t *tmp_probs = new ssi_real_t[n_probs];
-	models[0]->forward (*streams[0], n_probs, probs);
+	ssi_real_t tmp_confidence = 0.0f;
+	models[0]->forward (*streams[0], n_probs, probs, tmp_confidence);
+	confidence += tmp_confidence;
 	
 	for (ssi_size_t n_model = 1; n_model < n_models; n_model++) {
-		models[n_model]->forward (*streams[n_model], n_probs, tmp_probs);
+		models[n_model]->forward (*streams[n_model], n_probs, tmp_probs, tmp_confidence);
+		confidence += tmp_confidence;
 		for (ssi_size_t n_prob = 0; n_prob < n_probs; n_prob++) {
 			if (probs[n_prob] < tmp_probs[n_prob]) {
 				probs[n_prob] = tmp_probs[n_prob];
 			}
 		}
 	}
+
+	confidence /= n_models;
 
 	delete[] tmp_probs;
 

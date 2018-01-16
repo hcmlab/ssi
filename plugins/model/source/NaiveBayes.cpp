@@ -173,7 +173,8 @@ bool NaiveBayes::train (ISamples &samples,
 
 bool NaiveBayes::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained ()) {
 		ssi_wrn ("not trained");
@@ -254,6 +255,8 @@ bool NaiveBayes::forward (ssi_stream_t &stream,
 		}
 	}
 	
+	ssi_max(n_probs, 1, probs, &confidence);
+
 	return true;
 }
 

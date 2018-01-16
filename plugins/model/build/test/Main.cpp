@@ -191,7 +191,7 @@ bool ex_eval_regression(void *arg) {
 	trainer.train(strain);
 	
 	Evaluation eval;
-	eval.eval(&trainer, stest, IModel::TASK::REGRESSION);
+	eval.eval(&trainer, stest);
 
 	ssi_real_t pcc = eval.get_metric(Evaluation::METRIC::PEARSON_CC);
 	ssi_real_t mse = eval.get_metric(Evaluation::METRIC::MSE);

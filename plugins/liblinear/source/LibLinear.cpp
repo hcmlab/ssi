@@ -69,6 +69,39 @@ namespace ssi {
 		_n_samples = 0;
 	}
 
+	IModel::TYPE::List LibLinear::getModelType()
+	{
+		if (!isTrained()) 
+		{
+			parameter param;
+			if (!parseParams(&param, _options.params))
+			{
+				ssi_wrn("could not parse parameters");				
+			}
+			if (param.solver_type == L2R_L2LOSS_SVR ||
+				param.solver_type == L2R_L1LOSS_SVR_DUAL ||
+				param.solver_type == L2R_L2LOSS_SVR_DUAL)
+			{
+				return IModel::TYPE::REGRESSION;
+			}
+			else
+			{
+				return IModel::TYPE::CLASSIFICATION;
+			}
+		}
+		else
+		{
+			if (check_regression_model((model*)_model))
+			{
+				return IModel::TYPE::REGRESSION;
+			}
+			else
+			{
+				return IModel::TYPE::CLASSIFICATION;
+			}
+		}
+	}
+
 	void LibLinear::exit_with_help()
 	{
 		ssi_print(			
@@ -315,6 +348,14 @@ namespace ssi {
 			return false;
 		}		
 
+		IModel::TYPE::List task = IModel::TYPE::CLASSIFICATION;
+		if (param.solver_type == L2R_L2LOSS_SVR ||
+			param.solver_type == L2R_L1LOSS_SVR_DUAL ||
+			param.solver_type == L2R_L2LOSS_SVR_DUAL)
+		{
+			task = IModel::TYPE::REGRESSION;
+		}
+
 		// prepare problem
 
 		problem prob;
@@ -333,7 +374,7 @@ namespace ssi {
 		while (sample = s_balance->next()) {
 			ptr = ssi_pcast(float, sample->streams[stream_index]->ptr);
 			prob.x[n_sample] = new feature_node[_n_features + 1 + 1]; // one extra for bias term
-			prob.y[n_sample] = ssi_cast(float, _n_classes == 1 ? sample->score : sample->class_id);
+			prob.y[n_sample] = ssi_cast(float, task == IModel::TYPE::REGRESSION ? sample->score : sample->class_id);
 			node = prob.x[n_sample];
 			for (ssi_size_t nfeat = 0; nfeat < _n_features; nfeat++) {
 				node->index = nfeat + 1;
@@ -404,7 +445,8 @@ namespace ssi {
 
 	bool LibLinear::forward(ssi_stream_t &stream,
 		ssi_size_t n_probs,
-		ssi_real_t *probs) {
+		ssi_real_t *probs,
+		ssi_real_t &confidence) {
 
 		if (!isTrained()) {
 			ssi_wrn("not trained");
@@ -475,12 +517,14 @@ namespace ssi {
 				}
 			}
 			
+			ssi_max(n_probs, 1, probs, &confidence);
+
 			delete[] prob_estimates;
 		}
 		else // REGRESSION 
 		{			
 			ssi_real_t score = (ssi_real_t) predict((model*)_model, x);
-			probs[0] = score;
+			confidence = probs[0] = score;
 		}
 
 		delete[] x;		

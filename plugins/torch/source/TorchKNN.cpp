@@ -72,7 +72,8 @@ bool TorchKNN::train (ISamples &samples, ssi_size_t stream_index) {
 
 bool TorchKNN::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_knn) {
 		ssi_wrn ("not trained");
@@ -117,6 +118,8 @@ bool TorchKNN::forward (ssi_stream_t &stream,
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
 		*probptr++ /= _options.k;
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	return true;
 }

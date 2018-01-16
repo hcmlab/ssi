@@ -128,12 +128,13 @@ bool DecisionTemplate::train (ssi_size_t n_models,
 		sample_cardinality[c_id] = sample_cardinality[c_id] + 1.0f;
 	}
 	//train models and build decision template
+	ssi_real_t confidence = 0.0f;
 	for (ssi_size_t n_model = 0; n_model < n_models; n_model++) {
 		if (!models[n_model]->isTrained ()) { models[n_model]->train (samples, n_model); }
 		samples.reset ();
 		ssi_size_t c_id = 0;
 		while (sample = samples.next ()) {
-			models[n_model]->forward (*sample->streams[n_model], _n_classes, _probs);
+			models[n_model]->forward (*sample->streams[n_model], _n_classes, _probs, confidence);
 			c_id = sample->class_id;
 			for(ssi_size_t n_prob = 0; n_prob < _n_classes; n_prob++)
 			{
@@ -179,7 +180,8 @@ bool DecisionTemplate::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -209,7 +211,7 @@ bool DecisionTemplate::forward (ssi_size_t n_models,
 	}
 	for (ssi_size_t n_model = 0; n_model < n_models; n_model++) {
 		model = models[n_model];
-		model->forward (*streams[n_model], n_probs, probs);
+		model->forward (*streams[n_model], n_probs, probs, confidence);
 
 		//fill decision_profile DP
 		for (ssi_size_t num_probs = 0; num_probs < n_probs; num_probs++){
@@ -250,6 +252,8 @@ bool DecisionTemplate::forward (ssi_size_t n_models,
 		}
 	}
 	
+	ssi_max(n_probs, 1, probs, &confidence);
+
 	if(draw && (max_ind == max_ind_draw)){
 		return false;
 	}else{

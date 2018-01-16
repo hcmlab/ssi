@@ -32,6 +32,7 @@
 #include "OpenfacePainter.h"
 #include "OpenfaceSelector.h"
 #include "OpenfaceAdditionalFeat.h"
+#include "OpenfaceNormalizer.h"
 
 
 

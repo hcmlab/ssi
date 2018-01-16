@@ -87,28 +87,48 @@ void PythonModel::release()
 
 }
 
-bool PythonModel::train(ISamples &samples,
-	ssi_size_t stream_index) {
+IModel::TYPE::List PythonModel::getModelType()
+{
 	if (!_helper)
 	{
 		initHelper();
 	}
 
-	_isTrained = _helper->train(samples, stream_index);
+	IModel::TYPE::List type = IModel::TYPE::CLASSIFICATION;
+	if (!_helper->getModelType(type))
+	{
+		ssi_wrn("could not get model type");
+	}
+
+	return type;
+}
+
+bool PythonModel::train(ISamples &samples,
+	ssi_size_t stream_index) {
+	
+	if (!_helper)
+	{
+		initHelper();
+	}
+
+	IModel::TYPE::List type = getModelType();
+	_isTrained = _helper->train(type, samples, stream_index);
 
 	return _isTrained;
 }
 
-bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs) {
+bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence) {
+	
 	if (!_helper)
 	{
 		initHelper();
 	}
 
-	return _helper->forward(stream, n_probs, probs);
+	return _helper->forward(stream, n_probs, probs, confidence);
 }
 
 bool PythonModel::load(const ssi_char_t *filepath) {
+	
 	if (!_helper)
 	{
 		initHelper();
@@ -118,10 +138,12 @@ bool PythonModel::load(const ssi_char_t *filepath) {
 }
 
 bool PythonModel::save(const ssi_char_t *filepath) {
+	
 	if (!_helper)
 	{
 		initHelper();
 	}
+
 	return _helper->save(filepath);
 }
 }

@@ -7,7 +7,7 @@
 		<load name="ssiimage" /> <!-- for resize -->
 	</register>
 	<!-- camera sensor -->
-	<sensor create="CameraScreen" option="camscreen" mouse="true" resize="true" resize_width="640" resize_height="480" region="0,200,320,240" full="true">
+	<sensor create="CameraScreen" resize="true" resize_width="640" resize_height="480" full="true">
 		<output channel="video" pin="camera" size="2.0s"/>
 	</sensor>
 	

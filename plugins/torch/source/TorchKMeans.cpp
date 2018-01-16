@@ -110,7 +110,8 @@ bool TorchKMeans::train (ISamples &samples, ssi_size_t stream_index) {
 
 bool TorchKMeans::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_kmeans) {
 		ssi_wrn ("not trained");
@@ -136,6 +137,8 @@ bool TorchKMeans::forward (ssi_stream_t &stream,
 	for (int i = 0; i < _options.n_cluster; i++) {
 		*probsptr++ = 1.0f / _kmeans->frameLogProbabilityOneGaussian (i, ssi_pcast (ssi_real_t, stream.ptr));
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	return true;
 }

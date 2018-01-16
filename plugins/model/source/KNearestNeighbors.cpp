@@ -100,7 +100,8 @@ bool KNearestNeighbors::train (ISamples &samples,
 
 bool KNearestNeighbors::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_data) {
 		ssi_wrn ("not trained");
@@ -194,6 +195,8 @@ bool KNearestNeighbors::forward (ssi_stream_t &stream,
 			probs[i] = ssi_cast (ssi_real_t, counter[i]) / ssi_cast (ssi_real_t, k);
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	delete[] nearest;
 	delete[] counter;

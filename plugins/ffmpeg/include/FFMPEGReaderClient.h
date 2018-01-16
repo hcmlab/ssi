@@ -54,6 +54,8 @@ namespace ssi {
 
 class FFMPEGReaderClient : public Thread {
 
+	friend class FFMPEGReader;
+
 public:
 
 	struct STATE {
@@ -71,7 +73,7 @@ public:
 	~FFMPEGReaderClient();
 
 	bool peekVideoFormat (ssi_video_params_t &video_params);
-	bool peekAudioFormat (ssi_time_t &audio_sr);
+	bool peekAudioFormat (ssi_time_t &audio_sr, ssi_size_t &samples);
 	
 	void enter ();
 	void run ();	
@@ -99,7 +101,7 @@ protected:
 	void provideAudioFrame ();
 	bool seek (ssi_size_t frameIndex);
 
-        static int InterruptCB (void *ctx);
+	static int InterruptCB (void *ctx);
 	
 	FFMPEGReader::MODE::item _mode;
 	volatile STATE::item _state;

@@ -173,7 +173,8 @@ bool VACFusion::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -226,7 +227,7 @@ bool VACFusion::forward (ssi_size_t n_models,
 		stream = streams[position];
 		if(stream->num > 0){
 			found_data = true;
-			model->forward(*stream, _n_classes, direct_probs);
+			model->forward(*stream, _n_classes, direct_probs, confidence);
 			for(ssi_size_t nprob = 0; nprob < _n_classes; nprob++){
 				all_probs_direct[nmod][nprob] = direct_probs[nprob];
 			}
@@ -262,7 +263,7 @@ bool VACFusion::forward (ssi_size_t n_models,
 			model = models[position];
 			stream = streams[position];
 			if(stream->num > 0){
-				model->forward(*stream, 2, hot_probs);
+				model->forward(*stream, 2, hot_probs, confidence);
 				for(ssi_size_t nprob = 0; nprob < 2; nprob++){
 					all_probs_hot[combo][nmod][nprob] = hot_probs[nprob];
 				}

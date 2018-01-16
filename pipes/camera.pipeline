@@ -11,7 +11,7 @@
 	</sensor>
 	
 	<!-- visualization -->	
-	<consumer create="VideoPainter:plot" title="camera" flip="false">
+	<consumer create="VideoPainter:plot" title="camera" flip="true">
 		<input pin="camera" frame="1" delta="0"/>
 	</consumer>
 	

@@ -404,8 +404,10 @@ int FFMPEGReaderClient::read () {
 		av_packet_unref(&orig_pkt);
 	}
 	else
+	{
 		//end of file ...hopefully
 		_state = STATE::IDLE;
+	}
 
 
 	/*
@@ -540,7 +542,7 @@ bool FFMPEGReaderClient::peekVideoFormat (ssi_video_params_t &params) {
 	return found;
 }
 
-bool FFMPEGReaderClient::peekAudioFormat (ssi_time_t &audio_sr) {
+bool FFMPEGReaderClient::peekAudioFormat (ssi_time_t &audio_sr, ssi_size_t &n_samples) {
 
 	int ret;
 	AVFormatContext *fmt_ctx = NULL;
@@ -552,10 +554,17 @@ bool FFMPEGReaderClient::peekAudioFormat (ssi_time_t &audio_sr) {
 		return false;
 	}
 
+	if ((ret = avformat_find_stream_info(fmt_ctx, NULL)) < 0) {
+		PrintErrorMsg("avformat_find_stream_info", ret);		
+		return false;
+	}
+
 	for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++) {		
 		if (fmt_ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
 
 			int sr = fmt_ctx->streams[i]->codec->sample_rate;
+			
+			n_samples = (ssi_size_t) ceil(fmt_ctx->streams[i]->duration * av_q2d(fmt_ctx->streams[i]->time_base) * sr);
 			
 			if (sr > 0) {
 				audio_sr = sr;				

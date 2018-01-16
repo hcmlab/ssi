@@ -342,7 +342,8 @@ bool HierarchicalModel::trainNode(BinTree::Node *node,
 
 bool HierarchicalModel::forward(ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!isTrained()) {
 		ssi_wrn("not trained");
@@ -384,6 +385,8 @@ bool HierarchicalModel::forward(ssi_stream_t &stream,
 		}
 	}
 
+	ssi_max(n_probs, 1, probs, &confidence);
+
 	return true;
 }
 
@@ -394,6 +397,7 @@ void HierarchicalModel::forwardNode(BinTree::Node *node,
 
 	content_t *content = ssi_pcast(content_t, node->ptr);
 	IModel *model = content->model;	
+	ssi_real_t confidence = 0.0f;
 
 	// if no leaf
 	if (node->left && node->right && node->left->ptr && node->right->ptr) {
@@ -403,10 +407,10 @@ void HierarchicalModel::forwardNode(BinTree::Node *node,
 		if (content->n_dims > 0 && content->dims) {
 			ssi_stream_t stream_sel;
 			ssi_stream_select(stream, stream_sel, content->n_dims, content->dims);
-			model->forward(stream_sel, 2, probs_tmp);
+			model->forward(stream_sel, 2, probs_tmp, confidence);
 			ssi_stream_destroy(stream_sel);
 		} else {
-			model->forward(stream, 2, probs_tmp);
+			model->forward(stream, 2, probs_tmp, confidence);
 		}
 
 		// left node probabilites 
@@ -438,11 +442,11 @@ void HierarchicalModel::forwardNode(BinTree::Node *node,
 			if (n_dims > 0 && dims) {
 				ssi_stream_t stream_sel;
 				ssi_stream_select(stream, stream_sel, n_dims, dims);
-				model->forward(stream_sel, n_classes, probs_tmp);
+				model->forward(stream_sel, n_classes, probs_tmp, confidence);
 				ssi_stream_destroy(stream_sel);
 			}
 			else {
-				model->forward(stream, n_classes, probs_tmp);
+				model->forward(stream, n_classes, probs_tmp, confidence);
 			}
 
 			for (ssi_size_t i = 0; i < n_classes; i++) {

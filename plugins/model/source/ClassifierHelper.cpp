@@ -182,7 +182,7 @@ namespace ssi
 
 	bool ClassifierHelper::predict(Prediction &prediction, ssi_time_t time, ssi_time_t dur, ssi_size_t n_streams, ssi_stream_t stream_in[], ssi_real_t pthres)
 	{		
-		Trainer *trainer = getTrainer();		
+		Trainer *trainer = getTrainer();	
 
 		if (!trainer)
 		{
@@ -193,12 +193,13 @@ namespace ssi
 
 		ssi_size_t n_probs = trainer->getClassSize();
 		ssi_real_t *probs = new ssi_real_t[n_probs];
+		ssi_real_t confidence = 0.0f;
 		
 		ssi_stream_t **streams = new ssi_stream_t *[n_streams];
 		for (ssi_size_t i = 0; i < n_streams; i++) {
 			streams[i] = &stream_in[i];
 		}
-		result = trainer->forward_probs(n_streams, streams, n_probs, probs);
+		result = trainer->forward_probs(n_streams, streams, n_probs, probs, confidence);
 		delete[] streams;		
 
 		if (result && pthres != 0) {
@@ -214,7 +215,7 @@ namespace ssi
 		if (result)
 		{
 			prediction.trainer = trainer;
-			prediction.confidence = 1.0f;
+			prediction.confidence = confidence;
 			prediction.n_probabilites = n_probs;
 			prediction.probabilites = probs;			
 

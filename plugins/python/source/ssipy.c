@@ -921,7 +921,7 @@ static int ssipytype_init(ssipytype *self, PyObject *args, PyObject *kwds)
 	return 0;
 }
 
-static void ssipytype_dealloc(ssipystreamiter *self)
+static void ssipytype_dealloc(ssipytype *self)
 {	
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -1021,7 +1021,7 @@ static int ssipyinfo_init(ssipyinfo *self, PyObject *args, PyObject *kwds)
 	return 0;
 }
 
-static void ssipyinfo_dealloc(ssipystreamiter *self)
+static void ssipyinfo_dealloc(ssipyinfo *self)
 {
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -1103,7 +1103,7 @@ static int ssipyimageparams_init(ssipyimageparams *self, PyObject *args, PyObjec
 }
 
 // dealloc
-static void ssipyimageparams_dealloc(ssipystreamiter *self)
+static void ssipyimageparams_dealloc(ssipyimageparams *self)
 {
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -1386,7 +1386,7 @@ static int ssipychannel_init(ssipychannel *self, PyObject *args, PyObject *kwds)
 }
 
 // dealloc
-static void ssipychannel_dealloc(ssipystreamiter *self)
+static void ssipychannel_dealloc(ssipychannel *self)
 {
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -1610,7 +1610,7 @@ PyTypeObject ssipyevent_Type =
 //////////////////////////////////////
 
 // dealloc
-static void ssipyeventboard_dealloc(ssipyevent* self)
+static void ssipyeventboard_dealloc(ssipyeventboard* self)
 {	
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -1687,6 +1687,74 @@ PyTypeObject ssipyeventboard_Type =
 	0								/* tp_new */
 };
 
+
+//////////////////////////////////////
+// model type enumeration ////////////
+//////////////////////////////////////
+
+// init
+static int ssipymodeltype_init(ssipymodeltype *self, PyObject *args, PyObject *kwds)
+{
+	ssipymodeltype_Init(self);
+	return 0;
+}
+
+static void ssipymodeltype_dealloc(ssipymodeltype *self)
+{
+	Py_TYPE(self)->tp_free((PyObject*)self);
+}
+
+// members
+static PyMemberDef ssipymodeltype_members[] =
+{
+	{ "CLASSIFICATION", T_INT, offsetof(ssipymodeltype, CLASSIFICATION), READONLY, "classification" },
+	{ "REGRESSION", T_INT, offsetof(ssipymodeltype, REGRESSION), READONLY, "regression" },
+	{ NULL }
+};
+
+PyTypeObject ssipymodeltype_Type = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+	"ssipy.modeltype",							/* tp_name */
+	sizeof(ssipymodeltype),	                    /* tp_basicsize */
+	0,                                          /* tp_itemsize */
+	(destructor)ssipymodeltype_dealloc,			/* tp_dealloc */
+	0,                                          /* tp_print */
+	0,                                          /* tp_getattr */
+	0,                                          /* tp_setattr */
+	0,                                          /* tp_reserved */
+	0,                                          /* tp_repr */
+	0,                                          /* tp_as_number */
+	0,                                          /* tp_as_sequence */
+	0,                                          /* tp_as_mapping */
+	0,                                          /* tp_hash */
+	0,                                          /* tp_call */
+	0,                                          /* tp_str */
+	0,											/* tp_getattro */
+	0,                                          /* tp_setattro */
+	0,                                          /* tp_as_buffer */
+	Py_TPFLAGS_BASETYPE							/* tp_flags */
+	| Py_TPFLAGS_BASETYPE,						/* tp_flags */
+	"ssipymodeltype",							/* tp_doc */
+	0,											/* tp_traverse */
+	0,											/* tp_clear */
+	0,											/* tp_richcompare */
+	0,											/* tp_weaklistoffset */
+	0,											/* tp_iter */
+	0,											/* tp_iternext */
+	0,											/* tp_methods */
+	ssipymodeltype_members,						/* tp_members */
+	0,											/* tp_getset */
+	0,											/* tp_base */
+	0,											/* tp_dict */
+	0,											/* tp_descr_get */
+	0,											/* tp_descr_set */
+	0,											/* tp_dictoffset */
+	(initproc)ssipymodeltype_init,				/* tp_init */
+	0,											/* tp_alloc */
+	0											/* tp_new */
+};
+
+
 //////////////////////////////////////
 //module function ////////////////////
 //////////////////////////////////////
@@ -1758,6 +1826,12 @@ PyMODINIT_FUNC PyInit_ssipy(void)
 		return NULL;
 	}
 
+	ssipymodeltype_Type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&ssipymodeltype_Type) < 0)
+	{
+		return NULL;
+	}
+
 	m = PyModule_Create(&ssipy_module);
 	if (m == NULL)
 	{
@@ -1778,7 +1852,9 @@ PyMODINIT_FUNC PyInit_ssipy(void)
 	PyModule_AddIntConstant(m, "FLOAT", SSI_FLOAT);
 	PyModule_AddIntConstant(m, "DOUBLE", SSI_DOUBLE);
 	PyModule_AddIntConstant(m, "CONTINUED", SSI_ESTATE_CONTINUED);
-	PyModule_AddIntConstant(m, "COMPLETED", SSI_ESTATE_COMPLETED);	
+	PyModule_AddIntConstant(m, "COMPLETED", SSI_ESTATE_COMPLETED);
+	PyModule_AddIntConstant(m, "CLASSIFICATION", 0);
+	PyModule_AddIntConstant(m, "REGRESSION", 1);
 
 	Py_INCREF(&ssipyarray_Type);
 	PyModule_AddObject(m, "array", (PyObject *)&ssipyarray_Type);
@@ -1812,6 +1888,9 @@ PyMODINIT_FUNC PyInit_ssipy(void)
 
 	Py_INCREF(&ssipyeventboard_Type);
 	PyModule_AddObject(m, "eventboard", (PyObject *)&ssipyeventboard_Type);
+
+	Py_INCREF(&ssipymodeltype_Type);
+	PyModule_AddObject(m, "modeltype", (PyObject *)&ssipymodeltype_Type);
 
 	return m;
 }
@@ -2193,3 +2272,19 @@ ssipyeventboard *ssipyeventboard_New(void *client, ssipyupdatefunc_t update)
 	return self;
 }
 
+ssipymodeltype *ssipymodeltype_New()
+{
+	ssipymodeltype *self = PyObject_New(ssipymodeltype, &ssipymodeltype_Type);
+	ssipymodeltype_Init(self);
+
+	return self;
+}
+
+void ssipymodeltype_Init(ssipymodeltype *self)
+{
+	if (self != NULL)
+	{
+		self->CLASSIFICATION = 0;
+		self->REGRESSION = 1;
+	}
+}

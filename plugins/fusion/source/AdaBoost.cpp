@@ -152,8 +152,9 @@ bool AdaBoost::select (IModel **models, ISamples &samples, ssi_size_t nstrm){
 	ssi_real_t* s_probs = new ssi_real_t[_n_classes];
 	ssi_real_t error = 0.0f;
 	samples.reset();
+	ssi_real_t confidence = 0.0f;
 	while(_sample = samples.next()){
-		models[(_iterations * nstrm) + _niteration]->forward(*_sample->streams[nstrm], _n_classes, s_probs);
+		models[(_iterations * nstrm) + _niteration]->forward(*_sample->streams[nstrm], _n_classes, s_probs, confidence);
 		ssi_size_t max_ind = 0;
 		ssi_real_t max_val = s_probs[0];
 		for (ssi_size_t j = 1; j < _n_classes; j++) {
@@ -191,7 +192,7 @@ bool AdaBoost::select (IModel **models, ISamples &samples, ssi_size_t nstrm){
 		ssi_real_t norm_fac = 0.0f;
 		ssi_real_t* s_probs = new ssi_real_t[_n_classes];
 		for(ssi_size_t i = 0; i < _n_samples; i++){
-			models[(_iterations * nstrm) + _niteration]->forward(*samples.get(i)->streams[nstrm], _n_classes, s_probs);
+			models[(_iterations * nstrm) + _niteration]->forward(*samples.get(i)->streams[nstrm], _n_classes, s_probs, confidence);
 			ssi_size_t max_ind = 0;
 			ssi_real_t max_val = s_probs[0];
 			for (ssi_size_t j = 1; j < _n_classes; j++) {
@@ -308,7 +309,8 @@ bool AdaBoost::forward (ssi_size_t n_models,
 	ssi_size_t n_streams,
 	ssi_stream_t *streams[],
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (n_streams != _n_streams) {
 		ssi_wrn ("#streams (%u) differs from #streams (%u)", n_streams, _n_streams);
@@ -332,7 +334,7 @@ bool AdaBoost::forward (ssi_size_t n_models,
 		model = models[n_model];
 		ssi_size_t strm = n_model / (_n_models / _n_streams);
 		stream = streams[strm];
-		model->forward (*stream, n_probs, probs);
+		model->forward (*stream, n_probs, probs, confidence);
 
 		//fill decision_profile
 		for (ssi_size_t num_probs = 0; num_probs < n_probs; num_probs++){
@@ -519,6 +521,8 @@ bool AdaBoost::forward (ssi_size_t n_models,
 			max_ind = i;
 		}
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 	
 	if(draw && (max_ind == max_ind_draw)){
 		return false;

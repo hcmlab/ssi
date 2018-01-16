@@ -100,21 +100,21 @@ public:
 	bool eval(Annotation *prediction, Annotation *truth);
 
 	// eval using test set (it is assumed that model has already been trained)
-	void eval(Trainer *trainer, ISamples &samples, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
-	void eval(IModel &model, ISamples &samples, ssi_size_t stream_index, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
-	void eval(IFusion &fusion, ssi_size_t n_models, IModel **models, ISamples &samples, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
+	void eval(Trainer *trainer, ISamples &samples);
+	void eval(IModel &model, ISamples &samples, ssi_size_t stream_index);
+	void eval(IFusion &fusion, ssi_size_t n_models, IModel **models, ISamples &samples);
 
 	// eval using the first split% for training and the rest for testing (split = ]0..1[)
-	void evalSplit(Trainer *trainer, ISamples &samples, ssi_real_t split, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
+	void evalSplit(Trainer *trainer, ISamples &samples, ssi_real_t split);
 
 	// eval using k-fold (model is re-trained.. you may lose your old model!)
-	void evalKFold(Trainer *trainer, ISamples &samples, ssi_size_t k, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
+	void evalKFold(Trainer *trainer, ISamples &samples, ssi_size_t k);
 
 	// eval using leave one out (model is re-trained.. you may lose your old model!)
-	void evalLOO(Trainer *trainer, ISamples &samples, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
+	void evalLOO(Trainer *trainer, ISamples &samples);
 
 	// eval using leave one user out (model is re-trained.. you may lose your old model!)
-	void evalLOUO(Trainer *trainer, ISamples &samples, IModel::TASK::List task = IModel::TASK::CLASSIFICATION);
+	void evalLOUO(Trainer *trainer, ISamples &samples);
 
 	// print evaluation to file
 	void print(FILE *file = stdout, PRINT::List format = PRINT::CONSOLE);
@@ -180,7 +180,7 @@ public:
 protected:
 
 	ssi_size_t cutString(const ssi_char_t *str, ssi_size_t n, ssi_char_t *cut);
-	void init(ISamples &samples, Trainer *trainer, IModel::TASK::List task);
+	void init(IModel::TYPE::List type, ISamples &samples, Trainer *trainer);
 	void eval_h(ISamples &samples);
 	//metrics
 	//pearsons correlation coefficient
@@ -207,7 +207,7 @@ protected:
 	ssi_char_t** _class_names;	
 
 	Trainer *_trainer;	
-	IModel::TASK::List _task;
+	IModel::TYPE::List _type;
 	ISelection *_fselmethod;
 	ISelection *_pre_fselmethod;
 	ssi_size_t _n_pre_feature;

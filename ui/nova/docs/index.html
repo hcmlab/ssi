@@ -136,7 +136,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The latest version of NOVA can be accessed at:</p>
 <p><a href="https://github.com/hcmlab/nova" class="uri">https://github.com/hcmlab/nova</a></p>
 <p>Just download or check-out the release branch and start 'nova.exe' (yes, NOVA is available for Windows systems only).</p>
-<p>If you do not see videos on playback, please make also sure you have the right codecs installed. A good choice is the K-lite Codec Pack (You can leave all settings on default, but make sure to not not install any 3rd party software that comes with the installer).</p>
+<p>If you do not see videos on playback, please make also sure you have the right codecs installed. A good choice is the K-lite Codec Pack <a href="https://www.codecguide.com/download_kl.htm" class="uri">https://www.codecguide.com/download_kl.htm</a> (You can leave all settings on default, but make sure to not not install any 3rd party software that comes with the installer).</p>
+<p>You might also need to install the VC140 Runtime Distributable if it is not installed on your system. <a href="https://www.microsoft.com/en-US/download/details.aspx?id=48145" class="uri">https://www.microsoft.com/en-US/download/details.aspx?id=48145</a></p>
 <h1 id="manual-annotation"><span class="header-section-number">3</span> Manual Annotation</h1>
 <p>In the following we will explain the basic steps to manually create and edit an annotation.</p>
 <h2 id="main-interface"><span class="header-section-number">3.1</span> Main Interface</h2>
@@ -240,50 +241,62 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>Setting the label for the selected segment (For discrete schemes)</td>
 </tr>
 <tr class="even">
-<td>S</td>
+<td>S (on Segment)</td>
 <td>Splitting the selected segment in two parts on the green annotation cursor</td>
 </tr>
 <tr class="odd">
+<td>S (on Tier)</td>
+<td>Move green Annotation Cursor to red Signal Cursor</td>
+</tr>
+<tr class="even">
 <td>W</td>
 <td>Creating a new label between the green annotation cursor and the red media position cursor, edit selected segment</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Q</td>
-<td>Move the Signal Cursor to the beginning, the Annotation Cursor to the end of the selected segment</td>
+<td>Move signal cursor to the beginning, the annotation cursor to the end of the selected segment</td>
+</tr>
+<tr class="even">
+<td>E</td>
+<td>Move annotation cursor to the beginning, the signal cursor to the end of the selected segment</td>
 </tr>
 <tr class="odd">
-<td>E</td>
-<td>Move the Annotation Cursor to the beginning, the Signal Cursor to the end of the selected segment</td>
-</tr>
-<tr class="even">
 <td>ctrl + C</td>
 <td>Copy the currently selected segment</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ctrl + K</td>
 <td>Delete all annotations that are on the right side of the green annotation cursor</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ctrl + L</td>
 <td>Complete the current session automatically</td>
 </tr>
+<tr class="even">
+<td>ctrl + R</td>
+<td>Reload current annotation</td>
+</tr>
 <tr class="odd">
-<td>ctrl + V</td>
-<td>Paste a copied segment</td>
+<td>ctrl + B</td>
+<td>Reload current annotation from backup</td>
 </tr>
 <tr class="even">
 <td>ctrl + X</td>
 <td>Cut the selected segment</td>
 </tr>
 <tr class="odd">
-<td>ctrl + Y</td>
-<td>Redo</td>
+<td>ctrl + V</td>
+<td>Paste a copied segment</td>
 </tr>
 <tr class="even">
-<td>ctrl + Z</td>
-<td>Undo</td>
+<td>ctrl + Y</td>
+<td>Redo last step</td>
 </tr>
 <tr class="odd">
+<td>ctrl + Z</td>
+<td>Undo last step</td>
+</tr>
+<tr class="even">
 <td>shift + dragging</td>
 <td>Creating a label from start to end position (same as dragg with right mouse)</td>
 </tr>
@@ -556,13 +569,13 @@ db.createUser({ user: &#39;system&#39;, pwd: &#39;PASSWORD2&#39;, roles: [ { rol
 <p class="caption"><em>Predictions with a low confidence are marked for revision.</em></p>
 </div>
 <h2 id="cl-model-training"><span class="header-section-number">5.4</span> Model Training</h2>
-<p>Once annotations for a number of sessions have been accomplished a 'strong' classification model can be trained. This requires that <a href="#cl-feature-extraction">features</a> have been extracted for the sessions and a compatible <a href="#cl-trainer-templates">trainer template</a> is available. Now choose 'Train Model' from LEARNING and a dialogue pops up. Here you can select a scheme, one or more roles and an annotator. Sessions for which an annotation exists that satisfies the selection are now shown and can be selected. Finally, choose the stream for which a machine learning model should be trained. Note that only those streams are listed for which at least one <a href="#cl-trainer-templates">trainer template</a> is found. By pressing 'Train' model training is started. Switch on 'Force' if you want to override an existing model.</p>
+<p>Once annotations for a number of sessions have been accomplished a 'strong' classification model can be trained. This requires that <a href="#cl-feature-extraction">features</a> have been extracted for the sessions and a compatible <a href="#cl-trainer-templates">trainer template</a> is available. Now choose 'Train and Predict' from LEARNING and a dialogue pops up. Stay within the 'Train' tab. Here you can select a scheme, one or more roles and an annotator. Sessions for which an annotation exists that satisfies the selection are now shown and can be selected. Finally, choose the stream for which a machine learning model should be trained. Note that only those streams are listed for which at least one <a href="#cl-trainer-templates">trainer template</a> is found. By pressing 'Train' model training is started. Switch on 'Force' if you want to override an existing model.</p>
 <div class="figure">
 <img src="pics/cl-training-dialog.png" alt="Model training." id="fig:cl-training-dialog" />
 <p class="caption"><em>Model training.</em></p>
 </div>
 <h2 id="annotation-prediction"><span class="header-section-number">5.5</span> Annotation Prediction</h2>
-<p>With a trained model it is now possible to predict annotations for one or more sessions. Therefore choose 'Prediction Annotations' from the LEARNING menu. Once you have selected a scheme, a role and an Annotator those sessions will be listed, which do not have a matching annotation yet. You can turn of the filter by selecting 'Show existing', however, make sure you are not occidentally overriding existing annotations (no undo available!). Finally, select the stream for which a machine learning <a href="#cl-model-training">model</a> has been trained (only streams are listed for which at least one model is found). Depending on the scheme, there may be additional options that allow you to tune the generation of the prediction. E.g. in case of a discrete scheme you can automatically fill small gaps or remove segments below a threshold. After pressing 'Predict' annotations will be created based on the chosen model for all sessions that have been selected and stored under your name (if you are an administrator you may also generate annotations for another user).</p>
+<p>With a trained model it is now possible to predict annotations for one or more sessions. Therefore choose 'Train and Predict' from the LEARNING menu and switch to the 'Predict' tab. Once you have selected a scheme, a role and an Annotator those sessions will be listed, which do not have a matching annotation yet. You can turn of the filter by selecting 'Show existing', however, make sure you are not occidentally overriding existing annotations (no undo available!). Finally, select the stream for which a machine learning <a href="#cl-model-training">model</a> has been trained (only streams are listed for which at least one model is found). Depending on the scheme, there may be additional options that allow you to tune the generation of the prediction. E.g. in case of a discrete scheme you can automatically fill small gaps or remove segments below a threshold. After pressing 'Predict' annotations will be created based on the chosen model for all sessions that have been selected and stored under your name (if you are an administrator you may also generate annotations for another user).</p>
 <div class="figure">
 <img src="pics/cl-prediction-dialog.png" alt="Annotation prediction dialogue." id="fig:cl-prediction-dialog" />
 <p class="caption"><em>Annotation prediction dialogue.</em></p>

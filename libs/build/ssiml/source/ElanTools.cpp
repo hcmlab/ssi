@@ -267,45 +267,146 @@ void ElanTools::Merge2first(ElanDocument &first, ElanDocument &second)
 	}
 }
 
+void ElanTools::Ssi2elan(Annotation anno, ElanDocument* elanDoc)
+{
 
+
+    if (anno.size() == 0)return;
+
+    //name of track?
+
+
+    int labelSize = anno.getScheme()->discrete.n;
+
+
+    for (int label = 0; label < labelSize; label++)
+    {
+
+
+        ElanAnnotation a;
+
+        int id=anno.getScheme()->discrete.ids[label];
+        ElanTier myTier(anno.getClassName(id));
+
+
+
+        for (ssi_size_t i = 0; i < anno.size() ; i++) {
+
+               if(anno.getLabel(i).discrete.id==id)
+               {
+                a.from = ssi_sec2ms(anno.getLabel(i).discrete.from);
+                a.to = ssi_sec2ms(anno.getLabel(i).discrete.to);
+                a.value = ssi::String(anno.getClassName(id));
+                myTier.push_back(a);
+               }
+
+            }
+
+
+        elanDoc->push_back(myTier);
+
+    }
+
+    {
+    //add garbage Label
+    ElanTier myTier("GARBAGE");
+    ElanAnnotation a;
+    for (ssi_size_t i = 0; i < anno.size() ; i++) {
+
+           if(anno.getLabel(i).discrete.id==-1)
+           {
+            a.from = ssi_sec2ms(anno.getLabel(i).discrete.from);
+            a.to = ssi_sec2ms(anno.getLabel(i).discrete.from);
+            a.value = "GARBAGE";
+            myTier.push_back(a);
+           }
+
+        }
+
+
+    elanDoc->push_back(myTier);
+    }
+
+
+}
 
 // -> features per bool op
 void ElanTools::Ssi2elan(const char* annopath, ElanDocument* elanDoc)
 {
-	old::Annotation anno;
 
-	//ssi anno
-	ModelTools::LoadAnnotation(anno, annopath);
+        Annotation anno;
 
-	if (anno.size() == 0)return;
+        anno.load(annopath);
 
-	//name of track?
-	int labelSize = anno.labelSize();
-	for (int label = 0; label < labelSize; label++)
-	{
-		anno.reset();
-		ElanAnnotation a;
-		old::Annotation::Entry* ae = anno.next(label);
-		ElanTier myTier(anno.getLabel(label));
+        Ssi2elan( anno,  elanDoc);
 
-		anno.reset();
-
-		for (ssi_size_t i = 0; i < anno.size() && ae; i++) {
-			ae = anno.next(label);
-			if (ae){
-
-				a.from = ssi_sec2ms(ae->start);
-				a.to = ssi_sec2ms(ae->stop);
-				a.value = anno.getLabel(label);
-				myTier.push_back(a);
-
-			}
-		}
-
-		elanDoc->push_back(myTier);
-	}
 }
 
+// -> features per bool op
+void ElanTools::Ssi2elanOld(const char* annopath, ElanDocument* elanDoc)
+{
+
+    old::Annotation anno;
+
+    //ssi anno
+    ModelTools::LoadAnnotation(anno, annopath);
+
+    if (anno.size() == 0)return;
+
+    //name of track?
+    int labelSize = anno.labelSize();
+
+    for (int label = 0; label < labelSize; label++)
+    {
+        anno.reset();
+
+        ElanAnnotation a;
+
+        old::Annotation::Entry* ae = anno.next(label);
+        ElanTier myTier(anno.getLabel(label));
+
+        anno.reset();
+
+        for (ssi_size_t i = 0; i < anno.size() && ae; i++) {
+            ae = anno.next(label);
+            if (ae){
+
+                a.from = ssi_sec2ms(ae->start);
+                a.to = ssi_sec2ms(ae->stop);
+                a.value = anno.getLabel(label);
+                myTier.push_back(a);
+
+            }
+        }
+
+
+
+
+        elanDoc->push_back(myTier);
+    }
+
+
+    //add garbage Label
+    anno.reset();
+    ElanTier myTier("GARBAGE");
+   ElanAnnotation a;
+   old::Annotation::Entry* ae = anno.next(-1);
+    for (ssi_size_t i = 0; i < anno.size() && ae; i++) {
+        ae = anno.next(-1);
+        if (ae){
+
+            a.from = ssi_sec2ms(ae->start);
+            a.to = ssi_sec2ms(ae->stop);
+            a.value = "GARBAGE";
+            myTier.push_back(a);
+
+        }
+    }
+
+    elanDoc->push_back(myTier);
+
+
+}
 
 void ElanTools::Elan2ssi(ElanDocument* elanDoc, old::Annotation *ssiAnno)
 {
@@ -315,16 +416,69 @@ void ElanTools::Elan2ssi(ElanDocument* elanDoc, old::Annotation *ssiAnno)
 	for (tier = elanDoc->begin(); tier != elanDoc->end(); tier++) {
 
 		ElanTier::iterator anno;
-		ssiAnno->addLabel(tier->name());
-		for (anno = tier->begin(); anno != tier->end(); anno++) {
+        if(strcmp(tier->name(), "GARBAGE")!=0)
+        {
+            ssiAnno->addLabel(tier->name());
+            for (anno = tier->begin(); anno != tier->end(); anno++) {
 
-			ae.start = ((double)anno->from) / 1000.0;
-			ae.stop = ((double)anno->to) / 1000.0;
-			ae.label_index = labelIndex;
-			ssiAnno->add(ae);
-		}
-		labelIndex++;
+                ae.start = ((double)anno->from) / 1000.0;
+                ae.stop = ((double)anno->to) / 1000.0;
+                ae.label_index = labelIndex;
+                ssiAnno->add(ae);
+            }
+            labelIndex++;
+        }
+        else
+        {
+           // ssiAnno->addLabel(tier->name());
+            for (anno = tier->begin(); anno != tier->end(); anno++) {
+
+                ae.start = ((double)anno->from) / 1000.0;
+                ae.stop = ((double)anno->to) / 1000.0;
+                ae.label_index = -1;
+                ssiAnno->add(ae);
+            }
+
+        }
 	}
+}
+
+void ElanTools::Elan2ssi(ElanDocument* elanDoc, Annotation *ssiAnno)
+{
+    ElanDocument::iterator tier;
+
+    int labelIndex = 0;
+    for (tier = elanDoc->begin(); tier != elanDoc->end(); tier++) {
+
+        ElanTier::iterator anno;
+
+
+
+        if(strcmp(tier->name(), "GARBAGE")!=0)
+        {
+            ssiAnno->addClass(tier->name());
+
+            for (anno = tier->begin(); anno != tier->end(); anno++) {
+
+                double start = ((double)anno->from) / 1000.0;
+                double stop = ((double)anno->to) / 1000.0;
+                int label_index = labelIndex;
+                ssiAnno->add(start, stop,tier->name(),1.0);
+            }
+            labelIndex++;
+        }
+        else
+        {
+                for (anno = tier->begin(); anno != tier->end(); anno++) {
+
+                    double start = ((double)anno->from) / 1000.0;
+                    double stop = ((double)anno->to) / 1000.0;
+                    int label_index = -1;
+                    ssiAnno->add(start, stop, -1,1.0);
+            }
+        }
+    }
+
 }
 
 

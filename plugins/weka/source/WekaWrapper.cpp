@@ -68,7 +68,8 @@ WekaWrapper::~WekaWrapper () {
 
 bool WekaWrapper::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
-	ssi_real_t *probs) {
+	ssi_real_t *probs,
+	ssi_real_t &confidence) {
 
 	if (!_server) {		
 		ssi_msg (SSI_LOG_LEVEL_BASIC, "create weka server..");
@@ -106,6 +107,8 @@ bool WekaWrapper::forward (ssi_stream_t &stream,
 	} else {
 		ssi_msg (SSI_LOG_LEVEL_DEBUG, "sent feature vector (%d bytes).. no answer", result);
 	}
+
+	ssi_max(n_probs, 1, probs, &confidence);
 
 	return true;
 }

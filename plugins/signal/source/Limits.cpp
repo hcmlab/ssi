@@ -86,11 +86,28 @@ void Limits::transform (ITransformer::info info,
 	for (ssi_size_t i = 0; i < sample_number * sample_dimension; i++) {
 		ssi_real_t value = *srcptr++;
 		if (value > _max) {
-			*dstptr++ = _max;
+            if(_options.replace)
+            {
+                *dstptr = 0.0f;
+            }else
+            {
+                *dstptr = _max;
+
+            }
+
+            dstptr++;
 		} else if (value < _min) {
-			*dstptr++ = _min;
+            if(_options.replace)
+            {
+                *dstptr = 0.0f;
+            }else
+            {
+                *dstptr = _min;
+            }
+            dstptr++;
 		} else {
-			*dstptr++ = value;
+            *dstptr = value;
+            dstptr++;
 		}
 	}
 

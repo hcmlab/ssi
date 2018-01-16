@@ -34,6 +34,7 @@ bool ex_stream(void *args);
 bool ex_ssi(void *args);
 bool ex_edit_classes(void *args);
 bool ex_convert_to_frames(void *args);
+bool ex_convert_to_stream(void *args);
 bool ex_create_samples(void *args);
 bool ex_filter(void *args);
 bool ex_pack_class(void *args);
@@ -66,6 +67,7 @@ int main () {
 	exsemble.add(&ex_stream, 0, "STREAM", "Reads a continuous annotation from a stream file");
 	exsemble.add(&ex_edit_classes, 0, "EDIT CLASSES", "Edit classes in a discrete annotation.");
 	exsemble.add(&ex_convert_to_frames, 0, "CONVERT TO FRAMES", "Convert a discrete annotation to frames.");
+	exsemble.add(&ex_convert_to_stream, 0, "CONVERT TO STREAM", "Convert an annotation to a stream.");
 	exsemble.add(&ex_create_samples, 0, "CREATE SAMPLES", "Create a sample list from a discrete annotation.");
 	exsemble.add(&ex_filter, 0, "FILTER", "Remove labels with small confidence/duration.");
 	exsemble.add(&ex_pack_class, 0, "PACK CLASS", "Combine successive samples of same class.");
@@ -378,6 +380,56 @@ bool ex_convert_to_frames(void *args)
 		Annotation anno_frames(anno);
 		anno_frames.convertToFrames(1.0, "apple", 12.0, 0.5f);
 		anno_frames.print();
+	}
+
+	return true;
+}
+
+bool ex_convert_to_stream(void *args)
+{
+	{
+		std::map<String, ssi_size_t> classes;
+		classes["apple"] = 0;
+		classes["banana"] = 1;
+		classes["coconut"] = 2;
+
+		Annotation anno;
+		anno.setDiscreteScheme("discrete", classes);
+		anno.add(1.0, 1.5, "apple", 1.0f);
+		anno.add(2.0, 2.1, "banana", 0.9f);
+		anno.add(2.1, 2.2, "apple", 0.9f);
+		anno.add(2.5, 3.0, "coconut", 0.9f);
+		anno.add(5.0, 6.0, -1, 1.0f);
+		anno.add(7.0, 10.0, "coconut", 0.0f);
+		anno.setMeta("annotator", "Hans");
+		anno.setMeta("role", "Wurscht");
+		anno.print();
+
+		ssi_stream_t stream;
+		anno.convertToStream(stream, 5.0, 12.0);
+		ssi_stream_print(stream, ssiout);
+		ssi_stream_destroy(stream);
+	}
+
+	{
+		{
+			Annotation anno;
+			anno.setContinuousScheme("continuous", 1.0, 0.0f, 1.0f);
+			anno.add(0.2f, 1.0f);
+			anno.add(0.5f, 0.2f);
+			anno.add(1.0f, 0.5f);
+			anno.add(0.0f, 0.6f);
+			anno.add(0.1f, 1.0f);
+			anno.setMeta("annotator", "Max");
+			anno.setMeta("role", "Novice");
+
+			anno.print();
+
+			ssi_stream_t stream;
+			anno.convertToStream(stream, 10.0, 12.0);
+			ssi_stream_print(stream, ssiout);
+			ssi_stream_destroy(stream);
+		}
 	}
 
 	return true;

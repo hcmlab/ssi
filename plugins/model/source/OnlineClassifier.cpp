@@ -52,6 +52,7 @@ namespace ssi {
           _annoFile (0),
           _is_loaded(false),
           _probs (0),
+		  _confidence(0.0f),
           _handler (0),
           _n_classes (0),
           _merged_sample_dimension (0),
@@ -86,6 +87,8 @@ namespace ssi {
         if(_model) delete _model;
 
         if(_probs) delete _probs;
+
+		_confidence = 0.0f;
 
         if(_annoFile) fclose(_annoFile);
 
@@ -243,7 +246,7 @@ namespace ssi {
 
         bool result = false;
 
-        result = _model->forward(stream_in[0], _n_classes, _probs);
+        result = _model->forward(stream_in[0], _n_classes, _probs, _confidence);
 
         if (result) {
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssiwebsocket" />		
+	</register>	
+
+	<runnable create="ClockEventSender" clock="1000" address="event@clock"/>	
+	
+	<object create="websocket" http_root="website" >
+		<listen address="@" />
+	</object>
+
+</pipeline>
