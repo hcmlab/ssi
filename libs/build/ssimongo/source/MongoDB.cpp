@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoDB.cpp
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -22,13 +22,27 @@
 // License along withthis library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-//*************************************************************************************************
 
-#pragma once
+#include "MongoDB.h"
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#include <bson.h>
+#include <bcon.h>
+#include <mongoc.h>
 
-#include "OSWrapper.h"
+namespace ssi
+{
+	ssi_char_t *MongoDB::ssi_log_name = "mongodb___";
 
-#endif
+	MongoDB::MongoDB()
+	{
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "init");
+		mongoc_init();
+	}
+
+	MongoDB::~MongoDB()
+	{	
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "close");
+		mongoc_cleanup();
+	}
+
+}

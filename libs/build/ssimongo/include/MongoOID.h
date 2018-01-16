@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoOID.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,39 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_OID_H
+#define	SSI_MONGO_OID_H
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+
+#define SSI_MONGO_OID_SIZE 12
+#define SSI_MONGO_OID_BYTES SSI_MONGO_OID_SIZE*sizeof(uint8_t)
+
+namespace ssi
+{
+
+	class MongoOID
+	{
+
+	public:
+
+		MongoOID();
+		MongoOID(void *oid);
+		MongoOID(const ssi_char_t *str);
+		MongoOID(const MongoOID &oid);
+		virtual ~MongoOID();
+		
+		ssi_char_t *toString();		
+		void *get();
+
+		void print(FILE *file = stdout);
+
+	protected:
+
+		void *_oid;
+		static ssi_char_t *ssi_log_name;		
+	};
+
+}
 
 #endif

@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoURI.cpp
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -22,13 +22,45 @@
 // License along withthis library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-//*************************************************************************************************
 
-#pragma once
+#include "MongoURI.h"
+#include "base/String.h"
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#include <bson.h>
+#include <bcon.h>
+#include <mongoc.h>
 
-#include "OSWrapper.h"
+namespace ssi
+{
+	ssi_char_t *MongoURI::ssi_log_name = "mongouri__";
 
-#endif
+	MongoURI::MongoURI(const ssi_char_t *ip, ssi_size_t port, const ssi_char_t *username, const ssi_char_t *password)
+	{
+		ssi_char_t address[SSI_MAX_CHAR];
+		ssi_sprint(address, "%s:%u", ip, port);
+
+		_address = ssi_strcpy(address);
+
+		ssi_char_t uri[SSI_MAX_CHAR];
+		ssi_sprint(uri, "mongodb://%s:%s@%s", username, password, address);
+
+		_uri = ssi_strcpy(uri);		
+	}
+	
+	MongoURI::~MongoURI()
+	{
+		delete[] _address; _address = 0;
+		delete[] _uri; _uri = 0;
+	}
+
+	const ssi_char_t *MongoURI::getURI()
+	{
+		return _uri;
+	}
+
+	const ssi_char_t *MongoURI::getAddress()
+	{
+		return _address;
+	}
+
+}

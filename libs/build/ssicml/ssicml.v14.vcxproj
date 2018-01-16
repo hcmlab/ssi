@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -18,32 +18,48 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CMLAnnotation.h" />
+    <ClInclude Include="include\CMLCons.h" />
+    <ClInclude Include="include\CMLHelper.h" />
+    <ClInclude Include="include\CMLTrainer.h" />
+    <ClInclude Include="include\CMLVisitor.h" />
+    <ClInclude Include="include\ssicml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\CMLAnnotation.cpp" />
+    <ClCompile Include="source\CMLCons.cpp" />
+    <ClCompile Include="source\CMLHelper.cpp" />
+    <ClCompile Include="source\CMLTrainer.cpp" />
+    <ClCompile Include="source\CMLVisitor.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{ED1B9992-FFD6-4923-9F2C-34236635CC8D}</ProjectGuid>
-    <RootNamespace>Esmeralda</RootNamespace>
+    <ProjectGuid>{DDD07F07-AB2F-4F70-BD3F-C78716DD6874}</ProjectGuid>
+    <RootNamespace>staticCombinedLib</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>opensmilewrapper</ProjectName>
+    <ProjectName>ssicml</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
@@ -65,14 +81,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -85,16 +101,14 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ssi$(ProjectName)d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ssi$(ProjectName)d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ssi$(ProjectName)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ssi$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\..\core\include;..\..\..\..\libs\build\openSMILE-2.1.0\src\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;..\..\..\core\include;..\..\..\plugins;..\ssiml\include;..\ssimongo\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -102,13 +116,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>openSmileLib_Debug.lib;ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    <Lib>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -116,8 +128,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\..\core\include;..\..\..\..\libs\build\openSMILE-2.1.0\src\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;..\..\..\core\include;..\..\..\plugins;..\ssiml\include;..\ssimongo\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -126,64 +138,45 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>openSmileLib_Debug.lib;ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    <Lib>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;..\..\..\..\core\include;..\..\..\..\libs\build\openSMILE-2.1.0\src\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>include;..\..\..\core\include;..\..\..\plugins;..\ssiml\include;..\ssimongo\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>openSmileLib_Release.lib;ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    <Lib>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-    <PostBuildEvent>
-      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -reg "ssievent.dll;ssiframe.dll;ssisignal.dll" -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
-    </PostBuildEvent>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>.;..\..\..\..\core\include;..\..\..\..\libs\build\openSMILE-2.1.0\src\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;..\..\..\core\include;..\..\..\plugins;..\ssiml\include;..\ssimongo\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>openSmileLib_Release.lib;ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    <Lib>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-    <PostBuildEvent>
-      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -reg "ssievent.dll;ssiframe.dll;ssisignal.dll" -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
-    </PostBuildEvent>
+    </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\source\ExportMain.cpp" />
-    <ClCompile Include="..\..\source\OSWrapper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\OSWrapper.h" />
-    <ClInclude Include="..\..\include\ssiopensmilewrapper.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

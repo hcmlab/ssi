@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoURI.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,33 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_URI_H
+#define	SSI_MONGO_URI_H
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+
+namespace ssi
+{
+	
+	class MongoURI
+	{
+
+	public:
+
+		MongoURI(const ssi_char_t *ip, ssi_size_t port, const ssi_char_t *username, const ssi_char_t *password);
+		virtual ~MongoURI();
+		
+		const ssi_char_t *getAddress();
+		const ssi_char_t *getURI();
+
+	protected:
+
+		static ssi_char_t *ssi_log_name;
+
+		ssi_char_t *_address;
+		ssi_char_t *_uri;
+	};
+
+}
 
 #endif

@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ssimongo", "ssimongo.v14.vcxproj", "{2210C0C6-9E01-4044-9639-1E8B9A237015}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongo", "ssimongo_test.v14.vcxproj", "{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2210C0C6-9E01-4044-9639-1E8B9A237015} = {2210C0C6-9E01-4044-9639-1E8B9A237015}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{A6B20C59-8CC1-4D6B-8E54-2AEABE377C20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{463F7652-7C97-46B6-B21B-84D052A86B87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Debug|x64.ActiveCfg = Debug|x64
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Debug|x64.Build.0 = Debug|x64
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Debug|x86.ActiveCfg = Debug|Win32
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Debug|x86.Build.0 = Debug|Win32
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Release|x64.ActiveCfg = Release|x64
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Release|x64.Build.0 = Release|x64
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Release|x86.ActiveCfg = Release|Win32
+		{2210C0C6-9E01-4044-9639-1E8B9A237015}.Release|x86.Build.0 = Release|Win32
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Debug|x64.ActiveCfg = Debug|x64
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Debug|x64.Build.0 = Debug|x64
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Debug|x86.ActiveCfg = Debug|Win32
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Debug|x86.Build.0 = Debug|Win32
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Release|x64.ActiveCfg = Release|x64
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Release|x64.Build.0 = Release|x64
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Release|x86.ActiveCfg = Release|Win32
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2210C0C6-9E01-4044-9639-1E8B9A237015} = {A6B20C59-8CC1-4D6B-8E54-2AEABE377C20}
+		{15A2F7E1-9449-4C14-B715-CC1B958CA3A8} = {463F7652-7C97-46B6-B21B-84D052A86B87}
+	EndGlobalSection
+EndGlobal

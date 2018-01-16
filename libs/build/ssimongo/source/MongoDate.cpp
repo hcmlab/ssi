@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoDate.cpp
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -22,13 +22,40 @@
 // License along withthis library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-//*************************************************************************************************
 
-#pragma once
+#include "MongoDate.h"
+#include "base/String.h"
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#include <bson.h>
+#include <bcon.h>
+#include <mongoc.h>
 
-#include "OSWrapper.h"
+namespace ssi
+{
+	ssi_char_t *MongoDate::ssi_log_name = "mongodate_";
 
-#endif
+	MongoDate::MongoDate()
+	{
+		_datetime = 1000 * ((int64_t)time(NULL));
+	}
+
+	MongoDate::MongoDate(int64_t datetime)
+	{
+		_datetime = datetime;
+	}
+
+	MongoDate::MongoDate(const MongoDate &date)
+	{
+		_datetime = date._datetime;
+	}
+	
+	MongoDate::~MongoDate()
+	{		
+	}
+
+	int64_t MongoDate::getDate()
+	{
+		return _datetime;
+	}
+
+}

@@ -1,11 +1,11 @@
-// ssiopensmilewrapper.h
+// ssi.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
-// Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
+// created: 2008/09/05
+// Copyright (C) 2007-10 University of Augsburg, Johannes Wagner
 //
 // *************************************************************************************************
 //
-// This file is part of Social Signal Interpretation (SSI) developed at the 
+// This file is part of Smart Sensor Integration (SSI) developed at the 
 // Lab for Human Centered Multimedia of the University of Augsburg
 //
 // This library is free software; you can redistribute itand/or
@@ -26,9 +26,18 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_CML_H
+#define	SSI_CML_H
 
-#include "OSWrapper.h"
+#include "CMLCons.h"
+#include "CMLHelper.h"
+#include "CMLAnnotation.h"
+#include "CMLTrainer.h"
+
+#ifdef _DEBUG
+#	pragma comment(lib, "ssicmld.lib")
+#else
+#	pragma comment(lib, "ssicml.lib")
+#endif
 
 #endif

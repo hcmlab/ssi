@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\BsonTools.h" />
+    <ClInclude Include="include\MongoClient.h" />
+    <ClInclude Include="include\MongoCollection.h" />
+    <ClInclude Include="include\MongoDate.h" />
+    <ClInclude Include="include\MongoDB.h" />
+    <ClInclude Include="include\MongoDocument.h" />
+    <ClInclude Include="include\MongoOID.h" />
+    <ClInclude Include="include\MongoURI.h" />
+    <ClInclude Include="include\ssimongo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\BsonTools.cpp" />
+    <ClCompile Include="source\MongoClient.cpp" />
+    <ClCompile Include="source\MongoCollection.cpp" />
+    <ClCompile Include="source\MongoDate.cpp" />
+    <ClCompile Include="source\MongoDB.cpp" />
+    <ClCompile Include="source\MongoDocument.cpp" />
+    <ClCompile Include="source\MongoOID.cpp" />
+    <ClCompile Include="source\MongoURI.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2210C0C6-9E01-4044-9639-1E8B9A237015}</ProjectGuid>
+    <RootNamespace>staticCombinedLib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>ssimongo</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(PlatformName)\vc$(PlatformToolsetVersion)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>include;libbson\include;mongoc\include;..\..\..\core\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\;libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mongoc-1.0.lib;bson-1.0.lib</AdditionalDependencies>
+    </Lib>
+    <PreBuildEvent>
+      <Command>xcopy /Y/I/D mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)
+xcopy /Y/I/D libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>include;libbson\include;mongoc\include;..\..\..\core\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\;libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mongoc-1.0.lib;bson-1.0.lib</AdditionalDependencies>
+    </Lib>
+    <PreBuildEvent>
+      <Command>xcopy /Y/I/D mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)
+xcopy /Y/I/D libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>include;libbson\include;mongoc\include;..\..\..\core\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalDependencies>mongoc-1.0.lib;bson-1.0.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\;libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>xcopy /Y/I/D mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)
+xcopy /Y/I/D libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>include;libbson\include;mongoc\include;..\..\..\core\include;..\..\..\plugins;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalDependencies>mongoc-1.0.lib;bson-1.0.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\;libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>xcopy /Y/I/D mongoc\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)
+xcopy /Y/I/D libbson\$(PlatformName)\vc$(PlatformToolsetVersion)\*.dll ..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoDate.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,32 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_DATE_H
+#define	SSI_MONGO_DATE_H
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+
+namespace ssi
+{
+
+	class MongoDate
+	{
+
+	public:
+
+		MongoDate();		
+		MongoDate(int64_t datetime);
+		MongoDate(const MongoDate &date);
+		virtual ~MongoDate();
+			
+		int64_t getDate();
+
+	protected:
+
+		int64_t _datetime;
+		static ssi_char_t *ssi_log_name;		
+	};
+
+}
 
 #endif

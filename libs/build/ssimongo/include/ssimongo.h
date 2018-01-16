@@ -1,11 +1,11 @@
-// ssiopensmilewrapper.h
+// ssimongo.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/17
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
 //
-// This file is part of Social Signal Interpretation (SSI) developed at the 
+// This file is part of Smart Sensor Integration (SSI) developed at the 
 // Lab for Human Centered Multimedia of the University of Augsburg
 //
 // This library is free software; you can redistribute itand/or
@@ -26,9 +26,21 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_H
+#define	SSI_MONGO_H
 
-#include "OSWrapper.h"
+#include "MongoDB.h"
+#include "MongoURI.h"
+#include "MongoOID.h"
+#include "MongoDate.h"
+#include "MongoClient.h"
+#include "MongoCollection.h"
+#include "MongoDocument.h"
+
+#ifdef _DEBUG
+#	pragma comment(lib, "ssimongod.lib")
+#else
+#	pragma comment(lib, "ssimongo.lib")
+#endif
 
 #endif

@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoDBTools.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/17
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,34 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_MONGODBTOOLS
+#define SSI_MONGO_MONGODBTOOLS
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+
+#include <bson.h>
+#include <bcon.h>
+#include <mongoc.h>
+
+namespace ssi {
+
+class MongoDBTools
+{
+
+public:
+
+	static bool Write(const ssi_char_t *url, const ssi_char_t *database_id, const ssi_char_t *collection_id, bson_t &document);
+	static bool Read(const ssi_char_t *url, const ssi_char_t *database_id, const ssi_char_t *collection_id, bson_t &document, bson_t &query);
+	static bool Remove(const ssi_char_t *url, const ssi_char_t *database_id, const ssi_char_t *collection_id, bson_t &document);
+	static bool Update(const ssi_char_t *url, const ssi_char_t *database_id, const ssi_char_t *collection_id, bson_t &query, bson_t &update);
+	static bool Check(const ssi_char_t *url, const ssi_char_t *database_id, const ssi_char_t *collection_id, bson_t &query);
+
+protected:
+
+	static ssi_char_t *ssi_log_name;
+
+};
+
+}
 
 #endif

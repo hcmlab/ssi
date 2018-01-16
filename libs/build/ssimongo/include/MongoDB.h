@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoDB.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,29 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_DB_H
+#define	SSI_MONGO_DB_H
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+
+typedef struct _mongoc_client_t mongoc_client_t;
+
+namespace ssi
+{
+	
+	class MongoDB
+	{
+
+	public:
+
+		MongoDB();
+		virtual ~MongoDB();
+
+	protected:
+
+		static ssi_char_t *ssi_log_name;
+	};
+
+}
 
 #endif

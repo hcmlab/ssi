@@ -1,6 +1,6 @@
-// ssiopensmilewrapper.h
+// MongoCollection.h
 // author: Johannes Wagner <wagner@hcm-lab.de>
-// created: 2011/09/21 
+// created: 2016/10/19
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -26,9 +26,45 @@
 
 #pragma once
 
-#ifndef SSI_OPENSMILEWRAPPER_H
-#define SSI_OPENSMILEWRAPPER_H
+#ifndef SSI_MONGO_COLLECTION_H
+#define	SSI_MONGO_COLLECTION_H
 
-#include "OSWrapper.h"
+#include "SSI_Cons.h"
+#include "MongoDocument.h"
+
+typedef struct _mongoc_collection_t mongoc_collection_t;
+
+namespace ssi
+{
+	class MongoCollection
+	{
+
+	friend class MongoClient;
+
+	public:
+
+		MongoCollection(const ssi_char_t *name);
+		virtual ~MongoCollection();
+
+		const ssi_char_t *getName();
+		void print(FILE *file = stdout);
+
+		bool insert(MongoDocument &document);
+		bool findFirst(MongoDocument &query, MongoDocument &document);
+		bool find(MongoDocument &query, MongoDocuments &documents);		
+		bool update(MongoDocument &query, MongoDocument &document);
+		bool remove(MongoDocument &query);
+
+	protected:
+
+		static ssi_char_t *ssi_log_name;
+
+		void set(mongoc_collection_t *collection);
+
+		ssi_char_t *_name;
+		mongoc_collection_t *_collection;
+	};
+
+}
 
 #endif
