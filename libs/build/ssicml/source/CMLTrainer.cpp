@@ -30,6 +30,7 @@
 #include "Annotation.h"
 #include "SampleList.h"
 #include "ISFlatSample.h"
+#include "ISSelectClass.h"
 #include "Trainer.h"
 #include "ioput/file/FileTools.h"
 
@@ -215,9 +216,19 @@ bool CMLTrainer::train(Trainer *trainer)
 		return false;
 	}
 
-	ISFlatSample flat(_samples);
-
-	return trainer->train(flat);
+	ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
+	if (_samples->getSize(rest_index) == 0)
+	{
+		ISSelectClass select(_samples);
+		select.setSelectionInverse(rest_index);
+		ISFlatSample flat(&select);
+		return trainer->train(flat);
+	}
+	else
+	{
+		ISFlatSample flat(_samples);
+		return trainer->train(flat);
+	}
 }
 
 bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath)
@@ -241,9 +252,19 @@ bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath)
 		return false;
 	}
 
-	ISFlatSample flat(_samples);
-
-	trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+	ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
+	if (_samples->getSize(rest_index) == 0)
+	{
+		ISSelectClass select(_samples);
+		select.setSelectionInverse(rest_index);
+		ISFlatSample flat(&select);
+		trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+	}
+	else
+	{
+		ISFlatSample flat(_samples);
+		trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+	}
 
 	return true;
 }

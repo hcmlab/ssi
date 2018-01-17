@@ -67,7 +67,40 @@ void ISSelectClass::release(){
 	_n_samples = 0;
 }
 
+bool ISSelectClass::setSelectionInverse(ssi_size_t class_id) {
+
+	ssi_size_t n_classes = _samples.getClassSize();
+
+	if (class_id >= n_classes)
+	{ 
+		ssi_wrn("invalid class index '%u'", class_id);
+		return false;
+	}
+
+	ssi_size_t *cset = new ssi_size_t[n_classes - 1];
+
+	ssi_size_t counter = 0;
+	for (ssi_size_t i = 0; i < n_classes; i++)
+	{
+		if (i == class_id) continue;
+		cset[counter++] = i;
+	}
+
+	bool result = setSelection(n_classes - 1, cset);
+	delete[] cset;
+
+	return result;
+}
+
 bool ISSelectClass::setSelection (ssi_size_t class_id) {
+
+	ssi_size_t n_classes = _samples.getClassSize();
+
+	if (class_id >= n_classes)
+	{
+		ssi_wrn("invalid class index '%u'", class_id);
+		return false;
+	}
 
 	return setSelection (1, &class_id);
 }

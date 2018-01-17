@@ -43,6 +43,7 @@ public:
 	void release();
 
 	bool setSelection (ssi_size_t class_id);
+	bool setSelectionInverse (ssi_size_t class_id);
 	bool setSelection (ssi_size_t n_classes, 
 		ssi_size_t* class_ids);
 

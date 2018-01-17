@@ -1835,3 +1835,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 19.12.17 CHG : cmltrain : renamed --convert to --convert_stream_to_anno switch : Johannes
 - 08.01.17 CHG : IModel : added getModelType() and confidence value in forward method : Johannes
 - 08.01.17 CHG : cmltrain : forward confidence : Johannes
+- 17.01.17 BUG : cmltrain : now works with empty REST class : Johannes
