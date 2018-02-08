@@ -79,6 +79,7 @@ struct params_t
 	double label_mingap;
 	double label_mindur;
 	bool force;
+	bool loso;
 	int scoreDim;
 	int confDim;
 	ssi_time_t sample_rate;
@@ -145,6 +146,7 @@ int main (int argc, char **argv) {
 	params.evalpath = 0;
 	params.finished = false;
 	params.locked = false;
+	params.loso = false;
 	params.confidence = -1.0;
 	params.label_mingap = 0;
 	params.label_mindur = 0;
@@ -323,6 +325,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
+	cmd.addBCmdOption("-loso", &params.loso, false, "apply leave-one-session-out cross-validation");
 
 	cmd.addMasterSwitch("--forward");
 
@@ -1135,11 +1138,12 @@ bool eval_h(params_t &params, Trainer &trainer, CMLTrainer &cmltrainer)
 {
 	ssi_print("\n-------------------------------------------\n");
 	ssi_print("EVAL '%s'\n\n", params.trainer);
-	
-	if (!cmltrainer.eval(&trainer, params.evalpath))
-	{
-		return false;
-	}
+
+		if (!cmltrainer.eval(&trainer, params.evalpath, params.loso))
+		{
+			return false;
+		}
+
 
 	return true;
 }

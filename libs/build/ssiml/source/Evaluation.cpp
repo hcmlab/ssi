@@ -1317,7 +1317,8 @@ ssi_real_t Evaluation::corrcoef(ssi_size_t n, ssi_real_t *values)
 	return r;
 }
 
-ssi_real_t Evaluation::mse(ssi_size_t n, ssi_real_t *values) {
+ssi_real_t 
+Evaluation::mse(ssi_size_t n, ssi_real_t *values) {
 	
 	ssi_real_t squared_error_sum = 0;
 	ssi_real_t error;

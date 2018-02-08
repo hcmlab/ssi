@@ -1543,7 +1543,7 @@ namespace ssi {
 		PyTuple_SetItem(pArgs, 1, _pVariables);
 		Py_INCREF(_pVariables);
 
-		PyObject *pValue = call_function(FUNCTIONS::CONNECT, pArgs);
+		PyObject *pValue = call_function(FUNCTIONS::DISCONNECT, pArgs);
 		Py_DECREF(pArgs);
 
 		if (pValue)

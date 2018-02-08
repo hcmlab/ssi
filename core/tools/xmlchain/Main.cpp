@@ -232,7 +232,8 @@ bool IsVideoFile(const ssi_char_t *path)
 bool IsAudioFile(const ssi_char_t *path)
 {
 	FilePath fp(path);
-	return (ssi_strcmp(fp.getExtension(), ".aac", false)
+	return (ssi_strcmp(fp.getExtension(), ".wav", false)
+		| ssi_strcmp(fp.getExtension(), ".aac", false)
 		|| ssi_strcmp(fp.getExtension(), ".flac", false)
 		|| ssi_strcmp(fp.getExtension(), ".mp3", false)
 		|| ssi_strcmp(fp.getExtension(), ".ogg", false)
@@ -509,7 +510,7 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 	{
 		FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
 		reader->getOptions()->setUrl(inPath->getPathFull());
-		reader->getOptions()->ablock = 0.1;
+		reader->getOptions()->ablock = 0.05;
 		reader->getOptions()->bestEffort = true;
 
 		if (!reader->initAudioStream(inPath->getPathFull(), from)
@@ -519,7 +520,7 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 		}
 
 		MemoryWriter *writer = ssi_create(MemoryWriter, 0, false);
-		writer->setStream(from);
+		writer->setStream(from);		
 
 		FileProvider *provider = new FileProvider(writer);
 		reader->setProvider(SSI_FFMPEGREADER_AUDIO_PROVIDER_NAME, provider);
@@ -533,6 +534,8 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 		delete provider;
 		delete reader;
 		delete writer;
+
+		FileTools::WriteStreamFile(File::BINARY, "X:\\nova\\data\\semaine\\002\\test3", from);
 
  		result = true;
 	}

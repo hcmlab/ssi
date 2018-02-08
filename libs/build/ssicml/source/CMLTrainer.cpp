@@ -188,14 +188,14 @@ bool CMLTrainer::collect(const ssi_char_t *session,
 			anno.filter(duration, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER);
 		}
 
-		if (!anno.extractSamples(stream, _samples))
+		if (!anno.extractSamples(stream, _samples, session))
 		{
 			return false;
 		}
 	}
 	else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 	{
-		anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, role);
+		anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session);
 	} 
 	else
 	{
@@ -231,7 +231,7 @@ bool CMLTrainer::train(Trainer *trainer)
 	}
 }
 
-bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath)
+bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval)
 {
 	if (!trainer->isTrained())
 	{
@@ -258,16 +258,32 @@ bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath)
 		ISSelectClass select(_samples);
 		select.setSelectionInverse(rest_index);
 		ISFlatSample flat(&select);
-		trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+		if (crossval)
+		{
+			trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+		}
+		else 
+		{
+			trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+		}
 	}
 	else
 	{
 		ISFlatSample flat(_samples);
-		trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+		if (crossval)
+		{
+			trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+		}
+		else 
+		{
+			trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+		}	
 	}
 
 	return true;
 }
+
+
 
 Annotation *CMLTrainer::forward(Trainer *trainer,	
 	const ssi_char_t *session,

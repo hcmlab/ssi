@@ -253,7 +253,7 @@ bool Factory::registerDLL (const ssi_char_t *name,
 	if (it == _dll_handle_map.end ()) {
 
 		void* hDLL=0;
-        hDLL=dlopen(fullname, RTLD_LAZY);
+        hDLL=dlopen(fullname, RTLD_GLOBAL | RTLD_LAZY);
 		dlerror();
 		
 		const char* error;

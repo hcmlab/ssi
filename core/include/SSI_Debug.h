@@ -256,9 +256,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 		ssimsg->err(ssi_log_name, __FILE__, __LINE__, __VA_ARGS__); \
 	} \
 	if (ssiout) { \
-		fprintf (ssiout, "[%s] # !ERROR! # ", ssi_log_name); \
+		fprintf (ssiout, "\033[31m[%s] # !ERROR! # ", ssi_log_name); \
 		fprintf (ssiout, __VA_ARGS__); \
-		fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+		fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 	} \
 	if (ssi_log_file_on) { \
 		ssi_log_file_end (); \
@@ -271,9 +271,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 		ssimsg->err(ssi_log_name, __FILE__, __LINE__, __VA_ARGS__); \
 	} \
 	if (ssiout) { \
-		fprintf (ssiout, "[%s] # !ERROR! # ", ssi_log_name); \
+		fprintf (ssiout, "\033[31m[%s] # !ERROR! # ", ssi_log_name); \
 		fprintf (ssiout, __VA_ARGS__); \
-		fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+		fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 	} \
 	FILE *errfile = fopen ("ssi_last.err", "w"); \
 	ssi_fprint (errfile, "[%s] # !ERROR! # ", ssi_log_name); \
@@ -293,9 +293,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 		ssimsg->err(ssi_log_name_static, __FILE__, __LINE__, __VA_ARGS__); \
 	} \
 	if (ssiout) { \
-		fprintf (ssiout, "[%s] # !ERROR! # ", ssi_log_name_static); \
+		fprintf (ssiout, "\033[31m[%s] # !ERROR! # ", ssi_log_name_static); \
 		fprintf (ssiout,  __VA_ARGS__); \
-		fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+		fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 	} \
 	if (ssi_log_file_on) { \
 		ssi_log_file_end (); \
@@ -308,9 +308,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 		ssimsg->err(ssi_log_name_static, __FILE__, __LINE__, __VA_ARGS__); \
 	} \
 	if (ssiout) { \
-		fprintf (ssiout, "[%s] # !ERROR! # ", ssi_log_name_static); \
+		fprintf (ssiout, "\033[31m[%s] # !ERROR! # ", ssi_log_name_static); \
 		fprintf (ssiout,  __VA_ARGS__); \
-		fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+		fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 	} \
 	FILE *errfile = fopen ("ssi_last.err", "w"); \
 	ssi_fprint (errfile, "[%s] # !ERROR! # ", ssi_log_name_static); \
@@ -329,9 +329,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 			ssimsg->wrn(ssi_log_name, __FILE__, __LINE__,  __VA_ARGS__); \
 		} \
 		if (ssiout) { \
-			fprintf (ssiout, "[%s] # WARNING # ", ssi_log_name); \
+			fprintf (ssiout, "\033[33m[%s] # WARNING # ", ssi_log_name); \
 			fprintf (ssiout,  __VA_ARGS__); \
-			fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+			fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 		} \
 	} \
 }
@@ -341,9 +341,9 @@ static int ssi_log_level_static = SSI_LOG_LEVEL_DEFAULT;
 			ssimsg->wrn(ssi_log_name_static, __FILE__, __LINE__,  __VA_ARGS__); \
 		} \
 		if (ssiout) { \
-			fprintf (ssiout, "[%s] # WARNING # ", ssi_log_name_static); \
+			fprintf (ssiout, "\033[33m[%s] # WARNING # ", ssi_log_name_static); \
 			fprintf (ssiout,  __VA_ARGS__); \
-			fprintf (ssiout, "\nlocation: %s (%d)\n", __FILE__, __LINE__); \
+			fprintf (ssiout, "\nlocation: %s (%d)\033[0m\n", __FILE__, __LINE__); \
 		} \
 	} \
 }

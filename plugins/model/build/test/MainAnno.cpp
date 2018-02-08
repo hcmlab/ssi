@@ -64,7 +64,7 @@ int main () {
 	exsemble.console(0, 0, 650, 800);
 	exsemble.add(&ex_ssi, 0, "SSI", "Writes/reads a continuous/discrete/free annotation to/from a ssi file");
 	exsemble.add(&ex_csv, 0, "CSV", "Reads a continuous/discrete/free annotation from a CSV file");
-	exsemble.add(&ex_stream, 0, "STREAM", "Reads a continuous annotation from a stream file");
+	exsemble.add(&ex_stream, 0, "STREAM", "Converts a stream into a continuous/discrete annotation");
 	exsemble.add(&ex_edit_classes, 0, "EDIT CLASSES", "Edit classes in a discrete annotation.");
 	exsemble.add(&ex_convert_to_frames, 0, "CONVERT TO FRAMES", "Convert a discrete annotation to frames.");
 	exsemble.add(&ex_convert_to_stream, 0, "CONVERT TO STREAM", "Convert an annotation to a stream.");
@@ -254,13 +254,23 @@ bool ex_stream(void *args) {
 	ssi_stream_t stream;
 	FileTools::ReadStreamFile(stream_path, stream);
 
-	ssi_print("\nread continuous annotation from a stream file:\n\n");
+	ssi_print("\nconvert stream to continuous annotation:\n\n");
 
 	{
 		Annotation anno;
 		anno.setContinuousScheme("arousal", stream.sr, 0.0f, 1.0f);
 		anno.addStream(stream, 1u, 0u);
 		anno.addStream(stream, 0u, 1.0f);
+		anno.print();
+	}
+
+	ssi_print("\nconvert stream to discrete annotation:\n\n");
+
+	{
+		Annotation anno;
+		anno.setDiscreteScheme("activity");
+		anno.addClass(0, "ACTIVITY");
+		anno.addStream(stream, 0, 0, 0, 1.0f, 0.07);
 		anno.print();
 	}
 

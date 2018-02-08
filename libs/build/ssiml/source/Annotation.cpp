@@ -770,6 +770,70 @@ bool Annotation::addStream(ssi_stream_t scores, ssi_size_t score_dim, ssi_size_t
 	return true;
 }
 
+bool Annotation::addStream(ssi_stream_t stream, ssi_size_t dim, ssi_real_t thres, ssi_int_t class_id, ssi_real_t conf, ssi_time_t min_duration)
+{
+	if (!check_type(SSI_SCHEME_TYPE::DISCRETE))
+	{
+		return false;
+	}
+
+	if (!hasClassId(class_id))
+	{
+		return false;
+	}
+
+	if (stream.type != SSI_FLOAT)
+	{
+		return false;
+	}
+
+	if (dim >= stream.dim)
+	{
+		return false;
+	}
+
+	ssi_time_t dt = 1.0 / stream.sr;
+	ssi_time_t time = 0;
+	
+	ssi_time_t from = 0.0, to = 0.0;
+	ssi_real_t *ptr = ssi_pcast(ssi_real_t, stream.ptr) + dim;
+	ssi_real_t x = 0;
+	bool activity = *ptr > thres;
+
+	for (ssi_size_t i = 0; i < stream.num; i++)
+	{
+		x = *ptr;
+		if (activity && x <= thres)
+		{
+			to = time;
+			activity = false;
+			if (to - from >= min_duration)
+			{
+				add(from, to, class_id, conf);
+			}
+		}
+		else if (!activity && x > thres)
+		{
+			from = time;
+			activity = true;
+		}
+
+		time += dt;
+		ptr += stream.dim;
+	}
+
+	if (activity)
+	{
+		to = time;
+		if (to - from >= min_duration)
+		{
+			add(from, to, class_id, conf);
+		}
+	}
+
+	return true;
+}
+
 bool Annotation::addCSV(FileCSV &file, ssi_size_t column_from, ssi_size_t column_to, ssi_size_t column_class, ssi_size_t column_conf)
 {
 	if (!check_not_type(SSI_SCHEME_TYPE::CONTINUOUS))

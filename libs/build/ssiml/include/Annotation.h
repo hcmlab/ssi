@@ -120,6 +120,7 @@ public:
 
 	bool addStream(ssi_stream_t scores, ssi_size_t score_dim, ssi_real_t conf);
 	bool addStream(ssi_stream_t scores, ssi_size_t score_dim, ssi_size_t conf_dim);
+	bool addStream(ssi_stream_t stream, ssi_size_t dim, ssi_real_t thres, ssi_int_t class_id, ssi_real_t conf, ssi_time_t min_duration = 0);
 
 	bool addCSV(FileCSV &file, ssi_size_t column_from, ssi_size_t column_to, ssi_size_t column_class, ssi_size_t column_conf);
 	bool addCSV(FileCSV &file, ssi_size_t column_score, ssi_size_t column_conf);
