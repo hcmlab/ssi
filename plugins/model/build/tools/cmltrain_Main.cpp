@@ -264,7 +264,7 @@ int main (int argc, char **argv) {
 	cmd.addSCmdArg("root", &params.root, "path to database on disk");
 	cmd.addSCmdArg("annotation", &params.annotation, "name of annotation");
 	cmd.addSCmdArg("newAnnotation", &params.annotation_new, "name of new annotation");
-	cmd.addSCmdArg("from", &params.classname, "original class names (separated by ;)");
+	cmd.addSCmdArg("from", &params.classname, "original class names (discrete) , or upper thresholds (continuous) (separated by ;)");
 	cmd.addSCmdArg("to", &params.classname_new, "new class names (separated by ;)");
 
 	cmd.addText("\nOptions:");
@@ -958,7 +958,7 @@ void mapClassNames(params_t &params)
 	StringList from;
 	from.parse(params.classname, ';');
 	StringList to;
-	to.parse(params.classname_new, ';');	
+	to.parse(params.classname_new, ';');
 	StringList to_unique;
 	for (StringList::iterator it = to.begin(); it != to.end(); it++)
 	{
@@ -998,27 +998,69 @@ void mapClassNames(params_t &params)
 				continue;
 			}
 
-			if (anno.getScheme()->type != SSI_SCHEME_TYPE::DISCRETE)
+
+			if (!(anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE || anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS))
 			{
-				ssi_wrn("ERROR: only discrete schemes are supported");
+				ssi_wrn("ERROR: annotation type not supported");
 				continue;
-			}			
+			}
 
 			Annotation anno_new;
-			anno_new.setDiscreteScheme(params.scheme[0] == '\0' ? params.annotation_new : params.scheme, to_unique );
+			anno_new.setDiscreteScheme(params.scheme[0] == '\0' ? params.annotation_new : params.scheme, to_unique);
 
-			for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
+
+			if (anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 			{
-				map<String,String>::iterator pos = mapping.find(String(anno.getClassName(it->discrete.id)));
-				if (pos != mapping.end())
+
+				for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
 				{
-					anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);				
-				}				
+					map<String, String>::iterator pos = mapping.find(String(anno.getClassName(it->discrete.id)));
+					if (pos != mapping.end())
+					{
+						anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);
+					}
+				}
+
+				anno_new.packClass();
+			}
+
+			else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
+			{
+
+				anno_new.addClass("NaN");
+				
+				int count = 0;
+				while (count < anno.size()) {
+					float start = ssi_cast(ssi_real_t, count * (1.0f / anno.getScheme()->continuous.sr));
+					float dur = ssi_cast(ssi_real_t, (1.0f / anno.getScheme()->continuous.sr));
+
+					if (isnan(anno.at(count).continuous.score))
+					{
+						anno_new.add(start, start + dur, "NaN", 1.0);
+					}
+
+					else
+					{
+						for (int i = 0; i < from.size(); i++)
+						{
+							float highthres = strtof(from[i].str(), 0);
+							if (anno.at(count).continuous.score <= highthres)
+							{
+								anno_new.add(start, start + dur, to[i].str(), 1.0);
+								break;
+							}
+						}
+					}
+					count++;
+				}
+
+				anno_new.packClass(0.1);
+				anno_new.removeClass("NaN");
+				
 			}
 
 			ssi_sprint(string, "%s\\%s.annotation", it->str(), params.annotation_new);
-			anno_new.packClass();
-			anno_new.save(string, File::ASCII);
+			anno_new.save(string, File::ASCII);	
 		}
 		else
 		{

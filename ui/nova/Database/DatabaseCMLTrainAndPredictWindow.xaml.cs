@@ -190,6 +190,7 @@ namespace ssi
                     ConfidenceTextBox.Text = Properties.Settings.Default.CMLDefaultConf.ToString();
                     FillGapTextBox.Text = Properties.Settings.Default.CMLDefaultGap.ToString();
                     RemoveLabelTextBox.Text = Properties.Settings.Default.CMLDefaultMinDur.ToString();
+                    LosoCheckBox.Visibility = Visibility.Collapsed;
 
                     break;
 
@@ -201,7 +202,8 @@ namespace ssi
 
                     PredictOptionsPanel.Visibility = Visibility.Collapsed;
                     TrainOptionsPanel.Visibility = Visibility.Visible;
-                    ForceCheckBox.Visibility = Visibility.Visible;            
+                    ForceCheckBox.Visibility = Visibility.Visible;
+                    LosoCheckBox.Visibility = Visibility.Collapsed;
 
                     break;
 
@@ -214,6 +216,7 @@ namespace ssi
                     PredictOptionsPanel.Visibility = Visibility.Collapsed;
                     TrainOptionsPanel.Visibility = Visibility.Collapsed;
                     ForceCheckBox.Visibility = Visibility.Collapsed;
+                    LosoCheckBox.Visibility = Visibility.Visible;
 
                     break;
 
@@ -226,6 +229,7 @@ namespace ssi
                     PredictOptionsPanel.Visibility = Visibility.Visible;
                     TrainOptionsPanel.Visibility = Visibility.Collapsed;
                     ForceCheckBox.Visibility = Visibility.Collapsed;
+                    LosoCheckBox.Visibility = Visibility.Collapsed;
 
                     ConfidenceCheckBox.IsChecked = Properties.Settings.Default.CMLSetConf;
                     FillGapCheckBox.IsChecked = Properties.Settings.Default.CMLFill;
@@ -331,7 +335,9 @@ namespace ssi
 
                 if (force || !File.Exists(trainerOutPath + ".trainer"))
                 {
-                    logTextBox.Text += handler.CMLTrainModel(trainer.Path,
+                    try
+                    {
+                        logTextBox.Text += handler.CMLTrainModel(trainer.Path,
                         trainerOutPath,
                         Properties.Settings.Default.DatabaseDirectory,
                         Properties.Settings.Default.DatabaseAddress,
@@ -347,6 +353,13 @@ namespace ssi
                         trainerRightContext,
                         trainerBalance,
                         mode == Mode.COMPLETE);
+                    }
+
+                    catch(Exception ex)
+                    {
+                        logTextBox.Text += ex;
+                    }
+                    
                 }
                 else
                 {
@@ -378,8 +391,11 @@ namespace ssi
                         Properties.Settings.Default.CMLDefaultMinDur = minDur;
                     }                                                          
                     Properties.Settings.Default.Save();
-                    
-                    logTextBox.Text += handler.CMLPredictAnnos(mode == Mode.COMPLETE ? tempTrainerPath : trainer.Path,
+
+                    try
+                    {
+
+                        logTextBox.Text += handler.CMLPredictAnnos(mode == Mode.COMPLETE ? tempTrainerPath : trainer.Path,
                         Properties.Settings.Default.DatabaseDirectory,
                         Properties.Settings.Default.DatabaseAddress,
                         Properties.Settings.Default.MongoDBUser,
@@ -396,6 +412,12 @@ namespace ssi
                         minGap,
                         minDur,                        
                         mode == Mode.COMPLETE);
+                    }
+
+                    catch (Exception ex)
+                    {
+                        logTextBox.Text += ex;
+                    }
                 }
                 
             }
@@ -403,8 +425,10 @@ namespace ssi
             if (mode == Mode.EVALUATE)
             {
                 string evalOutPath = Properties.Settings.Default.CMLDirectory + "\\" + Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+                try
 
-                logTextBox.Text += handler.CMLEvaluateModel(evalOutPath, 
+                {                    
+                    logTextBox.Text += handler.CMLEvaluateModel(evalOutPath, 
                         trainer.Path,
                         Properties.Settings.Default.DatabaseDirectory,
                         Properties.Settings.Default.DatabaseAddress,
@@ -415,14 +439,23 @@ namespace ssi
                         scheme.Name,
                         rolesList,
                         annotator.Name,
-                        stream.Name);
+                        stream.Name,
+                        LosoCheckBox.IsChecked.Value);
 
-                if (File.Exists(evalOutPath))
-                {
-                    ConfmatWindow confmat = new ConfmatWindow(evalOutPath);
-                    confmat.ShowDialog();
-                    File.Delete(evalOutPath);
+                    if (File.Exists(evalOutPath))
+                    {
+                        ConfmatWindow confmat = new ConfmatWindow(evalOutPath);
+                        confmat.ShowDialog();
+                        File.Delete(evalOutPath);
+                    }
                 }
+
+                catch (Exception ex)
+                {
+                    logTextBox.Text += ex;
+                }
+
+               
 
             }
 
@@ -1126,16 +1159,6 @@ namespace ssi
             Properties.Settings.Default.CMLRemove = false;
             Properties.Settings.Default.Save();
             RemoveLabelTextBox.IsEnabled = false;
-        }
-
-        private void ShowAllSessionsCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            GetSessions();
-        }
-
-        private void ShowAllSessionsCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            GetSessions();
         }
 
         private void GeneralBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

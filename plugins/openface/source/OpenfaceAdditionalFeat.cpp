@@ -79,7 +79,7 @@ namespace ssi {
 		ssi_real_t *out = ssi_pcast(ssi_real_t, stream_out.ptr);
 
 		float
-			dist_points,
+			dist_points = 0.0f,
 			dist_total_nose_lower_lip = 0.0f,
 			dist_total_nose_chin = 0.0f,
 			dist_total_chin_pose = 0.0f,
@@ -90,6 +90,7 @@ namespace ssi {
 		float *distances_chin_pose = new float[sample_number];
 		float *distances_nose_lower_lip = new float[sample_number];
 		float *areas = new float[sample_number];
+		float rotations_total[3] = { 0.0 };
 
 		/**
 		This 2D array is used to save magnitudes for 20 facial landmarks.
@@ -97,7 +98,19 @@ namespace ssi {
 		*/
 		int rowCount = 20;
 		float *magnitudes = new float[sample_number*rowCount];
-		float magnitudes_total[20] = {0.0};
+		float magnitudes_total[20] = { 0.0 };
+
+		// to hold normalized magnitudes
+		float *magnitudes_norm = new float[sample_number*rowCount];
+		float magnitudes_total_norm[20] = { 0.0 };
+
+		// DEBUG
+		//ssi_print("C: %f ", in[Openface::FEATURE::POSE_CAMERA_X]);
+		//ssi_print("C: %f ", in[Openface::FEATURE::POSE_CAMERA_Y]);
+		//ssi_print("C: %f \n\n", in[Openface::FEATURE::POSE_CAMERA_Z]);
+		//ssi_print("W: %f ", in[Openface::FEATURE::POSE_WORLD_X]);
+		//ssi_print("W: %f ", in[Openface::FEATURE::POSE_WORLD_Y]);
+		//ssi_print("W: %f \n\n", in[Openface::FEATURE::POSE_WORLD_Z]);
 
 		if (in[Openface::FEATURE::DETECTION_SUCCESS] && in[Openface::FEATURE::DETECTION_CERTAINTY] < 0.2) {
 			// Calculate distances, areas, magnitudes andtheir sums for all provided samples in this loop
@@ -110,8 +123,6 @@ namespace ssi {
 				122 = FACIAL_LANDMARK_49_X
 				123 = FACIAL_LANDMARK_49_Y
 				...
-				160 = FACIAL_LANDMARK_68_X
-				161 = FACIAL_LANDMARK_68_Y
 				*/
 				int row = 0;
 				// for all facial landmarks on lips 
@@ -119,6 +130,7 @@ namespace ssi {
 				{
 					if (i < sample_number - 1)
 					{
+
 						if (0.0 < in[i * sample_dimension + j] < 640.0
 							&& 0.0 < in[i * sample_dimension + j + 1] < 480.0
 							&& 0.0 < in[(i + 1) * sample_dimension + j] < 640.0
@@ -126,27 +138,49 @@ namespace ssi {
 							)
 						{
 							// Calc magnitude of the same facial landmark in two different samples (i and i+1)
-							float magnitude = dist_points = calc_dist_r2(
+							float magnitude = calc_dist_r2(
 								in[i * sample_dimension + j], //X
 								in[i * sample_dimension + j + 1], //Y
 								in[(i + 1) * sample_dimension + j], //X
 								in[(i + 1) * sample_dimension + j + 1] //Y
 							);
 
-							if (0.0 < magnitude < 640.0) {
+							// Calc normalized magnitude
+							float norm_mag = calc_max_norm_mag(in, i, sample_dimension);
+							float magnitude_norm = magnitude - norm_mag;
+
+							// save magnitudes for later output
+							if (magnitude < 10.0 && magnitude > 0.0) {
 								magnitudes[row*sample_number + i] = magnitude;
 								magnitudes_total[row] += magnitude;
 							}
 							else {
-								ssi_print("%f \n\n", magnitude);
-								magnitudes[row*sample_number + i] = 0.0;
+								magnitudes[row*sample_number + i] = 10.0;
 							}
+
+							// save normalized magnitudes for later output
+							if (magnitude_norm < 10.0 && magnitude_norm > 0.0) {
+								magnitudes_norm[row*sample_number + i] = magnitude_norm;
+								magnitudes_total_norm[row] += magnitude_norm;
+							}
+							else {
+								magnitudes_norm[row*sample_number + i] = 0.0;
+							}
+
 						}
 						else {
 							magnitudes[row*sample_number + i] = 0.0;
+							magnitudes_norm[row*sample_number + i] = 0.0;
 						}
 						row++;
 					}
+				}
+
+				if (i < sample_number - 1) {
+					// Head rotations
+					rotations_total[0] = rot_diff(in[i* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_X], in[(i + 1)* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_X]);
+					rotations_total[1] = rot_diff(in[i* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_Y], in[(i + 1)* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_Y]);
+					rotations_total[2] = rot_diff(in[i* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_Z], in[(i + 1)* sample_dimension + Openface::FEATURE::CORRECTED_POSE_WORLD_ROT_Z]);
 				}
 
 				// Area mouth
@@ -246,28 +280,121 @@ namespace ssi {
 			*out++ = isinf(variance) || isnan(variance) || variance < 0 ? 0 : sqrt(variance);
 		}
 
+		// TODO: add normal features to output too
 		// Magnitude features
 		if (_options.magnitudes_lips) {
 			for (size_t row = 0; row < rowCount; row++)
 			{
-				float *magnitudes_row = new float[sample_number];
-				magnitudes_row = &magnitudes[row];
-				*out++ = magnitudes_total[row];
+				*out++ = magnitudes_total_norm[row];
 			}
+		}
+
+		// rotation sums 
+		if (_options.sum_rotations_pose) {
+			*out++ = rotations_total[0];
+			*out++ = rotations_total[1];
+			*out++ = rotations_total[2];
 		}
 
 		// Free memory
 		delete[] distances_nose_chin;
 		delete[] distances_nose_lower_lip;
 		delete[] magnitudes;
-
 	}
 
 	void OpenfaceAdditionalFeat::transform_flush(ssi_stream_t &stream_in,
 		ssi_stream_t &stream_out,
 		ssi_size_t xtra_stream_in_num,
 		ssi_stream_t xtra_stream_in[]) {
+	}
 
+	/**
+	// Calc magnitudes to normalize with and return the maximum
+
+	@return magnitude to normalize with
+	@author: Jorrit Posor
+	*/
+	float OpenfaceAdditionalFeat::calc_max_norm_mag(ssi_real_t *in, int i, int sample_dimension) {
+		// Calc magnitude
+		// Calc normalized magnitude
+		float norm_mag =
+			max
+			(
+				max
+				(
+					max
+					(
+						max
+						(
+							max
+							(
+								calc_dist_r2
+								(
+									in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_31_X],
+									in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_31_Y],
+									in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_31_X],
+									in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_31_Y]
+								),
+								calc_dist_r2
+								(
+									in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_30_X],
+									in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_30_Y],
+									in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_30_X],
+									in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_30_Y]
+								)
+							),
+							calc_dist_r2
+							(
+								in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_29_X],
+								in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_29_Y],
+								in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_29_X],
+								in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_29_Y]
+							)
+						),
+						calc_dist_r2
+						(
+							in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_28_X],
+							in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_28_Y],
+							in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_28_X],
+							in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_28_Y]
+						)
+					),
+					calc_dist_r2
+					(
+						in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_17_X],
+						in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_17_Y],
+						in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_17_X],
+						in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_17_Y]
+					)
+				),
+				calc_dist_r2
+				(
+					in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_1_X],
+					in[i* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_1_Y],
+					in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_1_X],
+					in[(i + 1)* sample_dimension + Openface::FEATURE::FACIAL_LANDMARK_1_Y]
+				)
+			);
+		return norm_mag;
+	}
+
+	/**
+	Calculate the difference between two rotation values
+
+	@param rot_1
+	@param rot_2
+	@return value of absolute rotation difference
+	@author: Jorrit Posor
+	*/
+	float OpenfaceAdditionalFeat::rot_diff(float rot_1, float rot_2) {
+		if ((rot_1 || rot_2) <= -1.0) {
+			ssi_print("case 1 \n");
+			return 0.0;
+		}
+		else {
+			float diff = abs(rot_1 - rot_2);
+			return diff;
+		}
 	}
 
 	/**

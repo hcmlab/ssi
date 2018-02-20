@@ -160,9 +160,12 @@ bool FileTools::ReadRawFile (File &file,
 		}
 		case File::BINARY: {
 
-			int64_t pos = file.tell ();
+			int64_t pos = file.tell();
+			file.seek(0, File::END);
+			int64_t size = file.tell ();
+			file.seek(pos, File::BEGIN);
 			
-			ssi_size_t n_samples = ssi_size_t(pos / (data.dim * data.byte));
+			ssi_size_t n_samples = ssi_size_t(size / (data.dim * data.byte));
 			ssi_stream_adjust (data, n_samples);
 
 			fread (data.ptr, data.tot, 1, file.getFile ());
@@ -171,7 +174,7 @@ bool FileTools::ReadRawFile (File &file,
 		}
 	}
 
-	return false;
+	return true;
 }
 
 bool FileTools::ReadStreamHeader (File &file,

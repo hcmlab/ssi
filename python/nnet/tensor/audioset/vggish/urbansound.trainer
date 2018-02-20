@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<trainer ssi-v="5">
+    <info trained="true" />
+    <meta rightContext="0" leftContext="0" balance="under" />
+    <register>
+        <item name="liblinear" />
+    </register>
+    <streams>
+        <item byte="4" dim="128" sr="25.000000" type="FLOAT" />
+    </streams>
+    <classes>
+        <item name="STREET_MUSIC" />
+        <item name="SIREN" />
+        <item name="JACKHAMMER" />
+        <item name="GUN_SHOT" />
+        <item name="ENGINE_IDLING" />
+        <item name="DRILLING" />
+        <item name="DOG_BARK" />
+        <item name="CHILDREN_PLAYING" />
+        <item name="CAR_HORN" />
+        <item name="AIR_CONDITIONER" />
+    </classes>
+    <users>
+        <item name="NOBODY" />
+    </users>
+    <normalize>
+        <item method="Scale" stream="0" path="urbansound.trainer.#0" />
+    </normalize>
+    <model create="LibLinear" stream="0" path="urbansound.trainer.LibLinear" option="urbansound.trainer.LibLinear" />
+</trainer>

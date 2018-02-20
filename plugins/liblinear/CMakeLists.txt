@@ -102,7 +102,7 @@ ENDIF(MINGW)
 
 
 add_library(ssiliblinear SHARED ${SRC_FILES} )
-target_link_libraries(ssiliblinear ssi ${MINGW_WSOCKET} ${MINGW_WMM} ${MINGW_WSOCKET2} ${MINGW_PTHREAD})
+target_link_libraries(ssiliblinear liblinear ssiml ssi ${MINGW_WSOCKET} ${MINGW_WMM} ${MINGW_WSOCKET2} ${MINGW_PTHREAD})
 #add_executable(myapp main.c)
 
 #rename targets if debug

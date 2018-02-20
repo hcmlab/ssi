@@ -223,7 +223,7 @@ void FFMPEGReader::run () {
 		bool is_old;
 		ssi_real_t *chunk = _audio_buffer->pop(n_samples, is_old);
 
-		if (!_options.bestEffort || !is_old) //in bestEffort mode we only provide new frames
+		if (!_options.bestEffort || !is_old) // in bestEffort mode we only provide new frames
 		{
 			bool result = _audio_provider->provide(ssi_pcast(ssi_byte_t, chunk), n_samples);
 			if (!_options.stream) {
@@ -241,6 +241,17 @@ void FFMPEGReader::run () {
 
 	if (_client->getState() == FFMPEGReaderClient::STATE::IDLE || _client->getState() == FFMPEGReaderClient::STATE::TERMINATE)
 	{
+
+		if (_audio_provider) // provide remaining samples in buffer
+		{
+			ssi_size_t n_samples;
+			ssi_real_t *chunk = _audio_buffer->pop_all(n_samples);
+			if (n_samples > 0)
+			{
+				_audio_provider->provide(ssi_pcast(ssi_byte_t, chunk), n_samples);
+			}
+		}
+
 		_interrupted = false;
 		_wait_event.release();
 	}

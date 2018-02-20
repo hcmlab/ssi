@@ -535,8 +535,6 @@ bool Extract(params_t &params, FilePath *inPath, FilePath *outPath, FilePath *an
 		delete reader;
 		delete writer;
 
-		FileTools::WriteStreamFile(File::BINARY, "X:\\nova\\data\\semaine\\002\\test3", from);
-
  		result = true;
 	}
 	else

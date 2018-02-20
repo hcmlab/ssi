@@ -39,6 +39,7 @@ namespace ssi
                          
             control.databaseLoadSessionMenu.IsEnabled = isConnected;
             control.databasePasswordMenu.IsEnabled = isConnected;
+            control.databaseUpdateMenu.IsEnabled = isConnected;
 
             control.databaseCMLMenu.IsEnabled = isConnected;
             control.databaseCMLCompleteStepMenu.IsEnabled = isConnectedAndHasSession;
@@ -50,10 +51,10 @@ namespace ssi
             control.databaseManageUsersMenu.Visibility = isConnected && (authentication > DatabaseAuthentication.DBADMIN) ? Visibility.Visible : Visibility.Collapsed;
 
 
-            control.fusionmenu.Visibility = (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\bayesfusion.exe") == true) ? Visibility.Visible : Visibility.Collapsed;  
+            control.fusionmenu.Visibility = (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\bayesfusion.exe") == true) ? Visibility.Visible : Visibility.Collapsed;
 
             // annotation
-
+            control.annoNewMenu.IsEnabled = ((Time.TotalDuration > 0) == true);
             control.annoSaveAllMenu.IsEnabled = hasTier;
             control.annoSaveMenu.IsEnabled = hasTier;
             control.annoSaveAsFinishedMenu.IsEnabled = hasTier;

@@ -34,6 +34,7 @@
 #include "MlpXmlDef.h"
 #include "ssiml/include/Annotation.h"
 
+
 namespace ssi {
 
 class TiXmlElement;
@@ -126,7 +127,7 @@ protected:
 	ITransformer *_transf;
 		
 	std::vector<ssi_stream_t *> _streams;
-	std::vector<old::Annotation *> _annos;
+        std::vector<old::Annotation *> _annos;
 };
 
 }

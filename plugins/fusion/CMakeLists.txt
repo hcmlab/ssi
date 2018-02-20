@@ -46,7 +46,7 @@ endif(SSI_GUI STREQUAL "SDL")
 include_directories(include ../../core/include/ioput/socket
                     ../../core/include/ioput ../../core/include
                     ../ ../../libs/shared/AlgLib/include
-                    ../../libs/shared/ssiml/include
+                    ../../libs/build/ssiml/include
                     ${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
 
 set(COMMON_SRC_FILES

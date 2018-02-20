@@ -945,12 +945,12 @@ bool Trainer::train_h (ISamples &samples_raw) {
 			break;
 		}
 		case BALANCE::OVER:
-		{
-			ssi_msg(SSI_LOG_LEVEL_BASIC, "apply over sampling (%u->%u)", samples_raw.getSize(), samples->getSize());
+		{			
 			ISOverSample *over = new ISOverSample(&samples_raw);
 			over->setSeed(_seed);
 			over->setOver(ISOverSample::Strategy::RANDOM);
 			samples = over;
+			ssi_msg(SSI_LOG_LEVEL_BASIC, "apply over sampling (%u->%u)", samples_raw.getSize(), samples->getSize());
 			break;
 		}
 		}

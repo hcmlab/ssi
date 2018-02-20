@@ -46,7 +46,8 @@ add_dependencies(ssianno2sample ssimodel ssi )
 
 add_subdirectory(elan2ssiAnno)
 add_dependencies(elan2ssiAnno ssimodel ssi )
-
+#add_subdirectory(cmlTrain)
+#add_dependencies(ssicmltrain ssimodel mongo ssiopensmile ssi )
 
 endif(ANDROID)
 

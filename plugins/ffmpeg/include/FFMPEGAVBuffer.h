@@ -79,6 +79,8 @@ public:
 	// otherwise n_samples if n_samples > 0
 	// full buffer if n_samples == 0
 	ssi_real_t *pop (ssi_size_t &n_samples, bool &is_new);
+	// returns remaining buffer
+	ssi_real_t *pop_all(ssi_size_t &n_samples);
 	void pop_done (ssi_size_t n_samples);
 	ssi_real_t getFillState ();
 	ssi_size_t getPushed ();

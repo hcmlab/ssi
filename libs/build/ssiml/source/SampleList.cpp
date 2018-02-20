@@ -222,7 +222,7 @@ void SampleList::print (FILE *file) {
 
 void SampleList::printInfo (FILE *file) {
 
-	ssi_fprint (file, "_samples\t\t%ux%u\n", getSize (), getStreamSize ());	
+	ssi_fprint (file, "samples\t\t%ux%u\n", getSize (), getStreamSize ());	
 	ssi_fprint (file, "per class\t");
 	for (ssi_size_t nclass = 0; nclass < getClassSize (); nclass++) {
 		ssi_fprint (file, "%u ", getSize (nclass));

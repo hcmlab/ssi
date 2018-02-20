@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{ED1B9992-FFD6-4923-9F2C-34236635CC8D}</ProjectGuid>
+    <ProjectGuid>{95025484-6700-4476-839E-5E1415026D3C}</ProjectGuid>
     <RootNamespace>Esmeralda</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>opensmilewrapper</ProjectName>

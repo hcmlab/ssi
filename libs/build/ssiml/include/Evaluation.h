@@ -95,7 +95,7 @@ public:
 		_n_streams_refs = n_streams_refs;
 		_stream_refs = stream_refs;
 	}
-
+	
 	// compares two annotations
 	bool eval(Annotation *prediction, Annotation *truth);
 
@@ -118,8 +118,6 @@ public:
 
 	// print evaluation to file
 	void print(FILE *file = stdout, PRINT::List format = PRINT::CONSOLE);
-	//print intermediate evauation results to file (LOUO only)
-	void print_intermediate_louo(FILE *file = stdout, PRINT::List format = PRINT::CONSOLE);
 	void print_result_vec (FILE *file = stdout);
 
 	// reset
@@ -132,16 +130,8 @@ public:
 	// relative mean of class probs
 	ssi_real_t get_accuracy_prob ();
 
-	// mean of class probs (intermediate results, only woks for LOUO)
-	std::vector<ssi_real_t> get_intermediate_louo_classwise_prob();
-	// relative mean of class probs (intermediate results, only woks for LOUO)
-	std::vector<ssi_real_t> get_intermediate_louo_accuracy_prob();
-	ssi_real_t get_intermediate_louo_class_prob(ssi_size_t index, ssi_size_t nuser);
-
 	// get confussion matrix
 	ssi_size_t*const* get_conf_mat ();
-	// get intermediate confusion matrices (LOUO only)
-	std::vector<ssi_size_t*const*> get_intermediate_louo_conf_mat();
 	// get correlation coefficient
 	ssi_real_t get_correlation();
 	ssi_real_t get_metric(METRIC m);

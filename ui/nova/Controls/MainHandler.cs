@@ -15,7 +15,7 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "1.0.1.7";
+        public static string BuildVersion = "1.0.1.9";
         public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
 
 
@@ -160,6 +160,7 @@ namespace ssi
             control.menu.MouseEnter += tierMenu_MouseEnter;
 
             control.annoSaveMenu.Click += annoSave_Click;
+            control.annoNewMenu.Click += navigatorNewAnno_Click;
             control.annoSaveAsFinishedMenu.Click += annoSaveAsFinished_Click;
             control.annoReloadMenu.Click += annoReload_Click;
             control.annoReloadBackupMenu.Click += annoReloadBackup_Click;
@@ -188,7 +189,7 @@ namespace ssi
             control.databaseLoadSessionMenu.Click += databaseLoadSession_Click;
             control.databaseCMLCompleteStepMenu.Click += databaseCMLCompleteStep_Click;
             control.databaseCMLFusionMenu.Click += databaseCMLFusion_Click;
-           // control.databaseCMLFusionMenu.Click += databaseCMLFusionPredict_Click;
+            control.databaseCMLFusionMenuPredict.Click += databaseCMLFusionPredict_Click;
             control.databaseCMLExtractFeaturesMenu.Click += databaseCMLExtractFeatures_Click;
             control.databaseCMLMergeFeaturesMenu.Click += databaseCMLMergeFeatures_Click;
             control.databaseCMLTrainAndPredictMenu.Click += databaseCMLTrainAndPredict_Click;            
@@ -208,8 +209,7 @@ namespace ssi
 
             // Navigator
 
-            control.navigator.newAnnoFromFileButton.Click += navigatorNewAnnoFromFile_Click;
-            control.navigator.newAnnoFromDatabaseButton.Click += navigatorNewAnnoFromDatabase_Click;
+            control.navigator.newAnnoButton.Click += navigatorNewAnno_Click;
             control.navigator.clearButton.Click += navigatorClearSession_Click;
             control.navigator.jumpFrontButton.Click += navigatorJumpFront_Click;
             control.navigator.playButton.Click += navigatorPlay_Click;
@@ -233,6 +233,7 @@ namespace ssi
 
             // Database
 
+            control.databaseUpdateMenu.Click += DatabaseUpdateMenu_Click;
             control.databaseConnectMenu.Click += DatabaseConnectMenu_Click;
             control.databasePasswordMenu.Click += DatabasePassMenu_Click;
 

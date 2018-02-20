@@ -104,7 +104,7 @@ public:
 		File::TYPE type,
 		File::VERSION version = FileSamplesIn::DEFAULT_VERSION);
 	static void SaveSampleListArff (ISamples &samples, 
-		ssi_char_t *filename,
+		const ssi_char_t *filename,
 		const ssi_char_t **feature_names = 0,
 		const ssi_char_t *relation_name = "ssi",
 		const ssi_char_t *class_attribute_name = "Class",

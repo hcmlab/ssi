@@ -662,7 +662,7 @@ Trainer *MlpXmlTrain::parseTrainer (const ssi_char_t *filepath, const ssi_char_t
 			trainer = parseTrainerItem (item);
 			if (!trainer) {
 				ssi_wrn ("failed loading traindef '%s' from '%s'", defname, filepath_with_ext);
-                return NULL;
+				return false;
 			}
 			found = true;
 		}

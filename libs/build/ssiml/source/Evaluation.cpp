@@ -51,11 +51,6 @@ int Evaluation::ssi_log_level = SSI_LOG_LEVEL_DEFAULT;
 int Evaluation::_default_class_id = 0;
 bool Evaluation::_allow_unclassified = true;
 
-bool _louo_intermediate = false;
-int*** _intermediate_louo_conf_mats;
-int _current_intermediate_user = 0;
-std::vector<std::string> user_names;
-
 Evaluation::Evaluation () 
 	: _n_classes (0),
 	_n_streams(0),
@@ -147,21 +142,6 @@ void Evaluation::init(IModel::TYPE::List type, ISamples &samples, Trainer *train
 	_n_classified = 0;	
 
 	_trainer = trainer;		
-
-	if (_louo_intermediate) {
-		_current_intermediate_user = 0;
-		_intermediate_louo_conf_mats = new int**[samples.getUserSize()];
-		for (ssi_size_t i = 0; i < samples.getUserSize(); i++) {
-			_intermediate_louo_conf_mats[i] = new int*[_n_classes];
-			for (ssi_size_t j = 0; j < _n_classes; j++) {
-				_intermediate_louo_conf_mats[i][j] = new int[_n_classes];
-			}
-		}
-
-		for (ssi_size_t i = 0; i < samples.getUserSize(); i++) {
-			user_names.push_back(samples.getUserName(i));
-		}
-	}
 }
 
 bool Evaluation::eval(Annotation *prediction, Annotation *truth)
@@ -332,22 +312,6 @@ void Evaluation::eval_h(ISamples &samples) {
 					_result_probs_ptr++;
 				}
 			}
-		}
-
-
-		if (_louo_intermediate) {
-
-			for (ssi_size_t i = 0; i < _n_classes; i++) {
-				for (ssi_size_t j = 0; j < _n_classes; j++) {
-					_intermediate_louo_conf_mats[_current_intermediate_user][i][j] = _conf_mat_ptr[i][j];
-
-					for (int k = 0; k < _current_intermediate_user; k++) {
-						_intermediate_louo_conf_mats[_current_intermediate_user][i][j] -= _intermediate_louo_conf_mats[k][i][j];
-					}
-				}
-			}
-
-			_current_intermediate_user++;
 		}
 
 		delete[] probs;
@@ -708,8 +672,6 @@ void Evaluation::evalLOO(Trainer *trainer, ISamples &samples) {
 
 void Evaluation::evalLOUO(Trainer *trainer, ISamples &samples){
 	
-	_louo_intermediate = true;
-
 	init(trainer->getModelType(), samples, trainer);
 
 	ssi_size_t n_users = samples.getUserSize ();
@@ -935,178 +897,6 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 	fflush (file);
 }
 
-void Evaluation::print_intermediate_louo(FILE *file, PRINT::List format) {
-
-	if (!_conf_mat_ptr) {
-		ssi_wrn("nothing to print");
-		return;
-	}
-
-	ssi_size_t max_label_len = 0;
-	for (ssi_size_t i = 0; i < _n_classes; ++i) {
-		ssi_size_t len = ssi_cast(ssi_size_t, strlen(_class_names[i]));
-		if (len > max_label_len) {
-			max_label_len = len;
-		}
-	}
-
-	if (format == PRINT::CSV || format == PRINT::CSV_EX) {
-
-		for (int h = 0; h < _current_intermediate_user; h++) {
-
-			ssi_fprint(file, "#User;%u;%s\n", h, user_names[h].c_str());
-
-			File *tmp = File::Create(File::ASCII, File::WRITE, 0, file);
-			tmp->setType(SSI_UINT);
-			tmp->setFormat(";", "");
-
-			int n_classified_intermediate = 0;
-			for (ssi_size_t i = 0; i < _n_classes; ++i) {
-				for (ssi_size_t j = 0; j < _n_classes; ++j) {
-					n_classified_intermediate += _intermediate_louo_conf_mats[h][i][j];
-				}
-			}
-
-			//TODO intermediate n_unclassified
-
-			ssi_fprint(file, "#classes;%u\n", _n_classes);
-			ssi_fprint(file, "#total;%u\n", n_classified_intermediate + _n_unclassified);
-			ssi_fprint(file, "#classified;%u\n", n_classified_intermediate);
-			ssi_fprint(file, "#unclassified;%u\n", _n_unclassified);
-
-			if (_type == IModel::TYPE::CLASSIFICATION)
-			{
-
-				for (ssi_size_t i = 0; i < _n_classes; ++i) {
-					ssi_fprint(file, ";%s", _class_names[i]);
-				}
-
-				ssi_fprint(file, "\n");
-				for (ssi_size_t i = 0; i < _n_classes; ++i) {
-					ssi_fprint(file, "%s;", _class_names[i]);
-					tmp->write(_intermediate_louo_conf_mats[h][i], 0, _n_classes);
-					ssi_fprint(file, "%f\n", 100 * get_intermediate_louo_class_prob(i, h));
-				}
-				for (ssi_size_t i = 0; i < _n_classes; ++i) {
-					ssi_fprint(file, "; ");
-				}
-
-				std::vector<float> il_cw = get_intermediate_louo_classwise_prob();
-				std::vector<float> il_acc = get_intermediate_louo_accuracy_prob();
-
-				ssi_fprint(file, ";%f;%f\n", 100 * il_cw[h], 100 *il_acc[h]);
-
-				if (format == PRINT::CSV_EX) {
-					ssi_fprint(file, "\ntruth;prediction");
-					for (ssi_size_t i = 0; i < _n_classes; i++) {
-						ssi_fprint(file, ";%s", _class_names[i]);
-					}
-					ssi_fprint(file, "\n");
-					ssi_size_t *vec_ptr = _result_vec;
-					ssi_real_t *probs_ptr = _result_probs;
-					for (ssi_size_t i = 0; i < _n_total; i++) {
-						ssi_fprint(file, "%u;%u", vec_ptr[0], vec_ptr[1]);
-						vec_ptr += 2;
-						for (ssi_size_t j = 0; j < _n_classes; j++) {
-							ssi_fprint(file, ";%f", *probs_ptr++);
-						}
-						ssi_fprint(file, "\n");
-					}
-				}
-			}
-			else
-			{
-				ssi_fprint(file, "\n");
-				ssi_fprint(file, "#metrics\n");
-				//ssi_fprint(file, "correlation:   %f\n", get_correlation());
-				for (int i = 0; i < METRIC::NUM; i++) {
-					ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
-				}
-
-				if (format == PRINT::CSV_EX) {
-					ssi_fprint(file, "\ntruth;prediction");
-					for (ssi_size_t i = 0; i < _n_classes; i++) {
-						ssi_fprint(file, ";%s", _class_names[i]);
-					}
-					ssi_fprint(file, "\n");
-					ssi_real_t *vec_ptr = _result_vec_reg;
-					for (ssi_size_t i = 0; i < _n_total; i++) {
-						ssi_fprint(file, "%f;%f", vec_ptr[0], vec_ptr[1]);
-						vec_ptr += 2;
-						ssi_fprint(file, "\n");
-					}
-				}
-			}
-
-		}
-
-	}
-	else {
-		for (int h = 0; h < _current_intermediate_user; h++) {
-
-			File *tmp = File::Create(File::ASCII, File::WRITE, 0, file);
-			tmp->setType(SSI_UINT);
-			tmp->setFormat(" ", "6");
-
-			int n_classified_intermediate = 0;
-			for (ssi_size_t i = 0; i < _n_classes; ++i) {
-				for (ssi_size_t j = 0; j < _n_classes; ++j) {
-					n_classified_intermediate += _intermediate_louo_conf_mats[h][i][j];
-				}
-			}
-
-			//TODO intermediate n_unclassified
-			ssi_fprint(file, "\n");
-			ssi_fprint_off(file, "#User:         %u (%s)\n", h, user_names[h].c_str());
-			ssi_fprint_off(file, "#classes:      %u\n", _n_classes);
-			ssi_fprint_off(file, "#total:        %u\n", n_classified_intermediate + _n_unclassified);
-			ssi_fprint_off(file, "#classified:   %u\n", n_classified_intermediate);
-			ssi_fprint_off(file, "#unclassified: %u\n", _n_unclassified);
-
-			if (_type == IModel::TYPE::CLASSIFICATION)
-			{
-				ssi_fprint_off(file, "");
-				if (format == PRINT::CONSOLE_EX) {
-					for (ssi_size_t j = 0; j < max_label_len + 3; j++) {
-						ssi_fprint(file, " ");
-					}
-					ssi_char_t cut[7];
-					for (ssi_size_t i = 0; i < _n_classes; ++i) {
-						cutString(_class_names[i], 7, cut);
-						ssi_fprint(file, " %6s", cut);
-					}
-				}
-				ssi_fprint(file, "\n");
-				for (ssi_size_t i = 0; i < _n_classes; ++i) {
-					ssi_fprint_off(file, "%*s: ", max_label_len, _class_names[i]);
-					tmp->write(_intermediate_louo_conf_mats[h][i], 0, _n_classes);
-					ssi_fprint(file, "   -> %8.2f%%\n", 100 * get_intermediate_louo_class_prob(i, h));
-				}
-
-				std::vector<float> il_cw = get_intermediate_louo_classwise_prob();
-				std::vector<float> il_acc = get_intermediate_louo_accuracy_prob();
-
-				ssi_fprint_off(file, "   %*s  => %8.2f%% | %.2f%%\n", max_label_len + _n_classes * 7, "", 100 * il_cw[h], 100 * il_acc[h]);
-				delete tmp;
-			}
-			else
-			{
-				ssi_fprint(file, "\n");
-				ssi_fprint(file, "#metrics\n");
-				//ssi_fprint_off(file, "correlation:   %f\n", get_correlation());
-				for (int i = 0; i < METRIC::NUM; i++) {
-					ssi_fprint(file, "%s:   %f\n", METRICNAMES[i], get_metric((METRIC)i));
-				}
-			}
-
-		}
-	}
-
-
-
-	fflush(file);
-}
-
 void Evaluation::print_result_vec (FILE *file) {
 
 	if (_type == IModel::TYPE::CLASSIFICATION)
@@ -1148,17 +938,6 @@ ssi_real_t Evaluation::get_class_prob (ssi_size_t index) {
 	return prob;
 }
 
-ssi_real_t Evaluation::get_intermediate_louo_class_prob(ssi_size_t index, ssi_size_t nuser) {
-
-	ssi_size_t sum = 0;
-	for (ssi_size_t i = 0; i < _n_classes; ++i) {
-		sum += _intermediate_louo_conf_mats[nuser][index][i];
-	}
-	ssi_real_t prob = sum > 0 ? ssi_cast(ssi_real_t, _intermediate_louo_conf_mats[nuser][index][index]) / ssi_cast(ssi_real_t, sum) : 0;
-
-	return prob;
-}
-
 ssi_real_t Evaluation::get_classwise_prob () {
 
 	ssi_real_t prob = 0;
@@ -1183,67 +962,11 @@ ssi_real_t Evaluation::get_accuracy_prob () {
 	return prob;
 }
 
-std::vector<ssi_real_t> Evaluation::get_intermediate_louo_classwise_prob() {
-
-	std::vector<ssi_real_t> probs;
-	for (int h = 0; h < _current_intermediate_user; ++h) {
-		ssi_real_t prob = 0.0;
-		for (ssi_size_t i = 0; i < _n_classes; ++i) {
-			prob += get_intermediate_louo_class_prob(i, h);
-		}
-
-		prob /= ((ssi_real_t)_n_classes);
-		probs.push_back(prob);
-	}
-
-	return probs;
-}
-
-std::vector<ssi_real_t> Evaluation::get_intermediate_louo_accuracy_prob() {
-
-	std::vector<ssi_real_t> probs;
-	ssi_real_t prob = 0.0;
-
-	for (int h = 0; h < _current_intermediate_user; ++h) {
-		ssi_size_t sum_correct = 0;
-		ssi_size_t n_classified_interediate = 0;
-		for (ssi_size_t i = 0; i < _n_classes; ++i) {
-			sum_correct += _intermediate_louo_conf_mats[h][i][i];
-		}
-
-		for (ssi_size_t i = 0; i < _n_classes; ++i) {
-			for (ssi_size_t j = 0; j < _n_classes; ++j) {
-				n_classified_interediate += _intermediate_louo_conf_mats[h][i][j];
-			}
-		}
-
-		prob = _n_classified > 0 ? ssi_cast(ssi_real_t, sum_correct) / ssi_cast(ssi_real_t, n_classified_interediate) : 0;
-		probs.push_back(prob);
-
-	}
-
-	return probs;
-}
-
-
-
 ssi_size_t*const* Evaluation::get_conf_mat () {
 
 	ssi_size_t **conf_ptr = _conf_mat_ptr;
 
 	return conf_ptr;
-}
-
-std::vector<ssi_size_t*const*> Evaluation::get_intermediate_louo_conf_mat() {
-
-	std::vector<ssi_size_t*const*> r;
-
-	for (int h = 0; h < _current_intermediate_user; ++h) {
-		ssi_size_t **conf_ptr = _conf_mat_ptr;
-		r.push_back(conf_ptr);
-	}
-
-	return r;
 }
 
 void Evaluation::release () {
@@ -1273,14 +996,6 @@ void Evaluation::release () {
 	_result_probs = 0;
 	_result_probs_ptr = 0;
 	_trainer = 0;
-
-	if (_louo_intermediate) {
-		for (size_t i = 0; i < user_names.size(); i++) {
-			for (ssi_size_t j = 0; j < _n_classes; j++) {
-				delete _intermediate_louo_conf_mats[i][j];
-			}
-		}
-	}
 }
 
 

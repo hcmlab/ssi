@@ -74,6 +74,11 @@ def loadModel(opts,vars):
     features_tensor = sess.graph.get_tensor_by_name(vggish_params.INPUT_TENSOR_NAME)
     embedding_tensor = sess.graph.get_tensor_by_name(vggish_params.OUTPUT_TENSOR_NAME)
 
+    print('perform a test run...')    
+    batch = np.zeros((1, vggish_params.NUM_FRAMES, vggish_params.NUM_BANDS), np.float32)
+    sess.run([embedding_tensor], feed_dict={features_tensor: batch})
+    print('ok')    
+
     vars['sess'] = sess
     vars['pproc'] = pproc
     vars['features_tensor'] = features_tensor
@@ -101,7 +106,8 @@ def transform_enter(sin, sout, sxtra, board, opts, vars):
     if sin.sr != SAMPLE_RATE:
         warning('resample input from {} to {}'.format(sin.sr, SAMPLE_RATE))        
 
-    loadModel(opts, vars)
+    loadModel(opts, vars)    
+
 
 
 def transform(info, sin, sout, sxtra, board, opts, vars): 
@@ -120,10 +126,7 @@ def transform(info, sin, sout, sxtra, board, opts, vars):
 
     batch = vggish_input.waveform_to_examples(input, sin.sr)
 
-    #print(batch.shape)
-
-    [features] = sess.run([embedding_tensor], 
-                                 feed_dict={features_tensor: batch})
+    [features] = sess.run([embedding_tensor], feed_dict={features_tensor: batch})
 
     # Reduce feature dimension if necessary
 

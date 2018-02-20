@@ -57,7 +57,9 @@ bool ex_test(void *arg);
 bool ex_test_kinect(void *arg);
 bool ex_offline(void *arg);
 bool ex_test_add_feat(void *arg);
+bool ex_test_add_feat_offline(void *arg);
 bool ex_test_add_feat_norm(void *arg);
+bool ex_test_add_feat_norm_offline(void *arg);
 
 
 std::vector<std::string> listFolders(std::string dir);
@@ -190,7 +192,9 @@ int main() {
 		ex.add(ex_test_kinect, 0, "TEST Kinect", "Demonstrates the use of openface with kinect");
 		ex.add(ex_offline, 0, "Offline", "Demonstrates the use of openface with a file");
 		ex.add(ex_test_add_feat, 0, "TEST Additional Features", "Testing additional feature extraction");
+		ex.add(ex_test_add_feat_offline, 0, "TEST Additional Features offline", "Testing additional feature extraction offline");
 		ex.add(ex_test_add_feat_norm, 0, "TEST Normalized Additional Features", "Testing normalized additional feature extraction");
+		ex.add(ex_test_add_feat_norm_offline, 0, "TEST Normalized Additional Features offline", "Testing normalized additional feature extraction offline");
 
 
 		ex.show();
@@ -416,9 +420,76 @@ bool ex_test_add_feat(void *arg) {
 	openfaceadf_painter->getOptions()->size = 100.0;
 	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
 
-	decorator->add("video*", 0, 0, 640, 480);
-	decorator->add("console", 640, 0, 640, 480);
-	decorator->add("plot*", 0, 480, 1280, 480);
+	decorator->add("console", 0, 0, 650, 480);
+	decorator->add("video*", 0, 490, 640, 480);
+	decorator->add("plot*", 650, 0, 1280, 1040);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
+bool ex_test_add_feat_offline(void *arg) {
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	// sensor
+	//Camera *camera = ssi_create(ssi::Camera, "cam", true);
+	//camera->getOptions()->flip = true;
+	//ssi_video_params_t video_params = camera->getFormat();
+	//ITransformable* camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME);
+	//frame->AddSensor(camera);
+
+	//FILE INPUT
+	ssi_time_t offset = 0.0;
+	FFMPEGReader *ffmpeg = 0;
+	ffmpeg = ssi_create(FFMPEGReader, 0, true);
+	ffmpeg->getOptions()->setUrl("Z:/data/kristina/pl083/user.video.mp4");
+	ffmpeg->getOptions()->stream = false;
+	ffmpeg->getOptions()->buffer = 1.0;
+	ffmpeg->getOptions()->offset = offset;
+	ITransformable *camera_p = frame->AddProvider(ffmpeg, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME);
+	frame->AddSensor(ffmpeg);
+	//**************************************************************************
+
+	//FILE INPUT 2
+	//FFMPEGReader *ffmpeg = ssi_create(FFMPEGReader, 0, true);
+	//ffmpeg->getOptions()->setUrl("Z:/data/kristina/ar008/kristina.video.mp4");
+	//ffmpeg->getOptions()->bestEffort = true;
+	//ITransformable *camera_p = frame->AddProvider(ffmpeg, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME);
+	//frame->AddSensor(ffmpeg);
+	//**************************************************************************
+
+	Openface *openface = ssi_create(Openface, 0, true);
+	openface->getOptions()->setModelPath("..\\lib\\local\\LandmarkDetector\\model");
+	openface->getOptions()->setTriPath("..\\lib\\local\\LandmarkDetector\\model\\tris_68_full.txt");
+	openface->getOptions()->setAuPath("..\\lib\\local\\FaceAnalyser\\AU_predictors\\AU_all_best.txt");
+	ITransformable *openface_t = frame->AddTransformer(camera_p, openface, "1");
+
+	OpenfaceAdditionalFeat * openfaceadf = ssi_create(OpenfaceAdditionalFeat, 0, true);
+	ITransformable *openfaceadf_t = frame->AddTransformer(openface_t, openfaceadf, "1", "9");
+
+	OpenfacePainter *openface_painter = ssi_create(OpenfacePainter, 0, true);
+	ITransformable* in[] = { openface_t };
+	ITransformable *openface_painter_t = frame->AddTransformer(camera_p, 1, in, openface_painter, "1");
+
+	VideoPainter *vidplot = vidplot = ssi_create_id(VideoPainter, 0, "video");
+	vidplot->getOptions()->setTitle("video");
+	vidplot->getOptions()->flip = false;
+	frame->AddConsumer(openface_painter_t, vidplot, "1");
+
+	SignalPainter *openfaceadf_painter = ssi_create_id(SignalPainter, 0, "plot");
+	openfaceadf_painter->getOptions()->size = 100.0;
+	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
+
+	decorator->add("console", 0, 0, 650, 480);
+	decorator->add("video*", 0, 490, 640, 480);
+	decorator->add("plot*", 650, 0, 1280, 1040);
 
 	frame->Start();
 	frame->Wait();
@@ -466,9 +537,64 @@ bool ex_test_add_feat_norm(void *arg) {
 	openfaceadf_painter->getOptions()->size = 100.0;
 	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
 
-	decorator->add("video*", 0, 0, 640, 480);
-	decorator->add("console", 640, 0, 640, 480);
-	decorator->add("plot*", 0, 480, 1280, 480);
+	decorator->add("console", 0, 0, 650, 480);
+	decorator->add("video*", 0, 490, 640, 480);
+	decorator->add("plot*", 650, 0, 1280, 1040);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
+bool ex_test_add_feat_norm_offline(void *arg) {
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	//FILE INPUT
+	ssi_time_t offset = 0.0;
+	FFMPEGReader *ffmpeg = 0;
+	ffmpeg = ssi_create(FFMPEGReader, 0, true);
+	ffmpeg->getOptions()->setUrl("Z:/data/kristina/tr001/kristina.video.mp4");
+	ffmpeg->getOptions()->stream = false;
+	ffmpeg->getOptions()->buffer = 1.0;
+	ffmpeg->getOptions()->offset = offset;
+	ITransformable *camera_p = frame->AddProvider(ffmpeg, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME);
+	frame->AddSensor(ffmpeg);
+	//**************************************************************************
+
+	Openface *openface = ssi_create(Openface, 0, true);
+	openface->getOptions()->setModelPath("..\\lib\\local\\LandmarkDetector\\model");
+	openface->getOptions()->setTriPath("..\\lib\\local\\LandmarkDetector\\model\\tris_68_full.txt");
+	openface->getOptions()->setAuPath("..\\lib\\local\\FaceAnalyser\\AU_predictors\\AU_all_best.txt");
+	ITransformable *openface_t = frame->AddTransformer(camera_p, openface, "1");
+
+	OpenfaceNormalizer *openfacenorm = ssi_create(OpenfaceNormalizer, 0, true);
+	ITransformable *openfacenorm_t = frame->AddTransformer(openface_t, openfacenorm, "1");
+
+	OpenfaceAdditionalFeat * openfaceadf = ssi_create(OpenfaceAdditionalFeat, 0, true);
+	ITransformable *openfaceadf_t = frame->AddTransformer(openfacenorm_t, openfaceadf, "1", "9");
+
+	OpenfacePainter *openface_painter = ssi_create(OpenfacePainter, 0, true);
+	ITransformable* in[] = { openface_t };
+	ITransformable *openface_painter_t = frame->AddTransformer(camera_p, 1, in, openface_painter, "1");
+
+	VideoPainter *vidplot = vidplot = ssi_create_id(VideoPainter, 0, "video");
+	vidplot->getOptions()->setTitle("video");
+	vidplot->getOptions()->flip = false;
+	frame->AddConsumer(openface_painter_t, vidplot, "1");
+
+	SignalPainter *openfaceadf_painter = ssi_create_id(SignalPainter, 0, "plot");
+	openfaceadf_painter->getOptions()->size = 100.0;
+	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
+
+	decorator->add("console", 0, 0, 650, 480);
+	decorator->add("video*", 0, 490, 640, 480);
+	decorator->add("plot*", 650, 0, 1280, 1040);
 
 	frame->Start();
 	frame->Wait();

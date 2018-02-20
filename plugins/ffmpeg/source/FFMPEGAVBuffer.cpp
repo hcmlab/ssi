@@ -177,6 +177,12 @@ bool FFMPEGAudioBuffer::push (ssi_size_t n_samples, ssi_real_t *chunk) {
 	return true;
 }
 
+ssi_real_t *FFMPEGAudioBuffer::pop_all(ssi_size_t &n_samples)
+{
+	n_samples = _n_pushed;
+	return _buffer + _pop_pos;
+}
+
 ssi_real_t *FFMPEGAudioBuffer::pop (ssi_size_t &n_samples, bool &is_old) {
 	
 	Lock lock (_mutex);

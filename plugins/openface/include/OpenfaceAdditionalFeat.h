@@ -38,14 +38,15 @@ namespace ssi {
 
 			Options() :
 				sd_area_mouth(true),
-				sum_area_mouth(false),
+				sum_area_mouth(true),
 				sd_dist_nose_lower_lip(true),
-				sum_dist_nose_lower_lip(false),
+				sum_dist_nose_lower_lip(true),
 				sd_dist_nose_chin(true),
-				sum_dist_nose_chin(false),
+				sum_dist_nose_chin(true),
 				sd_dist_chin_pose(true),
-				sum_dist_chin_pose(false),
-				magnitudes_lips(true)
+				sum_dist_chin_pose(true),
+				magnitudes_lips(true),
+				sum_rotations_pose(true)
 
 			{
 				addOption("SD_Area_Mouth", &sd_area_mouth, 1, SSI_BOOL, "Calculates standard deviation of the area over mouth");
@@ -57,6 +58,7 @@ namespace ssi {
 				addOption("SD_Dist_Chin_Pose", &sd_dist_chin_pose, 1, SSI_BOOL, "Calculates standard deviation of the distance chin to pose");
 				addOption("Sum_Dist_Chin_Pose", &sum_dist_chin_pose, 1, SSI_BOOL, "Calculates sum of the distance chin to pose");
 				addOption("Magnitudes_Lips", &magnitudes_lips, 1, SSI_BOOL, "Calculates the magnitudes of 20 facial landmarks on lips");
+				addOption("Sum_Rotations_Head", &sum_rotations_pose, 1, SSI_BOOL, "Calculates sum of rotations of pose");
 			};
 
 			bool
@@ -68,7 +70,8 @@ namespace ssi {
 				sum_dist_nose_chin,
 				sd_dist_chin_pose,
 				sum_dist_chin_pose,
-				magnitudes_lips;
+				magnitudes_lips,
+				sum_rotations_pose;
 		};
 
 	public:
@@ -90,6 +93,8 @@ namespace ssi {
 			dimensions += _options.sd_dist_chin_pose ? 1 : 0;
 			dimensions += _options.sum_dist_chin_pose ? 1 : 0;
 			dimensions += _options.magnitudes_lips ? 20 : 0;
+			dimensions += _options.sum_rotations_pose ? 3 : 0;
+
 			return dimensions; 
 		};
 		ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) { return sample_bytes_in; };
@@ -108,6 +113,10 @@ namespace ssi {
 			ssi_stream_t &stream_out,
 			ssi_size_t xtra_stream_in_num = 0,
 			ssi_stream_t xtra_stream_in[] = 0);
+
+		float calc_max_norm_mag(ssi_real_t * in, int i, int sample_dimension);
+
+		float rot_diff(float rot_1, float rot_2);
 
 		float calc_dist_r2(float point_1_1, float point_1_2, float point_2_1, float point_2_2);
 
