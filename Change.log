@@ -1833,14 +1833,15 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 19.12.17 CHG : ssiml/Annotation : added convert_to_stream function : Johannes
 - 19.12.17 CHG : cmltrain : added --convert_anno_to_stream switch : Johannes
 - 19.12.17 CHG : cmltrain : renamed --convert to --convert_stream_to_anno switch : Johannes
-- 08.01.17 CHG : IModel : added getModelType() and confidence value in forward method : Johannes
-- 08.01.17 CHG : cmltrain : forward confidence : Johannes
-- 17.01.17 BUG : cmltrain : now works with empty REST class : Johannes
-- 22.01.17 CHG : nova : sorts streams before merge : Johannes
-- 22.01.17 CHG : nova : stores selections between calls of feature extraction dialog : Johannes
-- 29.01.17 BUG : nova : feature extraction properly handles role names : Johannes
-- 30.01.17 CHG : nova : support for flac and other audio formats : Johannes
-- 30.01.17 CHG : ffmpeg : reader sends last incomplete chunk : Johannes
-- 31.01.17 CHG : model/Annotation : add method to convert stream to discrete annotation : Johannes
-- 06.02.17 CHG : cmltrain,nova : add cross-validation : Tobias
-- 08.02.17 CHG : ssiml/Evaluation : removed intermediate louo code : Johannes
+- 08.01.18 CHG : IModel : added getModelType() and confidence value in forward method : Johannes
+- 08.01.18 CHG : cmltrain : forward confidence : Johannes
+- 17.01.18 BUG : cmltrain : now works with empty REST class : Johannes
+- 22.01.18 CHG : nova : sorts streams before merge : Johannes
+- 22.01.18 CHG : nova : stores selections between calls of feature extraction dialog : Johannes
+- 29.01.18 BUG : nova : feature extraction properly handles role names : Johannes
+- 30.01.18 CHG : nova : support for flac and other audio formats : Johannes
+- 30.01.18 CHG : ffmpeg : reader sends last incomplete chunk : Johannes
+- 31.01.18 CHG : model/Annotation : add method to convert stream to discrete annotation : Johannes
+- 06.02.18 CHG : cmltrain,nova : add cross-validation : Tobias
+- 08.02.18 CHG : ssiml/Evaluation : removed intermediate louo code : Johannes
+- 20.02.18 BUG : download dlls if build with VS2017 (_MSC_VER >= 1900) : Johannes

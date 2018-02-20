@@ -46,7 +46,7 @@ int main (int argc, char **argv) {
 	char info[1024];
 	ssi_sprint (info, "\n%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
-#if !_DEBUG && defined _MSC_VER && _MSC_VER == 1900	
+#if !_DEBUG && defined _MSC_VER && _MSC_VER >= 1900	
 	const ssi_char_t *default_source = "https://github.com/hcmlab/ssi/raw/master/bin/x64/vc140";
 #else
 	const ssi_char_t *default_source = "";
