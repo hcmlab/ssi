@@ -52,8 +52,6 @@ On Windows run ``setup.exe`` in the root folder to setup system variables and fi
 
 ![*Interface to setup system variables and file associations.*](pics/installation-0.png){#fig:installation-0 width=80%}
 
-If you want to use Python scripts in SSI get the 64-bit version of [Python3.5x](https://www.Python.org/downloads/) and install it to ``C:\%ProgramFiles%\Python35`` (default installation directory if you check 'install for all users'). We also recommend to install the [NumPy](http://www.numpy.org/) package. On Windows you may want to visit this [page](http://www.lfd.uci.edu/~gohlke/pythonlibs/) by Christoph Gohlke who is providing Windows binaries of many open-source extension packages (make sure to download 64-bit libraries). To install extensions use ``pip install <path>`` (you find ``pip.exe`` in the ``Script\`` folder of your Python installation).
-
 # Background {#basics}
 
 In the following chapter we will deal with the basic concepts of the SSI framework, in particular, the processing, buffering, and synchronisation of signal streams and the various levels at which information can be fused.
@@ -1137,6 +1135,30 @@ Then we add a ``NotifyReceiver`` to the other pipelines, which will receive the 
 # Python {#python}
 
 SSI allows it to develop new components with [Python](https://www.Python.org/). If the aim is to write extensions to SSI without having to use Visual Studio or some other C++ developing environment Python is a good choice. In this chapter we will learn how to write and use Python components in SSI.
+
+## Installation
+
+Since version 1.0.4 Python is embedded in SSI. This means you don't have to install Python to use it, nor does it interfere with other installations on your system. If you have another Python installation in your ``PATH`` put it *ahead* of SSI. Also note that packages installed outside of SSI are not available. 
+
+In order to install packages with ``pip`` open a console, navigate to the bin folder of SSI (e.g. ``<openssi>\bin\x64\vc140\``) and type:
+
+```
+> python get-pip.py
+```
+
+From now an, you can install dependencies with ``pip`` from the ``Scripts`` folder. If installation of a package fails with a ``ModuleNotFoundError`` error, try ``easy_install <package-name>``. A good start is to install the [NumPy](http://www.numpy.org/) package. On Windows we recommend this [page](http://www.lfd.uci.edu/~gohlke/pythonlibs/) by Christoph Gohlke who is providing Windows binaries of many open-source extension packages. To find out which version of a package you need, navigate to the bin folder of SSI and run ``python``. The first line shows the version of the embedded Python installation, e.g.:
+
+```
+> Python 3.6.4 (v3.6.4:d48eceb, Dec 19 2017, 06:54:40) [MSC v.1900 64 bit (AMD64)] on win32
+```
+
+Note that in embedded Python, ``PYTHONPATH`` is not added to the sys path. As a workaround you can add the following lines to your Python script:
+
+``` python
+import os
+import sys
+sys.path.append(os.environ.get('PYTHONPATH', ''))
+```
 
 ## Components {#python-components}
 

@@ -22,14 +22,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import argparse
 import sys
+sys.path.append(os.environ.get('PYTHONPATH', ''))
 
 from tensorflow.examples.tutorials.mnist import input_data
 
 import tensorflow as tf
 
 FLAGS = None
+
+from mnist_convolutional_net import getModel
 
 
 def main(_):
@@ -38,8 +42,8 @@ def main(_):
     mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
 
     # create model
-    module = __import__('mnist_convolutional_net')
-    [x,y,keep_prob] = module.getModel()
+    #module = __import__('mnist_convolutional_net')
+    [x,y,keep_prob] = getModel()
 
     # Define loss and optimizer
     y_ = tf.placeholder(tf.float32, [None, 10])
@@ -54,15 +58,15 @@ def main(_):
     sess = tf.InteractiveSession()
     tf.global_variables_initializer().run()    
     sess.run(tf.global_variables_initializer())
-    for i in range(20000):
+    for i in range(1000):
         batch = mnist.train.next_batch(50)
-        if i%1000 == 0:
+        if i%100 == 0:
             train_accuracy = accuracy.eval(feed_dict={x:batch[0], y_: batch[1], keep_prob: 1.0})
             print("step %d, training accuracy %g"%(i, train_accuracy))
         train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
 
     # test
-    print("test accuracy %g"%accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
+    #print("test accuracy %g"%accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
 
     # Save trained model
     saver = tf.train.Saver()

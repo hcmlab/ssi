@@ -9,17 +9,7 @@
 ------------------------------------------------------------
 
     Run setup.exe to set up enviroment variables for SSI
-		
-------------------------------------------------------------
-    Python
-------------------------------------------------------------
-	
-	Install Python3.51 x64 to C:\%ProgramFiles%\Python35
-	
-	(default installation directory if you check 'install for all users')
-	
-	https://www.python.org/downloads/
-		
+				
 ------------------------------------------------------------
     Getting Started
 ------------------------------------------------------------
@@ -29,6 +19,16 @@
 	ssi_core.sln 		core libraries and dlls	
 	ssi_plugins.sln 	plugin libraries and dlls
 	ssiui.sln 			graphical interfaces	
+	
+------------------------------------------------------------
+    Python
+------------------------------------------------------------	
+	
+	Python is already embedded in SSI, to install packages with pip do the following:
+	
+	1. Open a console and navigate to current bin folder (e.g. \bin\x64\vc140\)
+	2. Run 'python get-pip.py'
+	3. Change to 'Scripts' folder and install dependencies using 'pip.exe'	
 	   
 ------------------------------------------------------------
     Documentation

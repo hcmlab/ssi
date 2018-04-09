@@ -49,7 +49,9 @@ public:
 
 	bool addSample (ssi_sample_t *sample, bool deep_copy = false);
 	ssi_size_t addClassName (const ssi_char_t *class_name);
+	bool setClassName(ssi_size_t class_index, const ssi_char_t *class_name);
 	ssi_size_t addUserName (const ssi_char_t *user_name);
+	bool setUserName(ssi_size_t class_index, const ssi_char_t *class_name);
 	void clear ();
 
 	ssi_size_t getSize ();

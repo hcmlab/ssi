@@ -109,7 +109,7 @@ bool SampleList::addSample (ssi_sample_t *sample, bool deep_copy) {
 }
 
 
-ssi_size_t SampleList::addClassName (const char *label_name) {
+ssi_size_t SampleList::addClassName (const ssi_char_t *label_name) {
 
 	// check if label already exists
 	ssi_size_t index = 0;
@@ -128,7 +128,20 @@ ssi_size_t SampleList::addClassName (const char *label_name) {
 	return index;
 }
 
-ssi_size_t SampleList::addUserName (const char *id_name) {
+bool SampleList::setClassName(ssi_size_t class_index, const ssi_char_t *class_name)
+{
+	if (class_index >= _classes.size())
+	{
+		return false;
+	}
+
+	delete[] _classes[class_index];
+	_classes[class_index] = ssi_strcpy(class_name);
+
+	return true;	
+}
+
+ssi_size_t SampleList::addUserName (const ssi_char_t *id_name) {
 
 	// check if id already exists
 	ssi_size_t index = 0;
@@ -147,6 +160,18 @@ ssi_size_t SampleList::addUserName (const char *id_name) {
 	return index;
 }
 
+bool SampleList::setUserName(ssi_size_t user_index, const ssi_char_t *user_name)
+{
+	if (user_index >= _users.size())
+	{
+		return false;
+	}
+
+	delete[] _classes[user_index];
+	_classes[user_index] = ssi_strcpy(user_name);
+
+	return true;
+}
 
 void SampleList::reset () {
 

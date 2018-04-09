@@ -44,12 +44,12 @@ unsigned short COLORS[][3] = {
 	0,128,255
 };
 
-bool ex_random (void *arg);
 bool ex_samplelist(void *arg);
 bool ex_eval(void *arg);
 bool ex_eval_regression(void*arg);
 bool ex_model(void *arg);
 bool ex_model_norm(void *arg);
+bool ex_model_frame(void *arg);
 bool ex_fusion(void *arg);
 bool ex_hierarchical(void *arg);
 
@@ -85,6 +85,7 @@ int main () {
 	exsemble.add(&ex_eval_regression, 0, "EVALUATION REGRESSION", "How to do an evaluation for a regression task.");
 	exsemble.add(&ex_model, 0, "MODEL", "How to train a single model.");
 	exsemble.add(&ex_model_norm, 0, "MODEL+NORM", "How to train a single model + normalization.");
+	exsemble.add(&ex_model_frame, 0, "FRAME FUSION", "How to train a model that fuses frames.");
 	exsemble.add(&ex_hierarchical, 0, "HIERARCHICAL", "How to train a hierarchical model.");
 	exsemble.add(&ex_fusion, 0, "FUSION", "How to train a fusion model.");	
 	exsemble.show();
@@ -371,6 +372,44 @@ bool ex_model(void *arg) {
 
 	ssi_print ("\n\n\tpress a key to contiue\n");
 	getchar ();
+
+	return true;
+}
+
+
+bool ex_model_frame(void *args)
+{
+	ssi_size_t n_classes = 4;
+	ssi_size_t n_samples = 50;
+	ssi_size_t n_streams = 1;
+	ssi_real_t distr[][3] = { 0.25f, 0.25f, 0.1f, 0.25f, 0.75f, 0.1f, 0.75f, 0.25f, 0.1f, 0.75f, 0.75f, 0.1f };
+	ssi_size_t num_min = 2;
+	ssi_size_t num_max = 5;
+
+	SampleList strain, sdevel;
+	ModelTools::CreateDynamicTestSamples(strain, n_classes, n_samples, n_streams, distr, num_min, num_max, "user");
+	ModelTools::PrintInfo(strain);
+	ModelTools::CreateDynamicTestSamples(sdevel, n_classes, n_samples, n_streams, distr, num_min, num_max, "user");
+	ModelTools::PrintInfo(sdevel);
+
+	{
+		FrameFusion *model = ssi_create(FrameFusion, 0, true);
+		model->getOptions()->method = FrameFusion::METHOD::PRODUCT;
+		model->getOptions()->n_context = 2;
+		model->setModel(ssi_create(SVM, 0, true));
+		Trainer trainer(model);
+		trainer.train(strain);
+		trainer.save("framefusion");
+	}
+
+	// evaluation
+	{
+		Trainer trainer;
+		Trainer::Load(trainer, "framefusion");
+		Evaluation eval;
+		eval.eval(&trainer, sdevel);
+		eval.print();
+	}
 
 	return true;
 }

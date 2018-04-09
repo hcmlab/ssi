@@ -334,10 +334,11 @@ void FusionPainterVA::paintGrid(HDC hdc, RECT rect){
 
 	//paint
 	//area
-	::Rectangle(hdc, width/2 - width/4 - 20, height/2 - height/4 - 20, width/2 + width/4 + 20, height/2 + height/4 + 20);
 	::SelectObject(hdc, backBrush);
-	::Rectangle(hdc, width/2 - width/4 - 19, height/2 - height/4 - 19, width/2 + width/4 + 19, height/2 + height/4 + 19);
 	::SelectObject(hdc, axisPen);
+	::Rectangle(hdc, width/2 - width/4 - 20, height/2 - height/4 - 20, width/2 + width/4 + 20, height/2 + height/4 + 20);
+	//::Rectangle(hdc, width/2 - width/4 - 19, height/2 - height/4 - 19, width/2 + width/4 + 19, height/2 + height/4 + 19);
+	::Ellipse(hdc, width / 2 - width / 4 - 20, height / 2 - height / 4 - 20, width / 2 + width / 4 + 20, height / 2 + height / 4 + 20);
 
 	//threshold
 	::Rectangle(hdc, width/2 - width/4*_threshold, height/2 - height/4*_threshold, width/2 + width/4*_threshold, height/2 + height/4*_threshold);
@@ -418,7 +419,7 @@ void FusionPainterVA::paintMass(HDC hdc, RECT rect){
 
 	x = (int) ((width/2) + dim_valence * (width/4));
 	y = (int) ((height/2) - dim_arousal * (height/4));
-	drawCircle(hdc, x, y, 15);
+	drawCircle(hdc, x, y, width/20);
 	
 	// switch to old pen
 	::SelectObject(hdc,old);
@@ -427,6 +428,8 @@ void FusionPainterVA::paintMass(HDC hdc, RECT rect){
 
 void FusionPainterVA::paintFusion(HDC hdc, RECT rect){
 	
+	ssi_char_t string[SSI_MAX_CHAR];
+
 	//paint variables
 	int x, y = 0;
 
@@ -442,7 +445,12 @@ void FusionPainterVA::paintFusion(HDC hdc, RECT rect){
 
 	x = (int) ((width/2) + dim_valence * (width/4));
 	y = (int) ((height/2) - dim_arousal * (height/4));
-	drawCircle(hdc, x, y, 10);
+	
+	::SelectObject (hdc, fusionBrush);
+	drawCircle(hdc, x, y, width/22);
+	::SelectObject(hdc, backBrush);
+	ssi_sprint(string, "VA (%.2f, %.2f)", _fusion_point[0], _fusion_point[1]);
+	TextOut(hdc, x, y , string, GetTextSize(string));	
 	drawLine(hdc, width/2, height/2, x, y);
 	
 	// switch to old pen

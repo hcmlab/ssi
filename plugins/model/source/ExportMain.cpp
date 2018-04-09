@@ -69,6 +69,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::Fisher::GetCreateName (), ssi::Fisher::Create) && result;
 	result = ssi::Factory::Register (ssi::HierarchicalModel::GetCreateName(), ssi::HierarchicalModel::Create) && result;
 	result = ssi::Factory::Register (ssi::DecisionSmoother::GetCreateName(), ssi::DecisionSmoother::Create) && result;
+	result = ssi::Factory::Register(ssi::FrameFusion::GetCreateName(), ssi::FrameFusion::Create) && result;
 
 	return result;
 }

@@ -47,6 +47,7 @@
 #include "ISMergeStrms.h"
 #include "ISMergeDim.h"
 #include "ISFlatSample.h"
+#include "ISUnfoldSample.h"
 #include "ISMissingData.h"
 #include "ISSplitStream.h"
 #include "ISOverSample.h"

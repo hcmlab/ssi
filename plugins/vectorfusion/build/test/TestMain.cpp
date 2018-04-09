@@ -1184,6 +1184,7 @@ bool ex_CombinerVA(void *args){
 	comb_adress.setAddress(fusion_y->getEventAddress());
 	CombinerVA *comb = ssi_create_id(CombinerVA, 0, "comb");
 	comb->getOptions()->paint = true;
+	comb->getOptions()->paint_events = true;
 	board->RegisterListener(*comb, comb_adress.getAddress());
 	board->RegisterSender(*comb);
 

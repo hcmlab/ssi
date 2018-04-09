@@ -22,8 +22,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import argparse
 import sys
+sys.path.append(os.environ.get('PYTHONPATH', ''))
 
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -31,14 +33,15 @@ import tensorflow as tf
 
 FLAGS = None
 
+from mnist_softmax_net import getModel
+
 
 def main(_):
     # Import data
     mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
 
-    # Create the model
-    module = __import__('mnist_softmax_net')
-    [x,y] = module.getModel()
+    # Create the model    
+    [x,y] = getModel()
 
     # Define loss and optimizer
     y_ = tf.placeholder(tf.float32, [None, 10])

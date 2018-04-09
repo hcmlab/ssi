@@ -30,7 +30,7 @@
 #include "base/Factory.h"
 #include "ssiml/include/ModelTools.h"
 #include "ioput/file/FileAnnotationWriter.h"
-#include "OnlineNaiveBayes.h">
+#include "OnlineNaiveBayes.h"
 //#include <sys/time.h>
 
 #ifdef USE_SSI_LEAK_DETECTOR

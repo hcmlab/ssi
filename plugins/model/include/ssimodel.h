@@ -50,5 +50,6 @@
 #include "Fisher.h"
 #include "HierarchicalModel.h"
 #include "DecisionSmoother.h"
+#include "FrameFusion.h"
 
 #endif

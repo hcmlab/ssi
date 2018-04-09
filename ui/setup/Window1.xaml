@@ -43,7 +43,7 @@
             <CheckBox Name="CheckBoxPath" Grid.Row="0" Grid.Column="0" Margin="5">add to $(PATH) variable</CheckBox>
             <CheckBox Name="CheckBoxInclude" Grid.Row="1" Grid.Column="0" Margin="5">create $(SSI__INCLUDE) variable</CheckBox>
             <CheckBox Name="CheckBoxLibrary" Grid.Row="2" Grid.Column="0" Margin="5">create $(SSI__LIBS) variable</CheckBox>
-            <CheckBox Name="CheckBoxPython" Grid.Row="3" Grid.Column="0" Margin="5">create $(SSI__PYTHON) variable</CheckBox>
+            <!--CheckBox Name="CheckBoxPython" Grid.Row="3" Grid.Column="0" Margin="5">create $(SSI__PYTHON) variable</-->
        </Grid>
 
         <Label Grid.Row="3" Grid.Column="0" Margin="5">Associations:</Label>

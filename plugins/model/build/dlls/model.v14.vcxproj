@@ -253,6 +253,7 @@
     <ClInclude Include="..\..\include\Fisher.h" />
     <ClInclude Include="..\..\include\FloatingCFS.h" />
     <ClInclude Include="..\..\include\FloatingSearch.h" />
+    <ClInclude Include="..\..\include\FrameFusion.h" />
     <ClInclude Include="..\..\include\GeometricRecognizer.h" />
     <ClInclude Include="..\..\include\GeometricRecognizerTypes.h" />
     <ClInclude Include="..\..\include\GestureTemplate.h" />
@@ -287,6 +288,7 @@
     <ClCompile Include="..\..\source\Fisher.cpp" />
     <ClCompile Include="..\..\source\FloatingCFS.cpp" />
     <ClCompile Include="..\..\source\FloatingSearch.cpp" />
+    <ClCompile Include="..\..\source\FrameFusion.cpp" />
     <ClCompile Include="..\..\source\GeometricRecognizer.cpp" />
     <ClCompile Include="..\..\source\GestureTemplate.cpp" />
     <ClCompile Include="..\..\source\HierarchicalModel.cpp" />

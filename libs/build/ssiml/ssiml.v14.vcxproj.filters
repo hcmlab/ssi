@@ -149,6 +149,9 @@
     <ClInclude Include="include\ISFlatSample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ISUnfoldSample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\arff_attr.cpp">
@@ -281,6 +284,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ISFlatSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ISUnfoldSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

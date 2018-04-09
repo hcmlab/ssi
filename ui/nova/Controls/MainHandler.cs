@@ -15,7 +15,7 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "1.0.1.9";
+        public static string BuildVersion = "1.0.2.1";
         public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
 
 
@@ -540,7 +540,7 @@ namespace ssi
                 Properties.Settings.Default.UncertaintyLevel = s.Uncertainty();
                 Properties.Settings.Default.Annotator = s.AnnotatorName();
                 Properties.Settings.Default.DatabaseAddress = s.DatabaseAddress();
-                Properties.Settings.Default.MongoDBUser = s.MongoUser();
+                Properties.Settings.Default.MongoDBUser = s.MongoUser() != "" ?  s.MongoUser() : "invalid username";
                 Properties.Settings.Default.MongoDBPass = MainHandler.Encode(s.MongoPass());
                 Properties.Settings.Default.DatabaseAutoLogin= s.DBAutoConnect();
                 Properties.Settings.Default.DefaultZoomInSeconds = double.Parse(s.ZoomInseconds());

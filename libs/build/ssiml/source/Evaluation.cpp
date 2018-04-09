@@ -818,6 +818,8 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 					ssi_fprint(file, "\n");
 				}
 			}
+
+			delete tmp;
 		}
 		else
 		{
@@ -846,10 +848,6 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 
 	} else {
 
-		File *tmp = File::Create(File::ASCII, File::WRITE, 0, file);
-		tmp->setType(SSI_UINT);
-		tmp->setFormat(" ", "6");
-
 		ssi_fprint_off(file, "#classes:      %u\n", _n_classes);
 		ssi_fprint_off(file, "#features:    ");
 		for (ssi_size_t i = 0; i < _n_streams; i++)
@@ -863,6 +861,10 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 
 		if (_type == IModel::TYPE::CLASSIFICATION)
 		{
+			File *tmp = File::Create(File::ASCII, File::WRITE, 0, file);
+			tmp->setType(SSI_UINT);
+			tmp->setFormat(" ", "6");
+
 			ssi_fprint_off(file, "");
 			if (format == PRINT::CONSOLE_EX) {
 				for (ssi_size_t j = 0; j < max_label_len + 3; j++) {
@@ -881,6 +883,7 @@ void Evaluation::print (FILE *file, PRINT::List format) {
 				ssi_fprint(file, "   -> %8.2f%%\n", 100 * get_class_prob(i));
 			}
 			ssi_fprint_off(file, "   %*s  => %8.2f%% | %.2f%%\n", max_label_len + _n_classes * 7, "", 100 * get_classwise_prob(), 100 * get_accuracy_prob());
+			
 			delete tmp;
 		}		
 		else

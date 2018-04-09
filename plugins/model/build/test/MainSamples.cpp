@@ -50,6 +50,7 @@ bool ex_dimmerge(void *args);
 bool ex_sampmerge(void *args);
 bool ex_missingstrm(void *args);
 bool ex_flatsample(void *args);
+bool ex_unfoldsample(void *args);
 bool ex_oversample(void *args);
 bool ex_undersample(void *args);
 bool ex_norm(void *args);
@@ -94,7 +95,8 @@ int main () {
 	exsemble.add(&ex_sampmerge, 0, "MERGE SAMPLES", "if A has 50 samples and B has 20 sample -> C has 70 samples");
 	exsemble.add(&ex_strmmerge, 0, "MERGE STREAMS", "if A hast 2 streams and B has 3 streams -> A + B has 5 streams");
 	exsemble.add(&ex_dimmerge, 0, "MERGE DIMENSIONS", "2 streams with 2 and 3 dimensions -> 1 stream with 5 dimensions");
-	exsemble.add(&ex_flatsample, 0, "FLATTEN SAMPLES", "set number of samples to 1");
+	exsemble.add(&ex_flatsample, 0, "FLATTEN SAMPLES", "reduces sample to a single frame by concatenation");
+	exsemble.add(&ex_unfoldsample, 0, "UNFOLD SAMPLES", "treats each frame as an own sample");
 	exsemble.add(&ex_missingstrm, 0, "REMOVE MISSING", "");
 	exsemble.add(&ex_oversample, 0, "OVER SAMPLE", "");
 	exsemble.add(&ex_undersample, 0, "UNDER SAMPLE", "");
@@ -477,6 +479,32 @@ bool ex_flatsample(void *args)
 	ISFlatSample flat(&samples);
 	ModelTools::PrintInfo(flat);
 	ModelTools::PrintSample(flat, 0);
+
+	return true;
+}
+
+bool ex_unfoldsample(void *args)
+{
+	ssi_size_t n_classes = 2;
+	ssi_size_t n_samples = 3;
+	ssi_size_t n_streams = 1;
+	ssi_real_t distr[][3] = { 0.25f, 0.25f, 0.1f, 0.75f, 0.75f, 0.1f };
+	ssi_size_t num_min = 1;
+	ssi_size_t num_max = 4;
+
+	SampleList samples;
+	ModelTools::CreateDynamicTestSamples(samples, n_classes, n_samples, n_streams, distr, num_min, num_max, "user");
+	ModelTools::PrintInfo(samples);
+	ModelTools::PrintSamples(samples);
+
+	ISUnfoldSample unfold(&samples);
+	unfold.set(0);
+	ModelTools::PrintInfo(unfold);
+	ModelTools::PrintSamples(unfold);
+
+	unfold.set(0, 2);
+	ModelTools::PrintInfo(unfold);
+	ModelTools::PrintSamples(unfold);
 
 	return true;
 }

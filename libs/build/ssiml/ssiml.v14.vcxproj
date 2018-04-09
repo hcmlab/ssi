@@ -47,6 +47,7 @@
     <ClInclude Include="include\ISTransform.h" />
     <ClInclude Include="include\ISTrigger.h" />
     <ClInclude Include="include\ISUnderSample.h" />
+    <ClInclude Include="include\ISUnfoldSample.h" />
     <ClInclude Include="include\KMeans.h" />
     <ClInclude Include="include\KmTree.h" />
     <ClInclude Include="include\KmUtils.h" />
@@ -94,6 +95,7 @@
     <ClCompile Include="source\ISTransform.cpp" />
     <ClCompile Include="source\ISTrigger.cpp" />
     <ClCompile Include="source\ISUnderSample.cpp" />
+    <ClCompile Include="source\ISUnfoldSample.cpp" />
     <ClCompile Include="source\KMeans.cpp" />
     <ClCompile Include="source\KmTree.cpp" />
     <ClCompile Include="source\KmUtils.cpp" />

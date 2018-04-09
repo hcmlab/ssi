@@ -45,8 +45,8 @@ namespace ssi
         static string SSI_NOVA_DIRECTORY = "ui\\nova\\bin";
         static string SSI_NOVA_EXTENSION = ".nova";
         static string SSI_STREAM_EXECUTABLE = "nova.exe";
-        static string SSI_PYTHON_VARIABLE = "SSI_PYTHON";
-        static string SSI_PYTHON_DIRECTORY = @"C:\Program Files\Python35";
+        //static string SSI_PYTHON_VARIABLE = "SSI_PYTHON";
+        //static string SSI_PYTHON_DIRECTORY = @"C:\Program Files\Python35";
 
         public Window1()
         {
@@ -102,13 +102,13 @@ namespace ssi
             string includeVariable = Environment.GetEnvironmentVariable(SSI_INCLUDE_VARIABLE);
             string libraryVariable = Environment.GetEnvironmentVariable(SSI_LIBRARY_VARIABLE);
             string pathVariable = Environment.GetEnvironmentVariable(PATH_VARIABLE);
-            string pythonVariable = Environment.GetEnvironmentVariable(SSI_PYTHON_VARIABLE);
+            //string pythonVariable = Environment.GetEnvironmentVariable(SSI_PYTHON_VARIABLE);
 
             Log(">> CURRENT");
             Log("$(" + SSI_INCLUDE_VARIABLE + "): " + includeVariable);
             Log("$(" + SSI_LIBRARY_VARIABLE + "): " + libraryVariable);
             Log("$(" + PATH_VARIABLE + "): " + pathVariable);
-            Log("$(" + SSI_PYTHON_VARIABLE + "): " + pythonVariable);
+            //Log("$(" + SSI_PYTHON_VARIABLE + "): " + pythonVariable);
         }
 
         void Apply(bool undo)
@@ -152,18 +152,18 @@ namespace ssi
                     Log(">> ERROR");
                 }
             }
-            if (CheckBoxPython.IsChecked == true)
-            {
-                Log(">> " + flag + " " + CheckBoxPython.Content);
-                if (SetPythonVariable(undo))
-                {
-                    Log(">> SUCCESS");
-                }
-                else
-                {
-                    Log(">> ERROR");
-                }
-            }
+            //if (CheckBoxPython.IsChecked == true)
+            //{
+            //    Log(">> " + flag + " " + CheckBoxPython.Content);
+            //    if (SetPythonVariable(undo))
+            //    {
+            //        Log(">> SUCCESS");
+            //    }
+            //    else
+            //    {
+            //        Log(">> ERROR");
+            //    }
+            //}
 
             if (CheckBoxPipeline.IsChecked == true)
             {                
@@ -301,28 +301,28 @@ namespace ssi
             return true;
         }
 
-        private bool SetPythonVariable(bool undo)
-        {
-            if (undo)
-            {
-                Environment.SetEnvironmentVariable(SSI_PYTHON_VARIABLE, null, EnvironmentVariableTarget.User);
-                return true;
-            }
+        //private bool SetPythonVariable(bool undo)
+        //{
+        //    if (undo)
+        //    {
+        //        Environment.SetEnvironmentVariable(SSI_PYTHON_VARIABLE, null, EnvironmentVariableTarget.User);
+        //        return true;
+        //    }
 
-            string dir = SSI_PYTHON_DIRECTORY;
-            TextBoxLog.Text += "python path: " + dir + Environment.NewLine;
+        //    string dir = SSI_PYTHON_DIRECTORY;
+        //    TextBoxLog.Text += "python path: " + dir + Environment.NewLine;
 
-            if (!Directory.Exists(dir))
-            {
-                Log("python not found: " + dir);
-                return false;
-            }
+        //    if (!Directory.Exists(dir))
+        //    {
+        //        Log("python not found: " + dir);
+        //        return false;
+        //    }
 
-            Log("set $(" + SSI_PYTHON_VARIABLE + "): " + dir);
-            Environment.SetEnvironmentVariable(SSI_PYTHON_VARIABLE, dir, EnvironmentVariableTarget.User);
+        //    Log("set $(" + SSI_PYTHON_VARIABLE + "): " + dir);
+        //    Environment.SetEnvironmentVariable(SSI_PYTHON_VARIABLE, dir, EnvironmentVariableTarget.User);
 
-            return true;
-        }
+        //    return true;
+        //}
 
         private bool SetPathVariable(bool undo)
         {
