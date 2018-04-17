@@ -576,11 +576,14 @@ bool XMLPipeline::parseGate (TiXmlElement *element) {
 	}
 
 	TiXmlElement *child = element->FirstChildElement ();
-	do {
-		if (!parseElement (child)) {
-			return false;
-		}
-	} while (child = child->NextSiblingElement ());
+	if (child)
+	{
+		do {
+			if (!parseElement(child)) {
+				return false;
+			}
+		} while (child = child->NextSiblingElement());
+	}
 
 	return true;
 }

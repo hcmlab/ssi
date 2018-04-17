@@ -170,16 +170,14 @@ void ConsumerBase::init (int *buffer_id,
 				if (meta[i]) {	
 					_transformer[i]->setMetaData (meta_size[i], meta[i]);
 				}
-
-				// try to guess sample rate
-				// find out if transformer is a filter, otherwise set sample rate to 0
-				ssi_size_t num_in = 100000;
-				ssi_size_t num_out = _transformer[i]->getSampleNumberOut (num_in);
-				if (num_in == num_out) { // filter
+			
+				if (_transformer[i]->getType() == SSI_FILTER) { // filter
 					sample_rate[i] = sample_rate_in[i];
-				} else if (num_in == 1) { // feature
-					sample_rate[i] = _frame_size > 0 ? sample_rate[i] = 1.0 / _frame_size : 0;			
+				} else if (_transformer[i]->getType() == SSI_FEATURE) { // feature
+					sample_rate[i] = _frame_size > 0 ? sample_rate_in[i] / _frame_size : 0;
 				} else { // otherwise
+					ssi_size_t num_in = ssi_size_t(_frame_size * sample_rate_in[i] + 0.5);
+					ssi_size_t num_out = _transformer[i]->getSampleNumberOut(num_in);
 					sample_rate[i] = sample_rate_in[i] * (ssi_cast (ssi_time_t, num_out) / ssi_cast (ssi_time_t, num_in));
 				}
 				sample_dimension[i] = _transformer[i]->getSampleDimensionOut (sample_dimension_in[i]);
