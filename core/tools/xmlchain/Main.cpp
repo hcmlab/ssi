@@ -233,7 +233,8 @@ bool IsAudioFile(const ssi_char_t *path)
 {
 	FilePath fp(path);
 	return (ssi_strcmp(fp.getExtension(), ".wav", false)
-		| ssi_strcmp(fp.getExtension(), ".aac", false)
+		|| ssi_strcmp(fp.getExtension(), ".m4a", false)
+		|| ssi_strcmp(fp.getExtension(), ".aac", false)
 		|| ssi_strcmp(fp.getExtension(), ".flac", false)
 		|| ssi_strcmp(fp.getExtension(), ".mp3", false)
 		|| ssi_strcmp(fp.getExtension(), ".ogg", false)
