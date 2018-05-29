@@ -2,16 +2,10 @@
 <pipeline>
 
 	<register>
-		<load name="mouse"/>
 		<load name="python" />		
 		<load name="graphic"/>
 	</register>	
 
-	<!-- sensor -->
-	<sensor create="Mouse">		
-		<output channel="cursor" pin="cursor" />
-	</sensor>
-	
 	<!-- python 
 	
 		script  = script name (omit .py)

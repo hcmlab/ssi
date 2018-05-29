@@ -1853,3 +1853,4 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 17.04.18 BUG : frame/XMLParser : ignores empty gates : Johannes
 - 17.04.18 BUG : frame/ConsumerBase : calculates correctly sample rate if in-place transformer is used : Johannes
 - 20.04.18 CHG : tools/xmlchain : support for m4a : Johannes
+- 05.05.18 BUG : signal/Multiply : factor option correctly updated on change : Johannes

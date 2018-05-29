@@ -1146,7 +1146,7 @@ In order to install packages with ``pip`` open a console, navigate to the bin fo
 > python get-pip.py
 ```
 
-From now an, you can install dependencies with ``pip`` from the ``Scripts`` folder. If installation of a package fails with a ``ModuleNotFoundError`` error, try ``easy_install <package-name>``. A good start is to install the [NumPy](http://www.numpy.org/) package. On Windows we recommend this [page](http://www.lfd.uci.edu/~gohlke/pythonlibs/) by Christoph Gohlke who is providing Windows binaries of many open-source extension packages. To find out which version of a package you need, navigate to the bin folder of SSI and run ``python``. The first line shows the version of the embedded Python installation, e.g.:
+From now an, you can install dependencies with ``pip`` from the ``Scripts`` folder. To find out which Python version SSI uses, navigate to the bin folder and run ``python``. The first line shows the version of the embedded Python installation, e.g.:
 
 ```
 > Python 3.6.4 (v3.6.4:d48eceb, Dec 19 2017, 06:54:40) [MSC v.1900 64 bit (AMD64)] on win32
@@ -1159,6 +1159,8 @@ import os
 import sys
 sys.path.append(os.environ.get('PYTHONPATH', ''))
 ```
+
+If installation of a package fails with a ``ModuleNotFoundError`` error, try ``easy_install <name-of-module-that-failed>`` and repeat the installation.
 
 ## Components {#python-components}
 

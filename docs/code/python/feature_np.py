@@ -16,6 +16,6 @@ def transform(info, sin, sout, sxtras, board, opts, vars):
     npin = numpy.asmatrix(sin)
     npout = numpy.asmatrix(sout)
 
-    numpy.sum(npin, axis=0, out=npout)
-    numpy.square(npout, out=npout)
+    numpy.sum(numpy.square(npin), axis=0, out=npout)	    
+    numpy.divide(npout, numpy.tile(sin.num, (1, sin.dim)), out=npout)
     numpy.sqrt(npout, out=npout)
