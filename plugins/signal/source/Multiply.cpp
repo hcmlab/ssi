@@ -69,7 +69,7 @@ void Multiply::readOptions() {
 
 	if (_options.single) {
 		for (ssi_size_t i = 0; i < _n_factors; i++) {
-			_factors[i] = _factor;
+			_factors[i] = _options.factor;
 		}
 	}
 	else {

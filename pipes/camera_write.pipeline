@@ -16,7 +16,7 @@
 	</consumer>
 	
 	<!--storage -->
-	<consumer create="CameraWriter" option="camerawriter" overwrite="true" path="camera">
+	<consumer create="CameraWriter" option="camerawriter" overwrite="true" path="camera.avi">
 		<input pin="video" frame="1" delta="0"/>
 	</consumer>	
 	

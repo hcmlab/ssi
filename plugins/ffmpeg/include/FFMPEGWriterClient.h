@@ -29,6 +29,16 @@
 #ifndef SSI_FFMPEGWRITERCLIENT_INCLUDE_H
 #define SSI_FFMPEGWRITERCLIENT_INCLUDE_H
 
+
+#if __gnu_linux__
+
+#define CODEC_FLAG_GLOBAL_HEADER AV_CODEC_FLAG_GLOBAL_HEADER
+#define CODEC_CAP_VARIABLE_FRAME_SIZE AV_CODEC_CAP_VARIABLE_FRAME_SIZE
+#define CODEC_FLAG2_FAST AV_CODEC_FLAG2_FAST
+#define CODEC_FLAG_LOW_DELAY AV_CODEC_FLAG_LOW_DELAY
+
+#endif
+
 #include "FFMPEGWriter.h"
 #include <sstream>
 #include "base/String.h"
@@ -36,6 +46,9 @@
 
 extern "C"
 {
+
+#include <libavutil/avutil.h>
+#include <libavutil/pixdesc.h>
 #include <libavutil/opt.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/channel_layout.h>

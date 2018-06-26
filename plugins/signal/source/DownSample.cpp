@@ -64,7 +64,13 @@ void DownSample::transform_enter (ssi_stream_t &stream_in,
 
 	if (_options.keep == 0)
 	{
+		ssi_wrn("setting keep = 1");
 		_options.keep = 1;
+	}
+	if (_options.keep == 1 && _options.remove)
+	{
+		ssi_wrn("setting remove = false");
+		_options.remove = false;
 	}
 
 	_tmp = new ssi_real_t[stream_in.dim];
@@ -87,31 +93,67 @@ void DownSample::transform (ITransformer::info info,
 	ssi_real_t *srcptr = ssi_pcast (ssi_real_t, stream_in.ptr);
 	ssi_real_t *dstptr = ssi_pcast (ssi_real_t, stream_out.ptr);
 
+	ssi_size_t num = 0;
+
 	// down sample
 	for (ssi_size_t i = 0; i < sample_number; i++)
 	{
 		_count++;		
-		if (_count == _options.keep || _options.mean)
+
+		if (!_options.remove)
 		{
-			for (ssi_size_t j = 0; j < sample_dimension; j++)
+			if (_count == _options.keep || _options.mean)
 			{
-				_tmp[j] += *srcptr++;
+				for (ssi_size_t j = 0; j < sample_dimension; j++)
+				{
+					_tmp[j] += *srcptr++;
+				}
+			}
+			else
+			{
+				srcptr += sample_dimension;
+			}
+			if (_count == _options.keep)
+			{
+				for (ssi_size_t j = 0; j < sample_dimension; j++)
+				{
+					*dstptr++ = _options.mean ? _tmp[j] / _options.keep : _tmp[j];					
+					_tmp[j] = 0;
+				}
+				_count = 0;
+				num++;
 			}
 		}
 		else
 		{
-			srcptr += sample_dimension;
-		}
-
-		if (_count == _options.keep)
-		{
-			for (ssi_size_t j = 0; j < sample_dimension; j++)
-			{
-				*dstptr++ = _tmp[j];
-				_tmp[j] = 0;
+			if (_count == _options.keep)
+			{				
+				srcptr += sample_dimension;
+				_count = 0;
 			}
-			_count = 0;
+			else
+			{
+				for (ssi_size_t j = 0; j < sample_dimension; j++)
+				{
+					*dstptr++ = *srcptr++;		
+				}				
+				num++;
+			}
+		}		
+
+		if (num >= stream_out.num)
+		{
+			break;
 		}
+	}
+
+	while (num < stream_out.num)
+	{
+		for (ssi_size_t j = 0; j < sample_dimension; j++)
+		{
+			*dstptr++ = *(srcptr - j - 1);			
+		}
+		num++;
 	}
 }
 

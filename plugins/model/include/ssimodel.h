@@ -39,6 +39,7 @@
 #include "SVM.h"
 #include "NaiveBayes.h"
 #include "OnlineNaiveBayes.h"
+#include "OnlineClassifier.h"
 #include "Relief.h"
 #include "Rank.h"
 #include "FloatingSearch.h"

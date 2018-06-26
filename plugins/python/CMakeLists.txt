@@ -66,10 +66,12 @@ source/PythonFeature.cpp
 source/PythonFilter.cpp
 source/PythonHelper.cpp
 source/PythonManager.cpp
+source/PythonModel.cpp
 source/PythonObject.cpp
 source/PythonSensor.cpp
 source/PythonTransformer.cpp
 source/ssipy.c
+source/ssipylog.c
 
 
 

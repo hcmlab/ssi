@@ -1090,7 +1090,7 @@ namespace ssi {
 			new_sample = new ssi_sample_t;
 			new_sample->class_id = label_map[samples[0]->class_id];
 			new_sample->num = n_streams;
-			new_sample->score = 0.0f;
+			new_sample->score = samples[0]->score;
 			new_sample->streams = streams;
 			new_sample->time = samples[0]->time;
 			new_sample->user_id = user_map[samples[0]->user_id];
@@ -1186,7 +1186,7 @@ namespace ssi {
 			new_sample = new ssi_sample_t;
 			new_sample->class_id = sample->class_id == SSI_SAMPLE_GARBAGE_CLASS_ID ? SSI_SAMPLE_GARBAGE_CLASS_ID : label_map[sample->class_id];
 			new_sample->num = num;
-			new_sample->score = 0.0f;
+			new_sample->score = sample->score;
 			new_sample->streams = result;
 			new_sample->time = sample->time;
 			new_sample->user_id = sample->user_id == SSI_SAMPLE_GARBAGE_USER_ID ? SSI_SAMPLE_GARBAGE_USER_ID : user_map[sample->user_id];
@@ -1284,7 +1284,7 @@ namespace ssi {
 			new_sample = new ssi_sample_t;
 			new_sample->class_id = label_map[sample->class_id];
 			new_sample->num = num;
-			new_sample->score = 0.0f;
+			new_sample->score = sample->score;
 			new_sample->streams = result;
 			new_sample->time = sample->time;
 			new_sample->user_id = user_map[sample->user_id];

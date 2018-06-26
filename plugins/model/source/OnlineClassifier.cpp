@@ -31,6 +31,10 @@
 #include "ssiml/include/ModelTools.h"
 #include "ioput/file/FileAnnotationWriter.h"
 #include "OnlineNaiveBayes.h"
+#if USELIBLINEAR
+    #include "liblinearincremental/include/LibLinearIncremental.h"
+    #include "ioput/xml/tinyxml.h"
+#endif
 //#include <sys/time.h>
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -148,7 +152,59 @@ namespace ssi {
 
 
     }
+    #if USELIBLINEAR
+    bool OnlineClassifier::parseTrainer(const char* filename)
+    {
+        TiXmlDocument doc;
+        doc.LoadFile(filename);
 
+
+        if(doc.LoadFile())
+        {
+            TiXmlHandle hDoc(&doc);
+            TiXmlElement *pRoot, *pParm, *pParmOld;
+            pRoot = doc.FirstChildElement("trainer");
+            if(pRoot)
+            {
+                pParm = pRoot->FirstChildElement("classes");
+                if (pParm)pParm=pParm->FirstChildElement("item");
+                    if(pParm)
+
+                    {
+                        pParmOld=pParm;
+                    int i = 0; // for sorting the entries
+                    while(pParm)
+                    {
+                       // printf( pParm->Attribute("name"));
+                        pParm = pParm->NextSiblingElement("item");
+                        i++;
+                    }
+                    _n_classes=i;
+                        ssi_wrn_static("n classes: %i", _n_classes);
+
+                    i=0;
+                    //_class_names=new char*[i];
+                    while(pParmOld)
+                    {
+                        ssi_wrn_static("i: %d", i);
+                        ssi_wrn_static("classname: %s",pParmOld->Attribute("name"));
+                        _class_names.push_back(std::string( pParmOld->Attribute("name")));
+                        ssi_wrn_static("classname: %s", _class_names[i].c_str());
+                        _n_class_names.push_back(_class_names[i].c_str());
+                        pParmOld = pParmOld->NextSiblingElement("item");
+                        i++;
+                    }
+
+                }
+            }
+        }
+        else
+        {
+
+            return false;
+        }
+    }
+    #endif
     /**
      * @brief OnlineClassifier::initModel
      * Simple function to init online learning model.
@@ -156,44 +212,100 @@ namespace ssi {
      * @return true if model could be created, false if not
      */
     bool OnlineClassifier::initModel(char *modelName){
+    ssi_wrn_static("Hellowa Online Classifier inits model %s", modelName);
 
-        if(ssi_strcmp(modelName, OnlineNaiveBayes::GetCreateName())){
-            OnlineNaiveBayes* bayes = new OnlineNaiveBayes;
-
+#if USELIBLINEAR
+         if(modelName==NULL)
+        {
+            ssi_wrn_static("LL0");
+            LibLinearIncremental* linsvm = new LibLinearIncremental;
+            ssi_wrn_static("LL1");
             if(ssi_exists(_options.actualModel)){
-                if(bayes->load(_options.actualModel)){
-                    ssi_msg(SSI_LOG_LEVEL_DEFAULT, "Found and load actual model %s",_options.actualModel);
-                    for (int i = 0; i < bayes->getClassSize(); i++)
-                        _n_class_names.push_back(ssi_strcpy(bayes->_class_names[i]));
-                } else {
-                    goto base;
+                if(linsvm->load(_options.actualModel)){
+
+                std::string tmpStr=std::string(_options.actualModel);
+                    ssi_wrn_static("LL2");
+                int index=tmpStr.find(".model");
+                tmpStr.erase(index, 6);
+                tmpStr=tmpStr + std::string(".trainer");
+                    if(ssi_exists(tmpStr.c_str())){
+
+                        parseTrainer(tmpStr.c_str());
+
+                    }else{
+                        goto base2;
+                    }
                 }
             } else {
-                base:
-                if (bayes->load(_options.model)) {
-                    ssi_msg(SSI_LOG_LEVEL_DEFAULT, "No actual model %s load base model %s instead", _options.actualModel,_options.model);
-                    for (int i = 0; i < bayes->getClassSize(); i++)
-                        _n_class_names.push_back(ssi_strcpy(bayes->_class_names[i]));
+                base2:
+                if (linsvm->load(_options.model)) {
+                    std::string tmpStr=std::string(_options.model);
+                    ssi_wrn_static("LL3");
+                    int index=tmpStr.find(".model");
+                    tmpStr.erase(index, 6);
+                    tmpStr=tmpStr + std::string(".trainer");
+                        if(ssi_exists(tmpStr.c_str())){
+                            ssi_wrn_static("LL4");
+                            parseTrainer(tmpStr.c_str());
+                            ssi_wrn_static("LL5");
+                        }else
+                        {
+                            ssi_err("No trainer file missing!");
+                        }
                 } else {
                     ssi_err("No suitable model found!");
                     return false;
                 }
             }
 
-            _model = bayes;
-            bayes = 0;
+            _model = linsvm;
+            linsvm = 0;
+        }
+#endif //USELIBLINEAR
+        if(modelName!=NULL)
+        {
+            if(ssi_strcmp(modelName, OnlineNaiveBayes::GetCreateName())) {
+                OnlineNaiveBayes *bayes = new OnlineNaiveBayes;
 
-        } else {
+                if (ssi_exists(_options.actualModel)) {
+                    if (bayes->load(_options.actualModel)) {
+                        ssi_msg(SSI_LOG_LEVEL_DEFAULT, "Found and load actual model %s",
+                                _options.actualModel);
+                        for (int i = 0; i < bayes->getClassSize(); i++)
+                            this->_n_class_names.push_back(ssi_strcpy(bayes->_class_names[i]));
+                    } else {
+                        goto base;
+                    }
+                } else {
+                    base:
+                    if (bayes->load(_options.model)) {
+                        ssi_msg(SSI_LOG_LEVEL_DEFAULT, "No actual model %s load base model %s instead",
+                                _options.actualModel, _options.model);
+                        for (int i = 0; i < bayes->getClassSize(); i++)
+                            this->_n_class_names.push_back(ssi_strcpy(bayes->_class_names[i]));
+                    } else {
+                        ssi_err("No suitable model found!");
+                        return false;
+                    }
+                }
+
+                _model = bayes;
+                bayes = 0;
+                _n_classes = _model->getClassSize();
+            }
+
+        else {
             ssi_wrn("No valid online model found for name %s!\nValid name is %s",
                     modelName,
                     OnlineNaiveBayes::GetCreateName());
             return false;
         }
+        }
 
         _is_loaded = true;
-        _n_classes = _model->getClassSize();
-        _probs = new ssi_real_t[_n_classes];
 
+        _probs = new ssi_real_t[_n_classes];
+        ssi_wrn_static("init done");
         return true;
     }
 
@@ -245,9 +357,10 @@ namespace ssi {
         }
 
         bool result = false;
-
+        ssi_wrn_static("oc: called");
         result = _model->forward(stream_in[0], _n_classes, _probs, _confidence);
 
+        ssi_wrn_static("oc: forwarded");
         if (result) {
 
             ssi_size_t max_ind = 0;
@@ -465,7 +578,7 @@ namespace ssi {
         SampleList sampleList;
         sampleList.addUserName(_model->getName());
 
-        for (ssi_char_t *className : _n_class_names) {
+        for (const ssi_char_t *className : _n_class_names) {
             sampleList.addClassName(className);
         }
 
@@ -712,7 +825,7 @@ namespace ssi {
         ssi_size_t n_classes,
         ssi_size_t class_index,
         const ssi_real_t *probs,
-        ssi_char_t *const*class_names,
+        const ssi_char_t **class_names,
         ssi_size_t n_metas,
         ssi_real_t *metas,
         ssi_size_t glue) {
@@ -779,7 +892,7 @@ namespace ssi {
                                                  ssi_size_t n_classes,
                                                  ssi_size_t class_index,
                                                  const ssi_real_t *probs,
-                                                 ssi_char_t *const*class_names,
+                                                 const ssi_char_t **class_names,
                                                  ssi_size_t n_metas,
                                                  ssi_real_t *metas,
                                                  ssi_size_t glue) {

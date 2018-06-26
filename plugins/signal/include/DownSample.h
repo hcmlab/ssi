@@ -43,14 +43,16 @@ public:
 	public:
 
 		Options ()
-			: keep(1), mean(false) {
+			: keep(1), remove(false), mean(false) {
 
 			addOption ("keep", &keep, 1, SSI_SIZE, "keep every n'th sample (> 0)");		
-			addOption ("mean", &mean, 1, SSI_BOOL, "output mean value of last n'th values");
+			addOption ("remove", &remove, 1, SSI_BOOL, "instead of keeping remove samples");
+			addOption ("mean", &mean, 1, SSI_BOOL, "output mean of last n'th values (only applied if remove=false)");
 		};
 
 		bool mean;
 		ssi_size_t keep;
+		bool remove;
 	};
 
 public:
@@ -67,7 +69,15 @@ public:
 		return sample_dimension_in;
 	}
 	ssi_size_t getSampleNumberOut (ssi_size_t sample_number_in) {
-		return sample_number_in / _options.keep;
+		if (_options.keep > 0 && !_options.remove)
+		{			
+			return sample_number_in / _options.keep;
+		}
+		else if (_options.keep > 0 && _options.remove)
+		{
+			return sample_number_in - (sample_number_in / _options.keep);
+		}		
+		return sample_number_in;
 	}
 	ssi_size_t getSampleBytesOut (ssi_size_t sample_bytes_in) {
 		return sample_bytes_in;

@@ -59,6 +59,7 @@ source/FixationEventSender.cpp
 source/ZeroEventSender.cpp
 source/TheEventBoard.cpp
 source/ThresEventSender.cpp
+source/ThresTupleEventSender.cpp
 source/TupleEventSender.cpp
 source/TriggerEventSender.cpp
 source/StringEventSender.cpp

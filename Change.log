@@ -1854,3 +1854,6 @@ Note: from here on dlls will be prebuilt with visual studio 2010!
 - 17.04.18 BUG : frame/ConsumerBase : calculates correctly sample rate if in-place transformer is used : Johannes
 - 20.04.18 CHG : tools/xmlchain : support for m4a : Johannes
 - 05.05.18 BUG : signal/Multiply : factor option correctly updated on change : Johannes
+- 15.06.18 ADD : plugins/audioloopback : captures audio coming to a audio playback device : Johannes
+- 20.06.18 CHG : plugins/signal/DownSample : add remove option : Johannes
+- 25.06.18 CHG : plugins/audio : merge audioloopback into audio : Johannes

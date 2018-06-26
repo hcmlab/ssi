@@ -287,8 +287,7 @@ We can now create an instance of ``Mouse``, change the sample rate from 50 Hz (d
 <object create="Mouse" sr="10" flip="false"/>
 ```
 
-Note that the XML is parsed top-down and the order matters. For instance, you cannot use a component before the according plug-in was loaded. Even if the plug-in will be loaded later on, an error will occur. Same is true for pin connections (see [below](#xml-basics-sensor)), 
-which must not be used by a sink before they declared by a source.
+Note that the XML is parsed top-down and the order matters. For instance, you cannot use a component before the according plug-in was loaded. Even if the plug-in will be loaded later on, an error will occur. Same is true for pin connections (see [below](#xml-basics-sensor)), which must not be used by a sink before they declared by a source.
 
 We possibly want to create several instances of the same object. To tell them apart SSI automatically assigns an unique id to every instance, which by default is ``noname`` followed by a consecutive number (e.g. ``noname002``). We can manually assign a different id by adding ``:<id>`` after the componenent name, e.g.: 
 
@@ -303,6 +302,16 @@ If the id is already taken a consecutive number is added to make it unique. Inst
 ```
 
 When the previous line is parsed, SSI will first look if a component with an according name has been registered. If this is the case, a new instance with id ``mouse`` and default options is created. If the ``option`` attribute is set, SSI looks for a file ``mouse.option``. If a relative path is used, the file is searched relative to the folder where the pipeline is located. If the according file is found, options in the file will override the default options (if the according file does not exist, it will be created and filled with default options). However, those values are possibly replaced if options are provided in-place. When the pipeline is closed a snapshot of the current option values is written back to the file (options may change during the execution of the pipeline!). Note that options provided in-place will again override those values at the next start.
+
+If a SSI plugin has additional depencies to other dlls, we can mention these, too. E.g.:
+
+``` xml
+<register>
+	<load name="ffmpeg" depend="avcodec-57.dll;avdevice-57.dll;avfilter-6.dll;avformat-57.dll;avutil-55.dll"/>
+</register>
+```
+
+If a plugin or a depency is not found, SSI will try to download the files from the official [Github repository](https://github.com/hcmlab/ssi). To select a alternate source ``xmlpipe.exe`` offers the ``-url`` option.
 
 ### Sensor {#xml-basics-sensor}
 
@@ -641,11 +650,11 @@ Note that the address is set to ``mean@``, which has the effect that the accordi
 
 This chapter covers advanced topics about XML pipelines.
 
-### More Tags {#xml-advanced-tags-variables}
+### More Tags
 
 Some additional tags to make life easier.
 
-#### Variables {#xml-advanced-tags-variables}
+#### Variables
 
 Sometimes, it is clearer to outsource important options of an XML pipeline to a separate file. In the pipeline we mark those parts with ``$(<key>)``. A configuration file then includes statements of the form ``<key>`` = ``<value>``. For instance, we can assign a variable to the sample rate option:
 

@@ -70,6 +70,7 @@ source/ExportMain.cpp
 source/Fisher.cpp
 source/FloatingCFS.cpp
 source/FloatingSearch.cpp
+source/FrameFusion.cpp
 source/GeometricRecognizer.cpp
 source/GestureTemplate.cpp
 source/HierarchicalModel.cpp
@@ -82,6 +83,8 @@ source/LDA.cpp
 #source/MlpXmlExportMain.cpp
 #source/MlpXmlTrain.cpp
 source/NaiveBayes.cpp
+source/OnlineClassifier.cpp
+source/OnlineNaiveBayes.cpp
 source/PCA.cpp
 source/RandomFusion.cpp
 source/Rank.cpp
@@ -137,9 +140,9 @@ ENDIF(MINGW)
 
 add_library(ssimodel SHARED ${SRC_FILES} )
 IF(UNIX)
-target_link_libraries(ssimodel ssi ssiml AlgLib ${CAIRO_LIBRARIES} ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssimodel ssi ssiml ssiliblinearincremental AlgLib ${CAIRO_LIBRARIES} ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
 ELSE(UNIX)
-target_link_libraries(ssimodel ssi ssiml AlgLib ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssimodel ssi ssiml ssiliblinearincremental AlgLib ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
 ENDIF(UNIX)
 #add_executable(myapp main.c)
 

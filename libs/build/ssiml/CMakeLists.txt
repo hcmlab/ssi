@@ -70,6 +70,7 @@ source/ISSplitStream.cpp
 source/ISTransform.cpp
 source/ISTrigger.cpp
 source/ISUnderSample.cpp
+source/ISUnfoldSample.cpp
 source/KMeans.cpp
 source/KmTree.cpp
 source/KmUtils.cpp

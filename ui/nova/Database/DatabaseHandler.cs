@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,6 +41,8 @@ namespace ssi
         public static List<DatabaseAnnotator> Annotators { get { return annotators; } }
 
         private static List<DatabaseUser> users = new List<DatabaseUser>();
+        private static bool throwOnInvalidBytes;
+
         public static List<DatabaseUser> Users { get { return users; } }
 
         #region CONNECT AND AUTH
@@ -116,7 +119,9 @@ namespace ssi
             {
                 if (client == null)
                 {
-                    client = new MongoClient(clientAddress);
+                    MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(clientAddress));
+                    settings.ReadEncoding = new UTF8Encoding(false, throwOnInvalidBytes);                    
+                    client = new MongoClient(settings);
                 }
                 return client;
             }
@@ -278,7 +283,7 @@ namespace ssi
                 foreach (var c in databases)
                 {
                     string db = c.GetElement(0).Value.ToString();
-                    if (c.GetElement(0).Value.ToString() != "admin" && c.GetElement(0).Value.ToString() != "local" && CheckAuthentication(db) >= (int)level)
+                    if (c.GetElement(0).Value.ToString() != "admin" && c.GetElement(0).Value.ToString() != "local"  && c.GetElement(0).Value.ToString() != "config"  && CheckAuthentication(db) >= (int)level)
                     {
                         items.Add(db);
                     }
@@ -830,6 +835,7 @@ namespace ssi
                         new BsonDocument { { "role", "readAnyDatabase" }, { "db", "admin" } },
                         new BsonDocument { { "role", "readWrite" }, { "db", "admin" } },
                         new BsonDocument { { "role", "userAdminAnyDatabase" }, { "db", "admin" } },
+                        new BsonDocument { { "role", "root" }, { "db", "admin" } },
                         new BsonDocument { { "role", "changeOwnPasswordCustomDataRole" }, { "db", "admin" } },
 
 
@@ -893,6 +899,7 @@ namespace ssi
             }
             else
             {
+                MessageBox.Show("Can't delete Admin User");
                 return false;
             }
 
@@ -1857,6 +1864,13 @@ namespace ssi
                     {
                         session.Location = document["location"].ToString();
                     }
+
+                    session.Duration = 0;
+                    if (document.TryGetElement("duration", out value))
+                    {
+                        session.Duration = document["duration"].AsDouble;
+                    }
+
                     session.Date = new DateTime();
                     if (document.TryGetElement("date", out value))
                     {
@@ -1887,6 +1901,7 @@ namespace ssi
                     {"location",  session.Location},
                     {"language",  session.Language},
                     {"date",  new BsonDateTime(date)},
+                    {"duration",  session.Duration},
                     {"isValid",  true}
             };
 
@@ -2728,6 +2743,8 @@ namespace ssi
         public string Location { get; set; }
         public DateTime Date { get; set; }
 
+        public double Duration { get; set; } 
+
         public override string ToString()
         {
             return Name;
@@ -2781,6 +2798,8 @@ namespace ssi
         public string FileExt { get; set; }
         public string Type { get; set; }
         public double SampleRate { get; set; }
+        public double Duration { get; set; }
+
         public override string ToString()
         {
             return Name;

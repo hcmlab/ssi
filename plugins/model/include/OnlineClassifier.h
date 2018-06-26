@@ -43,6 +43,7 @@
 #define SSI_CLASSIFIER_MAXHANDLER 5
 
 
+#define USELIBLINEAR 1
 
 namespace ssi {
 class OnlineClassifier : public IConsumer {
@@ -64,7 +65,7 @@ public:
 					ssi_size_t n_classes,
 					ssi_size_t class_index,
 					const ssi_real_t *probs,
-					ssi_char_t *const *class_names,
+                    const ssi_char_t **class_names,
 					ssi_size_t n_metas,
 					ssi_real_t *metas,
 					ssi_size_t glue);
@@ -73,7 +74,7 @@ public:
                           ssi_size_t n_classes,
                           ssi_size_t class_index,
                           const ssi_real_t *probs,
-                          ssi_char_t *const *class_names,
+                          const ssi_char_t **class_names,
                           ssi_size_t n_metas,
                           ssi_real_t *metas,
                           ssi_size_t glue);
@@ -255,8 +256,15 @@ protected:
 
 	bool _is_loaded;
 	ssi_size_t _n_classes;
-	ssi_real_t *_probs;
+#if USELIBLINEAR
+    std::vector<std::string> _class_names;
+#endif
+    ssi_real_t *_probs;
 	ssi_real_t _confidence;
+
+#if USELIBLINEAR
+    bool parseTrainer(const char* filename);
+#endif
 
 	bool annotate(ssi_sample_t sample);
 
@@ -274,8 +282,8 @@ protected:
 	ssi_time_t _time;
 	ssi_time_t _duration;
 
-	ssi_char_t *_label;
-	ssi_char_t *_tier;
+    const ssi_char_t *_label;
+    ssi_char_t *_tier;
 	ssi_char_t *_meta;
 	ssi_char_t _string[SSI_MAX_CHAR];
 
@@ -304,7 +312,7 @@ protected:
 
 
 	IModel *_model;
-	std::vector<ssi_char_t *> _n_class_names;
+    std::vector<const ssi_char_t *> _n_class_names;
 
 	bool readLine(FILE *fp = 0, ssi_size_t num = 0, ssi_char_t *string = 0);
 

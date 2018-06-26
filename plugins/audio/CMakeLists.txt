@@ -66,6 +66,7 @@ source/AudioMono.cpp
 source/AudioActivity.cpp
 source/VoiceActivitySender.cpp
 source/VoiceActivityVerifier.cpp
+source/AudioNoiseGate.cpp
 source/AudioLpc.cpp
 source/AudioConvert.cpp
 source/AudioIntensity.cpp
@@ -93,6 +94,7 @@ endif(MINGW OR UNIX)
  set(P_SRC_FILES
 source/Audio.cpp
 source/AudioPlayer.cpp
+source/AudioNoiseGate.cpp
 
 source/AudioCons.cpp
 source/AudioIn.cpp

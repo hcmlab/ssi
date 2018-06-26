@@ -24,6 +24,9 @@
 	Alex Chmut, volume controls for Output Master Volume, WaveOut Volume and Input (WaveIn) Volume
 	https://workspaces.codeproject.com/alex-chmut/volume-manipulation-classes/article/
 	
+	Teemu Sarapisto, Programmatically capture audio playing on Windows
+	https://rabid.prototyping.xyz/tag/wasapi/
+	
 ------------------------------------------------------------
 	Bug report to support@openssi.net
 ------------------------------------------------------------

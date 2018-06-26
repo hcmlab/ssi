@@ -13,7 +13,12 @@
 	<!-- read -->
 	<sensor create="FFMPEGReader:close" url="ffmpeg.mp3">			
 		<output channel="audio" pin="audio" size="2.0s"/>
-	</sensor>	
+	</sensor>			
+	
+	<!-- visualize -->	
+	<consumer create="SignalPainter:plot" title="AUDIO" type="2">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>			
 		
 	<!-- playback -->
 	<consumer create="AudioPlayer" option="aplayer">

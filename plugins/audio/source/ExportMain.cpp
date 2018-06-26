@@ -50,6 +50,8 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	#if _WIN32|_WIN64
 	result = ssi::Factory::Register (ssi::Audio::GetCreateName (),ssi::Audio::Create) && result;	
 	result = ssi::Factory::Register (ssi::AudioPlayer::GetCreateName (),ssi::AudioPlayer::Create) && result;
+	result = ssi::Factory::Register(ssi::AudioMixer::GetCreateName(), ssi::AudioMixer::Create) && result;
+	result = ssi::Factory::Register(ssi::AudioLoopBack::GetCreateName(), ssi::AudioLoopBack::Create) && result;
     #elif __ANDROID__
     result = ssi::Factory::Register (ssi::AudioOpenSL::GetCreateName (),ssi::AudioOpenSL::Create) && result;
     result = ssi::Factory::Register (ssi::AudioOpenSLPlayer::GetCreateName (),ssi::AudioOpenSLPlayer::Create) && result;
@@ -65,10 +67,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	result = ssi::Factory::Register (ssi::AudioConvert::GetCreateName (),ssi::AudioConvert::Create) && result;
 	result = ssi::Factory::Register (ssi::SNRatio::GetCreateName (),ssi::SNRatio::Create) && result;
 	result = ssi::Factory::Register (ssi::WavReader::GetCreateName (),ssi::WavReader::Create) && result;	
-    result = ssi::Factory::Register (ssi::WavWriter::GetCreateName (),ssi::WavWriter::Create) && result;
-    #if _WIN32|_WIN64
-    result = ssi::Factory::Register (ssi::AudioMixer::GetCreateName(), ssi::AudioMixer::Create) && result;
-	#endif
+    result = ssi::Factory::Register (ssi::WavWriter::GetCreateName (),ssi::WavWriter::Create) && result;    
 	result = ssi::Factory::Register (ssi::WavProvider::GetCreateName (),ssi::WavProvider::Create) && result;	
 	result = ssi::Factory::Register (ssi::PreEmphasis::GetCreateName (),ssi::PreEmphasis::Create) && result;	
 	result = ssi::Factory::Register(ssi::AudioMono::GetCreateName(), ssi::AudioMono::Create) && result;

@@ -47,6 +47,7 @@ int main (int argc, char **argv) {
 	ssi_sprint (info, "\n%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
 
 	Factory::RegisterDLL("ssimodel.dll");
+    Factory::RegisterDLL("ssiliblinearincremental.dll");
 
 	//**** READ COMMAND LINE ****//
 
@@ -121,7 +122,7 @@ int main (int argc, char **argv) {
 							delete[] files[i];
 						}
 						delete[] files;
-						if (!trainer.isTrained())
+                        //if (!trainer.isTrained())
 						{
 							trainer.train();
 						}

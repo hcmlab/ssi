@@ -221,7 +221,7 @@ void plot_push (ssi_stream_t &signal, ssi_char_t *name, bool as_image = false) {
 
 void save (ssi_stream_t &signal, ssi_char_t *filename) {
 	
-    FileTools::WriteStreamFile (File::BINARY, filename, signal);
+    FileTools::WriteStreamFile (File::ASCII, filename, signal);
 }
 
 void load (ssi_stream_t &signal, ssi_char_t *filename) {
@@ -917,25 +917,36 @@ bool ex_downsample(void *args) {
 	ssi_print ("Down Sample Example ...\n");
 
 	ssi_stream_t signal;
-	ssi_stream_t result;
+	ssi_stream_t result1, result2;
 	load (signal, "rsp");
 
-	ssi_size_t frame_size = ssi_cast (ssi_size_t, 0.05 * signal.sr);
+	ssi_size_t frame_size = ssi_cast (ssi_size_t, 0.2 * signal.sr);
 	ssi_size_t delta_size = 0;
 	ssi_size_t factor = 10;
 	
-	DownSample *downsample = ssi_create (DownSample, "downsample", true);
+	DownSample *downsample = 0;
+	
+	downsample = ssi_create(DownSample, "downsample", true);
 	downsample->getOptions()->keep = factor;
-	transform (signal, result, *downsample, frame_size, delta_size);
+	downsample->getOptions()->remove = false;
+	transform (signal, result1, *downsample, frame_size, delta_size);	
+	downsample->getOptions()->keep = factor;
+	downsample->getOptions()->remove = true;
+	transform(signal, result2, *downsample, frame_size, delta_size);
 
 	plot_push (signal, "Signal");
-	plot_push (result, "Downsampled");
-	save (result, "downsampled");
+
+	plot_push (result1, "Downsampled (keep)");	
+	save (result1, "downsampled-keep");
+
+	plot_push(result2, "Downsampled (remove)");
+	save(result2, "downsampled-remove");
 
 	plot();
 
 	ssi_stream_destroy (signal);
-	ssi_stream_destroy (result);
+	ssi_stream_destroy (result1);
+	ssi_stream_destroy(result2);
 
 	return true;
 }

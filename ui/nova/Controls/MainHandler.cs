@@ -15,11 +15,8 @@ namespace ssi
     {
 
         //Config
-        public static string BuildVersion = "1.0.2.1";
-        public static MEDIABACKEND Mediabackend = MEDIABACKEND.MEDIAKIT;
-
-
-
+        public static string BuildVersion = "1.0.2.7";
+        public static MEDIABACKEND MediaBackend = MEDIABACKEND.MEDIAKIT;
 
         private static Timeline timeline = null;
 
@@ -303,7 +300,7 @@ namespace ssi
             string cmltrainexe = "cmltrain.exe";
             string cmltrainexePath = AppDomain.CurrentDomain.BaseDirectory + cmltrainexe;
 
-            if (!(File.Exists(cmltrainexePath) && !alreadycheckedcmlupdate))
+            if (!(File.Exists(cmltrainexePath)) && !alreadycheckedcmlupdate)
             {
 
                 checkForCMLUpdates(true);
@@ -400,7 +397,10 @@ namespace ssi
                 }
             }
 
+
            
+
+
             while (mediaBoxes.Count > 0)
             {
                 removeMediaBox(mediaBoxes[0]);
@@ -412,8 +412,13 @@ namespace ssi
             }
             while (annoTiers.Count > 0)
             {
+                annoTiers[0].LiveAnnoMode(true);
                 removeAnnoTier(annoTiers[0]);
             }
+
+           
+            control.annoLiveModeCheckBox.IsChecked = false;
+
             annoLists.Clear();
             setAnnoList(null);
 

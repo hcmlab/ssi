@@ -41,7 +41,9 @@ source/SocketEventWriter.cpp
 source/SocketReader.cpp
 source/SocketWriter.cpp
 source/FakeSignal.cpp
-
+source/NotifyReceiver.cpp
+source/MemoryWriter.cpp
+source/NotifySender.cpp
 source/ExportMain.cpp
 
 

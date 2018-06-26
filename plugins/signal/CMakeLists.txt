@@ -74,6 +74,7 @@ source/Integral.cpp
 source/Intensity.cpp
 source/Limits.cpp
 source/MFCC.cpp
+source/Mean.cpp
 source/Multiply.cpp
 source/MvgAvgVar.cpp
 source/MvgConDiv.cpp

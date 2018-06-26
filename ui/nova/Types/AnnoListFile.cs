@@ -277,7 +277,7 @@ namespace ssi
             list.Scheme = new AnnoScheme();
             list.Scheme.Labels = new List<AnnoScheme.Label>();
 
-            try
+            //try
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(filepath);
@@ -398,7 +398,7 @@ namespace ssi
                 {
                     if (list.Source.File.Type == AnnoSource.FileSource.TYPE.ASCII)
                     {
-                        StreamReader sr = new StreamReader(filepath + "~", System.Text.Encoding.Default);
+                        StreamReader sr = new StreamReader(filepath + "~", System.Text.Encoding.UTF8);
                         string line = null;
                         double start = 0.0;
 
@@ -584,10 +584,10 @@ namespace ssi
 
 
             }
-            catch
-            {
-                MessageBox.Show("An exception occured while reading annotation from '" + filepath + "'");
-            }
+            //catch(Exception e)
+            //{
+            //    MessageBox.Show("An exception occured while reading annotation from '" + filepath + "'");
+            //}
 
             return list;
         }

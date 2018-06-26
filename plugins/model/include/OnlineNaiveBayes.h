@@ -110,6 +110,7 @@ protected:
         void init_class_names (ISamples &samples);
 	void free_class_names ();
 	bool readLine (FILE *fp, ssi_size_t num, ssi_char_t *string);
+
 		
 };
 

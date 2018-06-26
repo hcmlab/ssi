@@ -38,6 +38,7 @@ using namespace ssi;
 #endif
 
 bool ex_audio(void *arg);
+bool ex_loopback(void *arg);
 bool ex_audioplay(void *arg);
 bool ex_mixer(void *arg);
 bool ex_vad(void *arg);
@@ -59,15 +60,13 @@ int main () {
 
 	Exsemble ex;
 	ex.add(&ex_audio, 0, "AUDIO", "How to record an audio file.");
+	ex.add(&ex_loopback, 0, "LOOPBACK", "How to capture system sound.");
 	ex.add(&ex_audioplay, 0, "AUDIOPLAY", "How to replay an audio file.");
 	ex.add(&ex_mixer, 0, "MIXER", "How to mix two audio streams.");
 	ex.add(&ex_vad, 0, "VAD", "How to use voice activity detection.");
 	ex.add(&ex_gate, 0, "GATE", "How to use a noise gate.");
 	ex.show();
 
-	ssi_print ("\n\n\tpress enter to quit\n");
-	getchar ();
-	
 	Factory::Clear ();
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -102,6 +101,7 @@ bool ex_audio(void *arg) {
 	ITransformable *vad_t = frame->AddTransformer(audio_p, vad, "0.03s", "0.015s");
 	
 	ZeroEventSender *ezero = ssi_create (ZeroEventSender, 0, true);	
+	ezero->getOptions()->setAddress("activity@audio");
 	ezero->getOptions()->mindur = 0.2;
 	ezero->getOptions()->hangin = 3;
 	ezero->getOptions()->hangout = 10;	
@@ -142,6 +142,40 @@ bool ex_audio(void *arg) {
 	return true;
 }
 	
+bool ex_loopback(void *arg) {
+
+	ITheFramework *frame = Factory::GetFramework();
+
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	AudioLoopBack *audio = ssi_create_id(AudioLoopBack, "loopback", "audio");
+	audio->getOptions()->scale = true;
+	ITransformable *audio_p = frame->AddProvider(audio, SSI_AUDIOLOOPBACK_PROVIDER_NAME);
+	frame->AddSensor(audio);
+
+	WavWriter *wavwrite = ssi_create(WavWriter, 0, true);
+	wavwrite->getOptions()->setPath("audio");
+	wavwrite->getOptions()->overwrite = true;
+	frame->AddConsumer(audio_p, wavwrite, "0.01s");
+
+	SignalPainter *sigplot = ssi_create_id(SignalPainter, 0, "plot");
+	sigplot->getOptions()->setTitle("audio");
+	sigplot->getOptions()->size = 10.0;
+	sigplot->getOptions()->type = PaintSignalType::AUDIO;
+	frame->AddConsumer(audio_p, sigplot, "0.01s");
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 650, 0, 400, 800);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
 bool ex_audioplay(void *arg) {
 
 	ITheFramework *frame = Factory::GetFramework ();

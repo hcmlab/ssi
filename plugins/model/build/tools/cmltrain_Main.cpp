@@ -84,6 +84,7 @@ struct params_t
 	int confDim;
 	ssi_time_t sample_rate;
 	ssi_time_t duration;
+	bool invert;
 };
 
 void getSessions(StringList &list, params_t &params);
@@ -155,6 +156,7 @@ int main (int argc, char **argv) {
 	params.balance = 0;
 	params.scoreDim = 0;
 	params.confDim = -1;
+	params.invert = false;
 
 	cmd.addMasterSwitch("--remove");
 
@@ -226,6 +228,7 @@ int main (int argc, char **argv) {
 
 	cmd.addText("\nOptions:");
 	cmd.addSCmdOption("-filter", &params.filter, "*", "session filter (e.g. *location)");
+	cmd.addBCmdOption("-invert", &params.invert, false, "invert selection");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
 
@@ -801,7 +804,7 @@ void cutStreamFromLabel(params_t &params)
 
 				if (!anno.keepClass(params.classname))
 				{
-					ssi_wrn("ERROR: could not remove labels");
+					ssi_wrn("ERROR: class not found");
 					continue;
 				}
 
@@ -810,6 +813,13 @@ void cutStreamFromLabel(params_t &params)
 					ssi_wrn("ERROR: no label with that class name");
 					continue;
 				}
+
+				if (params.invert)
+				{
+					anno.convertToFrames(0.01, SSI_SAMPLE_REST_CLASS_NAME, from.num / from.sr);
+					anno.keepClass(SSI_SAMPLE_REST_CLASS_NAME);
+					anno.packClass();
+				}				
 
 				ssi_stream_t to;
 				if (!anno.extractStream(from, to))
@@ -820,7 +830,7 @@ void cutStreamFromLabel(params_t &params)
 
 				if (is_wav)
 				{
-					ssi_sprint(string, "%s.%s.%s.wav", path.getPath(), params.annotation, params.classname);
+					ssi_sprint(string, "%s.%s.%s%s.wav", path.getPath(), params.annotation, params.invert ? "NOT_" : "", params.classname);
 					if (!WavTools::WriteWavFile(string, to))
 					{
 						ssi_wrn("ERROR: could not extract stream");
@@ -829,7 +839,7 @@ void cutStreamFromLabel(params_t &params)
 				}
 				else
 				{
-					ssi_sprint(string, "%s.%s.%s", path.getPath(), params.annotation, params.classname);
+					ssi_sprint(string, "%s.%s.%s%s", path.getPath(), params.annotation, params.invert ? "NOT_" : "", params.classname);
 					if (!FileTools::WriteStreamFile(File::BINARY, string, to))
 					{
 						ssi_wrn("ERROR: could not extract stream");

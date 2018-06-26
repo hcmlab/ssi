@@ -1261,6 +1261,12 @@ bool Annotation::removeClass(StringList names)
 		}
 	}
 
+	if (classes.empty())
+	{
+		ssi_wrn("no classes left");
+		return false;
+	}
+
 	Annotation clone(*this);
 
 	release();
@@ -1322,6 +1328,12 @@ bool Annotation::keepClass(StringList names)
 				}
 			}
 		}
+	}
+
+	if (classes.empty())
+	{
+		ssi_wrn("no matching classes found");
+		return false;
 	}
 
 	Annotation clone(*this);

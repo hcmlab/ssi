@@ -141,6 +141,9 @@
     <ClInclude Include="..\..\include\AudioHeader.h" />
     <ClInclude Include="..\..\include\AudioIn.h" />
     <ClInclude Include="..\..\include\AudioIntensity.h" />
+    <ClInclude Include="..\..\include\AudioLoopBack.h" />
+    <ClInclude Include="..\..\include\AudioLoopBackInterface.h" />
+    <ClInclude Include="..\..\include\AudioLoopBackHelper.h" />
     <ClInclude Include="..\..\include\AudioLpc.h" />
     <ClInclude Include="..\..\include\AudioMixer.h" />
     <ClInclude Include="..\..\include\AudioMono.h" />
@@ -168,6 +171,8 @@
     <ClCompile Include="..\..\source\AudioConvert.cpp" />
     <ClCompile Include="..\..\source\AudioIn.cpp" />
     <ClCompile Include="..\..\source\AudioIntensity.cpp" />
+    <ClCompile Include="..\..\source\AudioLoopBack.cpp" />
+    <ClCompile Include="..\..\source\AudioLoopBackHelper.cpp" />
     <ClCompile Include="..\..\source\AudioLpc.cpp" />
     <ClCompile Include="..\..\source\AudioMixer.cpp" />
     <ClCompile Include="..\..\source\AudioMono.cpp" />

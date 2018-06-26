@@ -50,6 +50,11 @@ extern "C"
 #include <libavutil/pixfmt.h>
 }
 
+#if __gnu_linux__
+
+#define CODEC_CAP_TRUNCATED AV_CODEC_CAP_TRUNCATED
+#define CODEC_FLAG_TRUNCATED AV_CODEC_FLAG_TRUNCATED
+#endif
 namespace ssi {
 
 class FFMPEGReaderClient : public Thread {

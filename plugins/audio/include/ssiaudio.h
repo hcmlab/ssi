@@ -31,7 +31,7 @@
 #if _WIN32|_WIN64
 #include "Audio.h"
 #include "AudioPlayer.h"
-
+#include "AudioLoopBack.h"
 #include "AudioMixer.h"
 #elif __ANDROID__
 #include "AudioOpenSL.h"
