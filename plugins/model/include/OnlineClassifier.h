@@ -42,9 +42,11 @@
 
 #define SSI_CLASSIFIER_MAXHANDLER 5
 
-
+#if __gnu_linux__
 #define USELIBLINEAR 1
-
+#else
+#define USELIBLINEAR 0
+#endif
 namespace ssi {
 class OnlineClassifier : public IConsumer {
 
@@ -268,9 +270,10 @@ protected:
 
 	bool annotate(ssi_sample_t sample);
 
-	void lernFromPredictionAndAnnotate(const int index, bool answer);
+	void learnFromPredictionAndAnnotate(const int index, char* answer);
 
 	int getOtherClass(const int classID);
+	int getActualLabel(char* label);
 
 	void handleAndTrain(ssi_time_t time,
 						ssi_time_t dur,

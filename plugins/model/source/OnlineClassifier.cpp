@@ -219,6 +219,7 @@ namespace ssi {
         {
             ssi_wrn_static("LL0");
             LibLinearIncremental* linsvm = new LibLinearIncremental;
+
             ssi_wrn_static("LL1");
             if(ssi_exists(_options.actualModel)){
                 if(linsvm->load(_options.actualModel)){
@@ -257,8 +258,10 @@ namespace ssi {
                     return false;
                 }
             }
-
+            ssi_wrn_static("classes: %d, params: %s",linsvm->_n_classes, linsvm->_options.params);
             _model = linsvm;
+            ssi_wrn_static("params: %s\n",linsvm->_options.params);
+            //linsvm->_options.setParams("-s 0 -e 0.01 -B -1.0");
             linsvm = 0;
         }
 #endif //USELIBLINEAR
@@ -327,12 +330,13 @@ namespace ssi {
                            stream_in,
                            consume_info.event->glue_id);
         }else
+
         {
             result = callModel(consume_info.time,
                            consume_info.dur,
                            stream_in_num,
                            stream_in,
-                           1337);
+                           Factory::GetUniqueId());
         }
 
 
@@ -464,6 +468,7 @@ namespace ssi {
             sample.time = time;
             sample.user_id = 0;
             sample.num = n_streams;
+            
             if(n_streams > 0) {
                 sample.streams = new ssi_stream_t *[1];
                 sample.streams[0] = &stream_in[0];
@@ -538,9 +543,8 @@ namespace ssi {
                                         //Test if convertion happens
                                         if (glue != eptr) {
 
-                                            lernFromPredictionAndAnnotate(index,
-                                                                          ssi_strcmp(answer,
-                                                                                     "true"));
+                                            learnFromPredictionAndAnnotate(index,
+                                                                           answer);
 
                                         } else {ssi_wrn("glue id could not be converted!"); }
 
@@ -570,7 +574,7 @@ namespace ssi {
 
 
 
-    void OnlineClassifier::lernFromPredictionAndAnnotate(const int index, bool answer) {
+   void OnlineClassifier::learnFromPredictionAndAnnotate(const int index, char* answer) {
 
         ssi_msg(SSI_LOG_LEVEL_DEFAULT, "Index: %d",
                 index);//e->glue_id);
@@ -625,10 +629,12 @@ namespace ssi {
             ssi_sample_t samp = m.at(index).first;
             _duration = m.at(index).second;
             //If answer is not as we expected change sample class id
-            if (!answer) {
-                int tmp = getOtherClass(samp.class_id);
+
+            const char* tmpLabel= _n_class_names[samp.class_id];
+            if (!ssi_strcmp(tmpLabel, answer)) {
+                int tmp = getActualLabel(answer);
                 if (tmp < 0) {
-                    ssi_err("Multiple classsupport > 2 not yet implemented");
+                    ssi_err("No matching label found");
                     return;
                 } else {
                     samp.class_id = tmp;
@@ -725,6 +731,18 @@ namespace ssi {
 
         }
 
+    }
+
+    int OnlineClassifier::getActualLabel(char* answer)
+    {
+        for(int i=0; i< _n_class_names.size();i++)
+        {
+            if(ssi_strcmp(_n_class_names[i], answer))
+            {return i;}
+        }
+        // no label found
+        ssi_wrn("No label found!");
+        return -1;
     }
 
     int OnlineClassifier::getOtherClass(const int classID){

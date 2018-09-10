@@ -138,7 +138,7 @@ namespace ssi {
 	ssi_sample_t *ISUnfoldSample::next() {
 		if (_next_counter == _n_samples)
 		{
-			return false;
+            return NULL;
 		}
 		return get(_next_counter++);
 	}

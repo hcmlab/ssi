@@ -1,27 +1,29 @@
 ------------------------------------------------------------
-    Development Enviroment
+	Development Enviroment
 ------------------------------------------------------------
 
-    SSI is developed under Windows x64 using Visual Studio 2015
+	SSI is developed under Windows x64 using Visual Studio 2015
 
 ------------------------------------------------------------
-    Installation
+	Installation
 ------------------------------------------------------------
 
-    Run setup.exe to set up enviroment variables for SSI
-				
-------------------------------------------------------------
-    Getting Started
-------------------------------------------------------------
-
-    Run pipelines in pipes\ 
-	
-	ssi_core.sln 		core libraries and dlls	
-	ssi_plugins.sln 	plugin libraries and dlls
-	ssiui.sln 			graphical interfaces	
+	https://rawgit.com/hcmlab/ssi/master/docs/index.html#installation
 	
 ------------------------------------------------------------
-    Python
+	Getting started
+------------------------------------------------------------
+	
+	The pipes\ folder contains a bunch of example pipelines.	
+	You can run them by opening a console in that folder and typing:
+	
+		_RUN.bat <name of pipeline>
+		
+	or by double clicking the according file (the latter requires 
+	to run 	'setup.exe'	and set an association)
+	
+------------------------------------------------------------
+	Python
 ------------------------------------------------------------	
 	
 	Python is already embedded in SSI, to install packages with pip do the following:
@@ -31,18 +33,18 @@
 	3. Change to 'Scripts' folder and install dependencies using 'pip.exe'	
 	   
 ------------------------------------------------------------
-    Documentation
+	Documentation
 ------------------------------------------------------------	
 
 	pipes\ 				contains example pipelines	
 	
 	docs\api\ 			contains reference html files for available components	   
-    docs\tutorial\ 		contains a comprehensive tutorial (tutorial.pdf) and sample code (tutorial.sln)	  
+	docs\tutorial\ 		contains a comprehensive tutorial (tutorial.pdf) and sample code (tutorial.sln)	  
 	docs\ui\ 			contains documentation for the graphical training interface	
 	docs\xml\ 			contains documentation on how to build xml pipelines
 
 ------------------------------------------------------------
-    Troubleshooting
+	Troubleshooting
 ------------------------------------------------------------	
 	
 	*  There seems to be an issue with Avira Antivir and VC++ debugging. If you ever encounter the error 
@@ -58,5 +60,11 @@
 	* When running Windows 8 & Visual Studio 2013, some test projects of plugins that use external libraries might crash by default (Debugger stops in ThreadFun). To fix this problem go to test: right click: project->properties->linker->all options and set random base address to No (/DYNAMICBASE:NO).
 		
 ------------------------------------------------------------
-    Bug report to support@openssi.net
+	Bugs or questions? 
+------------------------------------------------------------	
+
+	We encourage user to use the issue tracker on Github:
+	https://github.com/hcmlab/ssi/issues		
+	
+	You can mail us on: support@openssi.net
 ------------------------------------------------------------

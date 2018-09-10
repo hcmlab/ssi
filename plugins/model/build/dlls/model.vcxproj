@@ -246,6 +246,7 @@
     <ClInclude Include="..\..\include\SimpleKNN.h" />
     <ClInclude Include="..\..\include\ssimodel.h" />
     <ClInclude Include="..\..\include\SVM.h" />
+    <ClInclude Include="..\..\..\plugins\liblinearincremental\include\liblinearincremental.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\AlgLibTools.cpp" />
