@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="graphic" />
+		<load name="ioput" />
+		<load name="audio"/>
+		<load name="python"/>
+		<load name="model"/>
+	</register>
+	<!-- audio sensor -->
+	
+	<sensor create="WavReader:audio" path="urbansound.wav">
+		<output channel="audio" pin="audio" size="20.0s"/>
+	</sensor>
+	
+	<!-- vggish feature transformer	-->
+	
+	<transformer create="PythonFeature:vggish" script="vggish" syspath="." optsstr="">	
+		<!--input pin="audio" frame="10ms" delta="1000ms"/-->	
+		<input pin="audio" frame="40ms" delta="970ms"/>	
+		<output pin="vggish"/>
+	</transformer>	
+	
+	<!-- storage -->		
+	
+	<consumer create="FileWriter:write" path="data/vggish" overwrite="true">
+		<input pin="vggish" frame="0.1s"/>
+	</consumer>
+	
+	<!-- classification -->		
+	
+	<consumer create="Classifier:classifier" path="urbansound:urbansound" address="urbansound@audio">
+		<input pin="vggish" frame="1"/>
+	</consumer>
+	
+	<!-- visualization -->	
+	
+	<consumer create="SignalPainter:plot" title="AUDIO" size="10" type="2" autoscale="false" fix="-1,1">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+	<consumer create="SignalPainter:plot" title="VVGISH" size="10" type="1">
+		<input pin="vggish" frame="0.1s"/>			
+	</consumer>	
+	<object create="EventPainter:eplot" title="URBANSOUNDS" type="1">
+		<listen address="urbansound@audio"/>
+	</object>
+	
+	<!-- playback -->
+	
+	<consumer create="AudioPlayer" option="player">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+		
+		
+	<!-- decoration -->
+	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600" nh="1">plot*</area>
+		<area pos="800,0,400,600">eplot*</area>
+	</object>
+	
+</pipeline>

@@ -68,4 +68,5 @@ def consume(info, sin, board, opts, vars):
 
 def consume_flush(sin, board, opts, vars):
     
-    pass
+    sess = vars['sess']
+    sess.close()

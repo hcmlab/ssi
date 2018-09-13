@@ -108,7 +108,16 @@ bool WebTools::url_exists(void *handle, const ssi_char_t *url, const ssi_char_t 
 
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, null_device);
 
-	return curl_easy_perform(curl) == CURLE_OK;
+	CURLcode code = curl_easy_perform(curl);
+
+	if (code == CURLE_OK)
+	{
+		return true;
+	}
+	
+	ssi_wrn(curl_easy_strerror(code));
+
+	return false;
 }
 
 bool WebTools::UrlExists(const ssi_char_t *url, const ssi_char_t *pathToCertificate)

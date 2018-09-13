@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="graphic" />
+		<load name="camera" />
+		<load name="python" />
+		<load name="ioput" />
+	</register>
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" flip="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+	
+	<!-- calculate average pixel value -->
+	<transformer create="PythonImageFilter" script="wrapper" syspath="." optsstr="args=--model cfg/yolo.cfg --load bin/yolo.weights --gpu 1.0 --threshold 0.1">
+		<input pin="video" frame="1" async="true"/>
+		<output pin="darkflow"/>
+	</transformer>	
+	
+	<!-- visualization -->	
+	<consumer create="VideoPainter:vplot" title="VIDEO" flip="false">
+		<input pin="darkflow" frame="1"/>
+	</consumer>			
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,800,600">vplot</area>			
+	</object>	
+	
+</pipeline>

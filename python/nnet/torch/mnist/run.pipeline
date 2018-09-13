@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="python" />		
+		<load name="graphic"/>
+	</register>	
+
+	<!-- load mnist data -->
+	<sensor create="PythonSensor:mnist" script="ssi_mnist" optsstr="path=../../mnist/mnist.pkl.gz;sr=1" syspath="../../mnist" block="1">	
+		<output channel="digit" pin="digit" />		
+	</sensor>
+	
+	<!-- neural network -->
+	<consumer create="PythonConsumer:net" script="run" optsstr="path=./net.pth;address=predict@net" syspath=".">
+		<input pin="digit" frame="1" />		
+	</consumer>
+		
+	<!-- visualization -->
+	<consumer create="SignalPainter:plot" title="DIGIT" type="1" colormap="3" staticImage="True" indx="28" indy="28">
+		<input pin="digit" frame="1">		
+			<transformer create="PythonFilter" script="ssi_mnist_rotate" syspath="../mnist"/>
+		</input>	
+	</consumer>
+	
+	<object create="EventMonitor:monitor" title="MONITOR" all="false">
+		<listen address="@"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

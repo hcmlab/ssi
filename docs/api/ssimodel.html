@@ -117,6 +117,16 @@
             </TR>
             <TR>
                 <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE>OnlineClassifier</CODE>
+                </TD>
+                <TD ALIGN="left" VALIGN="top" WIDTH="100%">
+                    <CODE>
+                        <A HREF="#OnlineClassifier">OnlineClassifier</A>
+                    </CODE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
                     <CODE>NaiveBayes</CODE>
                 </TD>
                 <TD ALIGN="left" VALIGN="top" WIDTH="100%">
@@ -1052,6 +1062,457 @@
                             </TD>
                             <TD WIDTH="100%">
                                 <CODE>&nbsp;use prior probability&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+                    <CODE SIZE="+2">
+                        <A NAME="OnlineClassifier">OnlineClassifier</A>
+                    </CODE>
+                </TD>
+                <TD>
+                    <!---->
+                    <!--========== CLASS ===========-->
+                    <!---->
+                    <TABLE BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0">
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;
+                                <B>OnlineClassifier</B>&nbsp;
+                                <CODE>CONSUMER</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="100%" COLSPAN="7">Applies classifier to a stream and outputs result as an event.</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="100%" COLSPAN="7">&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;address&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;event address (event@sender)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;baseModel&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;path and name of warm start model (by default: file model.model in application directory)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;actualModel&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'actual.model'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;name of the newest lerned model (by default: file actual.model in application directory; must be in the application directory&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;modelOut&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;path where incremented model will be saved (excluding filename)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;sampleOut&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;path where sampleLists will be saved&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;interval&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;switch for confidence interval&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;intervalMin&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0.00000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Min confidence of interval (if interval = true)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;intervalMax&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'1.00000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Max confidence of interval (if interval = true)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;confidence&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;FLOAT&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'0.50000'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Set minimal value confidence must reach to be interesting (if interval = false)&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;console&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;output classification to console&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;useDecisionClass&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Switch for using decision class only to forward if false each class will be forwarded&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;decisionClass&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Set name of class for which classifier should react (if useDecisionClass = true&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;sname&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;name of sender (if sent to event board) [deprecated, see address]&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;ename&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;name of event (if sent to event board) [deprecated, see address]&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;valueName&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Name of value to react on&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;oldSamplesUsage&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'false'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;if true: use old samples, which are not labeled by user for oldSamplesClass; if false: discard older samples not labled by user&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;oldSamplesClass&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Class for which old samples should be used for training&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;annoOut&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;CHAR&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1024&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;''&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;location and name of annotation file&nbsp;</CODE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                            <TD WIDTH="1%">&nbsp;&nbsp;&#43;</TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;training&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;BOOL&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;1&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%" style="white-space: nowrap">
+                                <CODE>&nbsp;'true'&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="1%">
+                                <CODE>&nbsp;LOCK&nbsp;</CODE>
+                            </TD>
+                            <TD WIDTH="100%">
+                                <CODE>&nbsp;Enable (true) or disable (false) online training of model&nbsp;</CODE>
                             </TD>
                         </TR>
                         <TR>

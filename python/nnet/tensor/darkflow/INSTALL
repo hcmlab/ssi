@@ -1,0 +1,5 @@
+Go to https://drive.google.com/drive/folders/0B1tW_VtY7onidEwyQ2FtQVplWEU and download 'yolo.weights' to './bin'
+
+Dependencies:
+* tensorflow
+* cv2
