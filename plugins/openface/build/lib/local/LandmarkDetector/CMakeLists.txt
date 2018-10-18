@@ -1,5 +1,15 @@
 include_directories(${BOOST_INCLUDE_DIR})
 
+  IF(UNIX)
+
+
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSI_CFLAG}" )
+  set( CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${SSI_LD_FLAG}" )
+  set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${SSI_LD_FLAG}" )
+  set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SSI_LD_FLAG}" )
+  endif(UNIX)
+
+
 SET(SOURCE
     src/CCNF_patch_expert.cpp
 	src/LandmarkDetectionValidator.cpp
@@ -34,5 +44,5 @@ include_directories(${LandmarkDetector_SOURCE_DIR}/include)
 
 add_library( LandmarkDetector ${SOURCE} ${HEADERS})
 
-install (TARGETS LandmarkDetector DESTINATION bin)
-install (FILES HEADERS DESTINATION include)
+#install (TARGETS LandmarkDetector DESTINATION bin)
+#install (FILES HEADERS DESTINATION include)

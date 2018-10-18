@@ -28,25 +28,25 @@ namespace ssi {
 		~OpenfaceHelper();
 
 		/*			/////For Tracking/////			*/
-		bool OpenfaceHelper::update_landmark(cv::Mat &captured_image);
-		void OpenfaceHelper::update_faceanalyser(cv::Mat &captured_image, bool video_input, double fps);
-		cv::Vec6d OpenfaceHelper::get_pose_camera();
-		cv::Vec6d OpenfaceHelper::get_pose_world();
-		cv::Vec6d OpenfaceHelper::get_corrected_pose_camera();
-		cv::Vec6d OpenfaceHelper::get_corrected_pose_world();
-		std::vector<cv::Point2d> OpenfaceHelper::get_detected_landmarks();
-		double OpenfaceHelper::get_detection_certainty();
-		std::vector<cv::Point3f> OpenfaceHelper::get_gaze_directions();
-		std::vector<float> OpenfaceHelper::calculate_coi(cv::Mat captured_image);
-		std::vector<float> OpenfaceHelper::calculate_fl(cv::Mat captured_image);
-		std::vector<cv::Point3f> OpenfaceHelper::get_pupil_position();
-		std::vector<double> OpenfaceHelper::get_current_action_unit_reg();
-		std::vector<double> OpenfaceHelper::get_current_action_unit_classes();
+		bool update_landmark(cv::Mat &captured_image);
+		void update_faceanalyser(cv::Mat &captured_image, bool video_input, double fps);
+		cv::Vec6d get_pose_camera();
+		cv::Vec6d get_pose_world();
+		cv::Vec6d get_corrected_pose_camera();
+		cv::Vec6d get_corrected_pose_world();
+		std::vector<cv::Point2d> get_detected_landmarks();
+		double get_detection_certainty();
+		std::vector<cv::Point3f> get_gaze_directions();
+		std::vector<float> calculate_coi(cv::Mat captured_image);
+		std::vector<float> calculate_fl(cv::Mat captured_image);
+		std::vector<cv::Point3f> get_pupil_position();
+		std::vector<double> get_current_action_unit_reg();
+		std::vector<double> get_current_action_unit_classes();
 
 		/*			/////For Drawing/////			*/
-		void OpenfaceHelper::draw_landmarks(cv::Mat& captured_image, vector<cv::Point> landmarks);
-		void OpenfaceHelper::draw_box(cv::Mat captured_image, cv::Vec6d pose, cv::Scalar color, int thickness, float fx, float fy, float cx, float cy);
-		void OpenfaceHelper::draw_gaze(cv::Mat img, cv::Point3f gazeVecAxisLeft, cv::Point3f gazeVecAxisRight, cv::Point3f pupil_left, cv::Point3f pupil_right, float fx, float fy, float cx, float cy);
+		void draw_landmarks(cv::Mat& captured_image, vector<cv::Point> landmarks);
+		void draw_box(cv::Mat captured_image, cv::Vec6d pose, cv::Scalar color, int thickness, float fx, float fy, float cx, float cy);
+		void draw_gaze(cv::Mat img, cv::Point3f gazeVecAxisLeft, cv::Point3f gazeVecAxisRight, cv::Point3f pupil_left, cv::Point3f pupil_right, float fx, float fy, float cx, float cy);
 
 		// Some globals for tracking timing information for visualisation
 		int frame_count;

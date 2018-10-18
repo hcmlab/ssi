@@ -31,6 +31,9 @@
 
 #include "base/IFilter.h"
 #include "ioput/option/OptionList.h"
+#if __gnu_linux__
+#define BYTE uint8_t
+#endif
 
 
 namespace ssi {
