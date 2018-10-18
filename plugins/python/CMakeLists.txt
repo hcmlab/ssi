@@ -35,7 +35,7 @@ endif(SSI_GUI STREQUAL "SDL")
 
 	IF(UNIX)
 		INCLUDE(FindPkgConfig)
-		pkg_check_modules(PYTHON REQUIRED python-3.6)
+		pkg_check_modules(PYTHON REQUIRED python-3.5)
 	endif(UNIX)
 
 include_directories(

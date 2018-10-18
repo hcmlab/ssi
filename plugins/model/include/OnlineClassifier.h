@@ -42,11 +42,11 @@
 
 #define SSI_CLASSIFIER_MAXHANDLER 5
 
-#if __gnu_linux__
-#define USELIBLINEAR 1
-#else
+//#if __gnu_linux__
+//#define USELIBLINEAR 1
+//#else
 #define USELIBLINEAR 0
-#endif
+//#endif
 namespace ssi {
 class OnlineClassifier : public IConsumer {
 

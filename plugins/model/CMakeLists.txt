@@ -140,9 +140,9 @@ ENDIF(MINGW)
 
 add_library(ssimodel SHARED ${SRC_FILES} )
 IF(UNIX)
-target_link_libraries(ssimodel ssi ssiml ssiliblinearincremental AlgLib ${CAIRO_LIBRARIES} ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssimodel ssi ssiml AlgLib ${CAIRO_LIBRARIES} ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
 ELSE(UNIX)
-target_link_libraries(ssimodel ssi ssiml ssiliblinearincremental AlgLib ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssimodel ssi ssiml AlgLib ${MINGW_WSOCKET} ${MINGW_WSOCKET2}  ${MINGW_WMM} ${MINGW_PTHREAD})
 ENDIF(UNIX)
 #add_executable(myapp main.c)
 

@@ -28,10 +28,10 @@ option(OPENSSI_BUILD_BEACON_SCANNER "Build beacon scanner plugin" OFF)
 option(OPENSSI_BUILD_FFMPEG "Build ffmpeg plugin" OFF)
 option(OPENSSI_BUILD_WEBSOCKET "Build websocket plugin" ON)
 option(OPENSSI_BUILD_MQTT "Build mqtt plugin" OFF)
-option(OPENSSI_BUILD_STIMULI "Build stimuli plugin" ON)
+option(OPENSSI_BUILD_STIMULI "Build stimuli plugin" OFF)
 option(OPENSSI_BUILD_OPENSMILE "Build opensmile plugin" ON)
 option(OPENSSI_BUILD_EMOVOICE "Build emovoice plugin" ON)
-option(OPENSSI_BUILD_EVENTSERIALIZER "Build eventserializer plugin" ON)
+option(OPENSSI_BUILD_EVENTSERIALIZER "Build eventserializer plugin" OFF)
 option(OPENSSI_BUILD_SIGNAL "Build signal plugin" ON)
 option(OPENSSI_BUILD_BIOSIG "Build biosig plugin" OFF)
 option(OPENSSI_BUILD_MODEL "Build model plugin" ON)
@@ -42,7 +42,7 @@ option(OPENSSI_BUILD_SSJSENSOR "Build ssjSensor plugin" OFF)
 option(OPENSSI_BUILD_SHORE "Build shore plugin" OFF)
 option(OPENSSI_BUILD_FUSION "Build fusion plugin" OFF)
 option(OPENSSI_BUILD_CONTINUOUSSYNC "Build coninuous sync plugin" OFF)
-option(OPENSSI_BUILD_LIBLINEAR "Build liblinear plugin" ON)
+option(OPENSSI_BUILD_LIBLINEAR "Build liblinear plugin" OFF)
 option(OPENSSI_BUILD_LIBLINEARINCREMENTAL "Build liblinearincremental plugin" OFF)
 option(OPENSSI_BUILD_SENSINGTEX "Build sensingtex plugin" OFF)
 option(OPENSSI_BUILD_PRESSUREMATRIX "Build pressurematrix plugin" OFF)
@@ -135,8 +135,8 @@ endif(OPENSSI_BUILD_MQTT)
 
 
 if(OPENSSI_BUILD_STIMULI)
-	add_subdirectory(stimuli)
-	add_dependencies(ssistimuli ssi )
+	#add_subdirectory(stimuli)
+	#add_dependencies(ssistimuli ssi )
 endif(OPENSSI_BUILD_STIMULI)
 
 
@@ -163,8 +163,7 @@ if(OPENSSI_BUILD_FUSION)
 endif(OPENSSI_BUILD_FUSION)
 
 if(OPENSSI_BUILD_EVENTSERIALIZER)
-	add_subdirectory(eventserializer)
-	add_dependencies(ssieventserializer ssi ssievent)
+	
 endif(OPENSSI_BUILD_EVENTSERIALIZER)
 
 if(OPENSSI_BUILD_SIGNAL)
@@ -179,7 +178,7 @@ endif(OPENSSI_BUILD_BIOSIG)
 
 if(OPENSSI_BUILD_MODEL)
 	add_subdirectory(model)
-	add_dependencies(ssimodel ssi AlgLib ssiml ssiliblinearincremental)
+	add_dependencies(ssimodel ssi AlgLib ssiml)
 endif(OPENSSI_BUILD_MODEL)
 
 
@@ -217,8 +216,6 @@ endif(OPENSSI_BUILD_GSRRESPONSE)
 
 IF(SSI_GUI STREQUAL "SDL")
 else(SSI_GUI STREQUAL "SDL")
-	add_subdirectory(vectorfusionMobile)
-	add_dependencies(ssivectorfusion ssi )
 endif(SSI_GUI STREQUAL "SDL")
 
 
