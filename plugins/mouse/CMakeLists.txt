@@ -97,9 +97,9 @@ add_library(ssimouse SHARED ${SRC_FILES})
 
 # link against internal and external librarys
 IF(UNIX)
-target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD})
+target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD}  ${X11} ${Xi})
 ELSE(UNIX)
-target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} ${X11} ${Xi})
+target_link_libraries(ssimouse ssi ${MINGW_WSOCKET} ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD})
 ENDIF(UNIX)
 
 #add_executable(myapp main.c)
