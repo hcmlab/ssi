@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/" id="35358" changeset="1416" shadow="9a7007def7d94044a12d67093503c516" />
-  <entry name="Libraries" kind="folder" id="270320" changeset="8329" shadow="67676f9728604744a08253ab712871a9" />
-  <entry name="Samples" kind="folder" id="126459" changeset="1744" shadow="c2b47510b3be4002b97649ab04197be0" />
-  <entry name="WPFExtensions" kind="folder" id="35359" changeset="1416" shadow="704e17b425984324a42af0bfd610349c" />
-  <entry name="WPFExtensions.sln" kind="file" id="35350" changeset="8329" />
-  <entry name="WPFExtensions.vssscc" kind="file" id="35361" changeset="1422" />
-</entries>
