@@ -34,3 +34,6 @@ bin/x64/vc140/NuiDatabase/*
 plugins/fubi/build/dlls/FubiRecognizers.h
 setup.exe.config
 mkplugin.exe.config
+*.idb
+*.ipch
+plugins/json/build/test/board.option
