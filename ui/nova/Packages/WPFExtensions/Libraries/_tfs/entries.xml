@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/Libraries/" id="270320" changeset="8329" shadow="67676f9728604744a08253ab712871a9" />
-  <entry name="RibbonControlsLibrary.dll" kind="file" id="270319" changeset="8329" />
-</entries>
