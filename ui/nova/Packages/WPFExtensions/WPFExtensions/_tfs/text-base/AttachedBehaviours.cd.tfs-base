@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WPFExtensions.AttachedBehaviours.DragBehaviour">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <Members>
+      <Method Name="GetIsDragEnabled" Hidden="true" />
+      <Method Name="GetIsDragging" Hidden="true" />
+      <Method Name="GetOriginalX" Hidden="true" />
+      <Method Name="GetOriginalY" Hidden="true" />
+      <Method Name="GetX" Hidden="true" />
+      <Method Name="GetY" Hidden="true" />
+      <Method Name="SetIsDragEnabled" Hidden="true" />
+      <Method Name="SetIsDragging" Hidden="true" />
+      <Method Name="SetOriginalX" Hidden="true" />
+      <Method Name="SetOriginalY" Hidden="true" />
+      <Method Name="SetX" Hidden="true" />
+      <Method Name="SetY" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AMBAAAAIAAAGACYAAAAACAEUAAAEAEAAYAAAAAAAAAI=</HashCode>
+      <FileName>AttachedBehaviours\DragBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

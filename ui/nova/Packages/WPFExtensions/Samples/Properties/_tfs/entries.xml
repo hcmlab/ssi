@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/Samples/Properties/" id="126460" changeset="1744" shadow="07e305f1c0bc44628abcfb971beb3f24" />
+  <entry name="AssemblyInfo.cs" kind="file" id="126438" changeset="1744" />
+  <entry name="Resources.Designer.cs" kind="file" id="126439" changeset="1744" />
+  <entry name="Resources.resx" kind="file" id="126440" changeset="1744" />
+  <entry name="Settings.Designer.cs" kind="file" id="126441" changeset="1744" />
+  <entry name="Settings.settings" kind="file" id="126442" changeset="1744" />
+</entries>

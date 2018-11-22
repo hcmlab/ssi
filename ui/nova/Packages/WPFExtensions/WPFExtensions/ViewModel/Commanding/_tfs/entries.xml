@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/ViewModel/Commanding/" id="218465" changeset="5607" shadow="f7d2d792845a438483374e9753840194" />
+  <entry name="CommandSink.cs" kind="file" id="218463" changeset="10111" />
+  <entry name="CommandSinkBinding.cs" kind="file" id="218464" changeset="5607" />
+  <entry name="MapperCommandBinding.cs" kind="file" id="269063" changeset="9985" />
+</entries>

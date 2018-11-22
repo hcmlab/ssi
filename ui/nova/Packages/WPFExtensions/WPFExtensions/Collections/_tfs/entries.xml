@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/Collections/" id="440440" changeset="15935" shadow="8d70a3de9bf945a7bba7648e1b9a2e0b" />
+  <entry name="ObjectModel" kind="folder" id="440439" changeset="15935" shadow="a4d5d3b76a104c6ebd75b6ff247c819f" />
+</entries>

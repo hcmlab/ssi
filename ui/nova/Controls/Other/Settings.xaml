@@ -1,0 +1,128 @@
+﻿<Window x:Class="ssi.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ssi"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        Title="Settings" SizeToContent="WidthAndHeight" Width="350" KeyDown="Window_KeyDown">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TabControl Name="Tab">
+            <TabItem Grid.Row="0" Header="General">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                
+                    <Label Grid.Row="0" Content="Default annotator name:" />
+                    <TextBox Grid.Row="1" Name="Annotator" Margin="5,0,5,5" />
+                    <Label Grid.Row="2" Content="Default zoom in seconds (0 for max. duration):" />
+                    <TextBox Grid.Row="3" Name="DefaultZoom" Margin="5,0,5,5" PreviewTextInput="NumberValidationTextBox" />
+                    <Label Grid.Row="4" Content="Correction certainty level:"  />
+                    <TextBox Grid.Row="5" Name="Certainty" Margin="5,0,5,5" PreviewTextInput="NumberValidationTextBox" />
+                    <Label Grid.Row="6" Content="Segment min duration in seconds:" />
+                    <TextBox Grid.Row="7" Name="Segmentmindur" Margin="5,0,5,5" PreviewTextInput="NumberValidationTextBox" />
+                    <Label Grid.Row="8" Content="Discrete sample rate in Hz (0 for none):" />
+                    <TextBox Grid.Row="9" Name="Samplerate" Margin="5,0,5,5" PreviewTextInput="IntNumberValidationTextBox" />
+                    <Label Grid.Row="10" Content="Number of levels in live mode (continuous annotations):"  />
+                    <TextBox Grid.Row="11" Name="ContinuousHotkeysnum" Margin="5,0,5,5"  PreviewTextInput="IntNumberValidationTextBoxContinuous"/>
+                    <Label Grid.Row="12" Content="Check for updates on startup:"  />
+                    <CheckBox Grid.Row="13" Name="UpdatesCheckbox" Margin="5,0,5,5" />
+                
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Database">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Row="0"  Content="Database server:"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="70"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Host:</Label>
+                        <TextBox Grid.Column="1" Name="DBHost" Margin="5,0,5,5" GotKeyboardFocus="DBHost_GotFocus" GotMouseCapture="DBHost_GotMouseCapture" />
+                        <Label Grid.Column="2">Port:</Label>
+                        <TextBox Grid.Column="3" Name="DBPort" Margin="5,0,5,5" Height="21" VerticalAlignment="Bottom" GotKeyboardFocus="DBPort_GotFocus" GotMouseCapture="DBPort_GotMouseCapture" />
+                    </Grid>
+                    <Label Grid.Row="2" Content="Database user:"/>
+                    <TextBox Grid.Row="3" Name="DBUser" Margin="5,0,5,5" GotKeyboardFocus="DBUser_GotFocus" GotMouseCapture="DBUser_GotMouseCapture"/>
+                    <Label Grid.Row="4" Content="Database password:" />
+                    <PasswordBox Grid.Row="5" Name="DBPassword" Margin="5,0,5,5" GotKeyboardFocus="DBPassword_GotFocus" GotMouseCapture="DBPassword_GotMouseCapture" />
+                    <Label Grid.Row="6" Content="Download directory:"/>
+                    <DockPanel Grid.Row="7" LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button Name="PickDownloadDirectory" Margin="5,0,5,5" Click="PickDownloadDirectory_Click">Pick</Button>
+                            <Button Name="ViewDownloadDirectory" Margin="5,0,5,5" Click="ViewDownloadDirectory_Click">View</Button>
+                        </StackPanel>
+                        <TextBox Name="DownloadDirectory" Margin="5,0,5,5" DockPanel.Dock="Left"/>
+                    </DockPanel>
+
+                    <Label Grid.Row="8" Content="CML directory:"/>
+                    <DockPanel Grid.Row="9" LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button Name="PickCMLDirectory" Margin="5,0,5,5" Click="PickCMLDirectory_Click">Pick</Button>
+                            <Button Name="ViewCMLDirectory" Margin="5,0,5,5" Click="ViewCMLDirectory_Click">View</Button>
+                        </StackPanel>
+                        <TextBox Name="CMLDirectory" Margin="5,0,5,5" DockPanel.Dock="Left"/>
+                    </DockPanel>
+                    <CheckBox Grid.Row="10" Name="DBConnnect" Margin="5,0,5,5">Connect to database at start up</CheckBox>
+                    <CheckBox Grid.Row="11" Name="OverwriteAnnotation" Margin="5,0,5,5">Always ask before overwriting an annotation</CheckBox>
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Click="ApplyButton_Click">Apply</Button>
+        </StackPanel>
+    </Grid>
+</Window>

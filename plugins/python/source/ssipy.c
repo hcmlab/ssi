@@ -1862,7 +1862,7 @@ PyMODINIT_FUNC PyInit_ssipy(void)
 	Py_INCREF(&ssipyarrayiter_Type);
 	PyModule_AddObject(m, "arrayiter", (PyObject *)&ssipyarrayiter_Type);
 
-	Py_INCREF(&ssipystream_Type);
+	Py_INCREF(&ssipyarray_Type);
 	PyModule_AddObject(m, "stream", (PyObject *)&ssipystream_Type);
 
 	Py_INCREF(&ssipystreamiter_Type);

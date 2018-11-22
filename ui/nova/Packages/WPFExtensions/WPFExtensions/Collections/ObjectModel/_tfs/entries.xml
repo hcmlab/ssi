@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<entries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <entry name="" kind="folder" url="https://tfs08.codeplex.com:443/" path="$/wpfextensions/WPFExtensions/WPFExtensions/Collections/ObjectModel/" id="440439" changeset="15935" shadow="a4d5d3b76a104c6ebd75b6ff247c819f" />
+  <entry name="DispatchedObservableCollection.cs" kind="file" id="295445" changeset="15935" />
+  <entry name="DispatchEvent.cs" kind="file" id="295448" changeset="15935" />
+  <entry name="DispatchHandler.cs" kind="file" id="295447" changeset="15935" />
+  <entry name="ReadOnlyDispatchedObservableCollection.cs" kind="file" id="295446" changeset="15935" />
+</entries>

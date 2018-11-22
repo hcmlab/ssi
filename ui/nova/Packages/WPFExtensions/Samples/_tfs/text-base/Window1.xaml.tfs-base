@@ -1,0 +1,378 @@
+﻿<Window x:Class="Samples.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extbehaviour="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
+        xmlns:cmd="clr-namespace:WPFExtensions.ViewModel.Commanding;assembly=WPFExtensions"
+        xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+        xmlns:local="clr-namespace:Samples"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+        Title="Window1"
+        Height="573"
+        Width="582"
+        cmd:CommandSinkBinding.CommandSink="{Binding}"
+        extbehaviour:WindowSettings.Save="True">
+
+    <Window.Resources>
+
+        <ObjectDataProvider MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}"
+                            x:Key="textBoxCommandTriggerEnum">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="extbehaviour:TextBoxCommandTriggers" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!--Some styles, not so important-->
+        <Style TargetType="{x:Type Label}">
+            <Style.Triggers>
+                <Trigger Property="extbehaviour:DragBehaviour.IsDragEnabled"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="YellowGreen" />
+                </Trigger>
+                <Trigger Property="extbehaviour:DragBehaviour.IsDragEnabled"
+                         Value="False">
+                    <Setter Property="Background"
+                            Value="WhiteSmoke" />
+                </Trigger>
+                <Trigger Property="extbehaviour:DragBehaviour.IsDragging"
+                         Value="True">
+                    <Setter Property="Opacity"
+                            Value="0.7" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DrawingImage x:Key="BlueEllipse">
+            <DrawingImage.Drawing>
+                <GeometryDrawing Brush="DarkBlue">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="10"
+                                         RadiusY="20" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="RedEllipse">
+            <DrawingImage.Drawing>
+                <GeometryDrawing Brush="Red">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="20"
+                                         RadiusY="10" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="GreenEllipse">
+            <DrawingImage.Drawing>
+                <GeometryDrawing Brush="Green">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry RadiusX="15"
+                                         RadiusY="15" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+
+        <!--
+            RibbonCommands
+        I declare them as resources, so i can use them 
+        as StaticResources in the CommandBindings.
+        -->
+        <r:RibbonCommand x:Key="FirstRCmd"
+                         LabelTitle="1st Cmd"
+                         LargeImageSource="{StaticResource BlueEllipse}" />
+        <r:RibbonCommand x:Key="SecondRCmd"
+                         LabelTitle="2nd Cmd"
+                         LargeImageSource="{StaticResource RedEllipse}" />
+        <r:RibbonCommand x:Key="ThirdRCmd"
+                         LabelTitle="3rd Cmd"
+                         LargeImageSource="{StaticResource GreenEllipse}"
+                         ToolTipTitle="3rd Command mapped to the 1st Command"
+                         ToolTipDescription="If you click on this button, the 1st command will be executed. Because the Ribbon Command mapped on the Third command which is mapped on the 1st command." />
+    </Window.Resources>
+
+    <!--CommandBindings (mapping of the RibbonCommands)-->
+    <Window.CommandBindings>
+        <!--Binding the original commands-->
+        <CommandBinding Command="{x:Static local:SampleCommands.First}"
+                        Executed="ExecuteFirst" />
+        <CommandBinding Command="{x:Static local:SampleCommands.Second}"
+                        Executed="ExecuteSecond" />
+        <CommandBinding Command="{x:Static local:SampleCommands.TextBoxCommand}"
+                        Executed="TextBoxCommand_Execute" />
+        <cmd:CommandSinkBinding Command="{x:Static local:SampleDataContext.ExpandTreeView}" />
+        <cmd:CommandSinkBinding Command="{x:Static local:SampleDataContext.AddItems}" />
+
+        <!--Mapping the RibbonCommands on the original commands-->
+
+        <!--Easy, good example-->
+        <cmd:MapperCommandBinding Command="{StaticResource SecondRCmd}"
+                                  MappedToCommand="{x:Static local:SampleCommands.Second}" />
+
+        <!--
+            Bad way, mapping to a mapped command
+            It works, bot the code resembles a spaghetti.
+        
+            ThirdRCmd -> Third -> First -> Execute
+        -->
+        <cmd:MapperCommandBinding Command="{x:Static local:SampleCommands.Third}"
+                                  MappedToCommand="{x:Static local:SampleCommands.First}" />
+        <cmd:MapperCommandBinding Command="{StaticResource ThirdRCmd}"
+                                  MappedToCommand="{x:Static local:SampleCommands.Third}" />
+
+        <!--We put that to the end of the CommandBinding list, to see the bad way working-->
+        <CommandBinding Command="{x:Static local:SampleCommands.Third}"
+                        Executed="ExecuteThird" />
+    </Window.CommandBindings>
+
+    <DockPanel>
+
+        <!--Sample Ribbon for the MapperCommandBinding-->
+        <r:Ribbon DockPanel.Dock="Top">
+            <r:RibbonTab Label="Sample">
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="MapperCommandBinding" />
+                    </r:RibbonGroup.Command>
+                    <r:RibbonButton Command="{StaticResource FirstRCmd}" />
+                    <r:RibbonButton Command="{StaticResource SecondRCmd}" />
+                    <r:RibbonButton Command="{StaticResource ThirdRCmd}" />
+                </r:RibbonGroup>
+            </r:RibbonTab>
+        </r:Ribbon>
+
+        <!--Sample for the attached Behaviours-->
+        <TabControl>
+            <!--Drag-->
+            <TabItem Header="Drag">
+                <Canvas>
+                    <Label Name="lblDraggable"
+                           Content="Hello, I'm Draggable"
+                           extbehaviour:DragBehaviour.IsDragEnabled="True"
+                           extbehaviour:DragBehaviour.X="{Binding RelativeSource={RelativeSource Self},Path=(Canvas.Left)}"
+                           extbehaviour:DragBehaviour.Y="{Binding RelativeSource={RelativeSource Self},Path=(Canvas.Top)}"
+                           Canvas.Left="0"
+                           Canvas.Top="{Binding ElementName=posSlider,Path=Value,Mode=TwoWay}">
+                    </Label>
+                    <Slider Name="posSlider"
+                            Minimum="0"
+                            Maximum="300"
+                            Value="50"
+                            Width="250" />
+                    <Label Content="Sorry, I'm not"
+                           Canvas.Bottom="0" />
+                </Canvas>
+            </TabItem>
+
+            <!--TreeViewSelectionBehaviour & AnimatedScrollBehaviour-->
+            <TabItem DataContext="{Binding TreeViewDS}">
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run>TreeViewSelectionBehaviour &amp; AnimatedScrollBehaviour</Run>
+                    </TextBlock>
+                </TabItem.Header>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal"
+                                DockPanel.Dock="Top">
+                        <Button Content="Expand All"
+                                Command="{x:Static local:SampleDataContext.ExpandTreeView}" />
+                    </StackPanel>
+                    <Grid>
+                        <Grid.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type local:TreeItemViewModel}"
+                                                      ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Title}" />
+                            </HierarchicalDataTemplate>
+
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded"
+                                        Value="{Binding IsExpanded,Mode=TwoWay}" />
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsSelected}" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top">
+                                <TextBlock>
+                                Select something from the TreeView in the right, 
+                                and the TreeView below will be scrolled to the selected element automatically.
+                                </TextBlock>
+                                <UniformGrid Columns="2"
+                                             Margin="5">
+                                    <TextBlock Text="Animation" />
+                                    <CheckBox x:Name="cbAnimatingEnabled"
+                                              IsChecked="True"
+                                              Content="{Binding RelativeSource={RelativeSource Self},Path=IsChecked,Mode=OneWay}" />
+                                    <TextBlock Text="Duration" />
+                                    <TextBox x:Name="txtDuration"
+                                             Text="0:0:2.000" />
+                                    <TextBlock Text="Acceleration" />
+                                    <TextBox x:Name="txtAcc"
+                                             Text="0.5" />
+                                    <TextBlock Text="Deceleration" />
+                                    <TextBox x:Name="txtDec"
+                                             Text="0.5" />
+                                </UniformGrid>
+                            </StackPanel>
+                            <ItemsControl x:Name="treeViewRouteControl"
+                                          DockPanel.Dock="Bottom" />
+                            <TreeView x:Name="originalTv"
+                                      ItemsSource="{Binding Items}"
+                                      extbehaviour:TreeViewSelectionBehaviour.AutomaticBringIntoViewSelectedItem="True"
+                                      extbehaviour:TreeViewSelectionBehaviour.SelectedItemRoute="{Binding ElementName=treeViewRouteControl,Path=ItemsSource,Mode=OneWayToSource}">
+                                <TreeView.Resources>
+                                    <Style TargetType="{x:Type ScrollViewer}">
+                                        <Setter Property="extbehaviour:AnimatedScrollBehaviour.Enabled"
+                                                Value="{Binding ElementName=cbAnimatingEnabled,Path=IsChecked,Mode=OneWay}" />
+                                        <Setter Property="extbehaviour:AnimatedScrollBehaviour.Duration"
+                                                Value="{Binding ElementName=txtDuration,Path=Text,Mode=OneWay}" />
+                                        <Setter Property="extbehaviour:AnimatedScrollBehaviour.AccelerationRatio"
+                                                Value="0.5" />
+                                        <Setter Property="extbehaviour:AnimatedScrollBehaviour.DecelerationRatio"
+                                                Value="0.5" />
+                                    </Style>
+                                </TreeView.Resources>
+                            </TreeView>
+                        </DockPanel>
+
+                        <TreeView Grid.Column="1"
+                                  ItemsSource="{Binding Items}" />
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+
+            <!--TextBoxCommandBehaviour-->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run>TextBoxCommandBehaviour</Run>
+                    </TextBlock>
+                </TabItem.Header>
+                <StackPanel>
+                    <UniformGrid Columns="2"
+                                 Rows="2">
+                        <Label Content="Trigger" />
+                        <ComboBox x:Name="cbTrigger"
+                                  ItemsSource="{Binding Source={StaticResource textBoxCommandTriggerEnum}}" />
+                        <Label Content="Sample TextBox" />
+                        <TextBox extbehaviour:TextBoxCommandBehaviour.Trigger="{Binding ElementName=cbTrigger,Path=SelectedItem,Mode=OneWay,FallbackValue={x:Static extbehaviour:TextBoxCommandTriggers.None}}"
+                                 extbehaviour:TextBoxCommandBehaviour.Command="{x:Static local:SampleCommands.TextBoxCommand}"
+                                 extbehaviour:TextBoxCommandBehaviour.CommandParameter="{Binding RelativeSource={RelativeSource Self},Path=Text}" />
+                    </UniformGrid>
+                </StackPanel>
+            </TabItem>
+
+            <!--DispatchedObservableCollection-->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run>DispatchedObservableCollection</Run>
+                    </TextBlock>
+                </TabItem.Header>
+                <DockPanel>
+                    <Button Command="{x:Static local:SampleDataContext.AddItems}"
+                            DockPanel.Dock="Top"
+                            Content="Add items on background thread" />
+
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding ObservableInts}">
+
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <!--ZoomControl-->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run Background="Yellow">NEW</Run>
+                        <Run>ZoomControl</Run>
+                    </TextBlock>
+                </TabItem.Header>
+                <DockPanel>
+                    <Controls:ZoomControl>
+                        <Controls:ZoomControl.Resources>
+                            <Style TargetType="{x:Type Rectangle}">
+                                <Setter Property="extbehaviour:DragBehaviour.IsDragEnabled"
+                                        Value="True" />
+                                <Setter Property="extbehaviour:DragBehaviour.X"
+                                        Value="{Binding RelativeSource={RelativeSource Self},Path=(Canvas.Left)}" />
+                                <Setter Property="extbehaviour:DragBehaviour.Y"
+                                        Value="{Binding RelativeSource={RelativeSource Self},Path=(Canvas.Top)}" />
+                            </Style>
+                        </Controls:ZoomControl.Resources>
+                        <Grid Width="800"
+                              Height="700"
+                              Background="Beige">
+                            <Canvas>
+                                <Rectangle Width="100"
+                                           Height="200"
+                                           Canvas.Left="102"
+                                           Canvas.Top="450"
+                                           Fill="Aqua" />
+                                <Rectangle Width="250"
+                                           Height="30"
+                                           Canvas.Left="122"
+                                           Canvas.Top="240"
+                                           Fill="Red" />
+                                <Rectangle Width="67"
+                                           Height="89"
+                                           Fill="Green"
+                                           Canvas.Left="463"
+                                           Canvas.Top="227" />
+                                <Rectangle Width="10"
+                                           Height="5"
+                                           Fill="Orange"
+                                           Canvas.Left="283"
+                                           Canvas.Top="119" />
+                                <Rectangle Width="3"
+                                           Height="78"
+                                           Fill="Blue"
+                                           Canvas.Left="102"
+                                           Canvas.Top="101" />
+                                <Rectangle Canvas.Left="10"
+                                           Canvas.Top="10"
+                                           Fill="Green"
+                                           Height="89"
+                                           Width="67" />
+                                <Rectangle Canvas.Left="339"
+                                           Canvas.Top="159"
+                                           Fill="Green"
+                                           Height="89"
+                                           Width="67" />
+                                <Rectangle Canvas.Left="400"
+                                           Canvas.Top="52"
+                                           Fill="Green"
+                                           Height="89"
+                                           Width="67" />
+                                <Rectangle Canvas.Left="135"
+                                           Canvas.Top="28"
+                                           Fill="Orange"
+                                           Height="5"
+                                           Width="10" />
+                                <Rectangle Canvas.Left="67"
+                                           Canvas.Top="335.08"
+                                           Fill="Orange"
+                                           Height="5"
+                                           Width="10" />
+                                <Rectangle Canvas.Left="190"
+                                           Canvas.Top="296"
+                                           Fill="Orange"
+                                           Height="20"
+                                           Width="30" />
+                            </Canvas>
+                        </Grid>
+                    </Controls:ZoomControl>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
