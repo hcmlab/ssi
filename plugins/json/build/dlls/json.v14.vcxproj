@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{644D0323-D4E2-467D-BDDC-E5F62C595214}</ProjectGuid>
+    <RootNamespace>ssi</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>json</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ssi$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..\..\libs\build;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..\..\libs\build;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp" />
+    <ClCompile Include="..\..\source\XmlToJson.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\rapidjson\allocators.h" />
+    <ClInclude Include="..\..\include\rapidjson\document.h" />
+    <ClInclude Include="..\..\include\rapidjson\encodedstream.h" />
+    <ClInclude Include="..\..\include\rapidjson\encodings.h" />
+    <ClInclude Include="..\..\include\rapidjson\error\en.h" />
+    <ClInclude Include="..\..\include\rapidjson\error\error.h" />
+    <ClInclude Include="..\..\include\rapidjson\filereadstream.h" />
+    <ClInclude Include="..\..\include\rapidjson\filewritestream.h" />
+    <ClInclude Include="..\..\include\rapidjson\fwd.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\itoa.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\meta.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\pow10.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\regex.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\stack.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\strtod.h" />
+    <ClInclude Include="..\..\include\rapidjson\internal\swap.h" />
+    <ClInclude Include="..\..\include\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="..\..\include\rapidjson\memorybuffer.h" />
+    <ClInclude Include="..\..\include\rapidjson\memorystream.h" />
+    <ClInclude Include="..\..\include\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="..\..\include\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="..\..\include\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="..\..\include\rapidjson\pointer.h" />
+    <ClInclude Include="..\..\include\rapidjson\prettywriter.h" />
+    <ClInclude Include="..\..\include\rapidjson\rapidjson.h" />
+    <ClInclude Include="..\..\include\rapidjson\reader.h" />
+    <ClInclude Include="..\..\include\rapidjson\schema.h" />
+    <ClInclude Include="..\..\include\rapidjson\stream.h" />
+    <ClInclude Include="..\..\include\rapidjson\stringbuffer.h" />
+    <ClInclude Include="..\..\include\rapidjson\writer.h" />
+    <ClInclude Include="..\..\include\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="..\..\include\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="..\..\include\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="..\..\include\rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="..\..\include\xml2json.hpp" />
+    <ClInclude Include="..\..\include\XmlToJson.h" />
+    <ClInclude Include="..\..\include\ssijson.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
