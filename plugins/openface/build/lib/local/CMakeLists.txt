@@ -1,0 +1,2 @@
+add_subdirectory(FaceAnalyser)
+add_subdirectory(LandmarkDetector)
