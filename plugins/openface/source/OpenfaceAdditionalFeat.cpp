@@ -36,6 +36,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+#if __gnu_linux__
+#include <math.h>  
+#endif
+
 namespace ssi {
 
 	OpenfaceAdditionalFeat::OpenfaceAdditionalFeat(const ssi_char_t *file)

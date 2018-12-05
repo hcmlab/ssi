@@ -25,7 +25,7 @@ project(openssi-plugins)
 
 option(OPENSSI_BUILD_MOUSE "Build mouse plugin" ON)
 option(OPENSSI_BUILD_BEACON_SCANNER "Build beacon scanner plugin" OFF)
-option(OPENSSI_BUILD_FFMPEG "Build ffmpeg plugin" OFF)
+option(OPENSSI_BUILD_FFMPEG "Build ffmpeg plugin" ON)
 option(OPENSSI_BUILD_WEBSOCKET "Build websocket plugin" ON)
 option(OPENSSI_BUILD_MQTT "Build mqtt plugin" OFF)
 option(OPENSSI_BUILD_STIMULI "Build stimuli plugin" OFF)

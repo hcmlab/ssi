@@ -30,6 +30,9 @@
 #include "thread/Mutex.h"
 #include "Decorator.h"
 #include "base/Factory.h"
+#if __gnu_linux__
+#include <sys/ioctl.h>
+#endif
 
 #include <fstream>
 #include <iomanip>
@@ -526,9 +529,15 @@ void TheFramework::Wait () {
 					break;
 #if __ANDROID__
 #else
+
 				if (_kbhit() != 0)
+				printf("::\n");
 					if (_getch() == '\r' || _getch() == '\n')	//Win: \r
 						break;
+				else
+				{
+				printf("==\n");
+				}
 #endif
 
 				ssi_sleep(10);
@@ -2168,6 +2177,30 @@ ITransformable *TheFramework::AddTransformer (ITransformable *source,
 #else
 
 #if __gnu_linux__
+void enable_raw_mode()
+{
+    termios term;
+    tcgetattr(0, &term);
+    term.c_lflag &= ~(ICANON | ECHO); // Disable echo as well
+    tcsetattr(0, TCSANOW, &term);
+}
+
+void disable_raw_mode()
+{
+    termios term;
+    tcgetattr(0, &term);
+    term.c_lflag |= ICANON | ECHO;
+    tcsetattr(0, TCSANOW, &term);
+}
+
+int _kbhit()
+{
+    int byteswaiting;
+    ioctl(0, FIONREAD, &byteswaiting);
+    return (int) byteswaiting > 0;
+}
+
+/*
 	int _kbhit(void) {
 	   struct termios term, oterm;
 	   int fd = 0;
@@ -2187,7 +2220,7 @@ ITransformable *TheFramework::AddTransformer (ITransformable *source,
 
 	   return ((c != -1) ? 1 : 0);
 	}
-
+*/
 	int _getch()
 	{
 	   static int ch = -1, fd = 0;
