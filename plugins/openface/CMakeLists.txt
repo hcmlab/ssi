@@ -48,13 +48,16 @@ find_package( OpenCV REQUIRED )
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-
+	IF(UNIX)
+		INCLUDE(FindPkgConfig)
+		pkg_check_modules(DLIB REQUIRED dlib-1)
+        endif(UNIX)
 
 
 find_package(Boost 1.67.0 COMPONENTS date_time filesystem system REQUIRED)
-
+#find_package(Dlib  REQUIRED)
 message(status "** Boost Libraries: ${Boost_LIBRARIES} ${Boost_INCLUDE_DIRS}  ")
-include_directories(${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}/boost ../../libs/build/opencv/include  include build/lib/local/LandmarkDetector/include  build/lib/local/FaceAnalyser/include ../../core/include/ioput/socket ../../core/include/ioput ../../core/include ../ ${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}/boost ${DLIB_INCLUDE_DIRS} ../../libs/build/opencv/include  include build/lib/local/LandmarkDetector/include  build/lib/local/FaceAnalyser/include ../../core/include/ioput/socket ../../core/include/ioput ../../core/include ../ ${CAIRO_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
 add_subdirectory(build)
 
 set(COMMON_SRC_FILES
@@ -64,6 +67,8 @@ source/Openface.cpp
 source/OpenfaceHelper.cpp
 source/OpenfacePainter.cpp
 source/OpenfaceSelector.cpp
+source/OpenfaceNormalizer.cpp
+source/OpenfaceAdditionalFeat.cpp
 
 
 
@@ -125,7 +130,7 @@ ELSE(MINGW)
 ENDIF(MINGW)
 
 add_library(ssiopenface SHARED ${SRC_FILES} )
-target_link_libraries(ssiopenface LandmarkDetector FaceAnalyser ${OpenCV_LIBS} ${Boost_LIBRARIES}  dlib ssi ${MINGW_WSOCKET}  ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} )
+target_link_libraries(ssiopenface LandmarkDetector FaceAnalyser ${OpenCV_LIBS} ${Boost_LIBRARIES}  ${DLIB_LIBRARIES} ssi ${MINGW_WSOCKET}  ${MINGW_WSOCKET2} ${MINGW_WMM} ${MINGW_PTHREAD} )
 #add_executable(myapp main.c)
 
 #rename targets if debug
