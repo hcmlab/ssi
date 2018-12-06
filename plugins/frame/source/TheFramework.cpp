@@ -531,12 +531,12 @@ void TheFramework::Wait () {
 #else
 
 				if (_kbhit() != 0)
-				printf("::\n");
+
 					if (_getch() == '\r' || _getch() == '\n')	//Win: \r
 						break;
 				else
 				{
-				printf("==\n");
+
 				}
 #endif
 
