@@ -78,6 +78,7 @@ struct params_t
 	double confidence;
 	double label_mingap;
 	double label_mindur;
+	double cmlbegintime;
 	bool force;
 	bool loso;
 	int scoreDim;
@@ -130,6 +131,7 @@ int main (int argc, char **argv) {
 	params.annotation = 0;
 	params.annotation_new = 0;
 	params.scheme = 0;
+	params.cmlbegintime = 0;
 	params.annotator = 0;
 	params.annotator_new = 0;
 	params.role = 0;
@@ -300,6 +302,7 @@ int main (int argc, char **argv) {
 	cmd.addICmdOption("-right", &params.contextRight, 0, "right context (number of frames added to the right of center frame)");
 	cmd.addSCmdOption("-balance", &params.balance, "none", "set sample balancing strategy (none,under,over)");
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");	
+	cmd.addDCmdOption("-cmlbegintime", &params.cmlbegintime, 0, "if set, will be used to manually adjust training time");
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
@@ -357,6 +360,7 @@ int main (int argc, char **argv) {
 	cmd.addDCmdOption("-mingap", &params.label_mingap, 0, "gaps between labels with same name that are smaller than this value will be closed");
 	cmd.addDCmdOption("-mindur", &params.label_mindur, 0, "labels with a duration smaller or equal to this value will be removed");
 	cmd.addBCmdOption("-cooperative", &params.cooperative, false, "turn on cooperative learning");
+	cmd.addDCmdOption("-cmlbegintime", &params.cmlbegintime, 0, "if set, will be used to manually adjust training time");
 	cmd.addSCmdOption("-dlls", &params.dlls, "", "list of requird dlls separated by ';' [deprecated, use register tag in trainer]");
 	cmd.addSCmdOption("-url", &params.srcurl, default_source, "override default url for downloading missing dlls and dependencies");
 	cmd.addSCmdOption("-log", &params.logpath, "", "output to log file");
@@ -1143,7 +1147,7 @@ void train(params_t &params)
 				ssi_print("\n-------------------------------------------\n");
 				ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
 
-				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative))
+				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
 				{
 					ssi_wrn("ERROR: could not load annotation from database");
 					continue;
@@ -1171,7 +1175,7 @@ void train(params_t &params)
 				CMLTrainer cmltrainer;
 				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
 
-				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative))
+				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
 				{
 					ssi_wrn("ERROR: could not load annotation from database");
 					continue;
@@ -1243,7 +1247,7 @@ void eval(params_t &params)
 			ssi_print("\n-------------------------------------------\n");
 			ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
 
-			if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative))
+			if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
 			{
 				ssi_wrn("ERROR: could not load annotation from database");
 				continue;
@@ -1264,7 +1268,7 @@ bool forward_h(params_t &params, MongoClient &client, Trainer &trainer, CMLTrain
 	ssi_print("\n-------------------------------------------\n");
 	ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
 
-	Annotation *anno = cmltrainer.forward(&trainer, session, role, params.annotator, params.cooperative);
+	Annotation *anno = cmltrainer.forward(&trainer, session, role, params.annotator, params.cooperative, params.cmlbegintime);
 	if (!anno)
 	{
 		return false;
