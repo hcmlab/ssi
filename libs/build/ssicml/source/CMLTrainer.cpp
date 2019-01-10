@@ -121,7 +121,8 @@ bool CMLTrainer::init(MongoClient *client,
 bool CMLTrainer::collect(const ssi_char_t *session,
 	const ssi_char_t *role,
 	const ssi_char_t *annotator,
-	bool cooperative)
+	bool cooperative,
+	double cmlbegintime=0)
 {
 	if (!_ready)
 	{
@@ -164,7 +165,9 @@ bool CMLTrainer::collect(const ssi_char_t *session,
 
 		if (cooperative)
 		{
-			ssi_time_t last_to = (anno.end() - 1)->discrete.to;
+			ssi_time_t last_to = 0;
+			if (cmlbegintime > 0) last_to = cmlbegintime;
+			else  last_to = (anno.end() - 1)->discrete.to;
 			anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 		}
 
@@ -195,6 +198,16 @@ bool CMLTrainer::collect(const ssi_char_t *session,
 	}
 	else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 	{
+
+		if (cooperative)
+		{
+			if (cmlbegintime > 0)
+			{
+				ssi_time_t last_to = cmlbegintime * anno.getScheme()->continuous.sr;
+				anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
+			}
+			
+		}
 		anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session);
 	} 
 	else
@@ -289,7 +302,8 @@ Annotation *CMLTrainer::forward(Trainer *trainer,
 	const ssi_char_t *session,
 	const ssi_char_t *role,
 	const ssi_char_t *annotator,
-	bool cooperative)
+	bool cooperative,
+	double cmlbegintime)
 {
 	if (!_ready)
 	{
@@ -334,19 +348,25 @@ Annotation *CMLTrainer::forward(Trainer *trainer,
 
 		if (anno->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
-			last_to_count = (ssi_size_t) anno->size();
-			for (Annotation::reverse_iterator it = anno->rbegin(); it != anno->rend(); it++)
+			if (cmlbegintime > 0) last_to_count = cmlbegintime * anno->getScheme()->continuous.sr;
+			else
 			{
-				if (!isnan(it->continuous.score))
+				last_to_count = (ssi_size_t)anno->size();
+				for (Annotation::reverse_iterator it = anno->rbegin(); it != anno->rend(); it++)
 				{
-					break;
+					if (!isnan(it->continuous.score))
+					{
+						break;
+					}
+					--last_to_count;
 				}
-				--last_to_count;
 			}
+
 		}
 		else
 		{
-			last_to_time = (anno->end() - 1)->discrete.to;
+			if (cmlbegintime > 0) last_to_time = cmlbegintime;
+			else last_to_time = (anno->end() - 1)->discrete.to;
 		}
 	}
 	else

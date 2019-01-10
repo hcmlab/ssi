@@ -56,14 +56,14 @@ public:
 	bool collect(const ssi_char_t *session,
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
-		bool cooperative);
+		bool cooperative, double cmlbegintime);
 	bool train(Trainer *trainer);
 	bool eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval);
 	Annotation *forward(Trainer *trainer,
 		const ssi_char_t *session,
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
-		bool cooperative);
+		bool cooperative, double cmlbegintime);
 
 	void release();
 
