@@ -39,8 +39,8 @@
 
 // copyright
 #define SSI_COPYRIGHT "Built with Social Signal Interpretation (SSI)\n\n\
-(c) 2007-17 University of Augsburg, Lab for Human Centered Multimedia\n\
-Johannes Wagner, Florian Lingenfelser, Ionut Damian, Tobias Baur, Andreas Seiderer, Simon Flutura, Dominik Schiller\n\n\
+(c) 2007-19 University of Augsburg, Lab for Human Centered Multimedia\n\
+Johannes Wagner, Tobias Baur, Florian Lingenfelser, Andreas Seiderer, Simon Flutura, Dominik Schiller, Ionut Damian\n\n\
 website: http://openssi.net\n\
 contact: support@openssi.net"
 
