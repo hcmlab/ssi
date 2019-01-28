@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
 EndProject
@@ -18,20 +18,16 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Debug|Win32.Build.0 = Debug|Win32
+		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Debug|Win32.ActiveCfg = Debug|x64
 		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Debug|x64.ActiveCfg = Debug|x64
 		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Debug|x64.Build.0 = Debug|x64
-		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Release|Win32.ActiveCfg = Release|Win32
-		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Release|Win32.Build.0 = Release|Win32
+		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Release|Win32.ActiveCfg = Release|x64
 		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Release|x64.ActiveCfg = Release|x64
 		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C}.Release|x64.Build.0 = Release|x64
-		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Debug|Win32.Build.0 = Debug|Win32
+		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Debug|Win32.ActiveCfg = Debug|x64
 		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Debug|x64.ActiveCfg = Debug|x64
 		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Debug|x64.Build.0 = Debug|x64
-		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Release|Win32.ActiveCfg = Release|Win32
-		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Release|Win32.Build.0 = Release|Win32
+		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Release|Win32.ActiveCfg = Release|x64
 		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Release|x64.ActiveCfg = Release|x64
 		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
@@ -41,5 +37,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{61A9903B-0D99-4DB1-B9C3-2D4C99B7E76C} = {7E2B631D-0334-422B-83C3-4093B38D8145}
 		{AE6F7D57-CC12-4CF3-8EDC-29A25ECC9913} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D805722C-17F2-4832-A676-8FC7E4B77782}
 	EndGlobalSection
 EndGlobal

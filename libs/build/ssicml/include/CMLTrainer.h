@@ -57,6 +57,10 @@ public:
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
 		bool cooperative, double cmlbegintime);
+	bool collect_multi(const ssi_char_t *session,
+		const ssi_char_t *role,
+		const ssi_char_t *annotator,
+		const ssi_char_t *stream, const ssi_char_t *root_dir, MongoClient *client);
 	bool train(Trainer *trainer);
 	bool eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval);
 	Annotation *forward(Trainer *trainer,
