@@ -1175,6 +1175,10 @@ void train_multi_corpora(params_t &params)
 	CMLTrainer cmltrainer;
 	cmltrainer.init(&client, params.root, params.scheme, corpora[0].stream, params.contextLeft, params.contextRight);
 
+	FilePath stream_fp(corpora[0].stream);
+	if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
+	{
+		
 	for (int i = 0; i < corpora.size(); i++)
 	{
 		MongoClient localclient;
@@ -1211,6 +1215,8 @@ void train_multi_corpora(params_t &params)
 		}
 	}
 
+	}
+
 	if (!train_h(params, trainer, cmltrainer))
 	{
 		ssi_wrn("ERROR: training failed");
@@ -1237,6 +1243,11 @@ void train(params_t &params)
 
 	StringList sessions;
 	getSessions(sessions, params);
+
+	FilePath stream_fp(params.stream);
+	if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
+	{
+
 
 	if (!params.cooperative)
 	{
@@ -1293,6 +1304,19 @@ void train(params_t &params)
 				}
 			}
 		}
+	}
+	
+	}
+	else {
+
+		//We skip the collection and building of samplelists for raw stream and do this in python code.
+		CMLTrainer cmltrainer;
+		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
+		if (!train_h(params, trainer, cmltrainer))
+		{
+			ssi_wrn("ERROR: training failed");
+		}
+
 	}
 }
 

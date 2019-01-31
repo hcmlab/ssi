@@ -220,7 +220,9 @@ namespace ssi
 	bool CMLTrainer::collect_multi(const ssi_char_t *session,
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
-		const ssi_char_t *stream_path, const ssi_char_t *root_dir, MongoClient *client)
+		const ssi_char_t *stream_path, 
+		const ssi_char_t *root_dir, 
+		MongoClient *client)
 	{
 		if (!_ready)
 		{
@@ -298,22 +300,27 @@ namespace ssi
 	{
 		if (_samples->getSize() == 0)
 		{
-			ssi_wrn("collect samples first");
-			return false;
-		}
-
-		ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
-		if (_samples->getSize(rest_index) == 0)
-		{
-			ISSelectClass select(_samples);
-			select.setSelectionInverse(rest_index);
-			ISFlatSample flat(&select);
-			return trainer->train(flat);
-		}
-		else
-		{
+			ssi_wrn("no samples have been collected yet");
+			//return false;
 			ISFlatSample flat(_samples);
 			return trainer->train(flat);
+		}
+
+		else {
+
+			ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
+			if (_samples->getSize(rest_index) == 0)
+			{
+				ISSelectClass select(_samples);
+				select.setSelectionInverse(rest_index);
+				ISFlatSample flat(&select);
+				return trainer->train(flat);
+			}
+			else
+			{
+				ISFlatSample flat(_samples);
+				return trainer->train(flat);
+			}
 		}
 	}
 
@@ -384,7 +391,7 @@ namespace ssi
 
 		ssi_char_t path[SSI_MAX_CHAR];
 
-		ssi_sprint(path, "%s\\%s\\%s.%s.stream", _rootdir, session, role, _stream);
+		ssi_sprint(path, "%s\\%s\\%s.%s", _rootdir, session, role, _stream);
 		if (!ssi_exists(path))
 		{
 			ssi_wrn("stream not found '%s'", path);

@@ -25,6 +25,10 @@ plugins/xmpp/build/*
 plugins/wiimote/build/*
 plugins/winsensors/build/*
 
+
+bin/x64/vc140/Lib/*
+bin/x64/vc140/share/*
+
 ui/mkplugin/obj/*
 ui/xmlpipeui/obj/*
 ui/setup/obj/*

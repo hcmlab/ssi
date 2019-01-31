@@ -755,72 +755,80 @@ bool Trainer::train (ISamples &samples) {
 
 	if (samples.getSize () == 0) {
 		ssi_wrn ("empty sample list");
-		return false;
+		//Either we have an error, or we skip this on purpose.
+		ISamples *samples_ptr = &samples;
+		bool result = train_h(*samples_ptr);
+		return result;
 	}
 
-	ISamples *samples_ptr = &samples;
-	SampleList *samples_transf = 0;
-	ISSelectDim *samples_select = 0;	
-	ISNorm *samples_norm = 0;
+	else {
 
-	if (!_preproc_mode) {
 
-		_n_streams = samples.getStreamSize ();
-		_stream_refs = new ssi_stream_t[_n_streams];
-		for (ssi_size_t n_stream = 0; n_stream < _n_streams; n_stream++) {
-			_stream_refs[n_stream] = samples.getStream (n_stream);
-			_stream_refs[n_stream].ptr = 0;
-			ssi_stream_reset (_stream_refs[n_stream]);
-		}
+		ISamples *samples_ptr = &samples;
+		SampleList *samples_transf = 0;
+		ISSelectDim *samples_select = 0;
+		ISNorm *samples_norm = 0;
 
-		if (_has_transformer) {
-			samples_transf = new SampleList ();
-			preproc (samples, *samples_transf);
-			samples_ptr = samples_transf;
-		}
+		if (!_preproc_mode) {
 
-	}
-	
-	if (_has_selection) {
-
-		ssi_size_t n_streams = samples_ptr->getStreamSize ();	
-		if (_n_streams != n_streams) {
-			ssi_wrn ("#streams in samples (%u) must not differ from #streams in selection (%u)", n_streams, _n_streams);
-			return false;
-		}
-
-		samples_select = new ISSelectDim (samples_ptr);
-		for (ssi_size_t i = 0; i < _n_streams; i++) {
-			if (_n_stream_select[i] > 0) {
-				ssi_msg(SSI_LOG_LEVEL_DETAIL, "apply selection (%u) to stream#02%u", _n_stream_select[i], i);
-				samples_select->setSelection (i, _n_stream_select[i], _stream_select[i], false);
+			_n_streams = samples.getStreamSize();
+			_stream_refs = new ssi_stream_t[_n_streams];
+			for (ssi_size_t n_stream = 0; n_stream < _n_streams; n_stream++) {
+				_stream_refs[n_stream] = samples.getStream(n_stream);
+				_stream_refs[n_stream].ptr = 0;
+				ssi_stream_reset(_stream_refs[n_stream]);
 			}
+
+			if (_has_transformer) {
+				samples_transf = new SampleList();
+				preproc(samples, *samples_transf);
+				samples_ptr = samples_transf;
+			}
+
 		}
 
-		samples_ptr = samples_select;
+		if (_has_selection) {
 
-	}
+			ssi_size_t n_streams = samples_ptr->getStreamSize();
+			if (_n_streams != n_streams) {
+				ssi_wrn("#streams in samples (%u) must not differ from #streams in selection (%u)", n_streams, _n_streams);
+				return false;
+			}
 
-	if (_has_normalization) {
+			samples_select = new ISSelectDim(samples_ptr);
+			for (ssi_size_t i = 0; i < _n_streams; i++) {
+				if (_n_stream_select[i] > 0) {
+					ssi_msg(SSI_LOG_LEVEL_DETAIL, "apply selection (%u) to stream#02%u", _n_stream_select[i], i);
+					samples_select->setSelection(i, _n_stream_select[i], _stream_select[i], false);
+				}
+			}
 
-		samples_norm = new ISNorm(samples_ptr);
-		for (ssi_size_t i = 0; i < _n_streams; i++) {
-			samples_norm->setNorm(i, *_normalization[i]);
+			samples_ptr = samples_select;
+
 		}
-		samples_ptr = samples_norm;
+
+		if (_has_normalization) {
+
+			samples_norm = new ISNorm(samples_ptr);
+			for (ssi_size_t i = 0; i < _n_streams; i++) {
+				samples_norm->setNorm(i, *_normalization[i]);
+			}
+			samples_ptr = samples_norm;
+		}
+
+		//ModelTools::SaveSampleList(*samples_ptr, "check", File::BINARY);
+		bool result = train_h (*samples_ptr);
+		delete samples_transf;
+		delete samples_select;
+		delete samples_norm;
+
+		_preventWarningsSpam = false;
+
+		return result;
 	}
 
-	//ModelTools::SaveSampleList(*samples_ptr, "check", File::BINARY);
-
-	bool result = train_h (*samples_ptr);
 		
-	delete samples_transf;
-	delete samples_select;
-	delete samples_norm;
-
-	_preventWarningsSpam = false;
-
-	return result;
+	
 }
 
 void Trainer::eval(ISamples &strain, ISamples &sdevel, FILE *file, Evaluation::PRINT::List format) {
@@ -926,6 +934,20 @@ bool Trainer::train_h (ISamples &samples_raw) {
 	bool result = false;
 	
 	ISamples *samples = &samples_raw;
+
+	if (samples->getSize() == 0)
+	{
+		result = _models[0]->train(*samples, _stream_index);
+		_is_trained = result;
+
+		if (samples != &samples_raw)
+		{
+			delete samples;
+		}
+
+		return result;
+	}
+
 	if (_balance != BALANCE::NONE)
 	{
 
