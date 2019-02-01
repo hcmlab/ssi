@@ -77,7 +77,7 @@ public:
 	FFMPEGReaderClient(FFMPEGReader *reader);
 	~FFMPEGReaderClient();
 
-	bool peekVideoFormat (ssi_video_params_t &video_params);
+	bool peekVideoFormat (ssi_video_params_t &video_params,  ssi_size_t &samples);
 	bool peekAudioFormat (ssi_time_t &audio_sr, ssi_size_t &samples);
 	
 	void enter ();

@@ -33,6 +33,11 @@
 #include "ISSelectClass.h"
 #include "Trainer.h"
 #include "ioput/file/FileTools.h"
+#include "ffmpeg/include/ssiffmpeg.h"
+#include "ioput/include/ssiioput.h"
+#include "ssiml.h"
+#include "ISTransform.h"
+#include "ssi.h"
 
 namespace ssi
 {
@@ -68,14 +73,15 @@ namespace ssi
 		_client = client;
 		_rootdir = ssi_strcpy(rootdir);
 		FilePath stream_fp(stream);
-		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
+	/*	if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
 		{
 			_stream = ssi_strcpy(stream_fp.getPath());
 		}
 		else
-		{
+		{*/
 			_stream = ssi_strcpy(stream_fp.getPathFull());
-		}
+			
+		//}
 		_scheme = ssi_strcpy(scheme);
 		_leftContext = leftContext;
 		_rightContext = rightContext;
@@ -131,7 +137,7 @@ namespace ssi
 
 		ssi_char_t path[SSI_MAX_CHAR];
 
-		ssi_sprint(path, "%s\\%s\\%s.%s.stream", _rootdir, session, role, _stream);
+		ssi_sprint(path, "%s\\%s\\%s.%s", _rootdir, session, role, _stream);
 		if (!ssi_exists(path))
 		{
 			ssi_wrn("stream not found '%s'", path);
@@ -196,15 +202,18 @@ namespace ssi
 		}
 		else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
+			int cmlbeginframe = 0;
 			if (cooperative)
 			{
 				if (cmlbegintime > 0)
 				{
 					ssi_time_t last_to = cmlbegintime * anno.getScheme()->continuous.sr;
-					anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
+
+					cmlbeginframe = stream.sr * cmlbegintime;
+				    //anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 				}
 			}
-			anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session);
+			anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session, cmlbeginframe);
 		}
 		else
 		{
@@ -302,6 +311,13 @@ namespace ssi
 		{
 			ssi_wrn("no samples have been collected yet");
 			//return false;
+			/*FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
+			reader->getOptions()->setUrl(path);
+			reader->getOptions()->ablock = 0.05;
+			reader->getOptions()->bestEffort = true;
+
+			if (!reader->initVideoStream(path, stream)
+			*/
 			ISFlatSample flat(_samples);
 			return trainer->train(flat);
 		}
@@ -399,11 +415,46 @@ namespace ssi
 		}
 
 		ssi_stream_t stream;
-		if (!FileTools::ReadStreamFile(path, stream))
-		{
-			ssi_wrn("could not load stream '%s'", path);
-			return 0;
+		FilePath stream_fp(path);
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!FileTools::ReadStreamFile(path, stream))
+			{
+				ssi_wrn("could not load stream '%s'", path);
+				return 0;
+			}
 		}
+		else{ /*if (ssi_strcmp(stream_fp.getExtension(), "mp4", false))*/
+			ssi_print(path);
+			FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
+			reader->getOptions()->setUrl(path);
+			reader->getOptions()->ablock = 0.05;
+			reader->getOptions()->bestEffort = true;
+
+			if (!reader->initVideoStream(path, stream)
+				|| stream.num == 0)
+			{
+				ssi_print("DEBUG: INIT FAILED");
+				return false;
+			}
+
+			MemoryWriter *writer = ssi_create(MemoryWriter, 0, false);
+			writer->setStream(stream);
+
+			FileProvider provider(writer, 0);
+			reader->setProvider(SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME, &provider);
+
+			reader->connect();
+			reader->start();
+			reader->wait();
+			reader->stop();
+			reader->disconnect();
+			//ssi_print("%s",stream.num);
+
+			delete reader;
+			delete writer;
+		}
+
+
 		ssi_time_t frame = 1 / stream.sr;
 
 		Annotation *anno = new Annotation();
@@ -483,6 +534,10 @@ namespace ssi
 					return 0;
 				}
 			}
+			
+			
+		
+
 
 			ssi_stream_t chunk = stream;
 			ssi_size_t n_bytes = stream.byte * stream.dim;
@@ -514,6 +569,7 @@ namespace ssi
 				it->discrete.id = class_map[index];
 				it->confidence = confidence;
 			}
+			
 
 			anno->addOffset((frame*_leftContext), -(frame*_rightContext));
 			anno->removeClass(SSI_SAMPLE_REST_CLASS_NAME);

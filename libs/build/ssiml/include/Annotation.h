@@ -204,7 +204,7 @@ public:
 		SampleList *samples,
 		ssi_size_t context_left,
 		ssi_size_t context_right,
-		const ssi_char_t *user = SSI_SAMPLE_GARBAGE_USER_NAME);
+		const ssi_char_t *user = SSI_SAMPLE_GARBAGE_USER_NAME, int cmlbeginframe = 0);
 	
 
 protected:

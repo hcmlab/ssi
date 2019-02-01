@@ -757,6 +757,14 @@ bool Trainer::train (ISamples &samples) {
 		ssi_wrn ("empty sample list");
 		//Either we have an error, or we skip this on purpose.
 		ISamples *samples_ptr = &samples;
+		_n_streams = samples.getStreamSize();
+		_stream_refs = new ssi_stream_t[_n_streams];
+		for (ssi_size_t n_stream = 0; n_stream < _n_streams; n_stream++) {
+			_stream_refs[n_stream] = samples.getStream(n_stream);
+			_stream_refs[n_stream].ptr = 0;
+			ssi_stream_reset(_stream_refs[n_stream]);
+		}
+
 		bool result = train_h(*samples_ptr);
 		return result;
 	}
@@ -937,13 +945,16 @@ bool Trainer::train_h (ISamples &samples_raw) {
 
 	if (samples->getSize() == 0)
 	{
-		result = _models[0]->train(*samples, _stream_index);
+		ssi_wrn("Expecting external training component. No internal balancing. SSI error handling is disabled")
+	    result = _models[0]->train(*samples, _stream_index);
 		_is_trained = result;
 
 		if (samples != &samples_raw)
 		{
 			delete samples;
 		}
+		init_class_names(*samples);
+		init_user_names(*samples);
 
 		return result;
 	}
@@ -2606,7 +2617,7 @@ bool Trainer::save(const ssi_char_t *filepath, VERSION version, File::TYPE type)
 		return false;
 	}
 
-	ssi_msg (SSI_LOG_LEVEL_BASIC, "saved trainer to file '%s'", filepath_with_ext);
+	ssi_print("saved trainer to file '%s'", filepath_with_ext);
 	delete[] filepath_with_ext;
 
 	return true;
@@ -2619,7 +2630,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 	TiXmlElement info("info");
 	info.SetAttribute("trained", _is_trained ? "true" : "false");
 	body.InsertEndChild(info);
-	
+
 	if (Meta.size() > 0)
 	{
 		TiXmlElement meta("meta");
@@ -2650,7 +2661,6 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 		body.InsertEndChild(samples);
 	}
 	else {
-
 		TiXmlElement streams("streams");
 		for (ssi_size_t n_stream = 0; n_stream < _n_streams; n_stream++) {
 			TiXmlElement item("item");
@@ -2661,7 +2671,6 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 			streams.InsertEndChild(item);
 		}
 		body.InsertEndChild(streams);
-
 		TiXmlElement classes("classes");
 		for (ssi_size_t n_class = 0; n_class < _n_classes; n_class++) {
 			TiXmlElement item("item");
@@ -2669,13 +2678,22 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 			classes.InsertEndChild(item);
 		}
 		body.InsertEndChild(classes);
-
 		TiXmlElement users("users");
-		for (ssi_size_t n_user = 0; n_user < _n_users; n_user++) {
+		if (_n_users > 0)
+		{
+			for (ssi_size_t n_user = 0; n_user < _n_users; n_user++) {
+				TiXmlElement item("item");
+				item.SetAttribute("name", _user_names[n_user]);
+				users.InsertEndChild(item);
+			}
+		}
+
+		else {
 			TiXmlElement item("item");
-			item.SetAttribute("name", _user_names[n_user]);
+			item.SetAttribute("name", "NOBODY");
 			users.InsertEndChild(item);
 		}
+		
 		body.InsertEndChild(users);
 	}
 
@@ -2743,7 +2761,6 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 		}
 		body.InsertEndChild(select);
 	}
-
 	if (_has_normalization) {
 		TiXmlElement normalize("normalize");
 		for (ssi_size_t n = 0; n < _n_streams; n++) {
@@ -2816,11 +2833,15 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 
 	}
 	else {
-
 		TiXmlElement model("model");
 		model.SetAttribute("create", _models[0]->getName());
 		model.SetAttribute("stream", _stream_index);
+
+
+
+	
 		if (_models[0]->isTrained()) {
+		
 			ssi_sprint(string, "%s%s.%s%s", filepath, SSI_FILE_TYPE_TRAINER, _models[0]->getName(), SSI_FILE_TYPE_MODEL);
 			FilePath fp(string);
 			model.SetAttribute("path", fp.getName());
@@ -2829,6 +2850,7 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 				return false;
 			}
 		}
+		
 		if (_models[0]->getOptions()) {
 
 			ssi_sprint(string, "%s%s.%s", filepath, SSI_FILE_TYPE_TRAINER, _models[0]->getName());

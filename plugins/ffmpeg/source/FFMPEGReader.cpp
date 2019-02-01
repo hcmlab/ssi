@@ -92,11 +92,12 @@ void FFMPEGReader::setVideoProvider(IProvider *provider){
 
 	_video_provider = provider;	
 	_mode = _mode == MODE::UNDEFINED ? MODE::VIDEO : MODE::AUDIOVIDEO;	
+	ssi_size_t n_samples;
 
 	if (_options.stream) {
 		ssi_video_params (_video_format, _options.width, _options.height, _options.fps, 8, 3);
 	} else {
-		if (!_client->peekVideoFormat (_video_format)) {
+		if (!_client->peekVideoFormat (_video_format, n_samples)) {
 			ssi_wrn ("could not determine video format, use default options");
 			ssi_video_params (_video_format, _options.width, _options.height, _options.fps, 8, 3);
 		}
@@ -318,6 +319,29 @@ bool FFMPEGReader::initAudioStream(const ssi_char_t *path, ssi_stream_t &stream)
 	}
 
 	ssi_stream_init(stream, num, 1, sizeof(ssi_real_t), SSI_FLOAT, sr);
+	ssi_stream_zero(stream);
+
+	return true;
+}
+
+
+bool FFMPEGReader::initVideoStream(const ssi_char_t *path, ssi_stream_t &stream)
+{
+	FFMPEGReaderClient reader(this);
+
+	ssi_time_t sr;
+	ssi_size_t num;
+
+	ssi_video_params_t params;
+	ssi_size_t n_samples;
+
+	if (!reader.peekVideoFormat(params, n_samples))
+	{
+		ssi_wrn("could not determine video format '%s'", path);
+		return false;
+	}
+
+	ssi_stream_init(stream, n_samples, 1, ssi_video_size(_video_format), SSI_IMAGE, _video_format.framesPerSecond);
 	ssi_stream_zero(stream);
 
 	return true;

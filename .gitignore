@@ -62,3 +62,7 @@ plugins/dspfilters/build/libs/DSPFilters/Builds/lib/x64/vc140/DSPFilters.lib
 plugins/liblinear/build/libs/liblinear-2.1/lib/x64/vc140/liblinear.lib
 plugins/libsvm/build/libs/libsvm-3.20/lib/x64/vc140/libsvm.lib
 libs/x64/vc140/*
+libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/pythonnt_rc.h
+libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gitversion.txt
+libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gittag.txt
+libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gitbranch.txt

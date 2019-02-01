@@ -1808,7 +1808,8 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 	SampleList *samples,
 	ssi_size_t context_left,
 	ssi_size_t context_right,
-	const ssi_char_t *user)
+	const ssi_char_t *user,
+	int cmlbeginframe)
 {
 	if (!_scheme || _scheme->type != SSI_SCHEME_TYPE::CONTINUOUS)
 	{
@@ -1821,7 +1822,14 @@ bool Annotation::extractSamplesFromContinuousScheme(const ssi_stream_t &stream,
 		ssi_wrn("sample rates do not fit '%g != %g'", stream.sr, _scheme->continuous.sr);
 	}
 
-    ssi_size_t n_samples = ssi_size_t(min((int)stream.num, (int)size()));
+	ssi_size_t n_samples;
+	if (cmlbeginframe == 0) {
+		n_samples = ssi_size_t(min((int)stream.num, (int)size()));
+	}
+	else
+	{
+		n_samples = ssi_size_t(cmlbeginframe);
+	}
 	if (n_samples <= context_left + context_right)
 	{
 		ssi_wrn("stream or annotation too short '%u'", n_samples);
