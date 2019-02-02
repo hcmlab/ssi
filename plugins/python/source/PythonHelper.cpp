@@ -323,19 +323,37 @@ namespace ssi {
 
 	PyObject *PythonHelper::labels_to_object(ISamples &samples, ssi_size_t stream_index)
 	{
-
-		PyObject *pList_label = PyTuple_New(samples.getSize());
-
+		PyObject *pList_label;
 		ssi_size_t label;
-
-		samples.reset();
 		ssi_sample_t *sample = 0;
 		int sample_counter = 0;
-		while (sample = samples.next())
+
+		if (samples.getSize() > 0)
 		{
-			label = sample->class_id;
-			PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
-			sample_counter++;
+			pList_label = PyTuple_New(samples.getSize());
+			samples.reset();
+
+			while (sample = samples.next())
+			{
+				label = sample->class_id;
+				PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
+				sample_counter++;
+			}
+		}
+		else {
+			//In case we dont handle a sample and anno list to our external training component, 
+			//we still forward the number of classes 
+
+			pList_label = PyTuple_New(samples.getClassSize());
+			samples.reset();
+			for (int i = 0; i < samples.getClassSize(); i++)
+			{
+				label = i;
+				PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
+				sample_counter++;
+
+			}
+
 		}
 
 		return pList_label;

@@ -754,16 +754,29 @@ bool Trainer::train (ISamples &samples) {
 	}
 
 	if (samples.getSize () == 0) {
-		ssi_wrn ("empty sample list");
-		//Either we have an error, or we skip this on purpose.
+		//Either we have an error, or we skip this to train the network outside SSI,
+		//therefore we add some fake data for handling the .trainer file 
+		//In train_h we check if external training was possible.
+
 		ISamples *samples_ptr = &samples;
-		_n_streams = samples.getStreamSize();
+		_n_streams = 1;
 		_stream_refs = new ssi_stream_t[_n_streams];
-		for (ssi_size_t n_stream = 0; n_stream < _n_streams; n_stream++) {
-			_stream_refs[n_stream] = samples.getStream(n_stream);
-			_stream_refs[n_stream].ptr = 0;
-			ssi_stream_reset(_stream_refs[n_stream]);
-		}
+
+		ssi_stream_t fakestream;
+		fakestream.byte = 4;
+		fakestream.dim = 1;
+		fakestream.sr = 1;
+		fakestream.type = SSI_IMAGE;
+		fakestream.num = 1;
+		_stream_refs[0] = fakestream;
+		_stream_refs[0].ptr = 0;
+		ssi_stream_reset(_stream_refs[0]);
+
+		free_user_names();
+		_n_users = 1;
+		_user_names = new ssi_char_t *[_n_users];
+		_user_names[0] = ssi_strcpy("NOBODY");
+		
 
 		bool result = train_h(*samples_ptr);
 		return result;
@@ -945,16 +958,17 @@ bool Trainer::train_h (ISamples &samples_raw) {
 
 	if (samples->getSize() == 0)
 	{
-		ssi_wrn("Expecting external training component. No internal balancing. SSI error handling is disabled")
+		ssi_wrn("Empty Samplelist: Expecting external training component. No internal balancing or error handling.")
+		init_class_names(*samples);
+
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "train '%s' using stream#%02u Samples:%u Classes:%u", _models[0]->getName(), _stream_index, samples->getSize(), samples->getClassSize());
 	    result = _models[0]->train(*samples, _stream_index);
 		_is_trained = result;
-
+		
 		if (samples != &samples_raw)
 		{
 			delete samples;
 		}
-		init_class_names(*samples);
-		init_user_names(*samples);
 
 		return result;
 	}
@@ -2679,21 +2693,14 @@ bool Trainer::save_V5(const ssi_char_t *filepath, TiXmlElement &body, File::TYPE
 		}
 		body.InsertEndChild(classes);
 		TiXmlElement users("users");
-		if (_n_users > 0)
-		{
-			for (ssi_size_t n_user = 0; n_user < _n_users; n_user++) {
-				TiXmlElement item("item");
-				item.SetAttribute("name", _user_names[n_user]);
-				users.InsertEndChild(item);
-			}
-		}
-
-		else {
+		
+		for (ssi_size_t n_user = 0; n_user < _n_users; n_user++) {
 			TiXmlElement item("item");
-			item.SetAttribute("name", "NOBODY");
+			item.SetAttribute("name", _user_names[n_user]);
 			users.InsertEndChild(item);
 		}
 		
+
 		body.InsertEndChild(users);
 	}
 

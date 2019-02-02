@@ -66,3 +66,6 @@ libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/pythonnt_rc.h
 libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gitversion.txt
 libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gittag.txt
 libs/build/Python-3.6.4/PCbuild/obj/36amd64_Debug/pythoncore/gitbranch.txt
+plugins/python/build/test/ssipy.pyd
+plugins/model/build/tools/ssi_last.err
+plugins/python/build/dlls/ssipy.pyd

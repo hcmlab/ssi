@@ -73,15 +73,10 @@ namespace ssi
 		_client = client;
 		_rootdir = ssi_strcpy(rootdir);
 		FilePath stream_fp(stream);
-	/*	if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
-		{
-			_stream = ssi_strcpy(stream_fp.getPath());
-		}
-		else
-		{*/
+
 			_stream = ssi_strcpy(stream_fp.getPathFull());
 			
-		//}
+
 		_scheme = ssi_strcpy(scheme);
 		_leftContext = leftContext;
 		_rightContext = rightContext;
@@ -207,9 +202,7 @@ namespace ssi
 			{
 				if (cmlbegintime > 0)
 				{
-					ssi_time_t last_to = cmlbegintime * anno.getScheme()->continuous.sr;
-
-					cmlbeginframe = stream.sr * cmlbegintime;
+					cmlbeginframe = anno.getScheme()->continuous.sr * cmlbegintime;
 				    //anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 				}
 			}
@@ -309,17 +302,9 @@ namespace ssi
 	{
 		if (_samples->getSize() == 0)
 		{
-			ssi_wrn("no samples have been collected yet");
-			//return false;
-			/*FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
-			reader->getOptions()->setUrl(path);
-			reader->getOptions()->ablock = 0.05;
-			reader->getOptions()->bestEffort = true;
-
-			if (!reader->initVideoStream(path, stream)
-			*/
+			//If we have an empty samplelist at this point, we check if the training is done externally in the trainer..
 			ISFlatSample flat(_samples);
-			return trainer->train(flat);
+			return trainer->train(*_samples);
 		}
 
 		else {
