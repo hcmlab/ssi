@@ -38,6 +38,7 @@
 #include "ssiml.h"
 #include "ISTransform.h"
 #include "ssi.h"
+#include "ssiocv.h"
 
 namespace ssi
 {
@@ -203,7 +204,6 @@ namespace ssi
 				if (cmlbegintime > 0)
 				{
 					cmlbeginframe = anno.getScheme()->continuous.sr * cmlbegintime;
-				    //anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 				}
 			}
 			anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session, cmlbeginframe);
@@ -302,8 +302,7 @@ namespace ssi
 	{
 		if (_samples->getSize() == 0)
 		{
-			//If we have an empty samplelist at this point, we check if the training is done externally in the trainer..
-			ISFlatSample flat(_samples);
+			//If we have an empty samplelist at this point, we check if the training is done externally in the trainer.
 			return trainer->train(*_samples);
 		}
 
@@ -324,6 +323,9 @@ namespace ssi
 			}
 		}
 	}
+
+
+	
 
 	bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval)
 	{
@@ -407,38 +409,61 @@ namespace ssi
 				ssi_wrn("could not load stream '%s'", path);
 				return 0;
 			}
-		}
-		else{ /*if (ssi_strcmp(stream_fp.getExtension(), "mp4", false))*/
-			ssi_print(path);
-			FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, false);
-			reader->getOptions()->setUrl(path);
-			reader->getOptions()->ablock = 0.05;
-			reader->getOptions()->bestEffort = true;
-
-			if (!reader->initVideoStream(path, stream)
-				|| stream.num == 0)
-			{
-				ssi_print("DEBUG: INIT FAILED");
-				return false;
+		
 			}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false))
+		{
 
-			MemoryWriter *writer = ssi_create(MemoryWriter, 0, false);
-			writer->setStream(stream);
+	
 
-			FileProvider provider(writer, 0);
-			reader->setProvider(SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME, &provider);
+		try {
+			ssi_print("%s\n", path);
+			cv::VideoCapture cap(path);
+			if (!cap.isOpened())  
+				ssi_wrn("Can not open Video file (Maybe opencv_ffmpeg310_x64.dll or mp4 codec is missing.)");
 
-			reader->connect();
-			reader->start();
-			reader->wait();
-			reader->stop();
-			reader->disconnect();
-			//ssi_print("%s",stream.num);
+			double fps = cap.get(CV_CAP_PROP_FPS);
+			double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+			double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+			double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+			ssi_video_params_t video_format;
+			ssi_video_params(video_format, width, height, fps, 8, 3);
+			stream.num = num;
+			stream.type = SSI_IMAGE;
+			stream.sr = fps;
+			stream.dim = 1;
+			stream.byte = ssi_video_size(video_format);
+			//ssi_stream_init(stream, num, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
+			
+			ssi_print("STREAM INITIALIZED");
 
-			delete reader;
-			delete writer;
+			cap.release();
+			
+			//for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+			//{
+			//	cv::Mat frame;
+			//	cap >> frame; // get the next frame from video
+			//	
+			//	int size = frame.total() * frame.channels();
+			//	ssi_print("%d\n", size);
+			//	ssi_byte_t *bytes = new ssi_byte_t[size];
+			//    memcpy(bytes, frame.data, size);
+
+			//	*stream.ptr = *bytes;
+			//	stream.ptr += size;
+
+			//	delete[] bytes;
+			//}
+
+		
+
+		}
+		catch (cv::Exception& e) {
+			ssi_print("%s", e.msg);
+			return false;
 		}
 
+		}
 
 		ssi_time_t frame = 1 / stream.sr;
 
@@ -522,11 +547,15 @@ namespace ssi
 			
 			
 		
-
-
+		
 			ssi_stream_t chunk = stream;
 			ssi_size_t n_bytes = stream.byte * stream.dim;
 			ssi_size_t index;
+			ssi_real_t confidence;
+
+
+			if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+
 			for (Annotation::iterator it = anno->begin(); it != anno->end(); it++)
 			{
 				if (cooperative && !(it->discrete.from > last_to_time))
@@ -544,15 +573,91 @@ namespace ssi
 				}
 
 				chunk.ptr = stream.ptr + from * n_bytes;
-				chunk.dim = max(1, to - from) * stream.dim;
+				chunk.dim = fmax(1, to - from) * stream.dim;
 				chunk.num = 1;
 				chunk.tot = chunk.num * n_bytes;
 
-				ssi_real_t confidence;
+				
 				trainer->forward(chunk, index, confidence);
-
 				it->discrete.id = class_map[index];
 				it->confidence = confidence;
+
+			}
+
+
+
+			}
+
+			else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false))
+			{
+
+				Annotation::iterator it = anno->begin();
+
+				try {
+					ssi_print("%s\n", path);
+					cv::VideoCapture cap(path);
+					if (!cap.isOpened())
+						ssi_wrn("Can not open Video file");
+
+					double fps = cap.get(CV_CAP_PROP_FPS);
+					double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+					double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+					double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+					ssi_video_params_t video_format;
+					ssi_video_params(video_format, width, height, fps, 8, 3);
+					
+
+					
+
+					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+					{
+
+						if (cooperative && !(it->discrete.from > last_to_time))
+						{
+							continue;
+						}
+						ssi_size_t from = ssi_cast(ssi_size_t, it->discrete.from * stream.sr + 0.5);
+						ssi_size_t to = ssi_cast(ssi_size_t, it->discrete.to * stream.sr + 0.5);
+
+						// check if samples start index is smaller than the stop index and smaller than streams number of samples
+						if (!(from <= to && to < stream.num)) {
+							ssi_wrn("interval out of range [%lf..%lf]s", it->discrete.from, it->discrete.to);
+							continue;
+						}
+
+						cv::Mat frame;
+						cap >> frame; // get the next frame from video
+
+						int size = frame.total() * frame.channels();
+						ssi_print("%d\n", size);
+						ssi_byte_t *bytes = new ssi_byte_t[size];
+						memcpy(bytes, frame.data, size);
+						ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
+						*chunk.ptr = *bytes;
+						chunk.num = 1;
+						chunk.tot = chunk.num * size;
+
+						trainer->forward(chunk, index, confidence);
+						it->discrete.id = class_map[index];
+						it->confidence = confidence;
+						it++;
+
+						
+						//stream.ptr += size;
+						
+
+						delete[] bytes;
+					}
+
+					cap.release();
+
+
+				}
+				catch (cv::Exception& e) {
+					ssi_print("%s", e.msg);
+					return false;
+				}
+
 			}
 			
 
@@ -610,9 +715,14 @@ namespace ssi
 			return false;
 		}
 
+		
+
 		ssi_stream_destroy(stream);
 
 		return anno;
+
+		
+		
 	}
 
 	void CMLTrainer::release()

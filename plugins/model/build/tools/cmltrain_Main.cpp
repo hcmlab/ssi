@@ -422,7 +422,7 @@ int main(int argc, char **argv) {
 
 				if (params.srcurl != 0 && params.srcurl[0] != '\0')
 				{
-					ssi_char_t *depend[8] = {
+					ssi_char_t *depend[9] = {
 						"avcodec-57.dll",
 						"avdevice-57.dll",
 						"avfilter-6.dll",
@@ -431,6 +431,7 @@ int main(int argc, char **argv) {
 						"postproc-54.dll",
 						"swresample-2.dll",
 						"swscale-4.dll",
+						"opencv_ffmpeg310_64.dll"
 					};
 				
 				for (ssi_size_t i = 0; i < 8; i++)
