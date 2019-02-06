@@ -414,27 +414,17 @@ int main(int argc, char **argv) {
 			ssi_print("download source=%s\ndownload target=%s\n\n", params.srcurl, exedir);
 			Factory::SetDownloadDirs(params.srcurl, exedir);
 
-
-			Factory::RegisterDLL("frame", ssiout, ssimsg);
-			if (IsVideoFile(params.stream)
-				|| IsAudioFile(params.stream))
+			if (IsVideoFile(params.stream))
 			{
 
 				if (params.srcurl != 0 && params.srcurl[0] != '\0')
 				{
-					ssi_char_t *depend[9] = {
-						"avcodec-57.dll",
-						"avdevice-57.dll",
-						"avfilter-6.dll",
-						"avformat-57.dll",
-						"avutil-55.dll",
-						"postproc-54.dll",
-						"swresample-2.dll",
-						"swscale-4.dll",
-						"opencv_ffmpeg310_64.dll"
+					ssi_char_t *depend[2] = {
+						"opencv_ffmpeg310_64.dll",
+						"opencv_world310.dll"
 					};
 				
-				for (ssi_size_t i = 0; i < 8; i++)
+				for (ssi_size_t i = 0; i < 2; i++)
 				{
 					ssi_char_t *dlldst = ssi_strcat(exedir, "\\", depend[i]);
 					ssi_char_t *dllsrc = ssi_strcat(params.srcurl, "/", depend[i]);
@@ -446,9 +436,6 @@ int main(int argc, char **argv) {
 					delete[] dllsrc;
 				}
 
-
-				Factory::RegisterDLL("ioput", ssiout, ssimsg);
-				Factory::RegisterDLL("ffmpeg", ssiout, ssimsg);
 				}
 			}
 				
@@ -1466,7 +1453,7 @@ bool forward_h(params_t &params, MongoClient &client, Trainer &trainer, CMLTrain
 	ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
 
 	Annotation *anno = cmltrainer.forward(&trainer, session, role, params.annotator, params.cooperative, params.cmlbegintime);
-	if (!anno)
+ 	if (!anno)
 	{
 		return false;
 	}

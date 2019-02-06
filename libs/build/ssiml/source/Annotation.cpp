@@ -291,10 +291,13 @@ bool Annotation::setDiscreteScheme(const ssi_char_t *scheme_name,
 	_scheme->discrete.names = new ssi_char_t *[_scheme->discrete.n];
 	_scheme->discrete.ids = default_ids(_scheme->discrete.n);
 	ssi_size_t i = 0;
+	
+
+	//we resort the schemes to represent their order in the database (needs testing)
 	for (std::map<String,ssi_size_t>::iterator it = classes.begin(); it != classes.end(); it++, i++)
 	{
-		_scheme->discrete.names[i] = ssi_strcpy(it->first.str());
-		_scheme->discrete.ids[i] = it->second;
+		_scheme->discrete.names[it->second] = ssi_strcpy(it->first.str());
+		_scheme->discrete.ids[it->second] = it->second;
 	}
 
 	return true;
@@ -1600,10 +1603,10 @@ bool Annotation::addClass(StringList names)
 	_scheme->discrete.names = new ssi_char_t *[_scheme->discrete.n];
 	_scheme->discrete.ids = default_ids(_scheme->discrete.n);
 	ssi_size_t i = 0;
-	for (std::map<String, ssi_size_t>::iterator it = new_classes.begin(); it != new_classes.end(); it++, i++)
+	for (std::map<String, ssi_size_t>::iterator it = new_classes.begin(); it != new_classes.end(); it++)
 	{
-		_scheme->discrete.names[i] = ssi_strcpy(it->first.str());
-		_scheme->discrete.ids[i] = it->second;
+		_scheme->discrete.names[it->second] = ssi_strcpy(it->first.str());
+		_scheme->discrete.ids[it->second] = it->second;
 	}
 
 	return true;

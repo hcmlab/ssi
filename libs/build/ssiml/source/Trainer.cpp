@@ -761,11 +761,11 @@ bool Trainer::train (ISamples &samples) {
 		ISamples *samples_ptr = &samples;
 		_n_streams = 1;
 		_stream_refs = new ssi_stream_t[_n_streams];
-
+		
 		ssi_stream_t fakestream;
-		fakestream.byte = 4;
+		fakestream.byte = 1357200;
 		fakestream.dim = 1;
-		fakestream.sr = 1;
+		fakestream.sr = 25;
 		fakestream.type = SSI_IMAGE;
 		fakestream.num = 1;
 		_stream_refs[0] = fakestream;
@@ -775,7 +775,7 @@ bool Trainer::train (ISamples &samples) {
 		free_user_names();
 		_n_users = 1;
 		_user_names = new ssi_char_t *[_n_users];
-		_user_names[0] = ssi_strcpy("NOBODY");
+		_user_names[0] = ssi_strcpy(SSI_SAMPLE_GARBAGE_USER_NAME);
 		
 
 		bool result = train_h(*samples_ptr);

@@ -302,6 +302,7 @@ namespace ssi
 	{
 		if (_samples->getSize() == 0)
 		{
+
 			//If we have an empty samplelist at this point, we check if the training is done externally in the trainer.
 			return trainer->train(*_samples);
 		}
@@ -411,7 +412,7 @@ namespace ssi
 			}
 		
 			}
-		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false))
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
 		{
 
 	
@@ -428,33 +429,14 @@ namespace ssi
 			double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
 			ssi_video_params_t video_format;
 			ssi_video_params(video_format, width, height, fps, 8, 3);
+			ssi_stream_init(stream, num, 1, ssi_video_size(video_format), SSI_IMAGE, fps);
 			stream.num = num;
 			stream.type = SSI_IMAGE;
 			stream.sr = fps;
 			stream.dim = 1;
 			stream.byte = ssi_video_size(video_format);
-			//ssi_stream_init(stream, num, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
-			
-			ssi_print("STREAM INITIALIZED");
-
 			cap.release();
 			
-			//for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
-			//{
-			//	cv::Mat frame;
-			//	cap >> frame; // get the next frame from video
-			//	
-			//	int size = frame.total() * frame.channels();
-			//	ssi_print("%d\n", size);
-			//	ssi_byte_t *bytes = new ssi_byte_t[size];
-			//    memcpy(bytes, frame.data, size);
-
-			//	*stream.ptr = *bytes;
-			//	stream.ptr += size;
-
-			//	delete[] bytes;
-			//}
-
 		
 
 		}
@@ -519,6 +501,7 @@ namespace ssi
 		}
 
 		ssi_time_t duration = stream.num / stream.sr - frame;
+		
 
 		if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 		{
@@ -526,13 +509,14 @@ namespace ssi
 			{
 				return 0;
 			}
-
+			
 			if (_leftContext > 0 || _rightContext > 0)
 			{
 				anno->addOffset(-(_leftContext*frame), _rightContext*frame);
 				anno->filter(0, Annotation::FILTER_PROPERTY::FROM, Annotation::FILTER_OPERATOR::GREATER_EQUAL);
 				anno->filter(duration, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER);
 			}
+			
 
 			ssi_size_t n_classes = trainer->getClassSize();
 			ssi_int_t *class_map = new ssi_int_t[n_classes];
@@ -588,10 +572,12 @@ namespace ssi
 
 			}
 
-			else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false))
+			else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false))
 			{
 
 				Annotation::iterator it = anno->begin();
+				
+			
 
 				try {
 					ssi_print("%s\n", path);
@@ -608,7 +594,7 @@ namespace ssi
 					
 
 					
-
+					ssi_print("Predicting frames..");
 					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
 					{
 
@@ -627,28 +613,29 @@ namespace ssi
 
 						cv::Mat frame;
 						cap >> frame; // get the next frame from video
-
+						cv::cvtColor(frame, frame, CV_BGR2RGB);
+			
 						int size = frame.total() * frame.channels();
-						ssi_print("%d\n", size);
+						//ssi_print("%d\n", size);
 						ssi_byte_t *bytes = new ssi_byte_t[size];
 						memcpy(bytes, frame.data, size);
 						ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
-						*chunk.ptr = *bytes;
+						chunk.byte = size;
+						chunk.type = SSI_IMAGE;
+
+						chunk.ptr = bytes;
 						chunk.num = 1;
 						chunk.tot = chunk.num * size;
+						chunk.dim = 1;
 
 						trainer->forward(chunk, index, confidence);
-						it->discrete.id = class_map[index];
+	
+						it->discrete.id = class_map[index]; // class_map[index];
 						it->confidence = confidence;
 						it++;
-
-						
-						//stream.ptr += size;
-						
-
-						delete[] bytes;
+	    				delete[] bytes;
 					}
-
+				
 					cap.release();
 
 
@@ -665,6 +652,7 @@ namespace ssi
 			anno->removeClass(SSI_SAMPLE_REST_CLASS_NAME);
 
 			delete[] class_map;
+			
 		}
 		else if (anno->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
