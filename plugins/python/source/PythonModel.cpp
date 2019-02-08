@@ -127,6 +127,17 @@ bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *
 	return _helper->forward(stream, n_probs, probs, confidence);
 }
 
+
+bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence, ssi_video_params_t &params) {
+
+	if (!_helper)
+	{
+		initHelper();
+	}
+
+	return _helper->forward(stream, n_probs, probs, confidence, params);
+}
+
 bool PythonModel::load(const ssi_char_t *filepath) {
 	
 	if (!_helper)

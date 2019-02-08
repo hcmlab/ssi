@@ -1699,6 +1699,50 @@ namespace ssi {
 		return result;
 	}
 
+
+	bool PythonHelper::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence, ssi_video_params_t params) {
+
+		if (!_pFunctions[FUNCTIONS::FORWARD])
+		{
+			return false;
+		}
+
+		GIL gil;
+
+		bool result = false;
+
+		PyObject *pArgs = PyTuple_New(4);
+		int valcount = 0;
+		PyTuple_SetItem(pArgs, valcount++, stream_to_imageobject(&stream, params));
+		PyObject *pProbs = (PyObject *)ssipyarray_From(n_probs, probs);
+		PyTuple_SetItem(pArgs, valcount++, pProbs);
+		PyTuple_SetItem(pArgs, valcount++, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, valcount++, _pVariables);
+		Py_INCREF(_pVariables);
+
+
+		PyObject *pValue = call_function(FUNCTIONS::FORWARD, pArgs);
+		Py_DECREF(pArgs);
+
+		if (pValue)
+		{
+			confidence = (ssi_real_t)PyFloat_AsDouble(pValue);
+			Py_DECREF(pValue);
+
+			if (confidence < 0)
+			{
+				ssi_wrn("negative confidence '%g'", confidence);
+			}
+			else
+			{
+				result = true;
+			}
+		}
+
+		return result;
+	}
+
 	bool PythonHelper::save(const ssi_char_t *filepath) {
 
 		if (!_pFunctions[FUNCTIONS::SAVE])

@@ -258,7 +258,6 @@
     <ClInclude Include="..\..\include\GeometricRecognizerTypes.h" />
     <ClInclude Include="..\..\include\GestureTemplate.h" />
     <ClInclude Include="..\..\include\HierarchicalModel.h" />
-    <ClInclude Include="..\..\include\KMeans.h" />
     <ClInclude Include="..\..\include\KmTree.h" />
     <ClInclude Include="..\..\include\KmUtils.h" />
     <ClInclude Include="..\..\include\KNearestNeighbors.h" />
@@ -294,7 +293,6 @@
     <ClCompile Include="..\..\source\GeometricRecognizer.cpp" />
     <ClCompile Include="..\..\source\GestureTemplate.cpp" />
     <ClCompile Include="..\..\source\HierarchicalModel.cpp" />
-    <ClCompile Include="..\..\source\KMeans.cpp" />
     <ClCompile Include="..\..\source\KmTree.cpp" />
     <ClCompile Include="..\..\source\KmUtils.cpp" />
     <ClCompile Include="..\..\source\KNearestNeighbors.cpp" />

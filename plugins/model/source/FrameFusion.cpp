@@ -87,6 +87,14 @@ bool FrameFusion::train (ISamples &samples,
 	return _model->train(unfold, stream_index);
 }
 
+bool FrameFusion::forward(ssi_stream_t &stream,
+	ssi_size_t n_probs,
+	ssi_real_t *probs,
+	ssi_real_t &confidence, ssi_video_params_t &params)
+{
+	return forward(stream, n_probs, probs, confidence);
+}
+
 bool FrameFusion::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
 	ssi_real_t *probs,

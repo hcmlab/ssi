@@ -628,9 +628,9 @@ namespace ssi
 						chunk.tot = chunk.num * size;
 						chunk.dim = 1;
 
-						trainer->forward(chunk, index, confidence);
+						trainer->forward(chunk, index, confidence, video_format);
 	
-						it->discrete.id = class_map[index]; // class_map[index];
+						it->discrete.id = class_map[index];
 						it->confidence = confidence;
 						it++;
 	    				delete[] bytes;

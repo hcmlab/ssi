@@ -762,13 +762,13 @@ bool Trainer::train (ISamples &samples) {
 		_n_streams = 1;
 		_stream_refs = new ssi_stream_t[_n_streams];
 		
-		ssi_stream_t fakestream;
-		fakestream.byte = 1357200;
-		fakestream.dim = 1;
-		fakestream.sr = 25;
-		fakestream.type = SSI_IMAGE;
-		fakestream.num = 1;
-		_stream_refs[0] = fakestream;
+		ssi_stream_t _stream;
+		_stream.byte = 4;
+		_stream.dim = 1;
+		_stream.sr = 25;
+		_stream.type = SSI_IMAGE;
+		_stream.num = 1;
+		_stream_refs[0] = _stream;
 		_stream_refs[0].ptr = 0;
 		ssi_stream_reset(_stream_refs[0]);
 
@@ -1074,6 +1074,16 @@ bool Trainer::forward (ssi_stream_t &stream,
 	return forward (1, &s, class_index, confidence);
 }
 
+bool Trainer::forward(ssi_stream_t &stream,
+	ssi_size_t &class_index,
+	ssi_real_t &confidence, 
+	ssi_video_params_t &params) {
+
+	ssi_stream_t *s = &stream;
+	return forward(1, &s, class_index, confidence, params);
+}
+
+
 bool Trainer::forward (ssi_size_t num,
 	ssi_stream_t **streams,
 	ssi_size_t &class_index,
@@ -1100,6 +1110,34 @@ bool Trainer::forward (ssi_size_t num,
 	return true;
 }
 
+
+bool Trainer::forward(ssi_size_t num,
+	ssi_stream_t **streams,
+	ssi_size_t &class_index,
+	ssi_real_t &confidence,
+	ssi_video_params_t &params) {
+
+	ssi_real_t *probs = new ssi_real_t[_n_classes];
+	if (!forward_probs(num, streams, _n_classes, probs, confidence, params)) {
+		delete[] probs;
+		return false;
+	}
+
+	ssi_size_t max_ind = 0;
+	ssi_real_t max_val = probs[0];
+	for (ssi_size_t i = 1; i < _n_classes; i++) {
+		if (probs[i] > max_val) {
+			max_val = probs[i];
+			max_ind = i;
+		}
+	}
+
+	delete[] probs;
+	class_index = max_ind;
+
+	return true;
+}
+
 bool Trainer::forward_probs (ssi_stream_t &stream,
 	ssi_size_t class_num,
 	ssi_real_t *class_probs,
@@ -1108,6 +1146,145 @@ bool Trainer::forward_probs (ssi_stream_t &stream,
 	ssi_stream_t *s = &stream;
 	return forward_probs (1, &s, class_num, class_probs, confidence);
 }
+
+bool Trainer::forward_probs(ssi_size_t n_streams,
+	ssi_stream_t **streams,
+	ssi_size_t n_probs,
+	ssi_real_t *probs,
+	ssi_real_t &confidence,
+	ssi_video_params_t params) {
+
+	if (!_is_trained) {
+		if (!_preventWarningsSpam)
+		{
+			ssi_wrn("prediction failed because model is not trained");
+			_preventWarningsSpam = true;
+		}
+		return false;
+	}
+
+	if (n_streams != _n_streams) {
+		if (!_preventWarningsSpam)
+		{
+			ssi_wrn("prediction failed because #streams not compatible (%u != %u)", n_streams, _n_streams);
+			_preventWarningsSpam = true;
+
+		}
+		return false;
+	}
+
+	if (!_fusion && streams[_stream_index]->num == 0) {
+		ssi_wrn("prediction failed because stream.num == 0 (stream: %u num: %u)", _stream_index, streams[_stream_index]->num)
+			return false;
+	}
+
+	ssi_stream_t **streams_ptr = new ssi_stream_t *[n_streams];
+	ssi_stream_t **streams_o = new ssi_stream_t *[n_streams];
+	ssi_stream_t **streams_s = new ssi_stream_t *[n_streams];
+	ssi_stream_t **streams_t = new ssi_stream_t *[n_streams];
+	ssi_stream_t **streams_n = new ssi_stream_t *[n_streams];
+	for (ssi_size_t i = 0; i < n_streams; i++) {
+		streams_o[i] = new ssi_stream_t;
+		ssi_stream_copy(*streams[i], *streams_o[i], 0, streams[i]->num);
+		streams_ptr[i] = streams_o[i];
+		streams_s[i] = 0;
+		streams_t[i] = 0;
+		streams_n[i] = 0;
+	}
+
+	if (!_preproc_mode && _has_transformer) {
+		for (ssi_size_t i = 0; i < _n_streams; i++) {
+			if (streams_ptr[i] && _transformer[i]) {
+				streams_t[i] = new ssi_stream_t;
+				SignalTools::Transform(*streams_ptr[i], *streams_t[i], *_transformer[i], _transformer_frame[i], _transformer_delta[i]);
+				streams_ptr[i] = streams_t[i];
+			}
+		}
+	}
+
+	if (_has_selection) {
+		for (ssi_size_t i = 0; i < _n_streams; i++) {
+			if (streams_ptr[i] && _stream_select[i]) {
+				streams_s[i] = new ssi_stream_t;
+				ssi_stream_select(*streams_ptr[i], *streams_s[i], _n_stream_select[i], _stream_select[i]);
+				streams_ptr[i] = streams_s[i];
+			}
+		}
+	}
+
+	if (_has_normalization) {
+		for (ssi_size_t i = 0; i < _n_streams; i++) {
+			if (streams_ptr[i] && _normalization[i] && _normalization[i]->method != ISNorm::METHOD::NONE) {
+				streams_n[i] = new ssi_stream_t;
+				ssi_stream_clone(*streams_ptr[i], *streams_n[i]);
+				ISNorm::Norm(*streams_n[i], *_normalization[i]);
+				streams_ptr[i] = streams_n[i];
+			}
+		}
+	}
+
+	if (_has_activity) {
+		for (ssi_size_t i = 0; i < _n_streams; i++) {
+			if (streams_ptr[i] && _activity[i]) {
+
+				ssi_stream_t activity;
+				SignalTools::Transform(*streams[i], activity, *_activity[i], _activity_frame[i], _activity_delta[i]);
+
+				ssi_real_t *ptr = ssi_pcast(ssi_real_t, activity.ptr);
+				ssi_size_t num = activity.num;
+				ssi_size_t dim = activity.dim;
+				ssi_size_t count = 0;
+				for (ssi_size_t j = 0; j < num; j++) {
+					if (*ptr > 0) {
+						count++;
+					}
+					ptr += dim;
+				}
+				ssi_real_t percentage = ssi_cast(ssi_real_t, count) / ssi_cast(ssi_real_t, num);
+				if (percentage < _activity_percentage[i] && streams_ptr[i]->ptr) {
+					ssi_stream_destroy(*streams_ptr[i]);
+					streams_ptr[i] = 0;
+				}
+
+			}
+		}
+	}
+
+	bool result = false;
+	
+		if (streams_ptr[_stream_index]) {
+			result = _models[0]->forward(*streams_ptr[_stream_index], n_probs, probs, confidence, params);
+		}
+	
+
+	for (ssi_size_t i = 0; i < n_streams; i++) {
+		if (streams_o[i]) {
+			ssi_stream_destroy(*streams_o[i]);
+			delete streams_o[i];
+		}
+		if (streams_s[i]) {
+			ssi_stream_destroy(*streams_s[i]);
+			delete streams_s[i];
+		}
+		if (streams_t[i]) {
+			ssi_stream_destroy(*streams_t[i]);
+			delete streams_t[i];
+		}
+		if (streams_n[i]) {
+			ssi_stream_destroy(*streams_n[i]);
+			delete streams_n[i];
+		}
+	}
+	delete[] streams_ptr;
+	delete[] streams_o;
+	delete[] streams_s;
+	delete[] streams_t;
+	delete[] streams_n;
+
+	return result;
+}
+
+
 
 bool Trainer::forward_probs (ssi_size_t n_streams,
 	ssi_stream_t **streams,
@@ -1151,7 +1328,6 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 					ssi_stream_info(_stream_refs[n_stream], ssiout);
 					_preventWarningsSpam = true;
 				}	
-				_has_normalization = false;
 				//return false;			
 			}
 		}

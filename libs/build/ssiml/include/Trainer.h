@@ -140,16 +140,32 @@ public:
 		ssi_real_t &confidence);
 	bool forward(ssi_stream_t &stream,
 		ssi_size_t &class_index,
+		ssi_real_t &confidence,
+		ssi_video_params_t &params);
+	bool forward(ssi_stream_t &stream,
+		ssi_size_t &class_index,
 		ssi_real_t &class_prob,
 		ssi_real_t &confidence);
 	bool forward_probs (ssi_stream_t &stream,
 		ssi_size_t class_num,
 		ssi_real_t *class_probs,
 		ssi_real_t &confidence);
+	bool forward_probs(ssi_size_t n_streams,
+		ssi_stream_t **streams,
+		ssi_size_t n_probs,
+		ssi_real_t *probs,
+		ssi_real_t &confidence,
+		ssi_video_params_t params);
 	bool forward (ssi_size_t num,
 		ssi_stream_t **streams,
 		ssi_size_t &class_index,
 		ssi_real_t &confidence);
+	bool forward(ssi_size_t num,
+		ssi_stream_t **streams,
+		ssi_size_t &class_index,
+		ssi_real_t &confidence, 
+		ssi_video_params_t &params);
+
 	bool forward_probs (ssi_size_t num,
 		ssi_stream_t **streams,
 		ssi_size_t class_num,
