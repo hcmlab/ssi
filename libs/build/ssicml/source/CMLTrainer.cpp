@@ -598,10 +598,7 @@ namespace ssi
 					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
 					{
 
-						if (cooperative && !(it->discrete.from > last_to_time))
-						{
-							continue;
-						}
+					
 						ssi_size_t from = ssi_cast(ssi_size_t, it->discrete.from * stream.sr + 0.5);
 						ssi_size_t to = ssi_cast(ssi_size_t, it->discrete.to * stream.sr + 0.5);
 
@@ -614,6 +611,11 @@ namespace ssi
 						cv::Mat frame;
 						cap >> frame; // get the next frame from video
 						cv::cvtColor(frame, frame, CV_BGR2RGB);
+						if (cooperative && !(it->discrete.from > last_to_time))
+						{
+							it++;
+							continue;
+						}
 			
 						int size = frame.total() * frame.channels();
 						//ssi_print("%d\n", size);

@@ -958,7 +958,7 @@ bool Trainer::train_h (ISamples &samples_raw) {
 
 	if (samples->getSize() == 0)
 	{
-		ssi_wrn("Empty Samplelist: Expecting external training component. No internal balancing or error handling.")
+		ssi_msg(SSI_LOG_LEVEL_BASIC, "Empty Samplelist: Expecting external training component. No internal balancing or error handling.")
 		init_class_names(*samples);
 
 		ssi_msg(SSI_LOG_LEVEL_BASIC, "train '%s' using stream#%02u Samples:%u Classes:%u", _models[0]->getName(), _stream_index, samples->getSize(), samples->getClassSize());
