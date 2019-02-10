@@ -380,6 +380,18 @@ namespace ssi
 		return true;
 	}
 
+	void printProgress(double percentage)
+	{
+		#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+		#define PBWIDTH 60
+
+		int val = (int)(percentage * 100);
+		int lpad = (int)(percentage * PBWIDTH);
+		int rpad = PBWIDTH - lpad;
+		printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+		fflush(stdout);
+	}
+
 	Annotation *CMLTrainer::forward(Trainer *trainer,
 		const ssi_char_t *session,
 		const ssi_char_t *role,
@@ -595,10 +607,13 @@ namespace ssi
 
 					
 					ssi_print("Predicting frames..");
+					cv::Mat frame;
+					ssi_stream_t chunk;
+					ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
 					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
 					{
 
-					
+						
 						ssi_size_t from = ssi_cast(ssi_size_t, it->discrete.from * stream.sr + 0.5);
 						ssi_size_t to = ssi_cast(ssi_size_t, it->discrete.to * stream.sr + 0.5);
 
@@ -608,8 +623,8 @@ namespace ssi
 							continue;
 						}
 
-						cv::Mat frame;
-						cap >> frame; // get the next frame from video
+						
+						cap >> frame;
 						cv::cvtColor(frame, frame, CV_BGR2RGB);
 						if (cooperative && !(it->discrete.from > last_to_time))
 						{
@@ -617,25 +632,24 @@ namespace ssi
 							continue;
 						}
 			
+						printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
 						int size = frame.total() * frame.channels();
-						//ssi_print("%d\n", size);
 						ssi_byte_t *bytes = new ssi_byte_t[size];
 						memcpy(bytes, frame.data, size);
-						ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
+
 						chunk.byte = size;
-						chunk.type = SSI_IMAGE;
 
 						chunk.ptr = bytes;
-						chunk.num = 1;
 						chunk.tot = chunk.num * size;
-						chunk.dim = 1;
-
 						trainer->forward(chunk, index, confidence, video_format);
 	
+						
 						it->discrete.id = class_map[index];
 						it->confidence = confidence;
 						it++;
 	    				delete[] bytes;
+		
+						//ssi_stream_destroy(chunk);
 					}
 				
 					cap.release();
