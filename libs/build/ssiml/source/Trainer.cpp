@@ -852,11 +852,29 @@ bool Trainer::train (ISamples &samples) {
 	
 }
 
+
+
+
 void Trainer::eval(ISamples &strain, ISamples &sdevel, FILE *file, Evaluation::PRINT::List format) {
 
 	train(strain);
 	eval(sdevel, file, format);
 }
+
+
+void Trainer::eval(ISamples &samples, ssi_video_params_t video_format, FILE *file, Evaluation::PRINT::List format) {
+
+	if (!_is_trained)
+	{
+		ssi_wrn("not trained");
+		return;
+	}
+
+	Evaluation eval;
+	eval.eval(this, samples, video_format);
+	eval.print(file, format);
+}
+
 
 void Trainer::eval(ISamples &samples, FILE *file, Evaluation::PRINT::List format) {
 

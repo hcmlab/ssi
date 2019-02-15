@@ -119,6 +119,7 @@ public:
 
 	void eval(ISamples &strain, ISamples &sdevel, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void eval(ISamples &samples, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
+	void eval(ISamples &samples, ssi_video_params_t video_format, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalSplit(ISamples &samples, ssi_real_t split, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalKFold(ISamples &samples, ssi_size_t k, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalLOO(ISamples &samples, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);

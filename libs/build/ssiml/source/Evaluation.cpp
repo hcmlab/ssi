@@ -255,6 +255,12 @@ void Evaluation::eval(Trainer *trainer, ISamples &samples) {
 	eval_h (samples);
 }
 
+
+void Evaluation::eval(Trainer *trainer, ISamples &samples, ssi_video_params_t video_format) {
+	init(trainer->getModelType(), samples, trainer);
+	eval_h(samples, video_format);
+}
+
 void Evaluation::eval_h(ISamples &samples) {
 
 	ssi_real_t confidence = 0.0f;
@@ -336,6 +342,98 @@ void Evaluation::eval_h(ISamples &samples) {
 				_result_vec_reg_ptr++;				
 				_n_classified++;
 			}			
+			else {
+				_n_unclassified++;
+				for (ssi_size_t i = 0; i < n_probs; i++) {
+					*_result_probs_ptr = 0;
+					_result_probs_ptr++;
+				}
+			}
+		}
+	}
+}
+
+void Evaluation::eval_h(ISamples &samples, ssi_video_params_t video_format) {
+
+	ssi_real_t confidence = 0.0f;
+
+	if (_type == IModel::TYPE::CLASSIFICATION)
+	{
+		// walk through sample list and test trainer against each sample
+		samples.reset();
+		const ssi_sample_t *sample = 0;
+		ssi_size_t index, real_index;
+		ssi_size_t n_probs = samples.getClassSize();
+		ssi_real_t *probs = new ssi_real_t[n_probs];
+		ssi_real_t max_probs;
+		while (sample = samples.next()) {
+			real_index = sample->class_id;
+			*_result_vec_ptr = real_index;
+			_result_vec_ptr++;
+			if (real_index != SSI_SAMPLE_GARBAGE_CLASS_ID &&
+				_trainer->forward_probs(sample->num, sample->streams, n_probs, probs, confidence, video_format)) {
+				index = 0;
+				max_probs = probs[0];
+				*_result_probs_ptr = probs[0];
+				_result_probs_ptr++;
+				for (ssi_size_t i = 1; i < n_probs; i++) {
+					*_result_probs_ptr = probs[i];
+					_result_probs_ptr++;
+					if (max_probs < probs[i]) {
+						max_probs = probs[i];
+						index = i;
+					}
+				}
+				*_result_vec_ptr = index;
+				_result_vec_ptr++;
+				_conf_mat_ptr[real_index][index]++;
+				_n_classified++;
+			}
+			else if (real_index != SSI_SAMPLE_GARBAGE_CLASS_ID &&
+				!_allow_unclassified) {
+				index = _default_class_id;
+				*_result_vec_ptr = index;
+				_result_vec_ptr++;
+				_conf_mat_ptr[real_index][index]++;
+				_n_classified++;
+				for (ssi_size_t i = 0; i < n_probs; i++) {
+					*_result_probs_ptr = 0;
+					_result_probs_ptr++;
+				}
+			}
+			else {
+				*_result_vec_ptr = SSI_SAMPLE_GARBAGE_CLASS_ID;
+				_result_vec_ptr++;
+				_n_unclassified++;
+				for (ssi_size_t i = 0; i < n_probs; i++) {
+					*_result_probs_ptr = 0;
+					_result_probs_ptr++;
+				}
+			}
+		}
+
+		delete[] probs;
+
+	}
+	else
+	{
+		// walk through sample list and test trainer against each sample
+		samples.reset();
+		const ssi_sample_t *sample = 0;
+		ssi_size_t n_probs = samples.getClassSize();
+		ssi_real_t *probs = new ssi_real_t[n_probs];
+		while (sample = samples.next()) {
+			if (_trainer->forward_probs(sample->num, sample->streams, n_probs, probs, confidence, video_format)) {
+				*_result_vec_reg_ptr = sample->score;
+				_result_vec_reg_ptr++;
+				for (ssi_size_t i = 0; i < n_probs; i++) {
+					*_result_probs_ptr = probs[i];
+					_result_probs_ptr++;
+				}
+				*_result_vec_reg_ptr = probs[0];
+				_result_vec_reg_ptr++;
+				_n_classified++;
+			}
 			else {
 				_n_unclassified++;
 				for (ssi_size_t i = 0; i < n_probs; i++) {

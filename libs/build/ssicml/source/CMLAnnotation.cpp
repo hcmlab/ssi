@@ -144,7 +144,8 @@ bool CMLAnnotation::Load(Annotation *annotation,
 	const ssi_char_t *session,
 	const ssi_char_t *role,
 	const ssi_char_t *scheme,
-	const ssi_char_t *annotator)
+	const ssi_char_t *annotator,
+	bool externalTraining)
 {
 	ssi_msg_static(SSI_LOG_LEVEL_BASIC, "load annotation '%s'", client->getName());
 	if (ssi_log_level >= SSI_LOG_LEVEL_BASIC)
@@ -186,7 +187,7 @@ bool CMLAnnotation::Load(Annotation *annotation,
 		return false;
 	}
 
-	if (!SetScheme(annotation, &scheme_document))
+	if (!SetScheme(annotation, &scheme_document, externalTraining))
 	{
 		return false;
 	}
@@ -481,7 +482,7 @@ MongoOID *CMLAnnotation::GetOID(MongoClient *client,
 
 bool CMLAnnotation::SetScheme(Annotation *annotation,
 	MongoClient *client,
-	const ssi_char_t *scheme)
+	const ssi_char_t *scheme, bool externalTraining)
 {
 	ssi_msg_static(SSI_LOG_LEVEL_BASIC, "load scheme '%s'", client->getName());
 	if (ssi_log_level >= SSI_LOG_LEVEL_BASIC)
@@ -515,7 +516,9 @@ bool CMLAnnotation::SetScheme(Annotation *annotation,
 		return false;
 	}
 
-	if (!SetScheme(annotation, &scheme_document))
+
+
+	if (!SetScheme(annotation, &scheme_document, externalTraining))
 	{
 		return false;
 	}
@@ -526,7 +529,7 @@ bool CMLAnnotation::SetScheme(Annotation *annotation,
 }
 
 bool CMLAnnotation::SetScheme(Annotation *annotation,
-	MongoDocument *document)
+	MongoDocument *document, bool externalTraining)
 {
 	annotation->release();
 
@@ -547,7 +550,7 @@ bool CMLAnnotation::SetScheme(Annotation *annotation,
 	{
 		std::map<String, ssi_size_t> classes;
 		document->getArray(CMLCons::SCHEME::NAMES[CMLCons::SCHEME::LABELS], CMLVisitorAnnotationScheme(), &classes);
-		if (!annotation->setDiscreteScheme(name, classes))
+		if (!annotation->setDiscreteScheme(name, classes, externalTraining))
 		{
 			ssi_wrn("missing class names '%s'", CMLCons::SCHEME::NAMES[CMLCons::SCHEME::TYPE])
 			return false;

@@ -420,8 +420,9 @@ int main(int argc, char **argv) {
 				if (params.srcurl != 0 && params.srcurl[0] != '\0')
 				{
 					ssi_char_t *depend[2] = {
-						"opencv_ffmpeg310_64.dll",
-						"opencv_world310.dll"
+						"opencv_world310.dll",
+						"opencv_ffmpeg310_64.dll"
+						
 					};
 				
 				for (ssi_size_t i = 0; i < 2; i++)
@@ -1229,6 +1230,7 @@ void train_multi_corpora(params_t &params)
 	CMLTrainer cmltrainer;
 	cmltrainer.init(&client, params.root, params.scheme, corpora[0].stream, params.contextLeft, params.contextRight);
 
+	
 	FilePath stream_fp(corpora[0].stream);
 	if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
 	{
@@ -1310,7 +1312,7 @@ void train(params_t &params)
 	{
 		CMLTrainer cmltrainer;
 		cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
-
+		ssi_video_params_t video_params;
 		for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
 		{
 			FilePath path(it->str());
@@ -1321,7 +1323,7 @@ void train(params_t &params)
 				ssi_print("\n-------------------------------------------\n");
 				ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
 
-				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
+				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, video_params, params.cmlbegintime))
 				{
 					ssi_wrn("ERROR: could not load annotation from database");
 					continue;
@@ -1338,6 +1340,7 @@ void train(params_t &params)
 	{
 		for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
 		{
+			ssi_video_params_t video_params;
 			FilePath path(it->str());
 			const ssi_char_t *session = path.getName();
 
@@ -1349,7 +1352,7 @@ void train(params_t &params)
 				CMLTrainer cmltrainer;
 				cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
 
-				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
+				if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative,  video_params, params.cmlbegintime))
 				{
 					ssi_wrn("ERROR: could not load annotation from database");
 					continue;
@@ -1377,13 +1380,13 @@ void train(params_t &params)
 	}
 }
 
-bool eval_h(params_t &params, Trainer &trainer, CMLTrainer &cmltrainer)
+bool eval_h(params_t &params, Trainer &trainer, CMLTrainer &cmltrainer, ssi_video_params_t video_params)
 {
 	ssi_print("\n-------------------------------------------\n");
 	ssi_print("EVAL '%s'\n\n", params.trainer);
 
-	if (!cmltrainer.eval(&trainer, params.evalpath, params.loso))
-	{
+
+	if (!cmltrainer.eval(&trainer, params.evalpath, params.loso, video_params)){
 		return false;
 	}
 
@@ -1422,9 +1425,10 @@ void eval(params_t &params)
 
 	CMLTrainer cmltrainer;
 	cmltrainer.init(&client, params.root, params.scheme, params.stream, params.contextLeft, params.contextRight);
-
+	ssi_video_params_t video_params;
 	for (StringList::iterator it = sessions.begin(); it != sessions.end(); it++)
 	{
+		
 		FilePath path(it->str());
 		const ssi_char_t *session = path.getName();
 
@@ -1433,15 +1437,15 @@ void eval(params_t &params)
 			ssi_print("\n-------------------------------------------\n");
 			ssi_print("COLLECT SAMPLES '%s.%s.%s.%s->%s'\n\n", session, role->str(), params.scheme, params.annotator, params.stream);
 
-			if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, params.cmlbegintime))
+			if (!cmltrainer.collect(session, role->str(), params.annotator, params.cooperative, video_params, params.cmlbegintime))
 			{
 				ssi_wrn("ERROR: could not load annotation from database");
 				continue;
 			}
 		}
 	}
-
-	if (!eval_h(params, trainer, cmltrainer))
+	
+	if (!eval_h(params, trainer, cmltrainer, video_params))
 	{
 		ssi_wrn("ERROR: evaluation failed");
 	}

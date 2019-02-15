@@ -62,6 +62,19 @@ namespace ssi
 		release();
 	}
 
+	void printProgress(double percentage)
+	{
+		#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+		#define PBWIDTH 60
+
+		int val = (int)(percentage * 100);
+		int lpad = (int)(percentage * PBWIDTH);
+		int rpad = PBWIDTH - lpad;
+		printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+		fflush(stdout);
+	}
+
+
 	bool CMLTrainer::init(MongoClient *client,
 		const ssi_char_t *rootdir,
 		const ssi_char_t *scheme,
@@ -75,7 +88,7 @@ namespace ssi
 		_rootdir = ssi_strcpy(rootdir);
 		FilePath stream_fp(stream);
 
-			_stream = ssi_strcpy(stream_fp.getPathFull());
+		_stream = ssi_strcpy(stream_fp.getPathFull());
 			
 
 		_scheme = ssi_strcpy(scheme);
@@ -84,11 +97,27 @@ namespace ssi
 		_samples = new SampleList();
 
 		Annotation anno;
-		if (!CMLAnnotation::SetScheme(&anno, client, _scheme))
-		{
-			ssi_wrn("scheme not found '%s'", _scheme);
-			return false;
+
+		bool externalTraining = false;
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!CMLAnnotation::SetScheme(&anno, client, _scheme))
+			{
+				ssi_wrn("scheme not found '%s'", _scheme);
+				return false;
+			}
 		}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
+		{	
+			 //Don't use SSI ordering of class ids
+			externalTraining = true;
+			if (!CMLAnnotation::SetScheme(&anno, client, _scheme, externalTraining))
+			{
+				ssi_wrn("scheme not found '%s'", _scheme);
+				return false;
+			}
+		}
+
+		
 
 		if (anno.getScheme()->type != SSI_SCHEME_TYPE::DISCRETE
 			&& anno.getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
@@ -99,11 +128,12 @@ namespace ssi
 
 		if (anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 		{
-			anno.addClass(SSI_SAMPLE_REST_CLASS_NAME, _rest_class_id);
+			anno.addClass(SSI_SAMPLE_REST_CLASS_NAME, _rest_class_id, externalTraining);
 			for (ssi_size_t i = 0; i < anno.getScheme()->discrete.n; i++)
 			{
 				_samples->addClassName(anno.getScheme()->discrete.names[i]);
 			}
+			
 		}
 		else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
@@ -123,7 +153,9 @@ namespace ssi
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
 		bool cooperative,
-		double cmlbegintime = 0)
+		ssi_video_params_t &video_params,
+		double cmlbegintime = 0
+		)
 	{
 		if (!_ready)
 		{
@@ -140,16 +172,83 @@ namespace ssi
 			return false;
 		}
 
+
+
+		bool externalTraining = false;
 		ssi_stream_t stream;
-		if (!FileTools::ReadStreamFile(path, stream))
-		{
-			ssi_wrn("could not load stream '%s'", path);
-			return false;
+		FilePath stream_fp(path);
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!FileTools::ReadStreamFile(path, stream))
+			{
+				ssi_wrn("could not load stream '%s'", path);
+				return 0;
+			}
+			ssi_video_params(video_params, 0, 0, 0, 0, 0);
 		}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
+		{
+
+
+
+			try {
+				ssi_print("%s\n", path);
+				cv::VideoCapture cap(path);
+				if (!cap.isOpened())
+					ssi_wrn("Can not open Video file (Maybe opencv_ffmpeg310_x64.dll or mp4 codec is missing.)");
+
+				double fps = cap.get(CV_CAP_PROP_FPS);
+				double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+				double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+				double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+			    ssi_video_params(video_params, width, height, fps, 8, 3);
+				
+
+				cv::Mat frame;
+				int size = ssi_video_size(video_params);
+				ssi_stream_init(stream, num, 1, size, SSI_IMAGE, fps);
+				stream.num = 0;
+				stream.tot = 0;
+				stream.byte = size;
+				ssi_stream_t temp;
+				ssi_stream_init(temp, 1, 1, size, SSI_IMAGE, fps, 0);
+				externalTraining = true;
+				//ssi_stream_init(temp, 1, 1, size, SSI_IMAGE, fps);
+				for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+				{
+				
+					
+					cap >> frame;
+					
+					temp.byte = size;
+					temp.tot = temp.byte * 1;
+
+					cv::cvtColor(frame, frame, CV_BGR2RGB);
+					printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
+					
+					ssi_byte_t *bytes = new ssi_byte_t[size];
+					memcpy(bytes, frame.data, size);
+					temp.ptr = bytes;
+				    ssi_stream_cat(temp, stream);
+					
+					delete[] bytes;
+					
+				}
+				//ssi_stream_destroy(temp);
+
+
+				cap.release();
+
+			}
+			catch (cv::Exception& e) {
+				ssi_print("%s", e.msg);
+				return false;
+			}
+		}
+
 		ssi_time_t frame = 1 / stream.sr;
 
 		Annotation anno;
-		if (!CMLAnnotation::Load(&anno, _client, session, role, _scheme, annotator))
+		if (!CMLAnnotation::Load(&anno, _client, session, role, _scheme, annotator, externalTraining))
 		{
 			ssi_wrn("annotation not found '%s.%s.%s.%s'", session, role, _scheme, annotator);
 			return false;
@@ -171,8 +270,12 @@ namespace ssi
 				anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 			}
 
+
+
+
+
 			ssi_time_t duration = stream.num / stream.sr - frame;
-			anno.addClass(_rest_class_id, SSI_SAMPLE_REST_CLASS_NAME);
+			anno.addClass(_rest_class_id, SSI_SAMPLE_REST_CLASS_NAME, externalTraining);
 			if (!anno.convertToFrames(frame, SSI_SAMPLE_REST_CLASS_NAME, duration))
 			{
 				return false;
@@ -328,7 +431,7 @@ namespace ssi
 
 	
 
-	bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval)
+	bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval, ssi_video_params_t video_params)
 	{
 		if (!trainer->isTrained())
 		{
@@ -350,47 +453,62 @@ namespace ssi
 		}
 
 		ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
-		if (_samples->getSize(rest_index) == 0)
+
+	
+		if (video_params.numOfChannels == 0)
 		{
-			ISSelectClass select(_samples);
-			select.setSelectionInverse(rest_index);
-			ISFlatSample flat(&select);
-			if (crossval)
+
+			if (_samples->getSize(rest_index) == 0)
 			{
-				trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				ISSelectClass select(_samples);
+				select.setSelectionInverse(rest_index);
+				ISFlatSample flat(&select);
+
+				
+				if (crossval)
+				{
+					trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				}
+				else
+				{
+					trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				}
 			}
 			else
 			{
-				trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				ISFlatSample flat(_samples);
+				if (crossval)
+				{
+					trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				}
+				else
+				{
+					trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				}
 			}
 		}
+
 		else
 		{
-			ISFlatSample flat(_samples);
-			if (crossval)
-			{
-				trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+			try {
+			
+				ISFlatSample flat(_samples);
+				trainer->eval(flat, video_params, fp, Evaluation::PRINT::CSV);
+				
 			}
-			else
-			{
-				trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+			catch (cv::Exception& e) {
+				ssi_print("%s", e.msg);
+				return false;
 			}
-		}
+
+
+		}//isVideo
+
 
 		return true;
 	}
 
-	void printProgress(double percentage)
-	{
-		#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-		#define PBWIDTH 60
 
-		int val = (int)(percentage * 100);
-		int lpad = (int)(percentage * PBWIDTH);
-		int rpad = PBWIDTH - lpad;
-		printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
-		fflush(stdout);
-	}
 
 	Annotation *CMLTrainer::forward(Trainer *trainer,
 		const ssi_char_t *session,
@@ -399,6 +517,8 @@ namespace ssi
 		bool cooperative,
 		double cmlbegintime)
 	{
+
+		bool externalTraining = false;
 		if (!_ready)
 		{
 			ssi_wrn("call init() first");
@@ -428,7 +548,7 @@ namespace ssi
 		{
 
 	
-
+		
 		try {
 			ssi_print("%s\n", path);
 			cv::VideoCapture cap(path);
@@ -448,7 +568,7 @@ namespace ssi
 			stream.dim = 1;
 			stream.byte = ssi_video_size(video_format);
 			cap.release();
-			
+			externalTraining = true;
 		
 
 		}
@@ -503,7 +623,7 @@ namespace ssi
 		}
 		else
 		{
-			if (!CMLAnnotation::SetScheme(anno, _client, _scheme))
+			if (!CMLAnnotation::SetScheme(anno, _client, _scheme, externalTraining))
 			{
 				ssi_wrn("scheme not found '%s'", _scheme);
 				return 0;
