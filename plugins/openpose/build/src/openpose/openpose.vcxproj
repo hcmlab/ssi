@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>openpose</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\libs\build\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;$(CUDA_PATH)\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>OP_EXPORTS;BOOST_ALL_NO_LIB;USE_CAFFE;USE_CUDA;CMAKE_INTDIR="Debug";openpose_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;OP_EXPORTS;BOOST_ALL_NO_LIB;USE_CAFFE;USE_CUDA;CMAKE_INTDIR=\"Debug\";openpose_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\windows\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\windows\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>$(CUDA_PATH)\lib\x64\cudart_static.lib;..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_world310d.lib;..\..\..\3rdparty\windows\caffe3rdparty\lib\gflagsd.lib;..\..\..\3rdparty\windows\caffe3rdparty\lib\glogd.lib;..\..\..\3rdparty\windows\caffe\lib\caffe.lib;..\..\..\3rdparty\windows\caffe\lib\caffeproto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>./Debug/openposed.lib</ImportLibrary>
+      <ProgramDataBaseFile>../../$(Platform)/$(Configuration)/openposed.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\libs\build\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;$(CUDA_PATH)\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;OP_EXPORTS;BOOST_ALL_NO_LIB;USE_CAFFE;USE_CUDA;CMAKE_INTDIR="Release";openpose_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;OP_EXPORTS;BOOST_ALL_NO_LIB;USE_CAFFE;USE_CUDA;CMAKE_INTDIR=\"Release\";openpose_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\windows\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\3rdparty\windows\opencv\include;..\..\..\3rdparty\windows\caffe\include;..\..\..\3rdparty\windows\caffe\include2;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>$(CUDA_PATH)\lib\x64\cudart_static.lib;..\..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_world310.lib;..\..\..\3rdparty\windows\caffe3rdparty\lib\gflags.lib;..\..\..\3rdparty\windows\caffe3rdparty\lib\glog.lib;..\..\..\3rdparty\windows\caffe\lib\caffe.lib;..\..\..\3rdparty\windows\caffe\lib\caffeproto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>./Release/openpose.lib</ImportLibrary>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDataBaseFile>../../$(Platform)/$(Configuration)/openpose.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\face\$(Configuration)\openpose_generated_renderFace.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\hand\$(Configuration)\openpose_generated_renderHand.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\net\$(Configuration)\openpose_generated_maximumBase.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\net\$(Configuration)\openpose_generated_nmsBase.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\net\$(Configuration)\openpose_generated_resizeAndMergeBase.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\pose\$(Configuration)\openpose_generated_bodyPartConnectorBase.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\pose\$(Configuration)\openpose_generated_renderPose.cu.obj" />
+    <Object Include="..\..\..\build\src\openpose\CMakeFiles\openpose.dir\tracking\$(Configuration)\openpose_generated_pyramidalLK.cu.obj" />
+    <ClCompile Include="..\..\..\src\openpose\3d\cameraParameterReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\3d\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/3d/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\3d\jointAngleEstimation.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\3d\poseTriangulation.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\calibration\cameraParameterEstimation.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\calibration\gridPatternFunctions.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\array.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\cvMatToOpInput.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\cvMatToOpOutput.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\datum.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/core/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\core\gpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\keepTopNPeople.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\keypointScaler.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\opOutputToCvMat.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\point.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\rectangle.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\renderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\core\scaleAndSizeExtractor.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/face/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\face\faceDetector.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceDetectorOpenCV.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceExtractorCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceExtractorNet.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceCpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceGpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\faceRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\face\renderFace.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\bvhSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\cocoJsonSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/filestream/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\filestream\fileSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\fileStream.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\heatMapSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\imageSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\jsonOfstream.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\keypointSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\peopleJsonSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\udpSender.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\filestream\videoSaver.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gpu\cuda.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gpu\gpu.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gpu\opencl.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gui\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/gui/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\gui\frameDisplayer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gui\gui.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gui\guiAdam.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gui\gui3D.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\gui\guiInfoAdder.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/hand/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\hand\handDetector.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handDetectorFromTxt.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handExtractorCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handExtractorNet.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handCpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handGpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\handRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\hand\renderHand.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\maximumBase.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\maximumCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\netCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\nmsBase.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\nmsBaseCL.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\nmsCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\resizeAndMergeBase.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\resizeAndMergeBaseCL.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\net\resizeAndMergeCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\bodyPartConnectorBase.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\bodyPartConnectorCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/pose/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\pose\poseCpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseExtractor.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseExtractorCaffe.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseExtractorNet.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseGpuRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseParameters.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseParametersRender.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\poseRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\pose\renderPose.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/producer/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\producer\flirReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\imageDirectoryReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\ipCameraReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\producer.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\spinnakerWrapper.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\videoCaptureReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\videoReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\producer\webcamReader.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\thread\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/thread/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\tracking\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/tracking/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\tracking\personIdExtractor.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\tracking\personTracker.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\tracking\pyramidalLK.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\errorAndLog.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\fileSystem.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\flagsToOpenPose.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\keypoint.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\openCv.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\profiler.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\utilities\string.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\defineTemplates.cpp">
+      <ObjectFileName>$(IntDir)/wrapper/defineTemplates.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperAuxiliary.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructExtra.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructFace.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructHand.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructInput.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructOutput.cpp" />
+    <ClCompile Include="..\..\..\src\openpose\wrapper\wrapperStructPose.cpp" />
+    <ClInclude Include="..\..\..\include\openpose\3d\cameraParameterReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\3d\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\3d\poseTriangulation.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\3d\wPoseTriangulation.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\array.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\common.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\cvMatToOpInput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\cvMatToOpOutput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\datum.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\gpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\keepTopNPeople.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\keypointScaler.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\macros.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\opOutputToCvMat.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\point.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\rectangle.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\renderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\scaleAndSizeExtractor.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wCvMatToOpInput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wCvMatToOpOutput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wKeepTopNPeople.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wKeypointScaler.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wOpOutputToCvMat.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\core\wScaleAndSizeExtractor.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceCpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceDetector.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceDetectorOpenCV.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceExtractorNet.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceExtractorCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceGpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceParameters.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\faceRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\face\renderFace.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\cocoJsonSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\fileSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\fileStream.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\heatMapSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\imageSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\jsonOfstream.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\keypointSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\peopleJsonSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\filestream\videoSaver.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gpu\cl2.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gpu\cuda.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gpu\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gpu\gpu.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gpu\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\frameDisplayer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\gui.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\gui3D.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\guiInfoAdder.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\gui\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handCpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handDetector.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handDetectorFromTxt.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handExtractorNet.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handExtractorCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handGpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handParameters.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\handRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\hand\renderHand.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\maximumBase.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\maximumCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\net.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\netCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\nmsBase.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\nmsCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\resizeAndMergeBase.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\net\resizeAndMergeCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\bodyPartConnectorBase.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\bodyPartConnectorCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseCpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseExtractor.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseExtractorNet.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseExtractorCaffe.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseGpuRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseParameters.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseParametersRender.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\poseRenderer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\pose\renderPose.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\datumProducer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\flirReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\imageDirectoryReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\ipCameraReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\producer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\spinnakerWrapper.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\videoCaptureReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\producer\videoReader.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\priorityQueue.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\queue.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\queueBase.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\subThread.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\subThreadNoQueue.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\subThreadQueueIn.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\subThreadQueueInOut.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\subThreadQueueOut.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\thread.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\threadManager.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\worker.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\workerConsumer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\thread\workerProducer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\check.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\enumClasses.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\errorAndLog.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\fastMath.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\fileSystem.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\flagsToOpenPose.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\keypoint.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\openCv.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\pointerContainer.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\profiler.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\standard.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\utilities\string.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\headers.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapper.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperAuxiliary.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperStructFace.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperStructHand.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperStructInput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperStructOutput.hpp" />
+    <ClInclude Include="..\..\..\include\openpose\wrapper\wrapperStructPose.hpp" />
+    <None Include="..\..\..\include\openpose\gpu\cuda.hu" />
+    <None Include="..\..\..\include\openpose\utilities\render.hu" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

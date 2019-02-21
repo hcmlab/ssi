@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssitheeyetribe" />
+	</register>
+	
+	<gate open="false">
+		<execute name="C:\\progra~2\\EyeTribe\\Server\\EyeTribe.exe" args="" type="pre" wait="0"/>
+		<execute name="C:\\progra~2\\EyeTribe\\Client\\EyeTribeUIWin.exe" args="" type="pre" wait="0"/>	
+		<execute name="taskkill" args="/IM EyeTribeUIWin.exe" type="post" wait="0"/>
+		<execute name="taskkill" args="/IM EyeTribe.exe" type="post" wait="0"/>	
+	</gate>
+
+	<!-- camera sensor -->
+	<sensor create="TheEyeTribe">
+		<output channel="gazeraw" pin="gazeraw"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" size="0.1" type="3">
+		<input pin="gazeraw" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
