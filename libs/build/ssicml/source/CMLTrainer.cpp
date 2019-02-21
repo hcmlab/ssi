@@ -233,7 +233,7 @@ namespace ssi
 					delete[] bytes;
 					
 				}
-				//ssi_stream_destroy(temp);
+				ssi_stream_destroy(temp);
 
 
 				cap.release();
@@ -732,8 +732,7 @@ namespace ssi
 					ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
 					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
 					{
-
-						
+					
 						ssi_size_t from = ssi_cast(ssi_size_t, it->discrete.from * stream.sr + 0.5);
 						ssi_size_t to = ssi_cast(ssi_size_t, it->discrete.to * stream.sr + 0.5);
 
@@ -745,13 +744,20 @@ namespace ssi
 
 						
 						cap >> frame;
+						
+						//cv::imwrite("Imagebefore.png", frame);
 						cv::cvtColor(frame, frame, CV_BGR2RGB);
+						//cv::imwrite("Image.png", frame);
+						
+
 						if (cooperative && !(it->discrete.from > last_to_time))
 						{
 							it++;
 							continue;
 						}
 			
+						
+
 						printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
 						int size = frame.total() * frame.channels();
 						ssi_byte_t *bytes = new ssi_byte_t[size];

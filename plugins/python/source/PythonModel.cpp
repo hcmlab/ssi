@@ -117,14 +117,39 @@ bool PythonModel::train(ISamples &samples,
 	return _isTrained;
 }
 
+void PythonModel::setMetaData(ssi_size_t size, const void *meta) {
+
+	if (sizeof(_format_in) != size)
+	{
+		ssi_err("meta data does not describe image format");
+	}
+
+	if (!_helper)
+	{
+		initHelper();
+	}
+
+	memcpy(&_format_in, meta, size);
+	_has_meta_data = true;
+
+	ssi_msg(SSI_LOG_LEVEL_BASIC, "format of input image '%dx%dx%dx%d'", _format_in.widthInPixels, _format_in.heightInPixels, _format_in.numOfChannels, _format_in.depthInBitsPerChannel / 8)
+
+	_helper->setImageFormatIn(_format_in);
+};
+
+
 bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence) {
 	
 	if (!_helper)
 	{
 		initHelper();
 	}
+	if (_has_meta_data)
+	{
+		return _helper->forward(stream, n_probs, probs, confidence, _format_in);
+	}
 
-	return _helper->forward(stream, n_probs, probs, confidence);
+	else return _helper->forward(stream, n_probs, probs, confidence);
 }
 
 
@@ -134,7 +159,7 @@ bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *
 	{
 		initHelper();
 	}
-
+	_helper->setImageFormatIn(params);
 	return _helper->forward(stream, n_probs, probs, confidence, params);
 }
 

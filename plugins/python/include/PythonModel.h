@@ -70,6 +70,8 @@ public:
 	bool save(const ssi_char_t *filepath);
 	bool load(const ssi_char_t *filepath);
 
+	void setMetaData(ssi_size_t size, const void *meta);
+
 	IModel::TYPE::List getModelType();
 	ssi_size_t getClassSize() { return _n_classes; };
 	ssi_size_t getStreamDim() { return _n_features; };
@@ -92,6 +94,8 @@ protected:
 	PythonHelper *_helper;
 
 	bool _isTrained;
+	bool _has_meta_data;
+	ssi_video_params_t _format_in;
 };
 
 }
