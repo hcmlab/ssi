@@ -1,0 +1,59 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dlls", "dlls", "{7E2B631D-0334-422B-83C3-4093B38D8145}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.v14.vcxproj", "{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}"
+	ProjectSection(ProjectDependencies) = postProject
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1} = {28FE5189-D6B9-45F1-8123-24BC8E484BE1}
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9} = {82AED8F9-3E7A-31F8-B142-D4482BFA60E9}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{D0B7872D-7E96-478D-BE05-AF09723127C9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openpose", "src\openpose\openpose.vcxproj", "{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openpose", "dlls\op.v14.vcxproj", "{28FE5189-D6B9-45F1-8123-24BC8E484BE1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.ActiveCfg = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x64.Build.0 = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Debug|x86.ActiveCfg = Debug|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.ActiveCfg = Release|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x64.Build.0 = Release|x64
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889}.Release|x86.ActiveCfg = Release|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Debug|x64.ActiveCfg = Debug|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Debug|x64.Build.0 = Debug|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Debug|x86.ActiveCfg = Debug|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Release|x64.ActiveCfg = Release|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Release|x64.Build.0 = Release|x64
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9}.Release|x86.ActiveCfg = Release|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Debug|x64.ActiveCfg = Debug|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Debug|x64.Build.0 = Debug|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Debug|x86.ActiveCfg = Debug|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Release|x64.ActiveCfg = Release|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Release|x64.Build.0 = Release|x64
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1}.Release|x86.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EDBFF262-7A6C-4003-9BC1-3FA9D09E4889} = {8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}
+		{82AED8F9-3E7A-31F8-B142-D4482BFA60E9} = {D0B7872D-7E96-478D-BE05-AF09723127C9}
+		{28FE5189-D6B9-45F1-8123-24BC8E484BE1} = {7E2B631D-0334-422B-83C3-4093B38D8145}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE6C3426-50F1-4DD9-B287-3E12136E4A20}
+	EndGlobalSection
+EndGlobal

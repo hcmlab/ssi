@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="camera" />		
+		<load name="graphic" />	
+		<load name="openpose" />		
+		<load name="ioput" />
+	</register>	
+	
+	<sensor create="Camera" option="camera" flip="true" fps="1">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+		
+	<transformer create="Openpose:openpose" useCPU="false" modelFolder="..\models\">
+		<input pin="video" frame="1"/>
+		<output pin="openpose"/>
+	</transformer>
+	
+	<!-- <consumer create="FileWriter:writer" path="openpose"> -->
+		<!-- <input pin="openpose" frame="10"/> -->
+	<!-- </consumer> -->
+	
+	<transformer create="OpenposePainter:painter" useCPU="false" >
+		<input pin="video;openpose" frame="1"/>		
+		<output pin="video_openpose"/>
+	</transformer>
+	
+	<consumer create="VideoPainter:video" flip="false">
+		<input pin="video_openpose" frame="1"/>
+	</consumer>
+		
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,800">console</area>
+		<area pos="400,0,640,480">video*</area>		
+		<area pos="400,480,640,320">plot*</area>	
+	</object>
+		
+</pipeline>
