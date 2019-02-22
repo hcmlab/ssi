@@ -1,0 +1,24 @@
+------------------------------------------------------------
+	openpose Plugin // Social Signal Interpretation (SSI)
+------------------------------------------------------------
+
+(c) University of Augsburg
+	Lab for Human Centered Multimedia
+	support@openssi.net
+	http://openssi.net
+
+	Published under GNU General Public License 
+	see also LICENSE
+	
+------------------------------------------------------------
+	Credits
+------------------------------------------------------------
+
+	openpose:
+	https://github.com/TadasBaltrusaitis/openpose
+	see LICENSE.openpose
+	
+------------------------------------------------------------
+	Bug report to support@openssi.net
+------------------------------------------------------------
+To use the openpose plugin first run the getModels.sh (./models/.getModels.sh) script for downloading the needed models. 

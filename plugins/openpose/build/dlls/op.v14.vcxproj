@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{28FE5189-D6B9-45F1-8123-24BC8E484BE1}</ProjectGuid>
+    <RootNamespace>ssi</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>openpose</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ssi$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ssi$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\opencv\include;..\..\3rdparty\windows\caffe\include;..\..\3rdparty\windows\caffe\include2;$(CUDA_PATH)\include;..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <CompileAs>Default</CompileAs>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>..\src\openpose\Debug\openposed.lib;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_world310d.lib;..\..\3rdparty\windows\caffe3rdparty\lib\gflagsd.lib;..\..\3rdparty\windows\caffe3rdparty\lib\glogd.lib;..\..\3rdparty\windows\caffe\lib\caffe.lib;..\..\3rdparty\windows\caffe\lib\caffeproto.lib;$(CUDA_PATH)\lib\x64\cudart_static.lib;ssid.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>
+      </SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\3rdparty\windows\caffe\bin\*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</Command>
+    </PreBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\opencv\include;..\..\3rdparty\windows\caffe\include;..\..\3rdparty\windows\caffe\include2;$(CUDA_PATH)\include;..\..\..\3rdparty\windows\caffe3rdparty\include\boost-1_61;..\..\3rdparty\windows\caffe3rdparty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>..\src\openpose\Release\openpose.lib;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_world310.lib;..\..\3rdparty\windows\caffe3rdparty\lib\gflags.lib;..\..\3rdparty\windows\caffe3rdparty\lib\glog.lib;..\..\3rdparty\windows\caffe\lib\caffe.lib;..\..\3rdparty\windows\caffe\lib\caffeproto.lib;$(CUDA_PATH)\lib\x64\cudart_static.lib;ssi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\apigen -index -dir ..\..\..\..\docs\api $(TargetFileName)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy /D /I /Y ..\..\..\..\libs\build\opencv\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\opencv_*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\
+xcopy /D /I /Y ..\..\3rdparty\windows\caffe\bin\*.dll ..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ExportMain.cpp" />
+    <ClCompile Include="..\..\source\Openpose.cpp" />
+    <ClCompile Include="..\..\source\OpenposeConverter.cpp" />
+    <ClCompile Include="..\..\source\OpenposeHelper.cpp" />
+    <ClCompile Include="..\..\source\OpenposePainter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Openpose.h" />
+    <ClInclude Include="..\..\include\OpenposeConverter.h" />
+    <ClInclude Include="..\..\include\OpenposeHelper.h" />
+    <ClInclude Include="..\..\include\OpenposeModelInfos.h" />
+    <ClInclude Include="..\..\include\OpenposePainter.h" />
+    <ClInclude Include="..\..\include\ssiopenpose.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\openpose\openpose.vcxproj">
+      <Project>{82aed8f9-3e7a-31f8-b142-d4482bfa60e9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
