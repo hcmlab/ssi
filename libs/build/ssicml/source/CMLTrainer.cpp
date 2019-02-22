@@ -212,7 +212,6 @@ namespace ssi
 				ssi_stream_t temp;
 				ssi_stream_init(temp, 1, 1, size, SSI_IMAGE, fps, 0);
 				externalTraining = true;
-				//ssi_stream_init(temp, 1, 1, size, SSI_IMAGE, fps);
 				for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
 				{
 				
@@ -222,7 +221,6 @@ namespace ssi
 					temp.byte = size;
 					temp.tot = temp.byte * 1;
 
-					cv::cvtColor(frame, frame, CV_BGR2RGB);
 					printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
 					
 					ssi_byte_t *bytes = new ssi_byte_t[size];
@@ -744,11 +742,6 @@ namespace ssi
 
 						
 						cap >> frame;
-						
-						//cv::imwrite("Imagebefore.png", frame);
-						cv::cvtColor(frame, frame, CV_BGR2RGB);
-						//cv::imwrite("Image.png", frame);
-						
 
 						if (cooperative && !(it->discrete.from > last_to_time))
 						{

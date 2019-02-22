@@ -1337,7 +1337,6 @@ bool Trainer::forward_probs (ssi_size_t n_streams,
 			if (streams[n_stream] && !ssi_stream_compare (*streams[n_stream], _stream_refs[n_stream])) {
 				if (!_preventWarningsSpam)
 				{
-					ssi_wrn("prediction might fail if not handled externally because stream #%u not compatible", n_stream);
 					ssi_print("received stream:\n");
 					ssi_stream_info(*streams[n_stream], ssiout);
 					ssi_print("expected stream:\n");
