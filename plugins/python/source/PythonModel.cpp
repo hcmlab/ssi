@@ -198,8 +198,10 @@ bool PythonModel::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *
 
 		_format_in.depthInBitsPerChannel = 8;
 		_format_in.numOfChannels = 3;
+		_format_in.framesPerSecond = stream.sr;
+
 		_helper->setImageFormatIn(_format_in);
-		_has_meta_data = true;
+		
 
 		return _helper->forward(stream, n_probs, probs, confidence, _format_in);
 	}
