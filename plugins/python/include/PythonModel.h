@@ -30,13 +30,14 @@
 #define SSI_PYTHON_MODEL_H
 
 #include "base/IModel.h"
+#include "base/IComponent.h"
 #include "PythonOptions.h"
 
 namespace ssi {
 
 class PythonHelper;
 
-class PythonModel : public IModel {
+class PythonModel : public IModel, public IComponent {
 
 public:
 
