@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 ssi_char_t string[SSI_MAX_CHAR];
 
 void ex_facecrop();
-void ex_facecrop_offline();
+void ex_facecrop_offline(int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
 
@@ -66,10 +66,9 @@ int main(int argc, char *argv[]) {
 		Factory::RegisterDLL("ffmpeg");
 
 		//ex_facecrop();
-		ex_facecrop_offline();
+		ex_facecrop_offline(argc, argv);
 		
-		ssi_print("\n\n\tpress a key to quit\n");
-		getchar();
+		
 
 		Factory::Clear();
 
@@ -132,24 +131,28 @@ void ex_facecrop() {
 	frame->Clear();
 	board->Clear();
 
+	ssi_print("\n\n\tpress a key to quit\n");
+	getchar();
+
 }
 
-void ex_facecrop_offline() {
+void ex_facecrop_offline(int argc, char *argv[]) {
 
-	const ssi_char_t *filename = "video.mp4";
+	if (argc == 3)
+	{
 
 	FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, true);
-	reader->getOptions()->setUrl(filename);
+	reader->getOptions()->setUrl(argv[1]);
 	reader->getOptions()->bestEffort = true;
 
 
 	FFMPEGWriter *writer = ssi_create(FFMPEGWriter, 0, true);
-	writer->getOptions()->setUrl("video_out.mp4");
+	writer->getOptions()->setUrl(argv[2]);
 	
 
 	Facecrop *crop = ssi_create(Facecrop, 0, true);
 	crop->getOptions()->setAddress("face@video");
-	crop->getOptions()->setDependenciesPath("../dependencies/");
+	crop->getOptions()->setDependenciesPath(".\\");
 	crop->getOptions()->color_code = false;
 	crop->getOptions()->resize_offset = 25;
 	//ITransformable *crop_t = frame->AddTransformer(camera_p, crop, "1");
@@ -166,6 +169,13 @@ void ex_facecrop_offline() {
 	Sleep(1000);
 	reader->stop();
 	reader->disconnect();
+
+	}
+
+	else {
+		printf("Add InputPath OutputPath to command line arguments");
+	}
+
 
 
 }
