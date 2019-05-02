@@ -414,7 +414,7 @@ int main(int argc, char **argv) {
 			ssi_print("download source=%s\ndownload target=%s\n\n", params.srcurl, exedir);
 			Factory::SetDownloadDirs(params.srcurl, exedir);
 
-			if (IsVideoFile(params.stream))
+			if (params.stream != NULL && IsVideoFile(params.stream))
 			{
 
 				if (params.srcurl != 0 && params.srcurl[0] != '\0')
@@ -1081,6 +1081,8 @@ void mapClassNames(params_t &params)
 		}
 	}
 
+	to_unique.remove("REST");
+
 	if (from.size() != to.size())
 	{
 		ssi_wrn("ERROR: number of classes differ");
@@ -1125,7 +1127,7 @@ void mapClassNames(params_t &params)
 				for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
 				{
 					map<String, String>::iterator pos = mapping.find(String(anno.getClassName(it->discrete.id)));
-					if (pos != mapping.end())
+					if (pos != mapping.end() && strcmp(pos->second.str(), "REST") != 0 )
 					{
 						anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);
 					}
@@ -1457,44 +1459,57 @@ bool forward_h(params_t &params, MongoClient &client, Trainer &trainer, CMLTrain
 	ssi_print("FORWARD '%s->%s.%s.%s'\n\n", params.stream, session, params.scheme, params.annotator);
 
 	Annotation *anno = cmltrainer.forward(&trainer, session, role, params.annotator, params.cooperative, params.cmlbegintime);
- 	if (!anno)
-	{
+	try {
+		if (!anno)
+		{
+			
+			ssi_print("Could not load anno");
+			getchar();
+			return false;
+		}
+
+		if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
+		{
+			anno->packClass(params.label_mingap);
+			if (params.label_mindur > 0)
+			{
+				anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
+			}
+			anno->packClass(params.label_mingap);
+		}
+
+		if (params.confidence >= 0)
+		{
+			anno->setConfidence((ssi_real_t)params.confidence);
+		}
+
+		if (params.annotator_new[0] != '\0')
+		{
+			if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator_new, params.finished, params.locked))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator, params.finished, params.locked))
+			{
+				return false;
+			}
+		}
+
+		delete anno;
+
+		return true;
+	}
+
+	catch (Exception e) {
+
+		ssi_print("%s", e);
+		getchar();
 		return false;
 	}
-
-	if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
-	{
-		anno->packClass(params.label_mingap);
-		if (params.label_mindur > 0)
-		{
-			anno->filter(params.label_mindur, Annotation::FILTER_PROPERTY::DURATION, Annotation::FILTER_OPERATOR::GREATER);
-		}
-		anno->packClass(params.label_mingap);
-	}
-
-	if (params.confidence >= 0)
-	{
-		anno->setConfidence((ssi_real_t)params.confidence);
-	}
-
-	if (params.annotator_new[0] != '\0')
-	{
-		if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator_new, params.finished, params.locked))
-		{
-			return false;
-		}
-	}
-	else
-	{
-		if (!CMLAnnotation::Save(anno, &client, session, role, params.scheme, params.annotator, params.finished, params.locked))
-		{
-			return false;
-		}
-	}
-
-	delete anno;
-
-	return true;
+ 
 }
 
 void forward(params_t &params)
