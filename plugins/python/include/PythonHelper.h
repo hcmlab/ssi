@@ -135,6 +135,9 @@ public:
 	bool getModelType(IModel::TYPE::List &type);
 	bool train(IModel::TYPE::List type, ISamples &samples, ssi_size_t stream_index);
 	bool forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence);
+	bool forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence, ssi_video_params_t params);
+
+	
 	bool save(const ssi_char_t *filepath);
 	bool load(const ssi_char_t *filepath);
 

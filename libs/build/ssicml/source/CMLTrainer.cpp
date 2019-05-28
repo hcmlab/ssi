@@ -33,6 +33,12 @@
 #include "ISSelectClass.h"
 #include "Trainer.h"
 #include "ioput/file/FileTools.h"
+#include "ffmpeg/include/ssiffmpeg.h"
+#include "ioput/include/ssiioput.h"
+#include "ssiml.h"
+#include "ISTransform.h"
+#include "ssi.h"
+#include "ssiocv.h"
 
 namespace ssi
 {
@@ -56,6 +62,19 @@ namespace ssi
 		release();
 	}
 
+	void printProgress(double percentage)
+	{
+		#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+		#define PBWIDTH 60
+
+		int val = (int)(percentage * 100);
+		int lpad = (int)(percentage * PBWIDTH);
+		int rpad = PBWIDTH - lpad;
+		printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+		fflush(stdout);
+	}
+
+
 	bool CMLTrainer::init(MongoClient *client,
 		const ssi_char_t *rootdir,
 		const ssi_char_t *scheme,
@@ -68,25 +87,37 @@ namespace ssi
 		_client = client;
 		_rootdir = ssi_strcpy(rootdir);
 		FilePath stream_fp(stream);
-		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false))
-		{
-			_stream = ssi_strcpy(stream_fp.getPath());
-		}
-		else
-		{
-			_stream = ssi_strcpy(stream_fp.getPathFull());
-		}
+
+		_stream = ssi_strcpy(stream_fp.getPathFull());
+			
+
 		_scheme = ssi_strcpy(scheme);
 		_leftContext = leftContext;
 		_rightContext = rightContext;
 		_samples = new SampleList();
 
 		Annotation anno;
-		if (!CMLAnnotation::SetScheme(&anno, client, _scheme))
-		{
-			ssi_wrn("scheme not found '%s'", _scheme);
-			return false;
+
+		bool externalTraining = false;
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!CMLAnnotation::SetScheme(&anno, client, _scheme))
+			{
+				ssi_wrn("scheme not found '%s'", _scheme);
+				return false;
+			}
 		}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
+		{	
+			 //Don't use SSI ordering of class ids
+			externalTraining = true;
+			if (!CMLAnnotation::SetScheme(&anno, client, _scheme, externalTraining))
+			{
+				ssi_wrn("scheme not found '%s'", _scheme);
+				return false;
+			}
+		}
+
+		
 
 		if (anno.getScheme()->type != SSI_SCHEME_TYPE::DISCRETE
 			&& anno.getScheme()->type != SSI_SCHEME_TYPE::CONTINUOUS)
@@ -97,11 +128,12 @@ namespace ssi
 
 		if (anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 		{
-			anno.addClass(SSI_SAMPLE_REST_CLASS_NAME, _rest_class_id);
+			anno.addClass(SSI_SAMPLE_REST_CLASS_NAME, _rest_class_id, externalTraining);
 			for (ssi_size_t i = 0; i < anno.getScheme()->discrete.n; i++)
 			{
 				_samples->addClassName(anno.getScheme()->discrete.names[i]);
 			}
+			
 		}
 		else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
@@ -121,7 +153,9 @@ namespace ssi
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
 		bool cooperative,
-		double cmlbegintime = 0)
+		ssi_video_params_t &video_params,
+		double cmlbegintime = 0
+		)
 	{
 		if (!_ready)
 		{
@@ -131,23 +165,88 @@ namespace ssi
 
 		ssi_char_t path[SSI_MAX_CHAR];
 
-		ssi_sprint(path, "%s\\%s\\%s.%s.stream", _rootdir, session, role, _stream);
+		ssi_sprint(path, "%s\\%s\\%s.%s", _rootdir, session, role, _stream);
 		if (!ssi_exists(path))
 		{
 			ssi_wrn("stream not found '%s'", path);
 			return false;
 		}
 
+
+
+		bool externalTraining = false;
 		ssi_stream_t stream;
-		if (!FileTools::ReadStreamFile(path, stream))
-		{
-			ssi_wrn("could not load stream '%s'", path);
-			return false;
+		FilePath stream_fp(path);
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!FileTools::ReadStreamFile(path, stream))
+			{
+				ssi_wrn("could not load stream '%s'", path);
+				return 0;
+			}
+			ssi_video_params(video_params, 0, 0, 0, 0, 0);
 		}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
+		{
+
+
+
+			try {
+				ssi_print("%s\n", path);
+				cv::VideoCapture cap(path);
+				if (!cap.isOpened())
+					ssi_wrn("Can not open Video file (Maybe opencv_ffmpeg310_x64.dll or mp4 codec is missing.)");
+
+				double fps = cap.get(CV_CAP_PROP_FPS);
+				double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+				double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+				double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+			    ssi_video_params(video_params, width, height, fps, 8, 3);
+				
+
+				cv::Mat frame;
+				int size = ssi_video_size(video_params);
+				ssi_stream_init(stream, num, 1, size, SSI_IMAGE, fps);
+				stream.num = 0;
+				stream.tot = 0;
+				stream.byte = size;
+				ssi_stream_t temp;
+				ssi_stream_init(temp, 1, 1, size, SSI_IMAGE, fps, 0);
+				externalTraining = true;
+				for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+				{
+				
+					
+					cap >> frame;
+					
+					temp.byte = size;
+					temp.tot = temp.byte * 1;
+
+					printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
+					
+					ssi_byte_t *bytes = new ssi_byte_t[size];
+					memcpy(bytes, frame.data, size);
+					temp.ptr = bytes;
+				    ssi_stream_cat(temp, stream);
+					
+					delete[] bytes;
+					
+				}
+				ssi_stream_destroy(temp);
+
+
+				cap.release();
+
+			}
+			catch (cv::Exception& e) {
+				ssi_print("%s", e.msg);
+				return false;
+			}
+		}
+
 		ssi_time_t frame = 1 / stream.sr;
 
 		Annotation anno;
-		if (!CMLAnnotation::Load(&anno, _client, session, role, _scheme, annotator))
+		if (!CMLAnnotation::Load(&anno, _client, session, role, _scheme, annotator, externalTraining))
 		{
 			ssi_wrn("annotation not found '%s.%s.%s.%s'", session, role, _scheme, annotator);
 			return false;
@@ -169,8 +268,12 @@ namespace ssi
 				anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
 			}
 
+
+
+
+
 			ssi_time_t duration = stream.num / stream.sr - frame;
-			anno.addClass(_rest_class_id, SSI_SAMPLE_REST_CLASS_NAME);
+			anno.addClass(_rest_class_id, SSI_SAMPLE_REST_CLASS_NAME, externalTraining);
 			if (!anno.convertToFrames(frame, SSI_SAMPLE_REST_CLASS_NAME, duration))
 			{
 				return false;
@@ -196,15 +299,15 @@ namespace ssi
 		}
 		else if (anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
+			int cmlbeginframe = 0;
 			if (cooperative)
 			{
 				if (cmlbegintime > 0)
 				{
-					ssi_time_t last_to = cmlbegintime * anno.getScheme()->continuous.sr;
-					anno.filter(last_to, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER_EQUAL);
+					cmlbeginframe = anno.getScheme()->continuous.sr * cmlbegintime;
 				}
 			}
-			anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session);
+			anno.extractSamplesFromContinuousScheme(stream, _samples, _leftContext, _rightContext, session, cmlbeginframe);
 		}
 		else
 		{
@@ -220,7 +323,9 @@ namespace ssi
 	bool CMLTrainer::collect_multi(const ssi_char_t *session,
 		const ssi_char_t *role,
 		const ssi_char_t *annotator,
-		const ssi_char_t *stream_path, const ssi_char_t *root_dir, MongoClient *client)
+		const ssi_char_t *stream_path, 
+		const ssi_char_t *root_dir, 
+		MongoClient *client)
 	{
 		if (!_ready)
 		{
@@ -298,26 +403,33 @@ namespace ssi
 	{
 		if (_samples->getSize() == 0)
 		{
-			ssi_wrn("collect samples first");
-			return false;
+
+			//If we have an empty samplelist at this point, we check if the training is done externally in the trainer.
+			return trainer->train(*_samples);
 		}
 
-		ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
-		if (_samples->getSize(rest_index) == 0)
-		{
-			ISSelectClass select(_samples);
-			select.setSelectionInverse(rest_index);
-			ISFlatSample flat(&select);
-			return trainer->train(flat);
-		}
-		else
-		{
-			ISFlatSample flat(_samples);
-			return trainer->train(flat);
+		else {
+
+			ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
+			if (_samples->getSize(rest_index) == 0)
+			{
+				ISSelectClass select(_samples);
+				select.setSelectionInverse(rest_index);
+				ISFlatSample flat(&select);
+				return trainer->train(flat);
+			}
+			else
+			{
+				ISFlatSample flat(_samples);
+				return trainer->train(flat);
+			}
 		}
 	}
 
-	bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval)
+
+	
+
+	bool CMLTrainer::eval(Trainer *trainer, const ssi_char_t *evalpath, bool crossval, ssi_video_params_t video_params)
 	{
 		if (!trainer->isTrained())
 		{
@@ -339,35 +451,62 @@ namespace ssi
 		}
 
 		ssi_size_t rest_index = _samples->addClassName(SSI_SAMPLE_REST_CLASS_NAME);
-		if (_samples->getSize(rest_index) == 0)
+
+	
+		if (video_params.numOfChannels == 0)
 		{
-			ISSelectClass select(_samples);
-			select.setSelectionInverse(rest_index);
-			ISFlatSample flat(&select);
-			if (crossval)
+
+			if (_samples->getSize(rest_index) == 0)
 			{
-				trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				ISSelectClass select(_samples);
+				select.setSelectionInverse(rest_index);
+				ISFlatSample flat(&select);
+
+				
+				if (crossval)
+				{
+					trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				}
+				else
+				{
+					trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				}
 			}
 			else
 			{
-				trainer->eval(flat, fp, Evaluation::PRINT::CSV);
-			}
-		}
-		else
-		{
-			ISFlatSample flat(_samples);
-			if (crossval)
-			{
-				trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
-			}
-			else
-			{
-				trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				ISFlatSample flat(_samples);
+				if (crossval)
+				{
+					trainer->evalLOUO(flat, fp, Evaluation::PRINT::CSV);
+				}
+				else
+				{
+					trainer->eval(flat, fp, Evaluation::PRINT::CSV);
+				}
 			}
 		}
 
+		else
+		{
+			try {
+			
+				ISFlatSample flat(_samples);
+				trainer->eval(flat, video_params, fp, Evaluation::PRINT::CSV);
+				
+			}
+			catch (cv::Exception& e) {
+				ssi_print("%s", e.msg);
+				return false;
+			}
+
+
+		}//isVideo
+
+
 		return true;
 	}
+
+
 
 	Annotation *CMLTrainer::forward(Trainer *trainer,
 		const ssi_char_t *session,
@@ -376,6 +515,8 @@ namespace ssi
 		bool cooperative,
 		double cmlbegintime)
 	{
+
+		bool externalTraining = false;
 		if (!_ready)
 		{
 			ssi_wrn("call init() first");
@@ -384,7 +525,7 @@ namespace ssi
 
 		ssi_char_t path[SSI_MAX_CHAR];
 
-		ssi_sprint(path, "%s\\%s\\%s.%s.stream", _rootdir, session, role, _stream);
+		ssi_sprint(path, "%s\\%s\\%s.%s", _rootdir, session, role, _stream);
 		if (!ssi_exists(path))
 		{
 			ssi_wrn("stream not found '%s'", path);
@@ -392,11 +533,50 @@ namespace ssi
 		}
 
 		ssi_stream_t stream;
-		if (!FileTools::ReadStreamFile(path, stream))
+		FilePath stream_fp(path);
+		if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+			if (!FileTools::ReadStreamFile(path, stream))
+			{
+				ssi_wrn("could not load stream '%s'", path);
+				return 0;
+			}
+		
+			}
+		else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false)) //isVideo
 		{
-			ssi_wrn("could not load stream '%s'", path);
-			return 0;
+
+	
+		
+		try {
+			ssi_print("%s\n", path);
+			cv::VideoCapture cap(path);
+			if (!cap.isOpened())  
+				ssi_wrn("Can not open Video file (Maybe opencv_ffmpeg310_x64.dll or mp4 codec is missing.)");
+
+			double fps = cap.get(CV_CAP_PROP_FPS);
+			double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+			double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+			double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+			ssi_video_params_t video_format;
+			ssi_video_params(video_format, width, height, fps, 8, 3);
+			ssi_stream_init(stream, num, 1, ssi_video_size(video_format), SSI_IMAGE, fps);
+			stream.num = num;
+			stream.type = SSI_IMAGE;
+			stream.sr = fps;
+			stream.dim = 1;
+			stream.byte = ssi_video_size(video_format);
+			cap.release();
+			externalTraining = true;
+		
+
 		}
+		catch (cv::Exception& e) {
+			ssi_print("%s", e.msg);
+			return false;
+		}
+
+		}
+
 		ssi_time_t frame = 1 / stream.sr;
 
 		Annotation *anno = new Annotation();
@@ -441,7 +621,7 @@ namespace ssi
 		}
 		else
 		{
-			if (!CMLAnnotation::SetScheme(anno, _client, _scheme))
+			if (!CMLAnnotation::SetScheme(anno, _client, _scheme, externalTraining))
 			{
 				ssi_wrn("scheme not found '%s'", _scheme);
 				return 0;
@@ -451,6 +631,7 @@ namespace ssi
 		}
 
 		ssi_time_t duration = stream.num / stream.sr - frame;
+		
 
 		if (anno->getScheme()->type == SSI_SCHEME_TYPE::DISCRETE)
 		{
@@ -458,13 +639,14 @@ namespace ssi
 			{
 				return 0;
 			}
-
+			
 			if (_leftContext > 0 || _rightContext > 0)
 			{
 				anno->addOffset(-(_leftContext*frame), _rightContext*frame);
 				anno->filter(0, Annotation::FILTER_PROPERTY::FROM, Annotation::FILTER_OPERATOR::GREATER_EQUAL);
 				anno->filter(duration, Annotation::FILTER_PROPERTY::TO, Annotation::FILTER_OPERATOR::LESSER);
 			}
+			
 
 			ssi_size_t n_classes = trainer->getClassSize();
 			ssi_int_t *class_map = new ssi_int_t[n_classes];
@@ -476,10 +658,18 @@ namespace ssi
 					return 0;
 				}
 			}
-
+			
+			
+		
+		
 			ssi_stream_t chunk = stream;
 			ssi_size_t n_bytes = stream.byte * stream.dim;
 			ssi_size_t index;
+			ssi_real_t confidence;
+
+
+			if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
+
 			for (Annotation::iterator it = anno->begin(); it != anno->end(); it++)
 			{
 				if (cooperative && !(it->discrete.from > last_to_time))
@@ -497,21 +687,107 @@ namespace ssi
 				}
 
 				chunk.ptr = stream.ptr + from * n_bytes;
-				chunk.dim = max(1, to - from) * stream.dim;
+				chunk.dim = fmax(1, to - from) * stream.dim;
 				chunk.num = 1;
 				chunk.tot = chunk.num * n_bytes;
 
-				ssi_real_t confidence;
+				
 				trainer->forward(chunk, index, confidence);
-
 				it->discrete.id = class_map[index];
 				it->confidence = confidence;
+
 			}
+
+
+
+			}
+
+			else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false))
+			{
+
+				Annotation::iterator it = anno->begin();
+				
+			
+
+				try {
+					ssi_print("%s\n", path);
+					cv::VideoCapture cap(path);
+					if (!cap.isOpened())
+						ssi_wrn("Can not open Video file");
+
+					double fps = cap.get(CV_CAP_PROP_FPS);
+					double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+					double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+					double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+					ssi_video_params_t video_format;
+					ssi_video_params(video_format, width, height, fps, 8, 3);
+					
+
+					
+					ssi_print("Predicting frames..");
+					cv::Mat frame;
+					ssi_stream_t chunk;
+					ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
+					for (int i = 0; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+					{
+					
+						ssi_size_t from = ssi_cast(ssi_size_t, it->discrete.from * stream.sr + 0.5);
+						ssi_size_t to = ssi_cast(ssi_size_t, it->discrete.to * stream.sr + 0.5);
+
+						// check if samples start index is smaller than the stop index and smaller than streams number of samples
+						if (!(from <= to && to < stream.num)) {
+							ssi_wrn("interval out of range [%lf..%lf]s", it->discrete.from, it->discrete.to);
+							continue;
+						}
+
+						
+						cap >> frame;
+
+						if (cooperative && !(it->discrete.from > last_to_time))
+						{
+							it++;
+							continue;
+						}
+			
+						
+
+						printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
+						int size = frame.total() * frame.channels();
+						ssi_byte_t *bytes = new ssi_byte_t[size];
+						memcpy(bytes, frame.data, size);
+
+						chunk.byte = size;
+
+						chunk.ptr = bytes;
+						chunk.tot = chunk.num * size;
+						trainer->forward(chunk, index, confidence, video_format);
+	
+						
+						it->discrete.id = class_map[index];
+						it->confidence = confidence;
+						it++;
+	    				delete[] bytes;
+		
+						//ssi_stream_destroy(chunk);
+					}
+				
+					cap.release();
+
+
+				}
+				catch (cv::Exception& e) {
+					ssi_print("%s", e.msg);
+					return false;
+				}
+
+			}
+			
 
 			anno->addOffset((frame*_leftContext), -(frame*_rightContext));
 			anno->removeClass(SSI_SAMPLE_REST_CLASS_NAME);
 
 			delete[] class_map;
+			
 		}
 		else if (anno->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
@@ -562,9 +838,14 @@ namespace ssi
 			return false;
 		}
 
+		
+
 		ssi_stream_destroy(stream);
 
 		return anno;
+
+		
+		
 	}
 
 	void CMLTrainer::release()

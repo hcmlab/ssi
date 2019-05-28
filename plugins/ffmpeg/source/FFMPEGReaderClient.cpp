@@ -509,7 +509,7 @@ void FFMPEGReaderClient::provideAudioFrame () {
 
 };
 
-bool FFMPEGReaderClient::peekVideoFormat (ssi_video_params_t &params) {
+bool FFMPEGReaderClient::peekVideoFormat (ssi_video_params_t &params, ssi_size_t &n_samples) {
 
 	int ret;
 	AVFormatContext *fmt_ctx = NULL;
@@ -527,9 +527,12 @@ bool FFMPEGReaderClient::peekVideoFormat (ssi_video_params_t &params) {
 			AVRational sr = fmt_ctx->streams[i]->avg_frame_rate;
 			int width = fmt_ctx->streams[i]->codec->width;
 			int height = fmt_ctx->streams[i]->codec->height;
+			
 
 			if (sr.den > 0 && sr.num > 0 && width > 0 && height > 0) {
-				ssi_video_params (params, width, height, ((double) sr.num) / sr.den, 8, 3);				
+				//n_samples = fmt_ctx->streams[i]->duration *  fmt_ctx->streams[i]->nb_frames;
+				n_samples = (int) fmt_ctx->streams[i]->nb_frames;
+				ssi_video_params (params, width, height, ((double) sr.num) / sr.den, 8, 3);	
 				found = true;
 				break;
 			}

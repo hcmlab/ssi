@@ -323,19 +323,37 @@ namespace ssi {
 
 	PyObject *PythonHelper::labels_to_object(ISamples &samples, ssi_size_t stream_index)
 	{
-
-		PyObject *pList_label = PyTuple_New(samples.getSize());
-
+		PyObject *pList_label;
 		ssi_size_t label;
-
-		samples.reset();
 		ssi_sample_t *sample = 0;
 		int sample_counter = 0;
-		while (sample = samples.next())
+
+		if (samples.getSize() > 0)
 		{
-			label = sample->class_id;
-			PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
-			sample_counter++;
+			pList_label = PyTuple_New(samples.getSize());
+			samples.reset();
+
+			while (sample = samples.next())
+			{
+				label = sample->class_id;
+				PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
+				sample_counter++;
+			}
+		}
+		else {
+			//In case we dont handle a sample and anno list to our external training component, 
+			//we still forward the number of classes 
+
+			pList_label = PyTuple_New(samples.getClassSize());
+			samples.reset();
+			for (int i = 0; i < samples.getClassSize(); i++)
+			{
+				label = i;
+				PyTuple_SetItem(pList_label, sample_counter, PyLong_FromLong(label));
+				sample_counter++;
+
+			}
+
 		}
 
 		return pList_label;
@@ -917,7 +935,7 @@ namespace ssi {
 			break;
 		case SSI_ETYPE_STRING:
 		{
-			const char *string = PyUnicode_AsUTF8(event->data);
+			char *string = PyUnicode_AsUTF8(event->data);
 			e->tot = e->tot_real = ssi_strlen(string) + 1;
 			e->ptr = ssi_strcpy(string);
 			break;
@@ -1085,7 +1103,7 @@ namespace ssi {
 			{
 				if (PyUnicode_Check(pValue))
 				{
-					const char *address = PyUnicode_AsUTF8(pValue);
+					char *address = PyUnicode_AsUTF8(pValue);
 					if (address)
 					{
 						_address = ssi_strcpy(address);
@@ -1284,8 +1302,8 @@ namespace ssi {
 					{
 						if (PyUnicode_Check(key) && PyUnicode_Check(value))
 						{
-							const char *name = PyUnicode_AsUTF8(key);
-							const char *info = PyUnicode_AsUTF8(value);
+							char *name = PyUnicode_AsUTF8(key);
+							char *info = PyUnicode_AsUTF8(value);
 							_channels[count] = new PythonChannel(name, info);
 							if (!channels_init_help(key, _channels[count]))
 							{
@@ -1666,6 +1684,50 @@ namespace ssi {
 		if (pValue)
 		{
 			confidence = (ssi_real_t)PyFloat_AsDouble(pValue);		
+			Py_DECREF(pValue);
+
+			if (confidence < 0)
+			{
+				ssi_wrn("negative confidence '%g'", confidence);
+			}
+			else
+			{
+				result = true;
+			}
+		}
+
+		return result;
+	}
+
+
+	bool PythonHelper::forward(ssi_stream_t &stream, ssi_size_t n_probs, ssi_real_t *probs, ssi_real_t &confidence, ssi_video_params_t params) {
+
+		if (!_pFunctions[FUNCTIONS::FORWARD])
+		{
+			return false;
+		}
+
+		GIL gil;
+
+		bool result = false;
+
+		PyObject *pArgs = PyTuple_New(4);
+		int valcount = 0;
+		PyTuple_SetItem(pArgs, valcount++, stream_to_imageobject(&stream, params));
+		PyObject *pProbs = (PyObject *)ssipyarray_From(n_probs, probs);
+		PyTuple_SetItem(pArgs, valcount++, pProbs);
+		PyTuple_SetItem(pArgs, valcount++, _pOptions);
+		Py_INCREF(_pOptions);
+		PyTuple_SetItem(pArgs, valcount++, _pVariables);
+		Py_INCREF(_pVariables);
+
+
+		PyObject *pValue = call_function(FUNCTIONS::FORWARD, pArgs);
+		Py_DECREF(pArgs);
+
+		if (pValue)
+		{
+			confidence = (ssi_real_t)PyFloat_AsDouble(pValue);
 			Py_DECREF(pValue);
 
 			if (confidence < 0)

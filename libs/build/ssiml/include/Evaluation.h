@@ -101,6 +101,8 @@ public:
 
 	// eval using test set (it is assumed that model has already been trained)
 	void eval(Trainer *trainer, ISamples &samples);
+	void eval(Trainer *trainer, ISamples &samples, ssi_video_params_t video_format);
+	
 	void eval(IModel &model, ISamples &samples, ssi_size_t stream_index);
 	void eval(IFusion &fusion, ssi_size_t n_models, IModel **models, ISamples &samples);
 
@@ -172,6 +174,7 @@ protected:
 	ssi_size_t cutString(const ssi_char_t *str, ssi_size_t n, ssi_char_t *cut);
 	void init(IModel::TYPE::List type, ISamples &samples, Trainer *trainer);
 	void eval_h(ISamples &samples);
+	void eval_h(ISamples &samples, ssi_video_params_t video_format);
 	//metrics
 	//pearsons correlation coefficient
 	ssi_real_t corrcoef(ssi_size_t n, ssi_real_t *values);

@@ -119,6 +119,7 @@ public:
 
 	void eval(ISamples &strain, ISamples &sdevel, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void eval(ISamples &samples, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
+	void eval(ISamples &samples, ssi_video_params_t video_format, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalSplit(ISamples &samples, ssi_real_t split, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalKFold(ISamples &samples, ssi_size_t k, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
 	void evalLOO(ISamples &samples, FILE *file = stdout, Evaluation::PRINT::List format = Evaluation::PRINT::CONSOLE);
@@ -140,16 +141,32 @@ public:
 		ssi_real_t &confidence);
 	bool forward(ssi_stream_t &stream,
 		ssi_size_t &class_index,
+		ssi_real_t &confidence,
+		ssi_video_params_t &params);
+	bool forward(ssi_stream_t &stream,
+		ssi_size_t &class_index,
 		ssi_real_t &class_prob,
 		ssi_real_t &confidence);
 	bool forward_probs (ssi_stream_t &stream,
 		ssi_size_t class_num,
 		ssi_real_t *class_probs,
 		ssi_real_t &confidence);
+	bool forward_probs(ssi_size_t n_streams,
+		ssi_stream_t **streams,
+		ssi_size_t n_probs,
+		ssi_real_t *probs,
+		ssi_real_t &confidence,
+		ssi_video_params_t params);
 	bool forward (ssi_size_t num,
 		ssi_stream_t **streams,
 		ssi_size_t &class_index,
 		ssi_real_t &confidence);
+	bool forward(ssi_size_t num,
+		ssi_stream_t **streams,
+		ssi_size_t &class_index,
+		ssi_real_t &confidence, 
+		ssi_video_params_t &params);
+
 	bool forward_probs (ssi_size_t num,
 		ssi_stream_t **streams,
 		ssi_size_t class_num,

@@ -48,7 +48,8 @@ public:
 		const ssi_char_t *session,		
 		const ssi_char_t *role,
 		const ssi_char_t *scheme,
-		const ssi_char_t *annotator);	
+		const ssi_char_t *annotator,
+		bool externalTraining = false);
 	static bool Save(Annotation *annotation, 
 		MongoClient *client,
 		const ssi_char_t *session,		
@@ -66,9 +67,9 @@ public:
 
 	static bool SetScheme(Annotation *annotation,
 		MongoClient *client,
-		const ssi_char_t *scheme);
+		const ssi_char_t *scheme, bool externalTraining = false);
 	static bool SetScheme(Annotation *annotation,
-		MongoDocument *document);
+		MongoDocument *document, bool externalTraining = false);
 	static bool AddMongo(Annotation *annotation,
 		MongoDocument *document);
 

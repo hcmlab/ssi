@@ -30,13 +30,14 @@
 #define SSI_PYTHON_MODEL_H
 
 #include "base/IModel.h"
+#include "base/IComponent.h"
 #include "PythonOptions.h"
 
 namespace ssi {
 
 class PythonHelper;
 
-class PythonModel : public IModel {
+class PythonModel : public IModel, public IComponent {
 
 public:
 
@@ -61,9 +62,16 @@ public:
 		ssi_size_t n_probs,
 		ssi_real_t *probs,
 		ssi_real_t &confidence);
+	bool forward(ssi_stream_t &stream,
+		ssi_size_t n_probs,
+		ssi_real_t *probs,
+		ssi_real_t &confidence,
+		ssi_video_params_t &params);
 	void release();
 	bool save(const ssi_char_t *filepath);
 	bool load(const ssi_char_t *filepath);
+
+	void setMetaData(ssi_size_t size, const void *meta);
 
 	IModel::TYPE::List getModelType();
 	ssi_size_t getClassSize() { return _n_classes; };
@@ -87,6 +95,8 @@ protected:
 	PythonHelper *_helper;
 
 	bool _isTrained;
+	bool _has_meta_data;
+	ssi_video_params_t _format_in;
 };
 
 }

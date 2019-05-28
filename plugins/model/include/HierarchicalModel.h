@@ -65,6 +65,11 @@ public:
 		ssi_size_t n_probs,
 		ssi_real_t *probs,
 		ssi_real_t &confidence);
+	bool forward(ssi_stream_t &stream,
+		ssi_size_t n_probs,
+		ssi_real_t *probs,
+		ssi_real_t &confidence,
+		ssi_video_params_t &params);
 	void release();
 
 	virtual bool initTree(ssi_size_t n_level); 

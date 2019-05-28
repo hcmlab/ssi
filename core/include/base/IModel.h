@@ -56,7 +56,12 @@ public:
 	virtual bool forward (ssi_stream_t &stream,
 		ssi_size_t n_probs,
 		ssi_real_t *probs,
-		ssi_real_t &confidence) = 0;	
+		ssi_real_t &confidence) = 0;
+	virtual bool forward(ssi_stream_t &stream,
+		ssi_size_t n_probs,
+		ssi_real_t *probs,
+		ssi_real_t &confidence,
+		ssi_video_params_t &params) = 0;
 	virtual void release () = 0;
 
 	virtual bool save (const ssi_char_t *filepath) = 0;	
