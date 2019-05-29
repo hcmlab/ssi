@@ -78,9 +78,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>LandmarkDetector.lib;FaceAnalyser.lib;GazeAnalyser.lib;Utilities.lib;dlib.lib;opencv_world340.lib;openblas.lib;ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LandmarkDetector.lib;FaceAnalyser.lib;GazeAnalyser.lib;Utilities.lib;dlib.lib;opencv_world340d.lib;openblas.lib;ssid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\lib\3rdParty\tbb\lib\$(PlatformName)\$(PlatformToolset);..\lib\3rdParty\dlib\lib\$(PlatformName)\$(PlatformToolset)\$(Configuration);..\lib\3rdParty\OpenCV3.4\$(PlatformName)\$(PlatformToolset)\lib\$(Configuration);..\lib\3rdParty\OpenBLAS\lib\$(PlatformName)\;..\lib\3rdParty\boost\$(PlatformName)\$(PlatformToolset)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\lib\3rdParty\tbb\lib\$(PlatformName)\$(PlatformToolset);..\lib\3rdParty\dlib\lib\$(PlatformName)\$(PlatformToolset)\$(Configuration);..\lib\3rdParty\OpenBLAS\lib\$(PlatformName)\;..\lib\3rdParty\boost\$(PlatformName)\$(PlatformToolset)\lib;..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -106,7 +106,7 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
     <Link>
       <AdditionalDependencies>LandmarkDetector.lib;FaceAnalyser.lib;GazeAnalyser.lib;Utilities.lib;dlib.lib;opencv_world340.lib;openblas.lib;ssi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\lib\3rdParty\tbb\lib\$(PlatformName)\$(PlatformToolset);..\lib\3rdParty\dlib\lib\$(PlatformName)\$(PlatformToolset)\$(Configuration);..\lib\3rdParty\OpenCV3.4\$(PlatformName)\$(PlatformToolset)\lib\$(Configuration);..\lib\3rdParty\OpenBLAS\lib\$(PlatformName)\;..\lib\3rdParty\boost\$(PlatformName)\$(PlatformToolset)\lib;..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Configuration)\$(PlatformName)\vc$(PlatformToolsetVersion)\;..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\lib\3rdParty\tbb\lib\$(PlatformName)\$(PlatformToolset);..\lib\3rdParty\dlib\lib\$(PlatformName)\$(PlatformToolset)\$(Configuration);..\lib\3rdParty\OpenBLAS\lib\$(PlatformName)\;..\lib\3rdParty\boost\$(PlatformName)\$(PlatformToolset)\lib;..\..\..\..\bin\$(PlatformName)\vc$(PlatformToolsetVersion)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>

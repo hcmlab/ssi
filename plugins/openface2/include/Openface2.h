@@ -56,6 +56,7 @@ namespace ssi {
 				eye3d = true;
 				gaze = true;
 				actionunits = true;
+				facetracker = 0;
 
 				addOption("modelPath", modelPath, SSI_MAX_CHAR, SSI_CHAR, "Path to model");
 				addOption("auPath", AuPath, SSI_MAX_CHAR, SSI_CHAR, "Path to action units");
@@ -66,6 +67,7 @@ namespace ssi {
 				addOption("eye3d", &eye3d, 1, SSI_BOOL, "Calculate 3D eye landmarks (x_1,y_1,z_1,...,x_56,y_56,z_56)");
 				addOption("gaze", &gaze, 1, SSI_BOOL, "Calculate gaze direction (x_left,y_left,z_left,x_right,y_right,z_right)");
 				addOption("actionunits", &actionunits, 1, SSI_BOOL, "Calculate action units");
+				addOption("facetracker", &facetracker, 1, SSI_INT, "0=MTCNN_DETECTOR,1=HAAR_DETECTOR,2=HOG_SVM_DETECTOR");
 			}
 
 			void setModelPath(const ssi_char_t *string) {
@@ -84,6 +86,7 @@ namespace ssi {
 
 			ssi_char_t modelPath[SSI_MAX_CHAR], AuPath[SSI_MAX_CHAR];
 			bool pose, landmarks, landmarks3d, eye, eye3d, gaze, actionunits;
+			int facetracker;
 		};
 
 	public:

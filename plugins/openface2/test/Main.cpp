@@ -227,6 +227,7 @@ bool ex_test(void *arg) {
 	Openface2 *openface = ssi_create(Openface2, 0, true);
 	openface->getOptions()->setModelPath("..\\lib\\local\\LandmarkDetector\\model");
 	openface->getOptions()->setAuPath("..\\lib\\local\\FaceAnalyser\\AU_predictors");
+	openface->getOptions()->facetracker = 1;
 	ITransformable *openface_t = frame->AddTransformer(camera_p, openface, "1");
 
 	Openface2Selector *sel_au_r = ssi_create(Openface2Selector, 0, true);

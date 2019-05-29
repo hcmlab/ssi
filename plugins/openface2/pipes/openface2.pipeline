@@ -12,7 +12,8 @@
 		<output channel="video" pin="video" size="2.0s"/>
 	</sensor>
 		
-	<transformer create="Openface2:openface"  
+	<transformer create="Openface2:openface"
+		facetracker="1"  
 		modelPath="..\build\lib\local\LandmarkDetector\model"
 		auPath="..\build\lib\local\FaceAnalyser\AU_predictors">
 		<input pin="video" frame="1" delta="0"/>
