@@ -60,6 +60,15 @@ namespace ssi {
 
 		vector<string> argumentsModel;
 		argumentsModel.push_back(std::string(_options.modelPath));
+		if (_options.facetracker == 1)
+		{
+			argumentsModel.push_back(std::string("-haar"));
+		}
+		else if (_options.facetracker == 2)
+		{
+			argumentsModel.push_back(std::string("-hog"));
+		}
+		
 		std::vector<std::string> argumentsAU;
 		argumentsAU.push_back(std::string(_options.AuPath));
 

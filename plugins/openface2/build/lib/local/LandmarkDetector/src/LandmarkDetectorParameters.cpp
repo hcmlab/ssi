@@ -94,6 +94,9 @@ FaceModelParameters::FaceModelParameters(vector<string> &arguments)
 			valid[i + 1] = false;
 			i++;
 		}
+
+
+
 		if (arguments[i].compare("-sigma") == 0)
 		{
 			stringstream data(arguments[i + 1]);
@@ -168,6 +171,21 @@ FaceModelParameters::FaceModelParameters(vector<string> &arguments)
 
 			// Use multi-view hypotheses if in-the-wild setting
 			multi_view = true;
+		}
+
+		if (arguments[i].compare("-haar") == 0)
+		{
+			haar_face_detector_location = "classifiers/haarcascade_frontalface_alt.xml";
+			curr_face_detector = HAAR_DETECTOR;
+			valid[i] = false;
+
+		}
+
+		if (arguments[i].compare("-hog") == 0)
+		{
+			curr_face_detector = HOG_SVM_DETECTOR;
+			valid[i] = false;
+		
 		}
 	}
 

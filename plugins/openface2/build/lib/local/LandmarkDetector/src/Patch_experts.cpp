@@ -91,6 +91,7 @@ Patch_experts::Patch_experts(const Patch_experts& other) : patch_scaling(other.p
 std::vector<int> Patch_experts::Collect_visible_landmarks(vector<vector<cv::Mat_<int> > > visibilities, int scale, int view_id, int n)
 {
 	std::vector<int> vis_lmk;
+	
 	for (int i = 0; i < n; i++)
 	{
 		if (visibilities[scale][view_id].rows == n)
@@ -122,6 +123,8 @@ std::vector<int> Patch_experts::Collect_visible_landmarks(vector<vector<cv::Mat_
 			}
 		}
 	}
+	
+
 	return vis_lmk;
 
 }
