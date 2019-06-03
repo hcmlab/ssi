@@ -70,6 +70,15 @@ bool TorchKNN::train (ISamples &samples, ssi_size_t stream_index) {
 	return true;
 }
 
+bool TorchKNN::forward(ssi_stream_t &stream,
+	ssi_size_t n_probs,
+	ssi_real_t *probs,
+	ssi_real_t &confidence, ssi_video_params_t &params)
+{
+	return forward(stream, n_probs, probs, confidence);
+}
+
+
 bool TorchKNN::forward (ssi_stream_t &stream,
 	ssi_size_t n_probs,
 	ssi_real_t *probs,

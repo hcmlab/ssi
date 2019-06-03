@@ -27,7 +27,7 @@
     <ClCompile Include="..\..\source\facecrop.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{84106671-4BF7-4593-95CA-CC864793AFE5}</ProjectGuid>
+    <ProjectGuid>{4891A3B7-D1C7-4171-A912-8898F31AF5ED}</ProjectGuid>
     <RootNamespace>Esmeralda</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>facecrop</ProjectName>
