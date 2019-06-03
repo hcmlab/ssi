@@ -169,6 +169,8 @@ namespace ssi {
 					break;
 				}
 				default:
+			
+					
 
 					if (n_meta == sizeof(SSI_SKELETON_META) && ssi_strcmp(((SSI_SKELETON_META*)meta)->name, SSI_SKELETON_META_NAME))
 					{
@@ -178,13 +180,15 @@ namespace ssi {
 						ssi_char_t *type_s = SSI_SKELETON_TYPE_NAMES[sm->type];
 						metaElement.SetAttribute("type", SSI_SKELETON_TYPE_NAMES[sm->type]);
 					}
+
 					else if (n_meta == sizeof(SSI_FACE_META) && ssi_strcmp(((SSI_FACE_META*)meta)->name, SSI_FACE_META_NAME))
-					{
+					{					
 						SSI_FACE_META *sm = (SSI_FACE_META*)meta;
 						metaElement.SetAttribute("name", SSI_FACE_META_NAME);
 						metaElement.SetAttribute("num", sm->num);
 						metaElement.SetAttribute("type", SSI_FACE_TYPE_NAMES[sm->type]);
 					}
+
 					else
 					{
 						ssi_wrn("type '%s' doesn't support meta information", SSI_TYPE_NAMES[data.type]);

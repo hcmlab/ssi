@@ -82,7 +82,6 @@ namespace ssi {
 		const void *getMetaData(ssi_size_t &size) { size = sizeof(_video_format); return &_video_format; };
 		void setMetaData(ssi_size_t size, const void *meta) {
 			if (sizeof(_video_format) != size) {
-				ssi_err("invalid meta size");
 				return;
 			}
 			memcpy(&_video_format, meta, size);

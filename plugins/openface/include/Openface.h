@@ -106,6 +106,10 @@ namespace ssi {
 		const ssi_char_t *getName() { return GetCreateName(); };
 		const ssi_char_t *getInfo() { return "Facial landmark detection, head pose estimation, facial action unit recognition, and eye-gaze estimation."; };
 
+
+		const void *getMetaData(ssi_size_t &size) { size = sizeof(SSI_FACE_META); _face_meta = ssi_face_meta(SSI_FACE_TYPE::OPENFACE, 1); return &_face_meta; };
+
+
 		void setMetaData(ssi_size_t size, const void *meta) {
 			if (sizeof(_video_format) != size) {
 				ssi_err("invalid meta size");
@@ -354,6 +358,7 @@ namespace ssi {
 		static char ssi_log_name[];
 
 		ssi_video_params_t _video_format;
+		SSI_FACE_META _face_meta;
 		ssi_size_t _stride;
 
 		std::vector<std::string> arguments;

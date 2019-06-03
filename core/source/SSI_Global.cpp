@@ -122,4 +122,6 @@ ssi_char_t *SSI_FACE_TYPE_NAMES[SSI_FACE_TYPE::NUM]
 	"ssi",
 	"kinect1",
 	"kinect2",
+	"openface",
+	"openface2",
 };
