@@ -278,6 +278,7 @@ void Trainer::init_class_names (ISamples &samples) {
 
 	free_class_names ();
 
+
 	_n_classes = samples.getClassSize ();
 	_class_names = new ssi_char_t *[_n_classes];
 	for (ssi_size_t i = 0; i < _n_classes; i++) {
@@ -977,7 +978,25 @@ bool Trainer::train_h (ISamples &samples_raw) {
 	if (samples->getSize() == 0)
 	{
 		ssi_msg(SSI_LOG_LEVEL_BASIC, "Empty Samplelist: Expecting external data generator (e.g. in Tensorflow interface).")
-		init_class_names(*samples);
+		
+		if (samples->getClassSize() == 0)
+		{
+			free_class_names();
+		
+
+			_n_classes = 1;
+			_class_names = new ssi_char_t *[_n_classes];
+			_class_names[0] = ssi_strcpy("continuous");
+			
+		}
+		else
+		{
+			init_class_names(*samples);
+		}
+
+		
+
+
 	    result = _models[0]->train(*samples, _stream_index);
 		_is_trained = result;
 		
