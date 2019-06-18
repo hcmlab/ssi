@@ -1101,6 +1101,38 @@ bool Trainer::forward(ssi_stream_t &stream,
 	return true;
 }
 
+bool Trainer::forward(ssi_stream_t &stream,
+	ssi_size_t &class_index,
+	ssi_real_t &class_prob,
+	ssi_real_t &confidence,
+	ssi_video_params_t &params)
+{
+	ssi_real_t *probs = new ssi_real_t[_n_classes];
+	if (!forward_probs(stream, _n_classes, probs, confidence, params))
+	{
+		return false;
+	}
+
+	ssi_size_t max_ind = 0;
+	ssi_real_t max_val = probs[0];
+	for (ssi_size_t i = 1; i < _n_classes; i++) {
+		if (probs[i] > max_val) {
+			max_val = probs[i];
+			max_ind = i;
+		}
+	}
+
+	class_index = max_ind;
+	class_prob = probs[max_ind];
+
+	delete[] probs;
+
+	return true;
+}
+
+
+
+
 bool Trainer::forward (ssi_stream_t &stream, 
 	ssi_size_t &class_index,
 	ssi_real_t &confidence) {
@@ -1181,6 +1213,18 @@ bool Trainer::forward_probs (ssi_stream_t &stream,
 	ssi_stream_t *s = &stream;
 	return forward_probs (1, &s, class_num, class_probs, confidence);
 }
+
+
+bool Trainer::forward_probs(ssi_stream_t &stream,
+	ssi_size_t class_num,
+	ssi_real_t *class_probs,
+	ssi_real_t &confidence,
+	ssi_video_params_t params) {
+
+	ssi_stream_t *s = &stream;
+	return forward_probs(1, &s, class_num, class_probs, confidence, params);
+}
+
 
 bool Trainer::forward_probs(ssi_size_t n_streams,
 	ssi_stream_t **streams,
