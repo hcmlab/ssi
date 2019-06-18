@@ -791,46 +791,138 @@ namespace ssi
 		}
 		else if (anno->getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS)
 		{
-			ssi_size_t n_bytes = stream.byte * stream.dim;
-			ssi_size_t index;
-			ssi_real_t score;
 
-			ssi_size_t from = cooperative ? last_to_count : 0;
-			ssi_size_t to = stream.num - _leftContext - _rightContext;
+			if (ssi_strcmp(stream_fp.getExtension(), SSI_FILE_TYPE_STREAM, false)) {
 
-			ssi_stream_t chunk = stream;
-			chunk.num = 1;
-			chunk.ptr += from * n_bytes;
-			chunk.dim = stream.dim + stream.dim * _leftContext + stream.dim * _rightContext;
-			chunk.tot = chunk.dim * chunk.byte;
 
-			ssi_size_t old_size = (ssi_size_t)anno->size();
-			ssi_real_t min_score = anno->getScheme()->continuous.min;
-			ssi_real_t max_score = anno->getScheme()->continuous.max;
-			ssi_real_t confidence = 0.0f;
-			for (ssi_size_t i = from; i < to; i++)
-			{
-				trainer->forward(chunk, index, score, confidence);
-				if (score < min_score)
-				{
-					score = min_score;
-				}
-				else if (score > max_score)
-				{
-					score = max_score;
-				}
+				ssi_size_t n_bytes = stream.byte * stream.dim;
+				ssi_size_t index;
+				ssi_real_t score;
 
-				if (from < old_size)
+				ssi_size_t from = cooperative ? last_to_count : 0;
+				ssi_size_t to = stream.num - _leftContext - _rightContext;
+
+				ssi_stream_t chunk = stream;
+				chunk.num = 1;
+				chunk.ptr += from * n_bytes;
+				chunk.dim = stream.dim + stream.dim * _leftContext + stream.dim * _rightContext;
+				chunk.tot = chunk.dim * chunk.byte;
+
+				ssi_size_t old_size = (ssi_size_t)anno->size();
+				ssi_real_t min_score = anno->getScheme()->continuous.min;
+				ssi_real_t max_score = anno->getScheme()->continuous.max;
+				ssi_real_t confidence = 0.0f;
+				for (ssi_size_t i = from; i < to; i++)
 				{
-					anno->at(i).continuous.score = score;
-					anno->at(i).confidence = confidence;
+					trainer->forward(chunk, index, score, confidence);
+					if (score < min_score)
+					{
+						score = min_score;
+					}
+					else if (score > max_score)
+					{
+						score = max_score;
+					}
+
+					if (from < old_size)
+					{
+						anno->at(i).continuous.score = score;
+						anno->at(i).confidence = confidence;
+					}
+					else
+					{
+						anno->add(score, confidence);
+					}
+					chunk.ptr += n_bytes;
 				}
-				else
-				{
-					anno->add(score, confidence);
-				}
-				chunk.ptr += n_bytes;
 			}
+
+			else if (ssi_strcmp(stream_fp.getExtension(), ".mp4", false) || ssi_strcmp(stream_fp.getExtension(), ".avi", false))
+			{
+
+
+				ssi_size_t n_bytes = stream.byte * stream.dim;
+				ssi_size_t index;
+				ssi_real_t score;
+
+				ssi_size_t from = cooperative ? last_to_count : 0;
+				ssi_size_t to = stream.num - _leftContext - _rightContext;
+
+			
+				ssi_size_t old_size = (ssi_size_t)anno->size();
+				ssi_real_t min_score = anno->getScheme()->continuous.min;
+				ssi_real_t max_score = anno->getScheme()->continuous.max;
+				ssi_real_t confidence = 0.0f;
+
+
+
+
+
+				ssi_print("%s\n", path);
+				cv::VideoCapture cap(path);
+				if (!cap.isOpened())
+					ssi_wrn("Can not open Video file");
+
+				double fps = cap.get(CV_CAP_PROP_FPS);
+				double width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+				double height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+				double num = cap.get(CV_CAP_PROP_FRAME_COUNT);
+				ssi_video_params_t video_format;
+				ssi_video_params(video_format, width, height, fps, 8, 3);
+
+
+
+				ssi_print("Predicting frames..");
+				cv::Mat frame;
+				ssi_stream_t chunk;
+				ssi_stream_init(chunk, 1, 1, ssi_video_size(video_format), SSI_IMAGE, video_format.framesPerSecond);
+				for (int i = from ; i < cap.get(CV_CAP_PROP_FRAME_COUNT); i++)
+				{
+
+					cap >> frame;
+					printProgress(((float)i / (float)cap.get(CV_CAP_PROP_FRAME_COUNT)));
+					int size = frame.total() * frame.channels();
+					ssi_byte_t *bytes = new ssi_byte_t[size];
+					memcpy(bytes, frame.data, size);
+
+					chunk.byte = size;
+
+					chunk.ptr = bytes;
+					chunk.tot = chunk.num * size;
+
+					trainer->forward(chunk, index, score, confidence, video_format);
+					if (score < min_score)
+					{
+						score = min_score;
+					}
+					else if (score > max_score)
+					{
+						score = max_score;
+					}
+
+					if (from < old_size)
+					{
+						anno->at(i).continuous.score = score;
+						anno->at(i).confidence = confidence;
+					}
+					else
+					{
+						anno->add(score, confidence);
+					}
+					chunk.ptr += n_bytes;
+
+
+					//trainer->forward(chunk, index, confidence, video_format);
+
+					delete[] bytes;
+
+				}
+
+				cap.release();
+
+			}
+
+
 		}
 		else
 		{
