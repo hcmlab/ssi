@@ -25,7 +25,7 @@
     <ClCompile Include="..\..\source\Openface2Selector.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{01F3057A-C9EA-4D85-8F48-51B9F7D6ADA7}</ProjectGuid>
+    <ProjectGuid>{28FE5189-D6B9-45F1-8123-24BC8E484BE1}</ProjectGuid>
     <RootNamespace>ssi</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>openface2</ProjectName>
