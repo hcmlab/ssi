@@ -154,7 +154,7 @@ typedef enum
 #define SSI_OBJECT_NAME_SIZE 12
 
 // default string length
-#define SSI_MAX_CHAR	8192
+#define SSI_MAX_CHAR	1024
 #define SSI_PATH_SEPARATOR '/'
 
 #define SSI_RANDOM_LEGACY_FLAG 0
