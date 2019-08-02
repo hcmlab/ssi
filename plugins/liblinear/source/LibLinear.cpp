@@ -502,9 +502,20 @@ namespace ssi {
 			{
 				if (n_probs == 2)
 				{
-					double label = predict((model*)_model, x);
+					/*double label = predict((model*)_model, x);
 					probs[0] = label == 0 ? 1.0f : 0.0f;
-					probs[1] = label == 1 ? 1.0f : 0.0f;
+					probs[1] = label == 1 ? 1.0f : 0.0f;*/
+
+					predict_values((model*)_model, x, prob_estimates);
+
+					prob_estimates[0] = 1 / (1 + exp(-prob_estimates[0]));
+					prob_estimates[1] = 1. - prob_estimates[0];
+
+					for (ssi_size_t j = 0; j < _n_classes; j++) {
+						probs[j] = (ssi_real_t)prob_estimates[j];
+					}
+				
+
 				}
 				else
 				{
