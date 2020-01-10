@@ -162,3 +162,6 @@ plugins/openface2/build/lib/local/FaceAnalyser/x64/Release/FaceAnalyser.vcxproj.
 plugins/openface2/build/lib/local/LandmarkDetector/x64/Release/LandmarkDetector.vcxproj.FileListAbsolute.txt
 plugins/openface2/build/lib/local/Utilities/x64/Release/Utilities.vcxproj.FileListAbsolute.txt
 plugins/openface2/build/lib/local/GazeAnalyser/x64/Release/GazeAnalyser.vcxproj.FileListAbsolute.txt
+plugins/openpose/models/face/pose_iter_116000.caffemodel
+plugins/openpose/models/hand/pose_iter_102000.caffemodel
+plugins/openpose/models/pose/body_25/pose_iter_584000.caffemodel
