@@ -165,3 +165,7 @@ plugins/openface2/build/lib/local/GazeAnalyser/x64/Release/GazeAnalyser.vcxproj.
 plugins/openpose/models/face/pose_iter_116000.caffemodel
 plugins/openpose/models/hand/pose_iter_102000.caffemodel
 plugins/openpose/models/pose/body_25/pose_iter_584000.caffemodel
+plugins/openpose/build/test/camera.option
+plugins/openpose/pipes/camera.option
+plugins/openpose/build/test/camera.option
+*.option
