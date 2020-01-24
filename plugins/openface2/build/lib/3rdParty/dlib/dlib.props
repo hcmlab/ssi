@@ -5,7 +5,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)lib\3rdParty\dlib\include\dlib\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\dlib\lib\$(PlatformTarget)\$(PlatformToolset)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\dlib\lib\$(PlatformTarget)\v140\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent />
