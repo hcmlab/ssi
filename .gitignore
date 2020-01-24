@@ -28,6 +28,9 @@ bin/x64/vc140/Lib/*
 bin/x64/vc140/share/*
 libs/build/
 plugins/model/pipes/model
+plugins/bayesnet
+plugins/bodyfeatures
+
 
 
 bin/x64/vc140/Lib/*
