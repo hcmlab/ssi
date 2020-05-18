@@ -935,7 +935,7 @@ namespace ssi {
 			break;
 		case SSI_ETYPE_STRING:
 		{
-			char *string = PyUnicode_AsUTF8(event->data);
+			const char *string = PyUnicode_AsUTF8(event->data);
 			e->tot = e->tot_real = ssi_strlen(string) + 1;
 			e->ptr = ssi_strcpy(string);
 			break;
@@ -1103,7 +1103,7 @@ namespace ssi {
 			{
 				if (PyUnicode_Check(pValue))
 				{
-					char *address = PyUnicode_AsUTF8(pValue);
+					const char *address = PyUnicode_AsUTF8(pValue);
 					if (address)
 					{
 						_address = ssi_strcpy(address);
@@ -1302,8 +1302,8 @@ namespace ssi {
 					{
 						if (PyUnicode_Check(key) && PyUnicode_Check(value))
 						{
-							char *name = PyUnicode_AsUTF8(key);
-							char *info = PyUnicode_AsUTF8(value);
+							const char *name = PyUnicode_AsUTF8(key);
+							const char *info = PyUnicode_AsUTF8(value);
 							_channels[count] = new PythonChannel(name, info);
 							if (!channels_init_help(key, _channels[count]))
 							{
