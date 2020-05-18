@@ -172,3 +172,7 @@ plugins/openpose/build/test/camera.option
 plugins/openpose/pipes/camera.option
 plugins/openpose/build/test/camera.option
 *.option
+bin/x64/vc140/python37/
+bin/x64/vc140/Scripts/
+bin/x64/vc140/python37.zip
+bin/x64/vc140/python-3.7.7-embed-amd64.zip
