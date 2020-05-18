@@ -69,12 +69,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;PYMYARRAY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\Python-3.6.4\Include;..\..\..\..\libs\build\Python-3.6.4\PC;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\Python-3.7.7\Include;..\..\..\..\libs\build\Python-3.7.7\PC;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\..\..\..\libs\build\Python-3.6.4\PCbuild\amd64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\..\..\..\libs\build\Python-3.7.7\PCbuild\amd64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -86,14 +86,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;PYMYARRAY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\Python-3.6.4\Include;..\..\..\..\libs\build\Python-3.6.4\PC;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\..\..\core\include;..\..\..;..\..\..\..\libs\build\Python-3.7.7\Include;..\..\..\..\libs\build\Python-3.7.7\PC;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>No</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\..\..\..\libs\build\Python-3.6.4\PCbuild\amd64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\..\..\..\libs\build\Python-3.7.7\PCbuild\amd64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

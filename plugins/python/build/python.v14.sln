@@ -22,7 +22,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ssipy", "test\ssipy.v14.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{72AC95D4-E489-4948-A103-65C15E50A9E8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pythoncore", "..\..\..\libs\build\Python-3.6.4\PCbuild\pythoncore.vcxproj", "{CF7AC3D1-E2DF-41D2-BEA6-1E2556CDEA26}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pythoncore", "..\..\..\libs\build\Python-3.7.7\PCbuild\pythoncore.vcxproj", "{CF7AC3D1-E2DF-41D2-BEA6-1E2556CDEA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
