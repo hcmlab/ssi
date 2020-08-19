@@ -24,6 +24,8 @@
 //
 //*************************************************************************************************
 
+//TODO: Categorical Mapping
+
 #include "../include/CombinerVA.h"
 #include "ioput/file/FileTools.h"
 #include "event/include/TheEventBoard.h"
