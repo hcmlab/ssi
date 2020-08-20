@@ -8,10 +8,9 @@
 	</register>	
 
 	<!-- camera sensor -->
-	<sensor create="FFMPEGReader:close" url="ffmpeg_01.mp4">		
+	<sensor create="Camera" option="camera" flip="true">
 		<output channel="video" pin="video" size="2.0s"/>
-		<output channel="audio" pin="audio" size="2.0s"/>
-	</sensor>	
+	</sensor>
 
 	<!-- facecrop -->
 	<transformer create="Facecrop" address="face@video" dependencies="../build/dependencies/" resize_offset="25" color_code="true">
@@ -25,13 +24,6 @@
 	</consumer>
 	<consumer create="VideoPainter:plot2" title="FACE" flip="false">
 		<input pin="video_face" frame="1" delta="0"/>
-	</consumer>
-
-	<consumer create="FFMPEGWriter:writer" path="ffmpeg_$(num,2)">
-		<input pin="video" frame="1"/>
-		<xinput size="1">
-			<input pin="audio"/>
-		</xinput>
 	</consumer>	
 	
 	<!-- listener -->
