@@ -1,7 +1,6 @@
 ﻿  Killing any running python_d.exe instances...
   Getting build info from git
-  Building heads/dev-dirty:fcafe1de dev
-G:\Git\ssi\libs\build\Python-3.7.7\PCbuild\pythoncore.vcxproj(460,5): warning : Not including zlib is not a supported configuration.
+  Building heads/dev-dirty:b5c4dfd2 dev
   _abc.c
   _bisectmodule.c
   blake2module.c
@@ -196,6 +195,20 @@ G:\Git\ssi\libs\build\Python-3.7.7\PCbuild\pythoncore.vcxproj(460,5): warning : 
   sysmodule.c
   thread.c
   traceback.c
+  zlibmodule.c
+  adler32.c
+  Code wird generiert...
+  Kompilieren...
+  compress.c
+  crc32.c
+  deflate.c
+  infback.c
+  inffast.c
+  inflate.c
+  inftrees.c
+  trees.c
+  uncompr.c
+  zutil.c
   dl_nt.c
   Code wird generiert...
   getbuildinfo.c

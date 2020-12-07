@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8627DA10-B8B1-4648-83B5-C3F6AF16E6C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dlls", "dlls", "{7E2B631D-0334-422B-83C3-4093B38D8145}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "dlls\python.v14.vcxproj", "{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python377", "dlls\python.v14.vcxproj", "{90D48C31-EB0F-4CBA-A05E-BD08385DB93E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CF7AC3D1-E2DF-41D2-BEA6-1E2556CDEA26} = {CF7AC3D1-E2DF-41D2-BEA6-1E2556CDEA26}
 	EndProjectSection
