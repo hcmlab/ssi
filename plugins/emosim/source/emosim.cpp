@@ -49,7 +49,10 @@ namespace ssi {
 		_habituation_timer(0),
 		_cooldown_timer(0),
 		_target_approach_speed(1.0f),
-		_habituation_speed(1.0f)
+		_habituation_speed(1.0f),
+		_last_auto_feeback(0),
+		_auto_feedback_valence_value(0.0f),
+		_auto_feedback_valence_counter (0)
 	{
 
 		if (file) {
@@ -221,6 +224,62 @@ namespace ssi {
 		}
 	}
 
+	void EmoSim::ResolveFeedback(bool positive, ssi_real_t strength) {
+
+		if (positive) {
+
+			_habituation_pos += 0.15f * strength;
+			_habituation_neg -= 0.1f  * strength;
+
+			if (_habituation_pos > 1.0f) {
+				_habituation_pos = 1.0f;
+			}
+			if (_habituation_neg > 1.0f) {
+				_habituation_neg = 1.0f;
+			}
+			if (_habituation_pos < -1.0f) {
+				_habituation_pos = -1.0f;
+			}
+			if (_habituation_neg < -1.0f) {
+				_habituation_neg = -1.0f;
+			}
+			if (_habituation_pos <= 0.5f) {
+				_valence_base += 0.2f * strength;
+				_arousal_base += 0.2f * strength;
+			}
+			else {
+				_valence_base += 0.3f * strength;
+				_arousal_base -= 0.1f * strength;
+			}
+		}
+		else
+		{
+			_habituation_pos -= 0.1f * strength;
+			_habituation_neg += 0.15f * strength;
+
+			if (_habituation_pos > 1.0f) {
+				_habituation_pos = 1.0f;
+			}
+			if (_habituation_neg > 1.0f) {
+				_habituation_neg = 1.0f;
+			}
+			if (_habituation_pos < -1.0f) {
+				_habituation_pos = -1.0f;
+			}
+			if (_habituation_neg < -1.0f) {
+				_habituation_neg = -1.0f;
+			}
+			if (_habituation_neg <= 0.5f) {
+				_valence_base -= 0.2f * strength;
+				_arousal_base += 0.1f * strength;
+			}
+			else {
+				_valence_base -= 0.3f * strength;
+				_arousal_base -= 0.2f * strength;
+			}
+		}
+	}
+
 	bool EmoSim::update(IEvents& events, ssi_size_t n_new_events, ssi_size_t time_ms) {
 
 		CalculatePersonalitySettings();
@@ -297,56 +356,12 @@ namespace ssi {
 				else if (e->type == SSI_ETYPE_STRING) {
 
 					if (e->event_id == _feedback_pos_id) {
-
-						_habituation_pos += 0.15f;
-						_habituation_neg -= 0.1f;
-
-						if (_habituation_pos > 1.0f) {
-							_habituation_pos = 1.0f;
-						}
-						if (_habituation_neg > 1.0f) {
-							_habituation_neg = 1.0f;
-						}
-						if (_habituation_pos < -1.0f) {
-							_habituation_pos = -1.0f;
-						}
-						if (_habituation_neg < -1.0f) {
-							_habituation_neg = -1.0f;
-						}
-						if (_habituation_pos <= 0.5f) {
-							_valence_base += 0.2f;
-							_arousal_base += 0.2f;
-						}
-						else {
-							_valence_base += 0.3f;
-							_arousal_base -= 0.1f;
-						}
+						
+						ResolveFeedback(true, 1.0f);
 					}
 					else if (e->event_id == _feedback_neg_id) {
 
-						_habituation_pos -= 0.1f;
-						_habituation_neg += 0.15f;
-
-						if (_habituation_pos > 1.0f) {
-							_habituation_pos = 1.0f;
-						}
-						if (_habituation_neg > 1.0f) {
-							_habituation_neg = 1.0f;
-						}
-						if (_habituation_pos < -1.0f) {
-							_habituation_pos = -1.0f;
-						}
-						if (_habituation_neg < -1.0f) {
-							_habituation_neg = -1.0f;
-						}
-						if (_habituation_neg <= 0.5f) {
-							_valence_base -= 0.2f;
-							_arousal_base += 0.1f;
-						}
-						else {
-							_valence_base -= 0.3f;
-							_arousal_base -= 0.2f;
-						}
+						ResolveFeedback(false, 1.0f);
 					}
 					else {
 
@@ -398,6 +413,35 @@ namespace ssi {
 		}
 		if (n_user_arousal_values > 0) {
 			_arousal_user = user_arousal / (float)n_user_arousal_values;
+		}
+
+		if (_options.auto_feedback_valence) {
+			if (time_ms - _last_auto_feeback > _options.auto_feedback_timer) {
+				_last_auto_feeback = time_ms;
+				_auto_feedback_valence_value += _valence_user;
+				_auto_feedback_valence_counter++;
+
+				ssi_real_t feedback_valence = _auto_feedback_valence_value / (ssi_real_t)_auto_feedback_valence_counter;
+				
+				// ssi_print("\nDEBUG: feedback_valence = %.2f", feedback_valence);
+
+				if (feedback_valence > 0.0f) {
+
+					ResolveFeedback(true, abs(feedback_valence));
+				}
+				else {
+
+					ResolveFeedback(false, abs(feedback_valence));
+				}
+
+				_auto_feedback_valence_value = 0.0f;
+				_auto_feedback_valence_counter = 0;
+			}
+			else
+			{
+				_auto_feedback_valence_value += _valence_user;
+				_auto_feedback_valence_counter++;
+			}
 		}
 
 		ssi_real_t empathy_effect_valence = _valence_user * abs(_empathy_factor_valence);
