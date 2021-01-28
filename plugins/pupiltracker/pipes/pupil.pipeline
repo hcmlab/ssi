@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<register>
+		<load name="camera"/>		
+		<load name="pupiltracker"/>		
+		<load name="graphic"/>		
+	</register>	
+
+	<!-- camera sensor -->
+	<sensor create="Camera" option="camera" flip="true">
+		<output channel="video" pin="video" size="2.0s"/>
+	</sensor>
+
+	<!-- facecrop -->
+	<transformer create="PupilTracker" address="face@video" dependencies="../build/dependencies/" resize_offset="25" color_code="true">
+		<input pin="video" frame="1" delta="0"/>
+		<output pin="video_pupil"/>
+	</transformer>
+	
+	<!-- visualization -->
+	<consumer create="VideoPainter:plot1" title="VIDEO" flip="false">
+		<input pin="video" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="VideoPainter:plot2" title="PUPIL" flip="false">
+		<input pin="video_pupil" frame="1" delta="0"/>
+	</consumer>	
+	
+	<!-- listener -->
+	<object create="EventMonitor:monitor">
+		<listen address="@" span="10000" />
+	</object>		
+	
+	<!-- decoration -->	
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,650,800">console</area>
+		<area pos="650,0,400,800">plot*</area>		
+		<area pos="1050,0,400,800">monitor</area>		
+	</object>	
+	
+</pipeline>
