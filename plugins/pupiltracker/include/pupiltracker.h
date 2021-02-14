@@ -33,6 +33,10 @@
 #include "ioput/option/OptionList.h"
 #include "event/EventAddress.h"
 
+#include "boost/asio.hpp"
+
+using boost::asio::ip::tcp;
+
 namespace cv {
 	class Mat;
 	class CascadeClassifier;
@@ -48,21 +52,10 @@ namespace ssi {
 
 		public:
 
-			Options() : color_code (false), resize_offset (50) {
-
+			Options() {
 				setAddress("");
 				setSenderName("sender");
 				setEventName("event");
-				
-				setDependenciesPath("..\\dependencies\\");
-
-				addOption("address", address, SSI_MAX_CHAR, SSI_CHAR, "event address (if sent to event board) (event@sender)");
-				addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender");
-				addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event");
-				addOption("dependencies", dependencies, SSI_MAX_CHAR, SSI_CHAR, "path of dependency files");
-				addOption("color_code", &color_code, 1, SSI_BOOL, "colored borders to indicate tracking");
-				addOption("resize_offset", &resize_offset, 1, SSI_INT, "zoom factor (positive int >= 0)");
-
 			};
 
 			void setAddress(const ssi_char_t *address) {
@@ -80,18 +73,10 @@ namespace ssi {
 					ssi_strcpy(this->ename, ename);
 				}
 			}
-			void setDependenciesPath(const ssi_char_t *dependencies) {
-				if (dependencies) {
-					ssi_strcpy(this->dependencies, dependencies);
-				}
-			}
 
 			ssi_char_t address[SSI_MAX_CHAR];
 			ssi_char_t sname[SSI_MAX_CHAR];
 			ssi_char_t ename[SSI_MAX_CHAR];
-			ssi_char_t dependencies[SSI_MAX_CHAR];
-			bool color_code;
-			ssi_size_t resize_offset;
 
 		};
 
@@ -122,19 +107,19 @@ namespace ssi {
 			if (sample_dimension_in > 1) {
 				ssi_err("#dimension > 1 not supported");
 			}
-			return 1;
+			return 4;
 		};
 		ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {
 			if (sample_bytes_in != ssi_video_size(_format_in)) {
 				ssi_err("#bytes not compatible");
 			}
-			return ssi_video_size(_format_out);
+			return sizeof(SSI_FLOAT);
 		};
 		ssi_type_t getSampleTypeOut(ssi_type_t sample_type_in) {
 			if (sample_type_in != SSI_IMAGE) {
 				ssi_err("unsupported type");
 			}
-			return SSI_IMAGE;
+			return SSI_FLOAT;
 		};
 
 		bool setEventListener(IEventListener *listener);
@@ -176,14 +161,17 @@ namespace ssi {
 		ssi_video_params_t _format_in, _format_out;
 		ssi_size_t _stride_in, _stride_out;
 
+	private:
+		char* _sendFrameBuffer;
+		size_t _ts;
+		boost::asio::io_context _ioContext;
+		tcp::socket _serverSocket;
+		boost::asio::streambuf _response_buffer;
 
-		cv::CascadeClassifier *_face_detector = 0;
-		ssi_size_t _last_x;
-		ssi_size_t _last_y;
-		ssi_size_t _last_w;
-		ssi_size_t _last_h;
+		ssi_size_t _frameWidthIn;
+		ssi_size_t _frameHeightIn;
+		double _bytesPerPixelIn;
 
-		bool _firstrun;
 	};
 
 }

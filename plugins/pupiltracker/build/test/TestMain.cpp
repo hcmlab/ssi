@@ -97,9 +97,6 @@ void ex_facecrop() {
 
 	PupilTracker *pupil = ssi_create(PupilTracker, 0, true);
 	pupil->getOptions()->setAddress("face@video");
-	/*crop->getOptions()->setDependenciesPath("../dependencies/");*/
-	pupil->getOptions()->color_code = true;
-	pupil->getOptions()->resize_offset = 25;
 	ITransformable *pupil_t = frame->AddTransformer(camera_p, pupil, "1");
 	board->RegisterSender(*pupil);
 
@@ -136,25 +133,26 @@ void ex_facecrop() {
 
 }
 
+
 void ex_facecrop_offline(int argc, char *argv[]) {
 
-	if (argc == 3)
+	if (argc == 3) //yeet
 	{
 
 	FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, true);
-	reader->getOptions()->setUrl(argv[1]);
+	reader->getOptions()->setUrl(argv[1]); //fixer input path
 	reader->getOptions()->bestEffort = true;
 
 
 	FFMPEGWriter *writer = ssi_create(FFMPEGWriter, 0, true);
-	writer->getOptions()->setUrl(argv[2]);
+	writer->getOptions()->setUrl(argv[2]); //fixer output path
 	
 
-	Facecrop *crop = ssi_create(Facecrop, 0, true);
+	PupilTracker *crop = ssi_create(PupilTracker, 0, true);
 	crop->getOptions()->setAddress("face@video");
-	crop->getOptions()->setDependenciesPath(".\\");
-	crop->getOptions()->color_code = false;
-	crop->getOptions()->resize_offset = 25;
+	//crop->getOptions()->setDependenciesPath(".\\");
+	//crop->getOptions()->color_code = false;
+	//crop->getOptions()->resize_offset = 25;
 	//ITransformable *crop_t = frame->AddTransformer(camera_p, crop, "1");
 	//board->RegisterSender(*crop);
 
@@ -179,5 +177,6 @@ void ex_facecrop_offline(int argc, char *argv[]) {
 
 
 }
+
 
 

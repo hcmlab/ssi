@@ -1,6 +1,6 @@
-// facecrop.cpp
-// author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
-// created: 2018/12/06
+// pupiltracker.cpp
+// author: Fabian Wildgrube
+// created: 2021/02/11
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -37,8 +37,10 @@ namespace ssi {
 		: _stride_in(0),
 		_stride_out(0),
 		_listener(0),
-		_face_detector(0),
-		_file(0) {
+		_file(0),
+		_ts(0),
+		_serverSocket(_ioContext)
+	{
 
 		if (file) {
 			if (!OptionList::LoadXML(file, &_options)) {
@@ -54,7 +56,7 @@ namespace ssi {
 
 		_listener = listener;
 
-		if (_options.address[0] != '\0') {
+		if(_options.address[0] != '\0') {
 
 			_event_address.setAddress(_options.address);
 			_event.sender_id = Factory::AddString(_event_address.getSender(0));
@@ -94,21 +96,25 @@ namespace ssi {
 	}
 
 	void PupilTracker::setFormatIn(ssi_video_params_t format) {
-
 		_format_in = format;
 		_stride_in = ssi_video_stride(_format_in);
+		_frameWidthIn = _format_in.widthInPixels;
+		_frameHeightIn = _format_in.heightInPixels;
+		_bytesPerPixelIn = (_format_in.depthInBitsPerChannel / 8) * _format_in.numOfChannels;
 
+		if (_bytesPerPixelIn != 3) {
+			ssi_err("invalid bit depth or channel size. Can only work with 8bit/channel and 3 channels (RGB)");
+			return;
+		}
 	}
 
 	void PupilTracker::setFormatOut(ssi_video_params_t format) {
-
 		_format_out = format;
 		_stride_out = ssi_video_stride(_format_out);
 
 	}
 
 	void PupilTracker::setFormat(ssi_video_params_t format_in) {
-
 		PupilTracker::setFormatIn(format_in);
 		PupilTracker::setFormatOut(format_in);
 	}
@@ -118,27 +124,34 @@ namespace ssi {
 		ssi_size_t xtra_stream_in_num,
 		ssi_stream_t xtra_stream_in[]) {
 
-		cv::String path = _options.dependencies;
-		path += "haarcascade_frontalface_alt.xml";
-		_face_detector = new cv::CascadeClassifier(path);
-		
-		ssi_event_adjust(_event, 4 * sizeof (ssi_event_map_t));
-		ssi_event_map_t *tuple = ssi_pcast(ssi_event_map_t, _event.ptr);
-		tuple[0].id = Factory::AddString("face_x");
-		tuple[1].id = Factory::AddString("face_y");
-		tuple[2].id = Factory::AddString("face_w");
-		tuple[3].id = Factory::AddString("face_h");
+		//set up connection to pupiltracking server
+		_serverSocket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 9876));
 
-		_last_x = 0;
-		_last_y = 0;
-		_last_w = 0;
-		_last_h = 0;
+		// send metadata (frame size, fps, etc.)
+		ssi_size_t frameWidth = _format_in.widthInPixels;
+		ssi_size_t frameHeight = _format_in.heightInPixels;
 
-		_firstrun = true;
+		double fps = stream_in.sr;
+		ssi_size_t bytesPerPixel = (_format_in.depthInBitsPerChannel / 8) * _format_in.numOfChannels;
+
+		if (bytesPerPixel != 3) {
+			ssi_err("invalid bit depth or channel size. Can only work with 8bit/channel and 3 channels (RGB)");
+			return;
+		}
+
+		double* metaData = new double[4];
+		metaData[0] = frameWidth * 1.0;
+		metaData[1] = frameHeight * 1.0;
+		metaData[2] = bytesPerPixel * 1.0;
+		metaData[3] = fps;
+
+		boost::asio::write(_serverSocket, boost::asio::buffer(reinterpret_cast<const char*>(metaData), 4 * sizeof(double)));
+
+		//create buffer for sending frames
+		_sendFrameBuffer = new char[frameWidth * frameHeight * bytesPerPixel];
 	}
 
 	void PupilTracker::transform(ITransformer::info info,
-		
 		ssi_stream_t &stream_in,
 		ssi_stream_t &stream_out,
 		ssi_size_t xtra_stream_in_num,
@@ -148,109 +161,43 @@ namespace ssi {
 		ssi_size_t frameHeight = _format_in.heightInPixels;
 		
 		cv::Mat frame;
-		cv::Mat grayframe;
-		cv::Mat roi;
 
 		frame = cv::Mat(frameHeight, frameWidth, CV_8UC3, stream_in.ptr, _stride_in);
-		cvtColor(frame, grayframe, cv::COLOR_RGB2GRAY);
-		std::vector<cv::Rect> faces;
-		_face_detector->detectMultiScale(grayframe, faces, 1.2, 1, 0, cvSize(64, 48), cv::Size(frameWidth, frameHeight));
 
-		if (faces.size() > 0)
-		{
-			if (_firstrun)
-			{
-				if (_options.color_code) rectangle(frame, faces[0], cv::Scalar(0, 255, 255), 5, cv::LINE_AA);
-				roi = frame(faces[0]);
-				cv::resize(roi, roi, cv::Size(frameWidth, frameHeight), faces[0].x, faces[0].y, 1);
-
-				// event
-				_event.time = info.time * 1000;
-				_event.dur = (ssi_size_t)1.0f / stream_in.sr * 1000.0f;
-				ssi_event_map_t *tuple = ssi_pcast(ssi_event_map_t, _event.ptr);
-				tuple[0].value = (ssi_real_t)faces[0].x;
-				tuple[1].value = (ssi_real_t)faces[0].y;
-				tuple[2].value = (ssi_real_t)faces[0].width;
-				tuple[3].value = (ssi_real_t)faces[0].height;
-				if (_listener != 0)
-				{
-					_listener->update(_event);
+		// copy input frame into buffer for sending to server
+		for (unsigned int i = 0; i < frameWidth; ++i) {
+			for (unsigned int j = 0; j < frameHeight; ++j) {
+				auto pixel = frame.at<cv::Vec3b>(i, j);
+				for (unsigned int k = 0; k < 3; ++k) {
+					*(_sendFrameBuffer + i * static_cast<int>(frameWidth) * 3 + j * 3 + k) = pixel[k];
 				}
-
-				_last_x = faces[0].x;
-				_last_y = faces[0].y;
-				_last_w = faces[0].width;
-				_last_h = faces[0].height;
-
-				_firstrun = false;
-			}
-			else
-			{
-				cv::Rect size(cv::Point((faces[0].x + _last_x)/2, (faces[0].y + _last_y) / 2), cv::Size((_last_w + faces[0].width)/2, (_last_h + faces[0].height)/2));
-
-				int offset = _options.resize_offset;
-				if (offset < 0) offset = 0;
-
-				size.x -= offset;
-				if (size.x < 0) size.x = 0;
-				size.y -= offset;
-				if (size.y < 0) size.y = 0;
-				size.width += offset * 2;
-				if (size.x + size.width > frameWidth) size.width -= (size.x + size.width - frameWidth);
-				size.height += offset * 2;
-				if (size.y + size.height > frameHeight) size.height -= (size.y + size.height - frameHeight);
-
-				if (_options.color_code) rectangle(frame, size, cv::Scalar(0, 255, 0), 5, cv::LINE_AA);
-				roi = frame(size);
-				cv::resize(roi, roi, cv::Size(frameWidth, frameHeight), size.x, size.y, 1);
-
-				// event
-				_event.time = info.time * 1000;
-				_event.dur = (ssi_size_t)1.0f / stream_in.sr * 1000.0f;
-				ssi_event_map_t *tuple = ssi_pcast(ssi_event_map_t, _event.ptr);
-				tuple[0].value = (ssi_real_t)faces[0].x;
-				tuple[1].value = (ssi_real_t)faces[0].y;
-				tuple[2].value = (ssi_real_t)faces[0].width;
-				tuple[3].value = (ssi_real_t)faces[0].height;
-				if (_listener != 0)
-				{
-					_listener->update(_event);
-				}
-
-				_last_x = size.x;
-				_last_y = size.y;
-				_last_w = size.width;
-				_last_h = size.height;
-			}
-		}
-		else
-		{
-			if (_firstrun)
-			{
-				if (_options.color_code) rectangle(frame, cv::Rect(cv::Point(0,0), cv::Size(frameWidth, frameHeight)), cv::Scalar(0, 255, 255), 5, cv::LINE_AA);
-				roi = frame;
-			}
-			else
-			{
-				cv::Rect _last_face(cv::Point(_last_x, _last_y), cv::Size(_last_w, _last_h));
-				if (_options.color_code) rectangle(frame, _last_face, cv::Scalar(0, 0, 255), 5, cv::LINE_AA);
-				roi = frame(_last_face);
-				cv::resize(roi, roi, cv::Size(frameWidth, frameHeight), _last_x, _last_y, 1);
 			}
 		}
 
-		
+		// send frame to server for processing
+		boost::asio::write(_serverSocket, boost::asio::buffer(_sendFrameBuffer, frameWidth * frameHeight * 3));
 
-		// Fin
-		ssi_byte_t* outptr = stream_out.ptr;
-		for (ssi_size_t rows = 0; rows < roi.rows; rows++) {
-			memcpy(outptr, roi.ptr(rows), roi.cols * roi.elemSize());
-			outptr += _stride_out;
-		}
+		// receive pupil data
+		auto bytes_transferred = boost::asio::read(_serverSocket, _response_buffer, boost::asio::transfer_exactly(4 * sizeof(float)));
+
+		const char* pupilDataTrackingFrameBuffer = boost::asio::buffer_cast<const char*>(_response_buffer.data());
+		float leftPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer));
+		float leftPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 1 * sizeof(float)));
+		float rightPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 2 * sizeof(float)));
+		float rightPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 3 * sizeof(float)));
+
+		std::cout << "  Left: " << leftPupilDiameter << " (c: " << leftPupilConfidence << "), Right: " << rightPupilDiameter << " (c: " << rightPupilConfidence << ")\n";
+		_response_buffer.consume(bytes_transferred);		
+
+		// Send pupil data to output stream
+		ssi_real_t* outptr = ssi_pcast(ssi_real_t, stream_out.ptr);
+		memcpy(outptr, &leftPupilDiameter, sizeof(float));
+		memcpy(outptr, &leftPupilConfidence, sizeof(float));
+		memcpy(outptr, &rightPupilDiameter, sizeof(float));
+		memcpy(outptr, &rightPupilConfidence, sizeof(float));
 		
 		// Release
 		frame.release();
-		grayframe.release();	
 	}
 
 	void PupilTracker::transform_flush(ssi_stream_t &stream_in,
@@ -258,7 +205,7 @@ namespace ssi {
 		ssi_size_t xtra_stream_in_num,
 		ssi_stream_t xtra_stream_in[]) {
 
-		delete _face_detector;
+		delete[] _sendFrameBuffer;
 	}
 
 }
