@@ -139,7 +139,7 @@ namespace ssi {
 		ssi_char_t string[SSI_MAX_CHAR];
 
 		if (_listener) {
-			ssi_event_adjust(_event, 2 * sizeof(ssi_event_map_t));
+			ssi_event_adjust(_event, 4 * sizeof(ssi_event_map_t));
 		}
 
 		_update_ms = _options.update_ms;
@@ -527,12 +527,18 @@ namespace ssi {
 				_event.dur = time_ms - _event.time;
 				_event.time = time_ms;
 				ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
-				ssi_sprint(string, "valence");
+				ssi_sprint(string, "valence_agent");
 				e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
 				e[0].value = _valence_current;
-				ssi_sprint(string, "arousal");
+				ssi_sprint(string, "arousal_agent");
 				e[1].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
 				e[1].value = _arousal_current;
+				ssi_sprint(string, "valence_user");
+				e[2].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+				e[2].value = _valence_user;
+				ssi_sprint(string, "arousal_user");
+				e[3].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+				e[3].value = _arousal_user;
 				
 				_listener->update(_event);
 
