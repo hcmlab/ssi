@@ -1107,7 +1107,7 @@ void mapClassNames(params_t &params)
 				continue;
 			}
 
-			if (!(anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE || anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS))
+			if (!(anno.getScheme()->type == SSI_SCHEME_TYPE::DISCRETE || anno.getScheme()->type == SSI_SCHEME_TYPE::FREE || anno.getScheme()->type == SSI_SCHEME_TYPE::CONTINUOUS))
 			{
 				ssi_wrn("ERROR: annotation type not supported");
 				continue;
@@ -1121,6 +1121,20 @@ void mapClassNames(params_t &params)
 				for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
 				{
 					map<String, String>::iterator pos = mapping.find(String(anno.getClassName(it->discrete.id)));
+					if (pos != mapping.end() && strcmp(pos->second.str(), "REST") != 0)
+					{
+						anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);
+					}
+				}
+
+				anno_new.packClass();
+			}
+
+			else if (anno.getScheme()->type == SSI_SCHEME_TYPE::FREE)
+			{
+				for (Annotation::iterator it = anno.begin(); it != anno.end(); it++)
+				{
+					map<String, String>::iterator pos = mapping.find(String(it->free.name));
 					if (pos != mapping.end() && strcmp(pos->second.str(), "REST") != 0)
 					{
 						anno_new.add(it->discrete.from, it->discrete.to, pos->second.str(), it->confidence);
