@@ -334,7 +334,7 @@ const ssi_label_t *FileAnnotationIn::next () {
                                 return NULL;
 							}					
 							ssi_size_t n_tokens = ssi_split_string_count(_string, ';', true);
-							if (n_tokens != 4)
+							if (n_tokens <= 4 )
 							{
 								ssi_wrn("could not read <from> <to> <name> <conf>");
                                 return NULL;
