@@ -142,22 +142,23 @@ void ex_facecrop_offline()
 	frame->AddDecorator(decorator);
 
 	FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, true);
-	reader->getOptions()->setUrl("C:\Users\wildgrfa\Desktop\pupilTrackingVideos\test.mp4");
+	reader->getOptions()->setUrl("C:\\Users\\wildgrfa\\Desktop\\pupilTrackingVideos\\test.mp4");
 	reader->getOptions()->bestEffort = true;
-	ITransformable *reader_p = frame->AddProvider(reader, SSI_CAMERA_PROVIDER_NAME, 0); // ??
+	ITransformable *reader_p = frame->AddProvider(reader, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME); // ??
 	frame->AddSensor(reader);	
 
 	PupilTracker *pupil = ssi_create(PupilTracker, 0, true);
 	pupil->getOptions()->setAddress("face@video");
 	ITransformable *pupil_t = frame->AddTransformer(reader_p, pupil, "1");
 
-	decorator->add("console", 0, 0, 650, 800);
-
-	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	SignalPainter *paint = ssi_create_id(SignalPainter, 0, "plot");
 	paint->getOptions()->type = PaintSignalType::SIGNAL;
 	paint->getOptions()->size = 10;
 	paint->getOptions()->setTitle("Title");
 	frame->AddConsumer(pupil_t, paint, "0.1s");
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot", 650, 0, 400, 800);
 
 	frame->Start();
 	frame->Wait();
