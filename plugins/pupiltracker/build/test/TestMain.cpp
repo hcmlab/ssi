@@ -142,9 +142,9 @@ void ex_facecrop_offline()
 	frame->AddDecorator(decorator);
 
 	FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, true);
-	reader->getOptions()->setUrl("C:\\Users\\wildgrfa\\Desktop\\pupilTrackingVideos\\test.mp4");
+	reader->getOptions()->setUrl("C:\\Users\\wildgrfa\\Desktop\\pupilTrackingVideos\\test_short.mp4");
 	reader->getOptions()->bestEffort = true;
-	ITransformable *reader_p = frame->AddProvider(reader, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME); // ??
+	ITransformable *reader_p = frame->AddProvider(reader, SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME);
 	frame->AddSensor(reader);	
 
 	PupilTracker *pupil = ssi_create(PupilTracker, 0, true);
