@@ -97,7 +97,7 @@ void PythonBridge::listen_enter () {
 		ssi_event_adjust (_event, 1 * sizeof (ssi_event_map_t));
 	}
 	
-	_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
+	_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::CLIENT, _options.port, _options.host);
 
 	/*_msg_start_sequence = new ssi_byte_t[3];
 	_msg_start_sequence[0] = '+';
@@ -124,10 +124,10 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 		{
 			switch (e->type) {
 				case SSI_ETYPE_UNDEF: {
-					std::string _test_string = "hal";
+					//std::string _test_string = "hal";
 					result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
-					//result = _socket->send(e->ptr, e->tot);
-					result = _socket->send(&_test_string, _test_string.size());
+					result = _socket->send(e->ptr, e->tot);
+					//result = _socket->send(&_test_string, _test_string.size());
 					result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
 					//ssi_print("\n start_%d, msg_%d, end_%d", _msg_start_sequence.size(), e->tot, _msg_end_sequence.size());
 				}
@@ -156,7 +156,13 @@ void PythonBridge::listen_flush (){
 		ssi_event_reset (_event);
 	}
 
-	delete _socket; _socket = 0;
+	if (_socket) {
+		if (_socket->disconnect()) {
+			delete _socket; _socket = 0;
+		}
+	}
+
+	
 	/*delete _msg_start_sequence; _msg_start_sequence = 0;
 	delete _msg_end_sequence; _msg_end_sequence = 0;*/
 }

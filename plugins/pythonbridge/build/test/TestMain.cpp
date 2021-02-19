@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
 		Factory::RegisterDLL("ioput");
 		Factory::RegisterDLL("camera");
 		Factory::RegisterDLL("pythonbridge");
+		Factory::RegisterDLL("signal");
 
 		ex_pythonbridge();		
 
@@ -94,11 +95,15 @@ void ex_pythonbridge() {
 	ITransformable* button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 
-	ZeroEventSender* ezero = ssi_create(ZeroEventSender, 0, true);
+	Selector* select = ssi_create(Selector, 0, true);
+	ssi_sprint(select->getOptions()->indices, "1");
+	ITransformable* cursor_y = frame->AddTransformer(cursor_p, select, "1");
+
+	/*ZeroEventSender* ezero = ssi_create(ZeroEventSender, 0, true);
 	ezero->getOptions()->mindur = 0.2;
 	ezero->getOptions()->setAddress("click@mouse");
 	frame->AddConsumer(button_p, ezero, "0.25s");
-	board->RegisterSender(*ezero);
+	board->RegisterSender(*ezero);*/
 
 	/*Camera* camera = ssi_create(Camera, 0, true);
 	camera->getOptions()->flip = true;
@@ -108,7 +113,7 @@ void ex_pythonbridge() {
 	PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
 	pybridgeentry->getOptions()->setAddress("entry@pythonbridge");
 	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
-	frame->AddConsumer(cursor_p, pybridgeentry, "1");
+	frame->AddConsumer(cursor_y, pybridgeentry, "0.1s");
 	//frame->AddConsumer(camera_p, pybridgeentry, "1");
 	board->RegisterSender(*pybridgeentry);
 
@@ -130,7 +135,7 @@ void ex_pythonbridge() {
 	plot->getOptions()->type = PaintSignalType::SIGNAL;
 	plot->getOptions()->autoscale = true;
 	plot->getOptions()->size = 20;
-	frame->AddConsumer(cursor_p, plot, "1", "0");
+	frame->AddConsumer(cursor_y, plot, "1", "0");
 
 	/*plot = ssi_create_id(SignalPainter, 0, "plot_2");
 	plot->getOptions()->setTitle("bridge");
