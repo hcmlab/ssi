@@ -165,11 +165,12 @@ namespace ssi {
 		frame = cv::Mat(frameHeight, frameWidth, CV_8UC3, stream_in.ptr, _stride_in);
 
 		// copy input frame into buffer for sending to server
-		for (unsigned int i = 0; i < frameWidth; ++i) {
-			for (unsigned int j = 0; j < frameHeight; ++j) {
-				auto pixel = frame.at<cv::Vec3b>(i, j);
+		for (unsigned int j = 0; j < frameHeight; ++j) {
+			for (unsigned int i = 0; i < frameWidth; ++i) {
+				auto pixel = frame.at<cv::Vec3b>(j, i);
 				for (unsigned int k = 0; k < 3; ++k) {
-					*(_sendFrameBuffer + i * static_cast<int>(frameWidth) * 3 + j * 3 + k) = pixel[k];
+					auto stuff = pixel.val[k];
+					*(_sendFrameBuffer + j * static_cast<int>(frameWidth) * 3 + i * 3 + k) = stuff;
 				}
 			}
 		}
