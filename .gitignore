@@ -176,3 +176,6 @@ bin/x64/vc140/python37/
 bin/x64/vc140/Scripts/
 bin/x64/vc140/python37.zip
 bin/x64/vc140/python-3.7.7-embed-amd64.zip
+
+!libs/x64/vc140/libboost_date_time-vc140-mt-gd-x64-1_75.lib
+!libs/x64/vc140/libboost_regex-vc140-mt-gd-x64-1_75.lib

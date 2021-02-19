@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 ssi_char_t string[SSI_MAX_CHAR];
 
 void ex_facecrop();
-void ex_facecrop_offline(int argc, char *argv[]);
+void ex_facecrop_offline();
 
 int main(int argc, char *argv[]) {
 
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 		Factory::RegisterDLL("ffmpeg");
 
 		//ex_facecrop();
-		ex_facecrop_offline(argc, argv);
+		ex_facecrop_offline();
 		
 		
 
@@ -134,48 +134,38 @@ void ex_facecrop() {
 }
 
 
-void ex_facecrop_offline(int argc, char *argv[]) {
+void ex_facecrop_offline()
+{
+	ITheFramework *frame = Factory::GetFramework();
 
-	if (argc == 3) //yeet
-	{
+	Decorator *decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
 
 	FFMPEGReader *reader = ssi_create(FFMPEGReader, 0, true);
-	reader->getOptions()->setUrl(argv[1]); //fixer input path
+	reader->getOptions()->setUrl("C:\Users\wildgrfa\Desktop\pupilTrackingVideos\test.mp4");
 	reader->getOptions()->bestEffort = true;
+	ITransformable *reader_p = frame->AddProvider(reader, SSI_CAMERA_PROVIDER_NAME, 0); // ??
+	frame->AddSensor(reader);	
 
+	PupilTracker *pupil = ssi_create(PupilTracker, 0, true);
+	pupil->getOptions()->setAddress("face@video");
+	ITransformable *pupil_t = frame->AddTransformer(reader_p, pupil, "1");
 
-	FFMPEGWriter *writer = ssi_create(FFMPEGWriter, 0, true);
-	writer->getOptions()->setUrl(argv[2]); //fixer output path
-	
+	decorator->add("console", 0, 0, 650, 800);
 
-	PupilTracker *crop = ssi_create(PupilTracker, 0, true);
-	crop->getOptions()->setAddress("face@video");
-	//crop->getOptions()->setDependenciesPath(".\\");
-	//crop->getOptions()->color_code = false;
-	//crop->getOptions()->resize_offset = 25;
-	//ITransformable *crop_t = frame->AddTransformer(camera_p, crop, "1");
-	//board->RegisterSender(*crop);
+	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	paint->getOptions()->type = PaintSignalType::SIGNAL;
+	paint->getOptions()->size = 10;
+	paint->getOptions()->setTitle("Title");
+	frame->AddConsumer(pupil_t, paint, "0.1s");
 
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
 
-	FileProvider provider(writer, crop);
-	reader->setProvider(SSI_FFMPEGREADER_VIDEO_PROVIDER_NAME, &provider);
-
-
-	reader->connect();
-	reader->start();
-	reader->wait();
-	Sleep(1000);
-	reader->stop();
-	reader->disconnect();
-
-	}
-
-	else {
-		printf("Add InputPath OutputPath to command line arguments");
-	}
-
-
-
+	ssi_print("\n\n\tpress a key to quit\n");
+	getchar();
 }
 
 
