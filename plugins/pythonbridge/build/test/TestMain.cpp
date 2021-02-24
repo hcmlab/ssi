@@ -1,6 +1,6 @@
 // TestMain.cpp (TEST)
 // Florian Lingenfelser <lingenfelser@hcm-lab.de>
-// created: 2018/12/06
+// created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -118,7 +118,7 @@ void ex_pythonbridge() {
 	board->RegisterSender(*pybridgeentry);
 
 	PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
-	pybridgeentry->getOptions()->setAddress("bridge@pythonbridge");
+	pybridge->getOptions()->setAddress("bridge@pythonbridge");
 	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);
 
 	/*VideoPainter* vidplot = 0;

@@ -1,4 +1,4 @@
-// pythonbridgeentry.cpp
+// pythonbridgeexit.cpp
 // author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
 // created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
@@ -28,11 +28,11 @@
 #include "base/ITheFramework.h"
 #include "base/Factory.h"
 
-#include "../include/pythonbridgeentry.h"
+#include "../include/pythonbridgeexit.h"
 
 namespace ssi {
 
-	PythonBridgeEntry::PythonBridgeEntry(const ssi_char_t *file)
+	PythonBridgeExit::PythonBridgeExit(const ssi_char_t *file)
 		: _file(0) {
 
 		if (file) {
@@ -45,7 +45,7 @@ namespace ssi {
 		ssi_event_init(_event, SSI_ETYPE_UNDEF);
 	}
 
-	bool PythonBridgeEntry::setEventListener(IEventListener *listener) {
+	bool PythonBridgeExit::setEventListener(IEventListener *listener) {
 
 		_listener = listener;
 
@@ -77,7 +77,7 @@ namespace ssi {
 
 	}
 
-	PythonBridgeEntry::~PythonBridgeEntry() {
+	PythonBridgeExit::~PythonBridgeExit() {
 
 		if (_file) {
 			OptionList::SaveXML(_file, &_options);
@@ -87,17 +87,17 @@ namespace ssi {
 		ssi_event_destroy(_event);
 	}
 
-	void PythonBridgeEntry::consume_enter(ssi_size_t stream_in_num,
+	void PythonBridgeExit::consume_enter(ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]) {
 		
 	}
 
-	void PythonBridgeEntry::consume(IConsumer::info consume_info,
+	void PythonBridgeExit::consume(IConsumer::info consume_info,
 		ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]) {
 
 		if (stream_in_num != 1) {
-			ssi_wrn("PythonBridgeEntry is currently only usable for single stream.");
+			ssi_wrn("PythonBridgeExit is currently only usable for single stream.");
 			return;
 		}
 
@@ -129,7 +129,7 @@ namespace ssi {
 		}
 	}
 
-	void PythonBridgeEntry::consume_flush(ssi_size_t stream_in_num,
+	void PythonBridgeExit::consume_flush(ssi_size_t stream_in_num,
 		ssi_stream_t stream_in[]) {
 
 		if (_file) {

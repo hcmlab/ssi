@@ -1,4 +1,4 @@
-// ssifacecrop.h
+// ssipythonbridge.h
 // author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
 // created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
@@ -30,5 +30,6 @@
 
 #include "pythonbridgeentry.h"
 #include "pythonbridge.h"
+#include "pythonbridgeexit.h"
 
 #endif

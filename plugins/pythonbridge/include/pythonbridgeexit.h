@@ -1,4 +1,4 @@
-// pythonbridgeentry.h
+// pythonbridge.h
 // author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
 // created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
@@ -26,8 +26,8 @@
 
 #pragma once
 
-#ifndef PYTHONBRIDGEENTRY_H
-#define PYTHONBRIDGEENTRY_H
+#ifndef PYTHONBRIDGEEXIT_H
+#define PYTHONBRIDGEEXIT_H
 
 #include "base/IConsumer.h"
 #include "ioput/option/OptionList.h"
@@ -35,7 +35,7 @@
 
 namespace ssi {
 
-	class PythonBridgeEntry : public IConsumer {
+	class PythonBridgeExit : public IConsumer {
 
 	public:
 
@@ -77,10 +77,10 @@ namespace ssi {
 
 	public:
 
-		static const ssi_char_t *GetCreateName() { return "PythonBridgeEntry"; };
-		static IObject *Create(const ssi_char_t *file) { return new PythonBridgeEntry(file); };
-		~PythonBridgeEntry();
-		PythonBridgeEntry::Options *getOptions() { return &_options; };
+		static const ssi_char_t *GetCreateName() { return "PythonBridgeExit"; };
+		static IObject *Create(const ssi_char_t *file) { return new PythonBridgeExit(file); };
+		~PythonBridgeExit();
+		PythonBridgeExit::Options *getOptions() { return &_options; };
 		const ssi_char_t *getName() { return GetCreateName(); };
 		const ssi_char_t *getInfo() { return "..."; };
 
@@ -99,8 +99,8 @@ namespace ssi {
 
 	protected:
 
-		PythonBridgeEntry(const ssi_char_t *file = 0);
-		PythonBridgeEntry::Options _options;
+		PythonBridgeExit(const ssi_char_t *file = 0);
+		PythonBridgeExit::Options _options;
 		ssi_char_t *_file;
 
 		EventAddress _event_address;

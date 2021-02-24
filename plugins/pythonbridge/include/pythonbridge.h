@@ -1,6 +1,6 @@
-// TupleMap.h
+// pythonbridge.h
 // author: Florian Lingenfelser <florian.lingenfelser@informatik.uni-augsburg.de>
-// created: 2013/10/15
+// created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
