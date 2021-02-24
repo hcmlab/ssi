@@ -32,6 +32,8 @@
 
 namespace ssi {
 
+	ssi_char_t *PythonBridgeExit::ssi_log_name = "___pybexit";
+
 	PythonBridgeExit::PythonBridgeExit(const ssi_char_t *file)
 		: _file(0) {
 
@@ -42,7 +44,7 @@ namespace ssi {
 			_file = ssi_strcpy(file);
 		}
 
-		ssi_event_init(_event, SSI_ETYPE_UNDEF);
+		ssi_event_init(_event, SSI_ETYPE_MAP);
 	}
 
 	bool PythonBridgeExit::setEventListener(IEventListener *listener) {
@@ -87,59 +89,36 @@ namespace ssi {
 		ssi_event_destroy(_event);
 	}
 
-	void PythonBridgeExit::consume_enter(ssi_size_t stream_in_num,
-		ssi_stream_t stream_in[]) {
-		
-	}
-
-	void PythonBridgeExit::consume(IConsumer::info consume_info,
-		ssi_size_t stream_in_num,
-		ssi_stream_t stream_in[]) {
-
-		if (stream_in_num != 1) {
-			ssi_wrn("PythonBridgeExit is currently only usable for single stream.");
-			return;
-		}
+	void PythonBridgeExit::enter() {
+		ssi_print("\nSTART()");
 
 		if (_listener) {
-			
-			ssi_print("\ntime:\t%.2f\ndur:\t%.2f\nstream_in.tot:\t%d", consume_info.time, consume_info.dur, stream_in[0].tot);
+			ssi_event_adjust(_event, 1 * sizeof(ssi_event_map_t));
+		}
+	}
 
-			_event.time = consume_info.time * 1000;
-			_event.dur = consume_info.dur * 1000;
-			ssi_print("\nconsume(e.ptr):\t%d", _event.ptr);
+	void PythonBridgeExit::run() {
+		ssi_print("\nRUN()");
 
-			if (stream_in[0].tot_real > 0) {
+		if (_listener) {
 
-				ssi_event_adjust(_event, stream_in[0].tot);
-				ssi_print("\nconsume (stream.tot):\t%d", stream_in[0].tot);
-
-				ssi_byte_t *in_ptr = stream_in[0].ptr;
-				ssi_byte_t *out_ptr = _event.ptr;
-				
-				for (ssi_size_t n_bytes = 0; n_bytes < stream_in[0].tot_real; n_bytes++)
-				{
-					*out_ptr = *in_ptr;
-					out_ptr++;
-					in_ptr++;
-				}
-
+			if (true) {
+				ssi_char_t string[SSI_MAX_CHAR];
+				_event.dur = 500;
+				_event.time = getElapsedTime();
+				ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+				ssi_sprint(string, "pypexit");
+				e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+				e[0].value = 0.0f;
 				_listener->update(_event);
 			}
 		}
+
+		::Sleep(500);
 	}
 
-	void PythonBridgeExit::consume_flush(ssi_size_t stream_in_num,
-		ssi_stream_t stream_in[]) {
-
-		if (_file) {
-			OptionList::SaveXML(_file, &_options);
-			delete[] _file;
-		}
-
-		if (_listener) {
-			ssi_event_reset(_event);
-		}
+	void PythonBridgeExit::flush() {
+		ssi_print("\nSTOP()");
 	}
 
 }

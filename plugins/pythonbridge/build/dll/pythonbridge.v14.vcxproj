@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\pythonbridge.h" />
     <ClInclude Include="..\..\include\pythonbridgeentry.h" />
+    <ClInclude Include="..\..\include\pythonbridgeexit.h" />
     <ClInclude Include="..\..\include\ssipythonbridge.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\pythonbridge.cpp" />
     <ClCompile Include="..\..\source\pythonbridgeentry.cpp" />
+    <ClCompile Include="..\..\source\pythonbridgeexit.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4891A3B7-D1C7-4171-A912-8898F31AF5ED}</ProjectGuid>

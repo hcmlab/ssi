@@ -27,6 +27,7 @@
 #include "ssi.h"
 #include "pythonbridge.h"
 #include "pythonbridgeentry.h"
+#include "pythonbridgeexit.h"
 #include "SSI_Tools.h"
 
 #include "camera\include\ssicamera.h"
@@ -110,16 +111,25 @@ void ex_pythonbridge() {
 	ITransformable* camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME, 0);
 	frame->AddSensor(camera);*/
 
-	PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
+	/*PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
 	pybridgeentry->getOptions()->setAddress("entry@pythonbridge");
-	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
 	frame->AddConsumer(cursor_y, pybridgeentry, "0.1s");
-	//frame->AddConsumer(camera_p, pybridgeentry, "1");
-	board->RegisterSender(*pybridgeentry);
+	board->RegisterSender(*pybridgeentry);*/
 
-	PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
+	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
+	//frame->AddConsumer(camera_p, pybridgeentry, "1");
+
+	/*PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
 	pybridge->getOptions()->setAddress("bridge@pythonbridge");
-	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);
+	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);*/
+
+	PythonBridgeExit *pybridgeexit = ssi_create(PythonBridgeExit, 0, true);
+	pybridgeexit->getOptions()->setAddress("exit@pythonbridge");
+	frame->AddRunnable(pybridgeexit);
+	board->RegisterSender(*pybridgeexit);
+
+	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
+	//frame->AddConsumer(camera_p, pybridgeentry, "1");
 
 	/*VideoPainter* vidplot = 0;
 

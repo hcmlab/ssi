@@ -20,6 +20,9 @@
     <ClInclude Include="..\..\include\pythonbridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\pythonbridgeexit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp">
@@ -29,6 +32,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\pythonbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\pythonbridgeexit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

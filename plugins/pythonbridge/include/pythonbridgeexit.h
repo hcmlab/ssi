@@ -28,14 +28,20 @@
 
 #ifndef PYTHONBRIDGEEXIT_H
 #define PYTHONBRIDGEEXIT_H
+#endif
 
-#include "base/IConsumer.h"
+#ifndef SSI_USE_SDL
+
+#include "SSI_Define.h"
+
+#include "base/IObject.h"
+#include "thread/Thread.h"
 #include "ioput/option/OptionList.h"
 #include "event/EventAddress.h"
 
 namespace ssi {
 
-	class PythonBridgeExit : public IConsumer {
+	class PythonBridgeExit : public IObject, public Thread {
 
 	public:
 
@@ -80,22 +86,22 @@ namespace ssi {
 		static const ssi_char_t *GetCreateName() { return "PythonBridgeExit"; };
 		static IObject *Create(const ssi_char_t *file) { return new PythonBridgeExit(file); };
 		~PythonBridgeExit();
-		PythonBridgeExit::Options *getOptions() { return &_options; };
+
+		static ssi_char_t *ssi_log_name;
+		int ssi_log_level;
+
+		Options *getOptions() { return &_options; };
 		const ssi_char_t *getName() { return GetCreateName(); };
 		const ssi_char_t *getInfo() { return "..."; };
-
-		void consume_enter(ssi_size_t stream_in_num,
-			ssi_stream_t stream_in[]);
-		void consume(IConsumer::info consume_info,
-			ssi_size_t stream_in_num,
-			ssi_stream_t stream_in[]);
-		void consume_flush(ssi_size_t stream_in_num,
-			ssi_stream_t stream_in[]);
 
 		bool setEventListener(IEventListener *listener);
 		const ssi_char_t *getEventAddress() {
 			return _event_address.getAddress();
 		}
+
+		void enter();
+		void run();
+		void flush();
 
 	protected:
 
