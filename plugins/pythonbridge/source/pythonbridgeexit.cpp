@@ -32,10 +32,11 @@
 
 namespace ssi {
 
-	ssi_char_t *PythonBridgeExit::ssi_log_name = "___pybexit";
+	ssi_char_t *PythonBridgeExit::ssi_log_name = "____pyexit";
 
 	PythonBridgeExit::PythonBridgeExit(const ssi_char_t *file)
-		: _file(0) {
+		: _file(0),
+		_socket(0) {
 
 		if (file) {
 			if (!OptionList::LoadXML(file, &_options)) {
@@ -90,7 +91,7 @@ namespace ssi {
 	}
 
 	void PythonBridgeExit::enter() {
-		ssi_print("\nSTART()");
+		// ssi_print("\nSTART()");
 
 		if (_listener) {
 			ssi_event_adjust(_event, 1 * sizeof(ssi_event_map_t));
@@ -98,27 +99,66 @@ namespace ssi {
 	}
 
 	void PythonBridgeExit::run() {
-		ssi_print("\nRUN()");
+		// ssi_print("\nRUN()");
 
-		if (_listener) {
-
-			if (true) {
-				ssi_char_t string[SSI_MAX_CHAR];
-				_event.dur = 500;
-				_event.time = getElapsedTime();
-				ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
-				ssi_sprint(string, "pypexit");
-				e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
-				e[0].value = 0.0f;
-				_listener->update(_event);
+		if (_socket == 0)
+		{
+			_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
+			if (_socket->isConnected())
+			{
+				ssi_print("\npyExit created and connected ... \n");
+			}
+			else
+			{
+				ssi_print("\npyExit created, but not connected ... \n");
 			}
 		}
 
-		::Sleep(500);
+		if (_socket->isConnected())
+		{
+			int result = 0;
+			float value = 0.0f;
+			result = _socket->recv(&value, 4);
+
+			if (_listener) {
+
+				if (true) {
+					ssi_char_t string[SSI_MAX_CHAR];
+					_event.dur = 20;
+					_event.time = getElapsedTime();
+					ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+					ssi_sprint(string, "pypexit");
+					e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+					e[0].value = value;
+					_listener->update(_event);
+				}
+			}
+		}
+		else
+		{
+			ssi_print("\npyExit not connected ... \n");
+			/*_socket->disconnect();
+			delete _socket; _socket = 0;
+			try {
+				ssi_print("\nTry to reconnect ... \n");
+				_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
+			}
+			catch (...) {
+
+			}*/
+		}
+
+		::Sleep(20);
 	}
 
 	void PythonBridgeExit::flush() {
-		ssi_print("\nSTOP()");
+		// ssi_print("\nSTOP()");
+
+		//if (_socket) {
+		//	if (_socket->disconnect()) {
+		//		// delete _socket; _socket = 0;
+		//	}
+		//}
 	}
 
 }

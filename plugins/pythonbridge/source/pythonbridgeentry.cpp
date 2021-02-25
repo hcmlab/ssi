@@ -103,16 +103,16 @@ namespace ssi {
 
 		if (_listener) {
 			
-			ssi_print("\ntime:\t%.2f\ndur:\t%.2f\nstream_in.tot:\t%d", consume_info.time, consume_info.dur, stream_in[0].tot);
+			// ssi_print("\ntime:\t%.2f\ndur:\t%.2f\nstream_in.tot:\t%d", consume_info.time, consume_info.dur, stream_in[0].tot);
 
 			_event.time = consume_info.time * 1000;
 			_event.dur = consume_info.dur * 1000;
-			ssi_print("\nconsume(e.ptr):\t%d", _event.ptr);
+			// ssi_print("\nconsume(e.ptr):\t%d", _event.ptr);
 
 			if (stream_in[0].tot_real > 0) {
 
 				ssi_event_adjust(_event, stream_in[0].tot);
-				ssi_print("\nconsume (stream.tot):\t%d", stream_in[0].tot);
+				// ssi_print("\nconsume (stream.tot):\t%d", stream_in[0].tot);
 
 				ssi_byte_t *in_ptr = stream_in[0].ptr;
 				ssi_byte_t *out_ptr = _event.ptr;

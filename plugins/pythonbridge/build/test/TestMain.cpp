@@ -92,6 +92,7 @@ void ex_pythonbridge() {
 	mouse->getOptions()->flip = true;
 	mouse->getOptions()->scale = true;
 	mouse->getOptions()->single = false;
+	// mouse->getOptions()->sr = 2;
 	ITransformable* cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
 	ITransformable* button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
@@ -111,17 +112,17 @@ void ex_pythonbridge() {
 	ITransformable* camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME, 0);
 	frame->AddSensor(camera);*/
 
-	/*PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
+	PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
 	pybridgeentry->getOptions()->setAddress("entry@pythonbridge");
-	frame->AddConsumer(cursor_y, pybridgeentry, "0.1s");
-	board->RegisterSender(*pybridgeentry);*/
+	frame->AddConsumer(cursor_y, pybridgeentry, "1");
+	board->RegisterSender(*pybridgeentry);
 
 	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
 	//frame->AddConsumer(camera_p, pybridgeentry, "1");
 
-	/*PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
+	PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
 	pybridge->getOptions()->setAddress("bridge@pythonbridge");
-	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);*/
+	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);
 
 	PythonBridgeExit *pybridgeexit = ssi_create(PythonBridgeExit, 0, true);
 	pybridgeexit->getOptions()->setAddress("exit@pythonbridge");
@@ -156,7 +157,7 @@ void ex_pythonbridge() {
 
 	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	monitor->getOptions()->all = true;
-	board->RegisterListener(*monitor, 0, 10000);
+	board->RegisterListener(*monitor, "exit@", 10000);
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 640, 960);

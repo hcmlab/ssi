@@ -1,4 +1,4 @@
-// pythonbridge.h
+// pythonbridgeexit.h
 // author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
 // created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
@@ -38,6 +38,7 @@
 #include "thread/Thread.h"
 #include "ioput/option/OptionList.h"
 #include "event/EventAddress.h"
+#include "ioput/socket/Socket.h"
 
 namespace ssi {
 
@@ -58,6 +59,11 @@ namespace ssi {
 				addOption("address", address, SSI_MAX_CHAR, SSI_CHAR, "event address (if sent to event board) (event@sender)");
 				addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender");
 				addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event");
+
+				port = 1234;
+				setHost("localhost");
+				addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
+				addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
 			};
 
 			void setAddress(const ssi_char_t *address) {
@@ -75,10 +81,18 @@ namespace ssi {
 					ssi_strcpy(this->ename, ename);
 				}
 			}
+			void setHost(const ssi_char_t* host) {
+				this->host[0] = '\0';
+				if (host) {
+					ssi_strcpy(this->host, host);
+				}
+			}
 
 			ssi_char_t address[SSI_MAX_CHAR];
 			ssi_char_t sname[SSI_MAX_CHAR];
 			ssi_char_t ename[SSI_MAX_CHAR];
+			int port;
+			ssi_char_t host[SSI_MAX_CHAR];
 		};
 
 	public:
@@ -112,6 +126,11 @@ namespace ssi {
 		EventAddress _event_address;
 		IEventListener *_listener;
 		ssi_event_t _event;
+
+		std::string _msg_start_sequence = "&&&";
+		std::string _msg_end_sequence = "###";
+
+		Socket* _socket;
 
 	};
 

@@ -14,17 +14,22 @@ def send():
     conn = None
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
+    print('created')
 
     while True:
         try:
             x = 0.1
             x_b = struct.pack("f", x)
-            sendstring = '&&&' + str(x_b) + '###'
-            conn.sendall(sendstring.encode('UTF-8'))
-            time.sleep(0.04)
+            # sendstring = '&&&' + str(x_b) + '###'
+            # sendstring = str(x_b)
+            # conn.sendall(sendstring.encode('UTF-8'))
+            conn.sendall(x_b)
+            print('sent')
+            time.sleep(0.5)
         except:
             s.listen()
             conn, addr = s.accept()
+            print('connected')
 
 if __name__ == '__main__':
     send()

@@ -32,7 +32,7 @@
 
 namespace ssi {
 
-char PythonBridge::ssi_log_name[] = "py_bridge_";
+char PythonBridge::ssi_log_name[] = "__pybridge";
 
 PythonBridge::PythonBridge(const ssi_char_t *file)
 	:	_file (0),
@@ -115,24 +115,33 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 
 	ssi_event_t *e = 0;
 	//events.reset ();
-
+	int counter = 0;
 	for(ssi_size_t nevent = 0; nevent < n_new_events; nevent++){
-
+		// ssi_print("\npyBridge received %d events", n_new_events);
 		e = events.next();
 		int result = 0;
 		if (e != 0)
 		{
-			switch (e->type) {
-				case SSI_ETYPE_UNDEF: {
+			{
+				if ((int)e->type == (int)SSI_ETYPE_UNDEF) {
 					//std::string _test_string = "hal";
-					result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
-					result = _socket->send(e->ptr, e->tot);
+					// result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
+					if (_socket->isConnected())
+					{
+						// ssi_print("\npyBridge connected. \n")
+						result = _socket->send(e->ptr, e->tot);
+					}
+					else
+					{
+						ssi_print("\npyBridge not connected. Trying to reconnect ... \n")
+						_socket->connect();
+					}
 					//result = _socket->send(&_test_string, _test_string.size());
-					result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
+					// result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
 					//ssi_print("\n start_%d, msg_%d, end_%d", _msg_start_sequence.size(), e->tot, _msg_end_sequence.size());
 				}
-				default: {
-					ssi_wrn("Please use PythonbridgeEntry or SSI_ETYPE_UNDEF");
+				else {
+					counter++;
 				}
 			}
 
@@ -140,6 +149,10 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 				_listener->update(_event);
 			}*/
 		}
+	}
+
+	if (counter != 0) {
+		ssi_wrn("Please use PythonbridgeEntry or SSI_ETYPE_UNDEF");
 	}
 
 	return true;
@@ -156,11 +169,11 @@ void PythonBridge::listen_flush (){
 		ssi_event_reset (_event);
 	}
 
-	if (_socket) {
-		if (_socket->disconnect()) {
-			delete _socket; _socket = 0;
-		}
-	}
+	//if (_socket) {
+	//	if (_socket->disconnect()) {
+	//		// delete _socket; _socket = 0;
+	//	}
+	//}
 
 	
 	/*delete _msg_start_sequence; _msg_start_sequence = 0;
