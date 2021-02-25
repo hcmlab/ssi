@@ -192,10 +192,14 @@ namespace ssi {
 
 		// Send pupil data to output stream
 		ssi_real_t* outptr = ssi_pcast(ssi_real_t, stream_out.ptr);
-		memcpy(outptr, &leftPupilDiameter, sizeof(float));
-		memcpy(outptr, &leftPupilConfidence, sizeof(float));
-		memcpy(outptr, &rightPupilDiameter, sizeof(float));
-		memcpy(outptr, &rightPupilConfidence, sizeof(float));
+		//memcpy(outptr, &leftPupilDiameter, sizeof(float));
+		*(outptr++) = leftPupilDiameter;
+		//memcpy(outptr, &leftPupilConfidence, sizeof(float));
+		*(outptr++) = leftPupilConfidence;
+		//memcpy(outptr, &rightPupilDiameter, sizeof(float));
+		*(outptr++) = rightPupilDiameter;
+		//memcpy(outptr, &rightPupilConfidence, sizeof(float));
+		*(outptr++) = rightPupilConfidence;
 		
 		// Release
 		frame.release();
