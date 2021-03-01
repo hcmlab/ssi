@@ -125,11 +125,13 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 			{
 				if ((int)e->type == (int)SSI_ETYPE_UNDEF) {
 					//std::string _test_string = "hal";
-					// result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
+					
 					if (_socket->isConnected())
 					{
 						// ssi_print("\npyBridge connected. \n")
+						result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
 						result = _socket->send(e->ptr, e->tot);
+						result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
 					}
 					else
 					{

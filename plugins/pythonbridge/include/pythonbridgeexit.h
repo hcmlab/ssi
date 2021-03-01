@@ -132,6 +132,11 @@ namespace ssi {
 
 		Socket* _socket;
 
+		ssi_byte_t* _buffer_recv;
+		ssi_byte_t* _buffer_store;
+
+		ssi_size_t _last_recv;
+
 	};
 
 }

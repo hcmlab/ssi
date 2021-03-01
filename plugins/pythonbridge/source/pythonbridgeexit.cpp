@@ -27,6 +27,7 @@
 #include "ioput/file/FileTools.h"
 #include "base/ITheFramework.h"
 #include "base/Factory.h"
+#include "ioput/socket/Socket.h"
 
 #include "../include/pythonbridgeexit.h"
 
@@ -36,7 +37,9 @@ namespace ssi {
 
 	PythonBridgeExit::PythonBridgeExit(const ssi_char_t *file)
 		: _file(0),
-		_socket(0) {
+		_socket(0),
+		_buffer_recv(0),
+		_buffer_store(0) {
 
 		if (file) {
 			if (!OptionList::LoadXML(file, &_options)) {
@@ -46,6 +49,15 @@ namespace ssi {
 		}
 
 		ssi_event_init(_event, SSI_ETYPE_MAP);
+		if (_buffer_recv == 0)
+		{
+			_buffer_recv = new ssi_byte_t[Socket::MAX_MTU_SIZE];
+		}
+		if (_buffer_store == 0)
+		{
+			_buffer_store = new ssi_byte_t[Socket::MAX_MTU_SIZE * 2];
+		}
+		_last_recv = 0;
 	}
 
 	bool PythonBridgeExit::setEventListener(IEventListener *listener) {
@@ -88,6 +100,14 @@ namespace ssi {
 		}
 
 		ssi_event_destroy(_event);
+		if (_buffer_recv) {
+			delete _buffer_recv;
+			_buffer_recv = 0;
+		}
+		if (_buffer_store) {
+			delete _buffer_store;
+			_buffer_store = 0;
+		}
 	}
 
 	void PythonBridgeExit::enter() {
@@ -118,7 +138,20 @@ namespace ssi {
 		{
 			int result = 0;
 			float value = 0.0f;
-			result = _socket->recv(&value, 4);
+			result = _socket->recv(_buffer_recv, Socket::MAX_MTU_SIZE);
+			if (result > 0)
+			{
+				ssi_print("\nBytes received: %d\n", result);
+				/*if ((char)_buffer[0] == '&' && (char)_buffer[1] == '&' && (char)_buffer[2] == '&') {
+					ssi_print("\nStart Message received:\t%c%c%c\n", (char)_buffer[0], (char)_buffer[1], (char)_buffer[2]);
+				}*/
+				for (int i_recv = 0; i_recv < result; i_recv++)
+				{
+					ssi_print("%c", (char)_buffer_recv[i_recv]);
+				}
+				_last_recv = result;
+			}
+			
 
 			if (_listener) {
 
