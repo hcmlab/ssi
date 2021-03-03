@@ -134,9 +134,18 @@ namespace ssi {
 
 		ssi_byte_t* _buffer_recv;
 		ssi_byte_t* _buffer_store;
+		ssi_byte_t* _buffer_msg;
 
-		ssi_size_t _last_recv;
+		int _last_recv;
+		int _result_recv;
 
+		bool _msg_start;
+		bool _msg_start_checking;
+		int _msg_start_counter;
+
+		bool _msg_stop;
+		bool _msg_stop_checking;
+		int _msg_stop_counter;
 	};
 
 }

@@ -39,7 +39,8 @@ namespace ssi {
 		: _file(0),
 		_socket(0),
 		_buffer_recv(0),
-		_buffer_store(0) {
+		_buffer_store(0),
+		_buffer_msg (0) {
 
 		if (file) {
 			if (!OptionList::LoadXML(file, &_options)) {
@@ -49,15 +50,30 @@ namespace ssi {
 		}
 
 		ssi_event_init(_event, SSI_ETYPE_MAP);
+
 		if (_buffer_recv == 0)
 		{
 			_buffer_recv = new ssi_byte_t[Socket::MAX_MTU_SIZE];
 		}
 		if (_buffer_store == 0)
 		{
-			_buffer_store = new ssi_byte_t[Socket::MAX_MTU_SIZE * 2];
+			_buffer_store = new ssi_byte_t[Socket::MAX_MTU_SIZE];
 		}
+		if (_buffer_msg == 0)
+		{
+			_buffer_msg = new ssi_byte_t[Socket::MAX_MTU_SIZE * 2];
+		}
+
+		_result_recv = 0;
 		_last_recv = 0;
+		
+		_msg_start = false;
+		_msg_start_checking = false;
+		_msg_start_counter = 0;
+
+		_msg_stop = true;
+		_msg_stop_checking = false;
+		_msg_stop_counter = 0;
 	}
 
 	bool PythonBridgeExit::setEventListener(IEventListener *listener) {
@@ -108,19 +124,21 @@ namespace ssi {
 			delete _buffer_store;
 			_buffer_store = 0;
 		}
+		if (_buffer_msg) {
+			delete _buffer_msg;
+			_buffer_msg = 0;
+		}
 	}
 
 	void PythonBridgeExit::enter() {
-		// ssi_print("\nSTART()");
-
+		
 		if (_listener) {
 			ssi_event_adjust(_event, 1 * sizeof(ssi_event_map_t));
 		}
 	}
 
 	void PythonBridgeExit::run() {
-		// ssi_print("\nRUN()");
-
+		
 		if (_socket == 0)
 		{
 			_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
@@ -136,20 +154,115 @@ namespace ssi {
 
 		if (_socket->isConnected())
 		{
-			int result = 0;
-			float value = 0.0f;
-			result = _socket->recv(_buffer_recv, Socket::MAX_MTU_SIZE);
-			if (result > 0)
+			_result_recv = 0;
+			
+			memcpy(_buffer_store, _buffer_recv, _last_recv);
+
+			/*ssi_print("\n\nBytes stored: %d\n", _last_recv);
+			for (int i_stored = 0; i_stored < _last_recv; i_stored++)
 			{
-				ssi_print("\nBytes received: %d\n", result);
-				/*if ((char)_buffer[0] == '&' && (char)_buffer[1] == '&' && (char)_buffer[2] == '&') {
-					ssi_print("\nStart Message received:\t%c%c%c\n", (char)_buffer[0], (char)_buffer[1], (char)_buffer[2]);
-				}*/
-				for (int i_recv = 0; i_recv < result; i_recv++)
+				ssi_print("%c", (char)_buffer_store[i_stored]);
+			}*/
+
+			_result_recv = _socket->recv(_buffer_recv, Socket::MAX_MTU_SIZE);
+			
+			if (_result_recv > 0)
+			{
+				ssi_print("\n\nBytes received: %d\n", _result_recv);
+				
+				/*for (int i_recv = 0; i_recv < _result_recv; i_recv++)
 				{
 					ssi_print("%c", (char)_buffer_recv[i_recv]);
+				}*/
+
+				memcpy(_buffer_msg + _last_recv, _buffer_recv, _result_recv);
+
+				memcpy(_buffer_msg, _buffer_store, _last_recv);
+				
+				/* decipher msg */
+
+				ssi_print("\n\nBytes msg: %d\n", _result_recv + _last_recv);
+				for (int i_msg = 0; i_msg < _result_recv + _last_recv; i_msg++)
+				{
+					ssi_print("%c", (char)_buffer_msg[i_msg]);
 				}
-				_last_recv = result;
+
+				ssi_print("\n\nDecipher msg:\n");
+				for (int i_msg = 0; i_msg < _result_recv + _last_recv; i_msg++)
+				{
+					if (_msg_stop)
+					{
+						if ((char)_buffer_msg[i_msg] == '&')
+						{
+							if (_msg_start_counter < 3)
+							{
+								if (_msg_start_checking)
+								{
+									_msg_start_counter++;
+								}
+								else
+								{
+									_msg_start_counter = 1;
+									_msg_start_checking = true;
+								}
+
+								if (_msg_start_counter == 3)
+								{
+									_msg_start = true;
+									_msg_stop = false;
+									// ssi_print("\nmsg start at %d", i_msg);
+								}
+							}
+						}
+						else
+						{
+							_msg_start_counter = 0;
+							_msg_start_checking = false;
+						}
+					}
+					else
+					{
+						if ((char)_buffer_msg[i_msg] == '#')
+						{
+							if (_msg_stop_counter < 3)
+							{
+								if (_msg_stop_checking)
+								{
+									_msg_stop_counter++;
+								}
+								else
+								{
+									_msg_stop_counter = 1;
+									_msg_stop_checking = true;
+								}
+
+								if (_msg_stop_counter == 3)
+								{
+									_msg_stop = true;
+									// ssi_print("\nmsg stop at %d", i_msg);
+								}
+							}
+						}
+						else
+						{
+							_msg_stop_counter = 0;
+							_msg_stop_checking = false;
+						}
+					}
+
+					if (_msg_start)
+					{
+						ssi_print("%c", (char)_buffer_msg[i_msg]);
+					}
+				}
+
+				/* decipher msg */
+
+				_last_recv = _result_recv;
+
+				/*if ((char)_buffer[0] == '&' && (char)_buffer[1] == '&' && (char)_buffer[2] == '&') {
+				ssi_print("\nStart Message received:\t%c%c%c\n", (char)_buffer[0], (char)_buffer[1], (char)_buffer[2]);
+				}*/
 			}
 			
 
@@ -162,7 +275,7 @@ namespace ssi {
 					ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
 					ssi_sprint(string, "pypexit");
 					e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
-					e[0].value = value;
+					e[0].value = 0.0f;
 					_listener->update(_event);
 				}
 			}
@@ -185,8 +298,7 @@ namespace ssi {
 	}
 
 	void PythonBridgeExit::flush() {
-		// ssi_print("\nSTOP()");
-
+		
 		//if (_socket) {
 		//	if (_socket->disconnect()) {
 		//		// delete _socket; _socket = 0;
