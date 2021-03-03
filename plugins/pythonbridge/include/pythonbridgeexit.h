@@ -40,6 +40,8 @@
 #include "event/EventAddress.h"
 #include "ioput/socket/Socket.h"
 
+#include <deque>
+
 namespace ssi {
 
 	class PythonBridgeExit : public IObject, public Thread {
@@ -50,7 +52,7 @@ namespace ssi {
 
 		public:
 
-			Options() {
+			Options() : size (4) {
 
 				setAddress("");
 				setSenderName("sender");
@@ -64,6 +66,8 @@ namespace ssi {
 				setHost("localhost");
 				addOption("host", host, SSI_MAX_CHAR, SSI_CHAR, "host name (empty for any) [deprecated use 'url']");
 				addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
+
+				addOption("size", &size, 1, SSI_INT, "size (in bytes) of received values");
 			};
 
 			void setAddress(const ssi_char_t *address) {
@@ -93,6 +97,7 @@ namespace ssi {
 			ssi_char_t ename[SSI_MAX_CHAR];
 			int port;
 			ssi_char_t host[SSI_MAX_CHAR];
+			ssi_size_t size;
 		};
 
 	public:
@@ -112,6 +117,9 @@ namespace ssi {
 		const ssi_char_t *getEventAddress() {
 			return _event_address.getAddress();
 		}
+
+		bool start() { return Thread::start(); };
+		bool stop() { return Thread::stop(); };
 
 		void enter();
 		void run();
@@ -142,10 +150,14 @@ namespace ssi {
 		bool _msg_start;
 		bool _msg_start_checking;
 		int _msg_start_counter;
+		bool _msg_start_flag;
 
 		bool _msg_stop;
 		bool _msg_stop_checking;
 		int _msg_stop_counter;
+		bool _msg_stop_flag;
+
+		std::deque<BYTE> _frame;
 	};
 
 }

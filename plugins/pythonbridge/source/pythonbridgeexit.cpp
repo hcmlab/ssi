@@ -70,10 +70,12 @@ namespace ssi {
 		_msg_start = false;
 		_msg_start_checking = false;
 		_msg_start_counter = 0;
+		_msg_start_flag = false;
 
 		_msg_stop = true;
 		_msg_stop_checking = false;
 		_msg_stop_counter = 0;
+		_msg_stop_flag = false;
 	}
 
 	bool PythonBridgeExit::setEventListener(IEventListener *listener) {
@@ -128,6 +130,8 @@ namespace ssi {
 			delete _buffer_msg;
 			_buffer_msg = 0;
 		}
+
+		_frame.clear();
 	}
 
 	void PythonBridgeExit::enter() {
@@ -142,147 +146,142 @@ namespace ssi {
 		if (_socket == 0)
 		{
 			_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
-			if (_socket->isConnected())
+			/*if (_socket->isConnected())
 			{
 				ssi_print("\npyExit created and connected ... \n");
 			}
 			else
 			{
 				ssi_print("\npyExit created, but not connected ... \n");
-			}
+			}*/
 		}
 
 		if (_socket->isConnected())
 		{
 			_result_recv = 0;
-			
 			memcpy(_buffer_store, _buffer_recv, _last_recv);
-
-			/*ssi_print("\n\nBytes stored: %d\n", _last_recv);
-			for (int i_stored = 0; i_stored < _last_recv; i_stored++)
-			{
-				ssi_print("%c", (char)_buffer_store[i_stored]);
-			}*/
-
 			_result_recv = _socket->recv(_buffer_recv, Socket::MAX_MTU_SIZE);
 			
 			if (_result_recv > 0)
 			{
-				ssi_print("\n\nBytes received: %d\n", _result_recv);
-				
-				/*for (int i_recv = 0; i_recv < _result_recv; i_recv++)
-				{
-					ssi_print("%c", (char)_buffer_recv[i_recv]);
-				}*/
-
 				memcpy(_buffer_msg + _last_recv, _buffer_recv, _result_recv);
-
 				memcpy(_buffer_msg, _buffer_store, _last_recv);
 				
-				/* decipher msg */
-
-				ssi_print("\n\nBytes msg: %d\n", _result_recv + _last_recv);
-				for (int i_msg = 0; i_msg < _result_recv + _last_recv; i_msg++)
+				int counter = 0;
+				for (int i_msg = _last_recv; i_msg < _result_recv + _last_recv; i_msg++)
 				{
-					ssi_print("%c", (char)_buffer_msg[i_msg]);
-				}
-
-				ssi_print("\n\nDecipher msg:\n");
-				for (int i_msg = 0; i_msg < _result_recv + _last_recv; i_msg++)
-				{
-					if (_msg_stop)
+					if ((char)_buffer_msg[i_msg] == '&')
 					{
-						if ((char)_buffer_msg[i_msg] == '&')
+						if (_msg_start_counter < 3)
 						{
-							if (_msg_start_counter < 3)
+							if (_msg_start_checking)
 							{
-								if (_msg_start_checking)
-								{
-									_msg_start_counter++;
-								}
-								else
-								{
-									_msg_start_counter = 1;
-									_msg_start_checking = true;
-								}
-
-								if (_msg_start_counter == 3)
-								{
-									_msg_start = true;
-									_msg_stop = false;
-									// ssi_print("\nmsg start at %d", i_msg);
-								}
+								_msg_start_counter++;
 							}
-						}
-						else
-						{
-							_msg_start_counter = 0;
-							_msg_start_checking = false;
+							else
+							{
+								_msg_start_counter = 1;
+								_msg_start_checking = true;
+							}
+							if (_msg_start_counter == 3)
+							{
+								_msg_start = true;
+								_msg_stop = false;
+							}
 						}
 					}
 					else
 					{
-						if ((char)_buffer_msg[i_msg] == '#')
+						_msg_start_counter = 0;
+						_msg_start_checking = false;
+					}
+					if ((char)_buffer_msg[i_msg] == '#')
+					{
+						if (_msg_stop_counter < 3)
 						{
-							if (_msg_stop_counter < 3)
+							if (_msg_stop_checking)
 							{
-								if (_msg_stop_checking)
-								{
-									_msg_stop_counter++;
-								}
-								else
-								{
-									_msg_stop_counter = 1;
-									_msg_stop_checking = true;
-								}
-
-								if (_msg_stop_counter == 3)
-								{
-									_msg_stop = true;
-									// ssi_print("\nmsg stop at %d", i_msg);
-								}
+								_msg_stop_counter++;
+							}
+							else
+							{
+								_msg_stop_counter = 1;
+								_msg_stop_checking = true;
+							}
+							if (_msg_stop_counter == 3)
+							{
+								_msg_stop = true;
+								_msg_start = false;
+								_msg_start_flag = false;
 							}
 						}
-						else
-						{
-							_msg_stop_counter = 0;
-							_msg_stop_checking = false;
-						}
 					}
+					else
+					{
+						_msg_stop_counter = 0;
+						_msg_stop_checking = false;
+					}
+					
+					counter++;
 
 					if (_msg_start)
 					{
-						ssi_print("%c", (char)_buffer_msg[i_msg]);
+						if (_msg_start_flag)
+						{
+							ssi_byte_t tmp = _buffer_msg[i_msg];
+							_frame.push_back(tmp);
+						}
+						else
+						{
+							_msg_start_flag = true;
+						}
+					}
+					else
+					{
+						if (_frame.size() > 0)
+						{
+							if (_msg_stop)
+							{
+								_frame.pop_back();
+								_frame.pop_back();
+
+								ssi_print("\n");
+								for (int i_frame = 0; i_frame < _frame.size(); i_frame += 4)
+								{
+									ssi_byte_t* value = new ssi_byte_t[4];
+									for (int i_byte = 0; i_byte < 4; i_byte++)
+									{
+										value[i_byte] = _frame[i_frame + i_byte];
+									}
+									float fu = 0.0f;
+									memcpy(&fu, value, 4);
+									ssi_print("\n%.2f ", fu);
+									delete value;
+								}
+								ssi_print("\n");
+								_frame.clear();
+							}
+						}
 					}
 				}
-
-				/* decipher msg */
-
 				_last_recv = _result_recv;
-
-				/*if ((char)_buffer[0] == '&' && (char)_buffer[1] == '&' && (char)_buffer[2] == '&') {
-				ssi_print("\nStart Message received:\t%c%c%c\n", (char)_buffer[0], (char)_buffer[1], (char)_buffer[2]);
-				}*/
 			}
-			
 
 			if (_listener) {
-
-				if (true) {
-					ssi_char_t string[SSI_MAX_CHAR];
-					_event.dur = 20;
-					_event.time = getElapsedTime();
-					ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
-					ssi_sprint(string, "pypexit");
-					e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
-					e[0].value = 0.0f;
-					_listener->update(_event);
-				}
+				ssi_char_t string[SSI_MAX_CHAR];
+				_event.dur = 100;
+				_event.time = getElapsedTime();
+				ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+				ssi_sprint(string, "pypexit");
+				e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+				e[0].value = 0.0f;
+				_listener->update(_event);
 			}
 		}
 		else
 		{
-			ssi_print("\npyExit not connected ... \n");
+			// ssi_print("\npyExit not connected ... \n");
+			
 			/*_socket->disconnect();
 			delete _socket; _socket = 0;
 			try {
@@ -294,16 +293,17 @@ namespace ssi {
 			}*/
 		}
 
-		::Sleep(20);
+		::Sleep(10);
 	}
 
 	void PythonBridgeExit::flush() {
 		
-		//if (_socket) {
-		//	if (_socket->disconnect()) {
-		//		// delete _socket; _socket = 0;
-		//	}
-		//}
+		/*if (_socket) {
+			_socket->disconnect();
+			{
+				delete _socket; _socket = 0;
+			}
+		}*/
 	}
 
 }

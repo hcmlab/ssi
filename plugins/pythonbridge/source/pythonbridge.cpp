@@ -37,10 +37,7 @@ char PythonBridge::ssi_log_name[] = "__pybridge";
 PythonBridge::PythonBridge(const ssi_char_t *file)
 	:	_file (0),
 		_listener (0),
-		/*_msg_start_sequence (0),
-		_msg_end_sequence (0),*/
-		_socket (0)
-		{
+		_socket (0)	{
 
 	if (file) {
 		if (!OptionList::LoadXML(file, &_options)) {
@@ -49,7 +46,7 @@ PythonBridge::PythonBridge(const ssi_char_t *file)
 		_file = ssi_strcpy (file);
 	}
 
-	ssi_event_init (_event, SSI_ETYPE_MAP);	
+	ssi_event_init (_event, SSI_ETYPE_MAP);
 
 }
 
@@ -99,16 +96,6 @@ void PythonBridge::listen_enter () {
 	
 	_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::CLIENT, _options.port, _options.host);
 
-	/*_msg_start_sequence = new ssi_byte_t[3];
-	_msg_start_sequence[0] = '+';
-	_msg_start_sequence[1] = '+';
-	_msg_start_sequence[2] = '+';
-	_msg_end_sequence = new ssi_byte_t[3];
-	_msg_start_sequence[0] = '#';
-	_msg_start_sequence[1] = '#';
-	_msg_start_sequence[2] = '#';*/
-	
-
 }
 
 bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
@@ -135,8 +122,8 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 					}
 					else
 					{
-						ssi_print("\npyBridge not connected. Trying to reconnect ... \n")
-						_socket->connect();
+						/*ssi_print("\npyBridge not connected. Trying to reconnect ... \n")
+						_socket->connect();*/
 					}
 					//result = _socket->send(&_test_string, _test_string.size());
 					// result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
@@ -177,8 +164,5 @@ void PythonBridge::listen_flush (){
 	//	}
 	//}
 
-	
-	/*delete _msg_start_sequence; _msg_start_sequence = 0;
-	delete _msg_end_sequence; _msg_end_sequence = 0;*/
 }
 }

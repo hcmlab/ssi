@@ -114,7 +114,7 @@ void ex_pythonbridge() {
 
 	PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
 	pybridgeentry->getOptions()->setAddress("entry@pythonbridge");
-	frame->AddConsumer(cursor_y, pybridgeentry, "1");
+	frame->AddConsumer(cursor_y, pybridgeentry, "0.1s");
 	board->RegisterSender(*pybridgeentry);
 
 	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
@@ -122,10 +122,13 @@ void ex_pythonbridge() {
 
 	PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
 	pybridge->getOptions()->setAddress("bridge@pythonbridge");
+	pybridge->getOptions()->port = 5550;
 	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);
 
 	PythonBridgeExit *pybridgeexit = ssi_create(PythonBridgeExit, 0, true);
 	pybridgeexit->getOptions()->setAddress("exit@pythonbridge");
+	pybridgeexit->getOptions()->port = 5551;
+	pybridgeexit->getOptions()->size = 4;
 	frame->AddRunnable(pybridgeexit);
 	board->RegisterSender(*pybridgeexit);
 
