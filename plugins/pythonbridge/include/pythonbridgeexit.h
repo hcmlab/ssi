@@ -52,7 +52,7 @@ namespace ssi {
 
 		public:
 
-			Options() : size (4) {
+			Options() : size (4), wait (10) {
 
 				setAddress("");
 				setSenderName("sender");
@@ -68,6 +68,7 @@ namespace ssi {
 				addOption("port", &port, 1, SSI_INT, "port number (-1 for any) [deprecated use 'url']");
 
 				addOption("size", &size, 1, SSI_INT, "size (in bytes) of received values");
+				addOption("wait", &wait, 1, SSI_INT, "wait (in ms) to receive values");
 			};
 
 			void setAddress(const ssi_char_t *address) {
@@ -98,6 +99,7 @@ namespace ssi {
 			int port;
 			ssi_char_t host[SSI_MAX_CHAR];
 			ssi_size_t size;
+			ssi_size_t wait;
 		};
 
 	public:
@@ -139,6 +141,8 @@ namespace ssi {
 		std::string _msg_end_sequence = "###";
 
 		Socket* _socket;
+
+		int _last_recv_ms;
 
 		ssi_byte_t* _buffer_recv;
 		ssi_byte_t* _buffer_store;

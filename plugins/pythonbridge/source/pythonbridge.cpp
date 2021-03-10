@@ -101,7 +101,7 @@ void PythonBridge::listen_enter () {
 bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
 
 	ssi_event_t *e = 0;
-	//events.reset ();
+	events.reset ();
 	int counter = 0;
 	for(ssi_size_t nevent = 0; nevent < n_new_events; nevent++){
 		// ssi_print("\npyBridge received %d events", n_new_events);

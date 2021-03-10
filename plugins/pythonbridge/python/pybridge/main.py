@@ -1,8 +1,8 @@
 import ssi_bridge
 
 def func(x):
-    y = x * 0.1
-    return y
+    x_1 = x
+    return x_1
 
 client = ssi_bridge.client(transform=func, input_types="f", output_types="f")
 client.start()

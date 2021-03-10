@@ -66,6 +66,7 @@ namespace ssi {
 
 		_result_recv = 0;
 		_last_recv = 0;
+		_last_recv_ms = 0;
 		
 		_msg_start = false;
 		_msg_start_checking = false;
@@ -158,6 +159,8 @@ namespace ssi {
 
 		if (_socket->isConnected())
 		{
+			_last_recv_ms = getElapsedTime();
+
 			_result_recv = 0;
 			memcpy(_buffer_store, _buffer_recv, _last_recv);
 			_result_recv = _socket->recv(_buffer_recv, Socket::MAX_MTU_SIZE);
@@ -245,38 +248,55 @@ namespace ssi {
 								_frame.pop_back();
 								_frame.pop_back();
 
-								ssi_print("\n");
-								for (int i_frame = 0; i_frame < _frame.size(); i_frame += 4)
+								// ssi_print("\n");
+								for (int i_frame = 0; i_frame < _frame.size(); i_frame += _options.size)
 								{
-									ssi_byte_t* value = new ssi_byte_t[4];
-									for (int i_byte = 0; i_byte < 4; i_byte++)
+									ssi_byte_t* value = new ssi_byte_t[_options.size];
+									for (int i_byte = 0; i_byte < _options.size; i_byte++)
 									{
 										value[i_byte] = _frame[i_frame + i_byte];
 									}
 									float fu = 0.0f;
 									memcpy(&fu, value, 4);
-									ssi_print("\n%.2f ", fu);
+
+									if (_listener) {
+										ssi_char_t string[SSI_MAX_CHAR];
+										_event.dur = 100;
+										_event.time = _last_recv_ms + 100 * (i_frame / _options.size);
+										ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+										ssi_sprint(string, "pyexit");
+										e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+										e[0].value = fu;
+										_listener->update(_event);
+									}
+
+									// _last_recv_ms = getElapsedTime();
+
+									// ssi_print("\n%.2f ", fu);
 									delete value;
 								}
-								ssi_print("\n");
+								// ssi_print("\n");
 								_frame.clear();
 							}
 						}
 					}
 				}
 				_last_recv = _result_recv;
+
 			}
 
-			if (_listener) {
-				ssi_char_t string[SSI_MAX_CHAR];
-				_event.dur = 100;
-				_event.time = getElapsedTime();
-				ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
-				ssi_sprint(string, "pypexit");
-				e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
-				e[0].value = 0.0f;
-				_listener->update(_event);
-			}
+			//if (_listener) {
+			//	ssi_char_t string[SSI_MAX_CHAR];
+			//	_event.dur = getElapsedTime() - _last_recv_ms;
+			//	_event.time = getElapsedTime();
+			//	ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+			//	ssi_sprint(string, "pyexit");
+			//	e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+			//	e[0].value = 0.0f;
+			//	_listener->update(_event);
+			//}
+
+			//_last_recv_ms = getElapsedTime();
 		}
 		else
 		{
@@ -293,7 +313,7 @@ namespace ssi {
 			}*/
 		}
 
-		::Sleep(10);
+		::Sleep(_options.wait);
 	}
 
 	void PythonBridgeExit::flush() {

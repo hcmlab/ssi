@@ -43,6 +43,7 @@ namespace ssi {
 		}
 
 		ssi_event_init(_event, SSI_ETYPE_UNDEF);
+		// ssi_event_init(_event, SSI_ETYPE_MAP);
 	}
 
 	bool PythonBridgeEntry::setEventListener(IEventListener *listener) {
@@ -113,10 +114,21 @@ namespace ssi {
 
 				ssi_event_adjust(_event, stream_in[0].tot);
 				// ssi_print("\nconsume (stream.tot):\t%d", stream_in[0].tot);
+				// ssi_event_adjust(_event, 1 * sizeof(ssi_event_map_t));
 
 				ssi_byte_t *in_ptr = stream_in[0].ptr;
 				ssi_byte_t *out_ptr = _event.ptr;
 				
+				//ssi_real_t* in_ptr = ssi_pcast(ssi_real_t, stream_in[0].ptr);
+				//if (_listener) {
+				//	ssi_char_t string[SSI_MAX_CHAR];
+				//	ssi_event_map_t* e = ssi_pcast(ssi_event_map_t, _event.ptr);
+				//	ssi_sprint(string, "pyentry");
+				//	e[0].id = Factory::AddString(string); // TODO: einmalig in listen_enter registrieren und id als variable speichern
+				//	e[0].value = in_ptr[0];
+				//	_listener->update(_event);
+				//}
+
 				for (ssi_size_t n_bytes = 0; n_bytes < stream_in[0].tot_real; n_bytes++)
 				{
 					*out_ptr = *in_ptr;

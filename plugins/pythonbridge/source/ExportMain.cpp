@@ -53,6 +53,7 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	ssi::Factory::Register(ssi::PythonBridgeEntry::GetCreateName(), ssi::PythonBridgeEntry::Create) && result;
 	ssi::Factory::Register(ssi::PythonBridge::GetCreateName(), ssi::PythonBridge::Create) && result;
 	ssi::Factory::Register(ssi::PythonBridgeExit::GetCreateName(), ssi::PythonBridgeExit::Create) && result;
+	ssi::Factory::Register(ssi::ExitStream::GetCreateName(), ssi::ExitStream::Create) && result;
 
 	return result;
 }

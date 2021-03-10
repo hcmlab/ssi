@@ -31,5 +31,6 @@
 #include "pythonbridgeentry.h"
 #include "pythonbridge.h"
 #include "pythonbridgeexit.h"
+#include "exitstream.h"
 
 #endif
