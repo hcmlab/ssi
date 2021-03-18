@@ -107,7 +107,7 @@ namespace ssi {
 			if (sample_dimension_in > 1) {
 				ssi_err("#dimension > 1 not supported");
 			}
-			return 4;
+			return _sampleDimensionsOut;
 		};
 		ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {
 			if (sample_bytes_in != ssi_video_size(_format_in)) {
@@ -171,6 +171,8 @@ namespace ssi {
 		ssi_size_t _frameWidthIn;
 		ssi_size_t _frameHeightIn;
 		double _bytesPerPixelIn;
+
+		ssi_size_t _sampleDimensionsOut = 6;
 
 	};
 

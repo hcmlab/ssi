@@ -179,26 +179,26 @@ namespace ssi {
 		boost::asio::write(_serverSocket, boost::asio::buffer(_sendFrameBuffer, frameWidth * frameHeight * 3));
 
 		// receive pupil data
-		auto bytes_transferred = boost::asio::read(_serverSocket, _response_buffer, boost::asio::transfer_exactly(4 * sizeof(float)));
+		auto bytes_transferred = boost::asio::read(_serverSocket, _response_buffer, boost::asio::transfer_exactly(_sampleDimensionsOut * sizeof(float)));
 
 		const char* pupilDataTrackingFrameBuffer = boost::asio::buffer_cast<const char*>(_response_buffer.data());
 		float leftPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer));
-		float leftPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 1 * sizeof(float)));
-		float rightPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 2 * sizeof(float)));
-		float rightPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 3 * sizeof(float)));
+		float leftPupilDiameterRelative = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 1 * sizeof(float)));
+		float leftPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 2 * sizeof(float)));
+		float rightPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 3 * sizeof(float)));
+		float rightPupilDiameterRelative = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 4 * sizeof(float)));
+		float rightPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 5 * sizeof(float)));
 
 		//std::cout << "  Left: " << leftPupilDiameter << " (c: " << leftPupilConfidence << "), Right: " << rightPupilDiameter << " (c: " << rightPupilConfidence << ")\n";
 		_response_buffer.consume(bytes_transferred);		
 
 		// Send pupil data to output stream
 		ssi_real_t* outptr = ssi_pcast(ssi_real_t, stream_out.ptr);
-		//memcpy(outptr, &leftPupilDiameter, sizeof(float));
 		*(outptr++) = leftPupilDiameter;
-		//memcpy(outptr, &leftPupilConfidence, sizeof(float));
+		*(outptr++) = leftPupilDiameterRelative;
 		*(outptr++) = leftPupilConfidence;
-		//memcpy(outptr, &rightPupilDiameter, sizeof(float));
 		*(outptr++) = rightPupilDiameter;
-		//memcpy(outptr, &rightPupilConfidence, sizeof(float));
+		*(outptr++) = rightPupilDiameterRelative;
 		*(outptr++) = rightPupilConfidence;
 		
 		// Release
