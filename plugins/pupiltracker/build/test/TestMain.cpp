@@ -65,8 +65,8 @@ int main(int argc, char *argv[]) {
 		Factory::RegisterDLL("ioput");
 		Factory::RegisterDLL("ffmpeg");
 
-		//ex_facecrop();
-		ex_facecrop_offline();
+		ex_facecrop();
+		//ex_facecrop_offline();
 		
 		
 
@@ -91,7 +91,6 @@ void ex_facecrop() {
 
 	Camera *camera = ssi_create(Camera, "camera", true);
 	camera->getOptions()->flip = true;
-	camera->getOptions()->params.framesPerSecond = 15;
 	ITransformable *camera_p = frame->AddProvider(camera, SSI_CAMERA_PROVIDER_NAME, 0);
 	frame->AddSensor(camera);
 
@@ -107,10 +106,11 @@ void ex_facecrop() {
 	vidplot->getOptions()->flip = false;
 	frame->AddConsumer(camera_p, vidplot, "1");
 
-	vidplot = ssi_create_id(VideoPainter, 0, "plot2");
-	vidplot->getOptions()->setTitle("facecrop");
-	vidplot->getOptions()->flip = false;
-	frame->AddConsumer(pupil_t, vidplot, "1");
+	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	paint->getOptions()->type = PaintSignalType::SIGNAL;
+	paint->getOptions()->size = 10;
+	paint->getOptions()->setTitle("Title");
+	frame->AddConsumer(pupil_t, paint, "0.1s");
 
 	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	monitor->getOptions()->all = true;
