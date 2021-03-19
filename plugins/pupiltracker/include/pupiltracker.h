@@ -162,7 +162,7 @@ namespace ssi {
 		ssi_size_t _stride_in, _stride_out;
 
 	private:
-		char* _sendFrameBuffer;
+		unsigned char* _sendFrameBuffer;
 		size_t _ts;
 		boost::asio::io_context _ioContext;
 		tcp::socket _serverSocket;
@@ -170,7 +170,9 @@ namespace ssi {
 
 		ssi_size_t _frameWidthIn;
 		ssi_size_t _frameHeightIn;
-		double _bytesPerPixelIn;
+		ssi_size_t _bytesPerPixelIn;
+
+		ssi_size_t _bytesPerFrameIn;
 
 		ssi_size_t _sampleDimensionsOut = 6;
 

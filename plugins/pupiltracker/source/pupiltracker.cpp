@@ -101,6 +101,7 @@ namespace ssi {
 		_frameWidthIn = _format_in.widthInPixels;
 		_frameHeightIn = _format_in.heightInPixels;
 		_bytesPerPixelIn = (_format_in.depthInBitsPerChannel / 8) * _format_in.numOfChannels;
+		_bytesPerFrameIn = _frameWidthIn * _frameHeightIn * _bytesPerPixelIn;
 
 		if (_bytesPerPixelIn != 3) {
 			ssi_err("invalid bit depth or channel size. Can only work with 8bit/channel and 3 channels (RGB)");
@@ -128,27 +129,19 @@ namespace ssi {
 		_serverSocket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 9876));
 
 		// send metadata (frame size, fps, etc.)
-		ssi_size_t frameWidth = _format_in.widthInPixels;
-		ssi_size_t frameHeight = _format_in.heightInPixels;
-
+		// all as doubles because fps is a double
 		double fps = stream_in.sr;
-		ssi_size_t bytesPerPixel = (_format_in.depthInBitsPerChannel / 8) * _format_in.numOfChannels;
-
-		if (bytesPerPixel != 3) {
-			ssi_err("invalid bit depth or channel size. Can only work with 8bit/channel and 3 channels (RGB)");
-			return;
-		}
 
 		double* metaData = new double[4];
-		metaData[0] = frameWidth * 1.0;
-		metaData[1] = frameHeight * 1.0;
-		metaData[2] = bytesPerPixel * 1.0;
+		metaData[0] = _frameWidthIn * 1.0;
+		metaData[1] = _frameHeightIn * 1.0;
+		metaData[2] = _bytesPerPixelIn * 1.0;
 		metaData[3] = fps;
 
 		boost::asio::write(_serverSocket, boost::asio::buffer(reinterpret_cast<const char*>(metaData), 4 * sizeof(double)));
 
 		//create buffer for sending frames
-		_sendFrameBuffer = new char[frameWidth * frameHeight * bytesPerPixel];
+		_sendFrameBuffer = new unsigned char[_bytesPerFrameIn];
 	}
 
 	void PupilTracker::transform(ITransformer::info info,
@@ -156,31 +149,20 @@ namespace ssi {
 		ssi_stream_t &stream_out,
 		ssi_size_t xtra_stream_in_num,
 		ssi_stream_t xtra_stream_in[]) {
-
-		ssi_size_t frameWidth = _format_in.widthInPixels;
-		ssi_size_t frameHeight = _format_in.heightInPixels;
 		
 		cv::Mat frame;
 
-		frame = cv::Mat(frameHeight, frameWidth, CV_8UC3, stream_in.ptr, _stride_in);
 
 		// copy input frame into buffer for sending to server
-		for (unsigned int j = 0; j < frameHeight; ++j) {
-			for (unsigned int i = 0; i < frameWidth; ++i) {
-				auto pixel = frame.at<cv::Vec3b>(j, i);
-				for (unsigned int k = 0; k < 3; ++k) {
-					auto stuff = pixel.val[k];
-					*(_sendFrameBuffer + j * static_cast<int>(frameWidth) * 3 + i * 3 + k) = stuff;
-				}
-			}
-		}
+		frame = cv::Mat(_frameHeightIn, _frameWidthIn, CV_8UC3, stream_in.ptr, _stride_in);
+		unsigned char* rawFrameData = frame.data;
+		memcpy(_sendFrameBuffer, rawFrameData, _bytesPerFrameIn);
 
 		// send frame to server for processing
-		boost::asio::write(_serverSocket, boost::asio::buffer(_sendFrameBuffer, frameWidth * frameHeight * 3));
+		boost::asio::write(_serverSocket, boost::asio::buffer(_sendFrameBuffer, _bytesPerFrameIn));		
 
 		// receive pupil data
 		auto bytes_transferred = boost::asio::read(_serverSocket, _response_buffer, boost::asio::transfer_exactly(_sampleDimensionsOut * sizeof(float)));
-
 		const char* pupilDataTrackingFrameBuffer = boost::asio::buffer_cast<const char*>(_response_buffer.data());
 		float leftPupilDiameter = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer));
 		float leftPupilDiameterRelative = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 1 * sizeof(float)));
@@ -190,7 +172,7 @@ namespace ssi {
 		float rightPupilConfidence = static_cast<float>(*reinterpret_cast<const float*>(pupilDataTrackingFrameBuffer + 5 * sizeof(float)));
 
 		//std::cout << "  Left: " << leftPupilDiameter << " (c: " << leftPupilConfidence << "), Right: " << rightPupilDiameter << " (c: " << rightPupilConfidence << ")\n";
-		_response_buffer.consume(bytes_transferred);		
+		_response_buffer.consume(bytes_transferred);
 
 		// Send pupil data to output stream
 		ssi_real_t* outptr = ssi_pcast(ssi_real_t, stream_out.ptr);
