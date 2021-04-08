@@ -52,19 +52,23 @@ template<typename output_type, typename input_type> output_type clamp_cast(input
 {
     static_assert(std::is_arithmetic<input_type>::value, "clamp_cast only supports arithmetic types");
     static_assert(std::is_arithmetic<output_type>::value, "clamp_cast only supports arithmetic types");
+
+    // the (std::<...>::min)() syntax is used to avoid min() being interpreted by the preprocessor
+    // normally a #define NOMINMAX would be used to solve this, however, SSI and windows.h both define min and max making it impossible to use this technique without breaking code within ssi!
+    // So, the fact that the preprocessor only replaces something if there is nothing between the name and the '(', makes it possible to prevent replacement while still being compilable
     const input_type min_value = std::is_signed<input_type>() ?
-                                     static_cast<input_type>(std::numeric_limits<output_type>::min()) :
+                                     static_cast<input_type>((std::numeric_limits<output_type>::min)()) :
                                      0;
 
-    input_type max_value = static_cast<input_type>(std::numeric_limits<output_type>::max());
+    input_type max_value = static_cast<input_type>((std::numeric_limits<output_type>::max)());
     if (max_value < 0)
     {
         // Output type is of greater or equal size to input type and we've overflowed.
         //
-        max_value = std::numeric_limits<input_type>::max();
+        max_value = (std::numeric_limits<input_type>::max)();
     }
-    input = std::min(input, max_value);
-    input = std::max(input, min_value);
+    input = (std::min)(input, max_value);
+    input = (std::max)(input, min_value);
     return static_cast<output_type>(input);
 }
 /// @endcond
