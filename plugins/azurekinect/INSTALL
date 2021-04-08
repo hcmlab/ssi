@@ -1,0 +1,8 @@
+Setup guide for the Azure Kinect DK:
+https://docs.microsoft.com/en-us/azure/kinect-dk/set-up-azure-kinect-dk
+
+Install the latest SDK:
+https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md
+   
+On Windows 10 N versions you might also have to install Media Feature Pack (KB3099229)
+https://www.microsoft.com/en-us/download/details.aspx?id=49919

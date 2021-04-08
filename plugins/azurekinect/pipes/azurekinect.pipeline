@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="azurekinect"/>
+	</register>
+
+	<!-- TODO: actually setup example pipeline -->
+
+	<sensor create="AzureKinect" sr="15.0">
+	</sensor>
+</pipeline>
