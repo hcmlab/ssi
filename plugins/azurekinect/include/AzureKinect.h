@@ -34,19 +34,44 @@
 #include "thread/Thread.h"
 #include "ioput/option/OptionList.h"
 
+#include <k4a/k4a.hpp> /* ATTENTION: THIS FILE WAS MODIFIED BECAUSE IT DID NOT COMPILE DUE TO A CLASH BETWEEN std::min/max AND min/max preprocessor definitions */
+
 namespace ssi {
 	class Timer;
 }
 
 namespace ssi {
 
+	#define SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME "rgb"
+
 	class AzureKinect : public ISensor, public Thread {
+
+	public:
+
+		class RGBImageChannel : public IChannel {
+
+			friend class AzureKinect;
+		public:
+			RGBImageChannel() {
+
+				ssi_stream_init(stream, 0, 1, 0, SSI_IMAGE, 0);
+			}
+			~RGBImageChannel() {
+				ssi_stream_destroy(stream);
+			}
+			const ssi_char_t* getName() { return SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME; };
+			const ssi_char_t* getInfo() { return "RGB image with TODO: resolution and color depth."; };
+			ssi_stream_t getStream() { return stream; };
+		protected:
+			ssi_stream_t stream;
+		};
+
 	public:
 
 		class Options : public OptionList {
 
 		public:
-			Options() : sr(20.0) {
+			Options() : sr(30.0) {
 				addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz");
 			};
 
@@ -62,9 +87,9 @@ namespace ssi {
 		const ssi_char_t* getName() { return GetCreateName(); };
 		const ssi_char_t* getInfo() { return "Azure Kinect DK Sensor"; };
 
-		ssi_size_t getChannelSize() { return 0; };
+		ssi_size_t getChannelSize() { return 1; };
 		IChannel* getChannel(ssi_size_t index) {
-			return 0;
+			return &m_rgb_channel;
 		};
 		bool setProvider(const ssi_char_t* name, IProvider* provider);
 		bool connect();
@@ -73,6 +98,15 @@ namespace ssi {
 		void run();
 		bool disconnect();
 
+		ssi_video_params_t getRGBImageParams()
+		{
+			ssi_video_params_t vParam;
+
+			ssi_video_params(vParam, 1920, 1080, _options.sr, SSI_VIDEO_DEPTH_8U, 4);
+			vParam.flipImage = false;
+			return vParam;
+		}
+
 		void setLogLevel(int level) {
 			ssi_log_level = level;
 		}
@@ -80,15 +114,26 @@ namespace ssi {
 	protected:
 		AzureKinect(const ssi_char_t* file = 0);
 
-		void AzureKinect::process();
+		void process();
+
+		void processRGBAImage();
+		void processProviders();
 
 		AzureKinect::Options _options;
 		ssi_char_t* _file;
 
-		Timer* m_timer;
-
 		static ssi_char_t* ssi_log_name;
 		int ssi_log_level;
+
+		Timer* m_timer;
+
+		k4a::device m_azureKinectDevice;
+
+		RGBQUAD* m_bgraBuffer;
+
+		void setRGBImageProvider(IProvider* rgb_provider);
+		RGBImageChannel m_rgb_channel;
+		IProvider* m_rgb_provider;
 	};
 
 }

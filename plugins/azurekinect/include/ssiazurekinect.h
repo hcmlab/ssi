@@ -1,5 +1,5 @@
-// ssi.h
-// author: Daniel Schork 
+// ssiazurekinect.h
+// author: Fabian Wildgrube
 // created: 2021
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
