@@ -240,6 +240,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AzureKinect.h" />
+    <ClInclude Include="..\..\include\AzureKinectDatatypes.h" />
+    <ClInclude Include="..\..\include\AzureKinectHelpers.h" />
     <ClInclude Include="..\..\include\ssiazurekinect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

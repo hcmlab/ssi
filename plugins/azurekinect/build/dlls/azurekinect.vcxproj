@@ -240,16 +240,14 @@ xcopy /Y /I /E ..\bin\NuiDatabase ..\..\..\..\bin\$(PlatformName)\vc$(PlatformTo
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\AzureKinect.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />
-    <ClCompile Include="..\..\source\MicrosoftKinect2SmileDetector.cpp" />
-    <ClCompile Include="..\..\source\Kinect2Utils.cpp" />
-    <ClCompile Include="..\..\source\MicrosoftKinect2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Kinect2Utils.h" />
-    <ClInclude Include="..\..\include\MicrosoftKinect2SmileDetector.h" />
-    <ClInclude Include="..\..\include\MicrosoftKinect2.h" />
-    <ClInclude Include="..\..\include\ssimicrosoftkinect2.h" />
+    <ClInclude Include="..\..\include\AzureKinect.h" />
+    <ClInclude Include="..\..\include\AzureKinectDatatypes.h" />
+    <ClInclude Include="..\..\include\AzureKinectHelpers.h" />
+    <ClInclude Include="..\..\include\ssiazurekinect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

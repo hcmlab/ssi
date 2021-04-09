@@ -12,27 +12,21 @@
     <ClCompile Include="..\..\source\ExportMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\MicrosoftKinect2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Kinect2Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\MicrosoftKinect2SmileDetector.cpp">
+    <ClCompile Include="..\..\source\AzureKinect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\ssimicrosoftkinect2.h">
+    <ClInclude Include="..\..\include\ssiazurekinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\MicrosoftKinect2.h">
+    <ClInclude Include="..\..\include\AzureKinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Kinect2Utils.h">
+    <ClInclude Include="..\..\include\AzureKinectHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\MicrosoftKinect2SmileDetector.h">
+    <ClInclude Include="..\..\include\AzureKinectDatatypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
