@@ -54,6 +54,18 @@ namespace ssi {
 #define SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME "irraw"
 #define SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME "ir"
 
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_720P "720p"
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1080P "1080p"
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1440P "1440p"
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1536P "1536p"
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_2160P "2160p"
+#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_3072P "3072p"
+
+#define SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_BINNED "NFOV_BINNED"
+#define SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_UNBINNED "NFOV_UNBINNED"
+#define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_BINNED "WFOV_BINNED"
+#define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_UNBINNED "WFOV_UNBINNED"
+#define SSI_AZUREKINECT_DEPTHMODE_OPTION_PASSIVE_IR "PASSIVE_IR"
 class AzureKinect : public ISensor, public Thread {
 public:
 
@@ -143,13 +155,41 @@ public:
 					_depthMode(DEPTH_MODE::NFOV_UNBINNED)
 		{
 			addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz");
-			//addOption("rgbResolution", &_resolution, sizeof(), , "video resolution of the rgb camera");
+			addOption("rgbResolution", videoResolutionIn, SSI_MAX_CHAR, SSI_CHAR, "Resolution of the rgb video. Must be one of ['720p', '1080p', '1440p', '1536p', '2160p', '3072p']");
+			addOption("depthMode", depthModeIn, SSI_MAX_CHAR, SSI_CHAR, "Depth mode. Must be one of ['NFOV_BINNED', 'NFOV_UNBINNED', 'WFOV_BINNED', 'WFOV_UNBINNED', 'PASSIVE_IR']");
 
-			setRgbResolution(_rgbResolution);
-			setDepthMode(_depthMode);
+			//defaults:
+			std::tie(rgbVideoWidth, rgbVideoHeight) = GetColorDimensions(_rgbResolution);
+			std::tie(depthVideoWidth, depthVideoHeight) = GetDepthDimensions(_depthMode);
 		};
 
-		void setRgbResolution(RGB_VIDEO_RESOLUTION resolution) {
+		void setVideoResolutionIn(const ssi_char_t* resolutionString) {
+			std::cout << "Setting AK video resolution: " << resolutionString << "\n";
+
+			RGB_VIDEO_RESOLUTION resolution;
+
+			if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1080P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_1920x1080;
+			}
+			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1440P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_2560x1440;
+			}
+			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1536P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_2048x1536;
+			}
+			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_2160P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_3840x2160;
+			}
+			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_3072P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_4096x3072;
+			}
+			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_720P) == 0) {
+				resolution = RGB_VIDEO_RESOLUTION::p_1280x720;
+			}
+			else {
+				resolution = RGB_VIDEO_RESOLUTION::p_1280x720;
+			}
+
 			try
 			{
 				std::tie(rgbVideoWidth, rgbVideoHeight) = GetColorDimensions(resolution);
@@ -168,7 +208,25 @@ public:
 			}
 		}
 
-		void setDepthMode(DEPTH_MODE mode) {
+		void setDepthModeIn(const ssi_char_t* depthModeString) {
+			std::cout << "Setting AK depth mode: " << depthModeString << "\n";
+			DEPTH_MODE mode;
+
+			if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_UNBINNED) == 0) {
+				mode = DEPTH_MODE::NFOV_UNBINNED;
+			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_BINNED) == 0) {
+				mode = DEPTH_MODE::NFOV_2x2_BINNED;
+			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_BINNED) == 0) {
+				mode = DEPTH_MODE::WFOV_2x2_BINNED;
+			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_UNBINNED) == 0) {
+				mode = DEPTH_MODE::WFOV_UNBINNED;
+			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_PASSIVE_IR) == 0) {
+				mode = DEPTH_MODE::PASSIVE_IR;
+			}
+			else {
+				mode = DEPTH_MODE::NFOV_UNBINNED;
+			}
+
 			try
 			{
 				std::tie(depthVideoWidth, depthVideoHeight) = GetDepthDimensions(mode);
@@ -192,6 +250,10 @@ public:
 		RGB_VIDEO_RESOLUTION _rgbResolution;
 		ssi_size_t depthVideoWidth, depthVideoHeight;
 		DEPTH_MODE _depthMode;
+
+	private:
+		ssi_char_t videoResolutionIn[SSI_MAX_CHAR];
+		ssi_char_t depthModeIn[SSI_MAX_CHAR];
 	};
 
 public:
