@@ -154,17 +154,6 @@ namespace ssi {
             //
             hue = range - hue;
 
-            /*
-            auto f = [&hue](uint8_t n) {
-                auto k = fmod((n + hue * 360.0f / 60.0f), 6.0f);
-
-                float v = 1.0f;
-                float s = 1.0f;
-
-                return (v - v * s * (std::max)((std::min)(k, (std::min)(4 - k, 1.0f)), 0.0f));
-            };
-            */
-
             //return hsv signal
             result.Blue = static_cast<uint8_t>(255 * hue);
             result.Red = 255;

@@ -46,12 +46,12 @@ namespace ssi {
 	AzureKinect::AzureKinect(const ssi_char_t* file)
 		: m_rgb_provider(0),
 		m_bgraBuffer(0),
-		m_depth_provider(0),
-		m_depthBuffer(0),
+		m_depthVisualisation_provider(0),
+		m_depthVisualisationBuffer(0),
 		m_depthRaw_provider(0),
 		m_depthRawBuffer(0),
-		m_ir_provider(0),
-		m_irBuffer(0),
+		m_irVisualisation_provider(0),
+		m_irVisualisationBuffer(0),
 		m_irRaw_provider(0),
 		m_irRawBuffer(0),
 		m_camerasStarted(false),
@@ -90,14 +90,14 @@ namespace ssi {
 		if (strcmp(name, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_rgb_provider, m_rgb_channel, getRGBImageParams());
 		}
-		else if (strcmp(name, SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME) == 0) {
-			providerWasAlreadySet = setImageProvider(provider, m_depth_provider, m_depth_channel, getDepthImageParams());
+		else if (strcmp(name, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME) == 0) {
+			providerWasAlreadySet = setImageProvider(provider, m_depthVisualisation_provider, m_depthVisualisation_channel, getDepthVisualisationImageParams());
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_depthRaw_provider, m_depthRaw_channel, getDepthRawImageParams());
 		}
-		else if (strcmp(name, SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME) == 0) {
-			providerWasAlreadySet = setImageProvider(provider, m_ir_provider, m_ir_channel, getIRImageParams());
+		else if (strcmp(name, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME) == 0) {
+			providerWasAlreadySet = setImageProvider(provider, m_irVisualisation_provider, m_irVisualisation_channel, getIRVisualisationImageParams());
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_irRaw_provider, m_irRaw_channel,getIRRawImageParams());
@@ -196,11 +196,11 @@ namespace ssi {
 			m_azureKinectDevice.start_cameras(&config);
 			m_camerasStarted = true;
 			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
-			m_depthRawBuffer = new DepthPixel[getDepthImageParams().widthInPixels * getDepthImageParams().heightInPixels];
-			m_depthBuffer = new BgrPixel[getDepthImageParams().widthInPixels * getDepthImageParams().heightInPixels];
-			m_depthHSVConversionMat = cv::Mat(getDepthImageParams().widthInPixels, getDepthImageParams().heightInPixels, CV_8UC3, m_depthBuffer);
+			m_depthRawBuffer = new DepthPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
+			m_depthVisualisationBuffer = new BgrPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
+			m_depthHSVConversionMat = cv::Mat(getDepthVisualisationImageParams().widthInPixels, getDepthVisualisationImageParams().heightInPixels, CV_8UC3, m_depthVisualisationBuffer);
 			m_irRawBuffer = new DepthPixel[getIRRawImageParams().widthInPixels * getIRRawImageParams().heightInPixels];
-			m_irBuffer = new IRPixel[getIRImageParams().widthInPixels * getIRImageParams().heightInPixels];
+			m_irVisualisationBuffer = new IRPixel[getIRVisualisationImageParams().widthInPixels * getIRVisualisationImageParams().heightInPixels];
 		}
 		catch (const std::exception& e)
 		{
@@ -304,7 +304,8 @@ namespace ssi {
 	{
 		if (!m_azureKinectDevice) return;
 
-		captureImages();
+		getCapture();
+
 		processRGBAImage();
 		processDepthImage();
 		processIRImage();
@@ -314,7 +315,7 @@ namespace ssi {
 		processProviders();		
 	}
 
-	void AzureKinect::captureImages()
+	void AzureKinect::getCapture()
 	{
 		if (m_azureKinectDevice && m_camerasStarted) {
 			try
@@ -356,9 +357,9 @@ namespace ssi {
 				std::memcpy(m_depthRawBuffer, depthImage.get_buffer(), depthImage.get_size());
 				depthImage.reset(); //release the image after getting its data
 
-				if (m_depth_provider) {
-					const int width = getDepthImageParams().widthInPixels;
-					const int height = getDepthImageParams().heightInPixels;
+				if (m_depthVisualisation_provider) {
+					const int width = getDepthVisualisationImageParams().widthInPixels;
+					const int height = getDepthVisualisationImageParams().heightInPixels;
 					const auto valueRange = GetDepthModeRange(_options._depthMode);
 
 					for (int h = 0; h < height; ++h)
@@ -366,7 +367,7 @@ namespace ssi {
 						for (int w = 0; w < width; ++w)
 						{
 							const size_t currentPixel = static_cast<size_t>(h * width + w);
-							m_depthBuffer[currentPixel] = ColorizeBlueToRed_HSV(m_depthRawBuffer[currentPixel], valueRange.first, valueRange.second);
+							m_depthVisualisationBuffer[currentPixel] = ColorizeBlueToRed_HSV(m_depthRawBuffer[currentPixel], valueRange.first, valueRange.second);
 						}
 					}
 
@@ -384,7 +385,7 @@ namespace ssi {
 				std::memcpy(m_irRawBuffer, irImage.get_buffer(), irImage.get_size());
 				irImage.reset(); //release the image after getting its data
 
-				if (m_ir_provider) {
+				if (m_irVisualisation_provider) {
 					const int width = getIRRawImageParams().widthInPixels;
 					const int height = getIRRawImageParams().heightInPixels;
 					const auto valueRange = GetIrLevelsRange(_options._depthMode);
@@ -394,7 +395,7 @@ namespace ssi {
 						for (int w = 0; w < width; ++w)
 						{
 							const size_t currentPixel = static_cast<size_t>(h * width + w);
-							m_irBuffer[currentPixel] = ColorizeGreyscale(m_irRawBuffer[currentPixel], valueRange.first, valueRange.second);
+							m_irVisualisationBuffer[currentPixel] = ColorizeGreyscale(m_irRawBuffer[currentPixel], valueRange.first, valueRange.second);
 						}
 					}
 				}
@@ -412,16 +413,16 @@ namespace ssi {
 			m_depthRaw_provider->provide(ssi_pcast(ssi_byte_t, m_depthRawBuffer), 1);
 		}
 
-		if (m_depth_provider) {
-			m_depth_provider->provide(ssi_pcast(ssi_byte_t, m_depthBuffer), 1);
+		if (m_depthVisualisation_provider) {
+			m_depthVisualisation_provider->provide(ssi_pcast(ssi_byte_t, m_depthVisualisationBuffer), 1);
 		}
 
 		if (m_irRaw_provider) {
 			m_irRaw_provider->provide(ssi_pcast(ssi_byte_t, m_irRawBuffer), 1);
 		}
 
-		if (m_ir_provider) {
-			m_ir_provider->provide(ssi_pcast(ssi_byte_t, m_irBuffer), 1);
+		if (m_irVisualisation_provider) {
+			m_irVisualisation_provider->provide(ssi_pcast(ssi_byte_t, m_irVisualisationBuffer), 1);
 		}
 	}
 
@@ -432,9 +433,9 @@ namespace ssi {
 		//TODO: Clean up all buffers and stuff
 		delete[] m_bgraBuffer;
 		delete[] m_depthRawBuffer;
-		delete[] m_depthBuffer;
+		delete[] m_depthVisualisationBuffer;
 		delete[] m_irRawBuffer;
-		delete[] m_irBuffer;
+		delete[] m_irVisualisationBuffer;
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "sensor disconnected");
 

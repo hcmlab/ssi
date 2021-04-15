@@ -73,8 +73,8 @@ int main () {
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
 	frame->AddSensor(kinect);
 
 	VideoPainter* vplot = 0;

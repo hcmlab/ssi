@@ -54,9 +54,9 @@ namespace ssi {
 
 #define SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME "rgb"
 #define SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME "depthraw"
-#define SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME "depth"
+#define SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME "depthvisualisation"
 #define SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME "irraw"
-#define SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME "ir"
+#define SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME "irvisualisation"
 
 #define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_720P "720p"
 #define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1080P "1080p"
@@ -93,18 +93,18 @@ public:
 		ssi_stream_t stream;
 	};
 
-	class DepthImageChannel : public IChannel {
+	class DepthVisualisationImageChannel : public IChannel {
 
 		friend class AzureKinect;
 	public:
-		DepthImageChannel() {
+		DepthVisualisationImageChannel() {
 
 			ssi_stream_init(stream, 0, 1, 0, SSI_IMAGE, 0);
 		}
-		~DepthImageChannel() {
+		~DepthVisualisationImageChannel() {
 			ssi_stream_destroy(stream);
 		}
-		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME; };
+		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME; };
 		const ssi_char_t* getInfo() { return "Depth visualisation with 3 byte rgb pixels ranging from blue (near) to red (far)."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
@@ -131,18 +131,18 @@ public:
 		ssi_stream_t stream;
 	};
 
-	class IRImageChannel : public IChannel {
+	class IRVisualisationImageChannel : public IChannel {
 
 		friend class AzureKinect;
 	public:
-		IRImageChannel() {
+		IRVisualisationImageChannel() {
 
 			ssi_stream_init(stream, 0, 1, 0, SSI_IMAGE, 0);
 		}
-		~IRImageChannel() {
+		~IRVisualisationImageChannel() {
 			ssi_stream_destroy(stream);
 		}
-		const ssi_char_t* getName() { return SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME; };
+		const ssi_char_t* getName() { return SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME; };
 		const ssi_char_t* getInfo() { return "IR image visualisation with 1 byte grayscale values."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
@@ -309,7 +309,7 @@ public:
 		return vParam;
 	}
 
-	ssi_video_params_t getDepthImageParams()
+	ssi_video_params_t getDepthVisualisationImageParams()
 	{
 		ssi_video_params_t vParam;
 
@@ -327,7 +327,7 @@ public:
 		return vParam;
 	}
 
-	ssi_video_params_t getIRImageParams()
+	ssi_video_params_t getIRVisualisationImageParams()
 	{
 		ssi_video_params_t vParam;
 
@@ -359,7 +359,7 @@ protected:
 
 	void applyOptionsToCameraConfiguration(k4a_device_configuration_t & config);
 
-	void captureImages();
+	void getCapture();
 	void releaseCapture();
 	void processRGBAImage();
 	void processDepthImage();
@@ -381,10 +381,10 @@ protected:
 
 	BgraPixel* m_bgraBuffer;
 	DepthPixel* m_depthRawBuffer;
-	BgrPixel* m_depthBuffer;
+	BgrPixel* m_depthVisualisationBuffer;
 	cv::Mat m_depthHSVConversionMat; //helper, constructed over the m_depthBuffer to use opencv color conversion functions on it
 	DepthPixel* m_irRawBuffer;
-	IRPixel* m_irBuffer;
+	IRPixel* m_irVisualisationBuffer;
 
 	RGBImageChannel m_rgb_channel;
 	IProvider* m_rgb_provider;
@@ -392,14 +392,14 @@ protected:
 	DepthRawImageChannel m_depthRaw_channel;
 	IProvider* m_depthRaw_provider;
 
-	DepthImageChannel m_depth_channel;
-	IProvider* m_depth_provider;
+	DepthVisualisationImageChannel m_depthVisualisation_channel;
+	IProvider* m_depthVisualisation_provider;
 
 	IRRawImageChannel m_irRaw_channel;
 	IProvider* m_irRaw_provider;
 
-	IRImageChannel m_ir_channel;
-	IProvider* m_ir_provider;
+	IRVisualisationImageChannel m_irVisualisation_channel;
+	IProvider* m_irVisualisation_provider;
 
 private:
 	bool setImageProvider(IProvider* providerIn, IProvider* &internalProvider, IChannel &internalChannel, ssi_video_params_t params);
