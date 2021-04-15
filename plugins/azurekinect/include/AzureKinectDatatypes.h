@@ -11,6 +11,15 @@ namespace ssi {
 			uint8_t Alpha;
 		};
 
+		struct BgrPixel
+		{
+			uint8_t Blue;
+			uint8_t Green;
+			uint8_t Red;
+		};
+
+		using HSVPixel = BgrPixel;
+
 		using DepthPixel = uint16_t;
 
 		using IRPixel = unsigned char;

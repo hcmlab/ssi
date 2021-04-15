@@ -48,6 +48,8 @@ namespace ssi {
 		m_bgraBuffer(0),
 		m_depth_provider(0),
 		m_depthBuffer(0),
+		m_depthRaw_provider(0),
+		m_depthRawBuffer(0),
 		m_ir_provider(0),
 		m_irBuffer(0),
 		m_irRaw_provider(0),
@@ -90,6 +92,9 @@ namespace ssi {
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_depth_provider, m_depth_channel, getDepthImageParams());
+		}
+		else if (strcmp(name, SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME) == 0) {
+			providerWasAlreadySet = setImageProvider(provider, m_depthRaw_provider, m_depthRaw_channel, getDepthRawImageParams());
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_ir_provider, m_ir_channel, getIRImageParams());
@@ -191,7 +196,9 @@ namespace ssi {
 			m_azureKinectDevice.start_cameras(&config);
 			m_camerasStarted = true;
 			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
-			m_depthBuffer = new DepthPixel[getDepthImageParams().widthInPixels * getDepthImageParams().heightInPixels];
+			m_depthRawBuffer = new DepthPixel[getDepthImageParams().widthInPixels * getDepthImageParams().heightInPixels];
+			m_depthBuffer = new BgrPixel[getDepthImageParams().widthInPixels * getDepthImageParams().heightInPixels];
+			m_depthHSVConversionMat = cv::Mat(getDepthImageParams().widthInPixels, getDepthImageParams().heightInPixels, CV_8UC3, m_depthBuffer);
 			m_irRawBuffer = new DepthPixel[getIRRawImageParams().widthInPixels * getIRRawImageParams().heightInPixels];
 			m_irBuffer = new IRPixel[getIRImageParams().widthInPixels * getIRImageParams().heightInPixels];
 		}
@@ -278,6 +285,8 @@ namespace ssi {
 				break;
 		}
 		config.depth_mode = depthMode;
+
+		config.synchronized_images_only = true;
 	}
 
 	void AzureKinect::run()
@@ -344,8 +353,25 @@ namespace ssi {
 		if (m_capturedFrame) {
 			k4a::image depthImage = m_capturedFrame.get_depth_image();
 			if (depthImage) {
-				std::memcpy(m_depthBuffer, depthImage.get_buffer(), depthImage.get_size());
+				std::memcpy(m_depthRawBuffer, depthImage.get_buffer(), depthImage.get_size());
 				depthImage.reset(); //release the image after getting its data
+
+				if (m_depth_provider) {
+					const int width = getDepthImageParams().widthInPixels;
+					const int height = getDepthImageParams().heightInPixels;
+					const auto valueRange = GetDepthModeRange(_options._depthMode);
+
+					for (int h = 0; h < height; ++h)
+					{
+						for (int w = 0; w < width; ++w)
+						{
+							const size_t currentPixel = static_cast<size_t>(h * width + w);
+							m_depthBuffer[currentPixel] = ColorizeBlueToRed_HSV(m_depthRawBuffer[currentPixel], valueRange.first, valueRange.second);
+						}
+					}
+
+					cv::cvtColor(m_depthHSVConversionMat, m_depthHSVConversionMat, cv::COLOR_HSV2BGR);
+				}
 			}
 		}
 	}
@@ -361,7 +387,7 @@ namespace ssi {
 				if (m_ir_provider) {
 					const int width = getIRRawImageParams().widthInPixels;
 					const int height = getIRRawImageParams().heightInPixels;
-					const auto valueRange = GetDepthModeRange(_options._depthMode);
+					const auto valueRange = GetIrLevelsRange(_options._depthMode);
 
 					for (int h = 0; h < height; ++h)
 					{
@@ -380,6 +406,10 @@ namespace ssi {
 	{
 		if (m_rgb_provider) {
 			m_rgb_provider->provide(ssi_pcast(ssi_byte_t, m_bgraBuffer), 1);
+		}
+
+		if (m_depthRaw_provider) {
+			m_depthRaw_provider->provide(ssi_pcast(ssi_byte_t, m_depthRawBuffer), 1);
 		}
 
 		if (m_depth_provider) {
@@ -401,6 +431,7 @@ namespace ssi {
 
 		//TODO: Clean up all buffers and stuff
 		delete[] m_bgraBuffer;
+		delete[] m_depthRawBuffer;
 		delete[] m_depthBuffer;
 		delete[] m_irRawBuffer;
 		delete[] m_irBuffer;

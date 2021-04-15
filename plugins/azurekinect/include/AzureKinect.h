@@ -34,7 +34,10 @@
 #include "thread/Thread.h"
 #include "ioput/option/OptionList.h"
 
+#include <ssiocv.h>
+
 #include <tuple>
+#include <iostream>
 
 #include <k4a/k4a.hpp> /* ATTENTION: THIS FILE WAS MODIFIED BECAUSE IT DID NOT COMPILE DUE TO A CLASH BETWEEN std::min/max AND min/max preprocessor definitions */
 
@@ -50,6 +53,7 @@ namespace ssi {
 	using namespace AK;
 
 #define SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME "rgb"
+#define SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME "depthraw"
 #define SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME "depth"
 #define SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME "irraw"
 #define SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME "ir"
@@ -66,6 +70,7 @@ namespace ssi {
 #define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_BINNED "WFOV_BINNED"
 #define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_UNBINNED "WFOV_UNBINNED"
 #define SSI_AZUREKINECT_DEPTHMODE_OPTION_PASSIVE_IR "PASSIVE_IR"
+
 class AzureKinect : public ISensor, public Thread {
 public:
 
@@ -81,7 +86,7 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "RGB image with TODO: resolution and color depth."; };
+		const ssi_char_t* getInfo() { return "RGB image with resolution as set by options and 4 byte rgba pixels."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -100,7 +105,26 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHIMAGE_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "Depth image with 2 byte pixels."; };
+		const ssi_char_t* getInfo() { return "Depth visualisation with 3 byte rgb pixels ranging from blue (near) to red (far)."; };
+		ssi_stream_t getStream() { return stream; };
+		ssi_stream_t* getStreamPtr() { return &stream; };
+	protected:
+		ssi_stream_t stream;
+	};
+
+	class DepthRawImageChannel : public IChannel {
+
+		friend class AzureKinect;
+	public:
+		DepthRawImageChannel() {
+
+			ssi_stream_init(stream, 0, 1, 0, SSI_IMAGE, 0);
+		}
+		~DepthRawImageChannel() {
+			ssi_stream_destroy(stream);
+		}
+		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "Depth image with 2 byte depth-pixels signifying raw depth values in mm."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -119,7 +143,7 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_IRIMAGE_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "IR image with 1 byte grayscale values."; };
+		const ssi_char_t* getInfo() { return "IR image visualisation with 1 byte grayscale values."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -289,6 +313,15 @@ public:
 	{
 		ssi_video_params_t vParam;
 
+		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_8U, 3);
+		vParam.flipImage = false;
+		return vParam;
+	}
+
+	ssi_video_params_t getDepthRawImageParams()
+	{
+		ssi_video_params_t vParam;
+
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_16U, 1);
 		vParam.flipImage = false;
 		return vParam;
@@ -347,20 +380,25 @@ protected:
 	k4a::capture m_capturedFrame;
 
 	BgraPixel* m_bgraBuffer;
-	DepthPixel* m_depthBuffer;
+	DepthPixel* m_depthRawBuffer;
+	BgrPixel* m_depthBuffer;
+	cv::Mat m_depthHSVConversionMat; //helper, constructed over the m_depthBuffer to use opencv color conversion functions on it
 	DepthPixel* m_irRawBuffer;
 	IRPixel* m_irBuffer;
 
 	RGBImageChannel m_rgb_channel;
 	IProvider* m_rgb_provider;
 
-	RGBImageChannel m_depth_channel;
+	DepthRawImageChannel m_depthRaw_channel;
+	IProvider* m_depthRaw_provider;
+
+	DepthImageChannel m_depth_channel;
 	IProvider* m_depth_provider;
 
-	RGBImageChannel m_irRaw_channel;
+	IRRawImageChannel m_irRaw_channel;
 	IProvider* m_irRaw_provider;
 
-	RGBImageChannel m_ir_channel;
+	IRImageChannel m_ir_channel;
 	IProvider* m_ir_provider;
 
 private:
