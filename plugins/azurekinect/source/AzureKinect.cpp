@@ -38,6 +38,14 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+#define VERIFY(result, error)                                                                            \
+    if(result != K4A_RESULT_SUCCEEDED)                                                                   \
+    {                                                                                                    \
+        printf("%s \n - (File: %s, Function: %s, Line: %d)\n", error, __FILE__, __FUNCTION__, __LINE__); \
+        exit(1);                                                                                         \
+    }                                                                                                    \
+
+
 namespace ssi {
 	using namespace AK;
 
@@ -54,6 +62,10 @@ namespace ssi {
 		m_irVisualisationBuffer(0),
 		m_irRaw_provider(0),
 		m_irRawBuffer(0),
+		m_skeleton_provider(0),
+		m_nrOfSkeletons(1),
+		m_skeletons(0),
+		m_bodyTracker(0),
 		m_camerasStarted(false),
 		_file(0),
 		m_timer(0),
@@ -72,12 +84,6 @@ namespace ssi {
 		if (_file) {
 			OptionList::SaveXML(_file, &_options);
 			delete[] _file;
-		}
-
-		//TODO: Deinit the AzureKinect resources
-
-		if (m_azureKinectDevice) {
-			m_azureKinectDevice.close();
 		}
 	}
 
@@ -101,6 +107,9 @@ namespace ssi {
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setImageProvider(provider, m_irRaw_provider, m_irRaw_channel,getIRRawImageParams());
+		}
+		else if (strcmp(name, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME) == 0) {
+			providerWasAlreadySet = setSkeletonProvider(provider);
 		}
 		else {
 			ssi_wrn((providerNameStr + " does not exist on this sensor").c_str());
@@ -137,10 +146,31 @@ namespace ssi {
 		return providerWasDefined;
 	}
 
+	bool AzureKinect::setSkeletonProvider(IProvider* skeleton_provider) {
+		bool providerWasDefined = false;
+		if (m_skeleton_provider) {
+			providerWasDefined = true;
+		}
+
+		m_skeleton_provider = skeleton_provider;
+
+		if (m_skeleton_provider) {
+			//at least one body, filled with dummy values if necessary otherwise this stream would have no dimensions when body tracking is disabled
+			ssi_size_t minBodies = 1;
+			m_nrOfSkeletons = (std::max)(minBodies, _options.nrOfBodiesToTrack);
+
+			SSI_SKELETON_META m = ssi_skeleton_meta(SSI_SKELETON_TYPE::AZURE_KINECT, m_nrOfSkeletons);
+			m_skeleton_provider->setMetaData(sizeof(SSI_SKELETON_META), &m);
+			m_skeleton_channel.stream.dim = m_nrOfSkeletons * SKELETON_JOINT::NUM * SKELETON_JOINT_VALUE::NUM;
+			m_skeleton_channel.stream.sr = _options.sr;
+			m_skeleton_provider->init(&m_skeleton_channel);
+		}
+
+		return providerWasDefined;
+	}
+
 	bool AzureKinect::connect()
 	{
-		//TODO: Connect to Azure Kinect here
-
 		auto count = k4a::device::get_installed_count();
 
 		if (count > 0) {
@@ -150,7 +180,6 @@ namespace ssi {
 			}
 
 			try {
-
 				m_azureKinectDevice = k4a::device::open(0);
 			} 
 			catch (const std::exception& e)
@@ -161,11 +190,14 @@ namespace ssi {
 			}
 
 			ssi_msg(SSI_LOG_LEVEL_DETAIL, "connected");
+
+			initBuffers();
+
+			startCameras();
 		}
 		else {
 			ssi_wrn("No Azure Kinect found!");
 		}
-		
 
 		// set thread name
 		Thread::setName(getName());
@@ -175,36 +207,79 @@ namespace ssi {
 
 	bool AzureKinect::start()
 	{
-		startCameras();
 		return Thread::start();
 	}
 
 	bool AzureKinect::stop()
 	{
-		
+		std::cout << "Stopping\n";
+		stopCameras();
 		return Thread::stop();
+	}
+
+	void AzureKinect::initBuffers() {
+		if (m_rgb_provider) {
+			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
+		}
+
+		if (m_depthRaw_provider || m_depthVisualisation_provider) {
+			m_depthRawBuffer = new DepthPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
+		}
+
+		if (m_depthVisualisation_provider) {
+			m_depthVisualisationBuffer = new BgrPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
+			m_depthHSVConversionMat = cv::Mat(getDepthVisualisationImageParams().widthInPixels, getDepthVisualisationImageParams().heightInPixels, CV_8UC3, m_depthVisualisationBuffer);
+		}
+
+		if (m_irRaw_provider || m_irVisualisation_provider) {
+			m_irRawBuffer = new DepthPixel[getIRRawImageParams().widthInPixels * getIRRawImageParams().heightInPixels];
+		}
+
+		if (m_irVisualisation_provider) {
+			m_irVisualisationBuffer = new IRPixel[getIRVisualisationImageParams().widthInPixels * getIRVisualisationImageParams().heightInPixels];
+		}
+
+		if (m_skeleton_provider)
+		{
+			m_skeletons = new SKELETON[m_nrOfSkeletons];
+			for (ssi_size_t k = 0; k < m_nrOfSkeletons; k++)
+			{
+				for (ssi_size_t i = 0; i < SKELETON_JOINT::NUM; i++)
+				{
+					for (ssi_size_t j = 0; j < SKELETON_JOINT_VALUE::NUM; ++j)
+					{
+						m_skeletons[k][i][j] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					}
+				}
+			}
+		}
 	}
 
 
 	void AzureKinect::startCameras()
 	{
 		k4a_device_configuration_t config = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-		applyOptionsToCameraConfiguration(config);
+		_options.applyToCameraConfiguration(config);
 
 		try
 		{
 			m_azureKinectDevice.start_cameras(&config);
 			m_camerasStarted = true;
-			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
-			m_depthRawBuffer = new DepthPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
-			m_depthVisualisationBuffer = new BgrPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
-			m_depthHSVConversionMat = cv::Mat(getDepthVisualisationImageParams().widthInPixels, getDepthVisualisationImageParams().heightInPixels, CV_8UC3, m_depthVisualisationBuffer);
-			m_irRawBuffer = new DepthPixel[getIRRawImageParams().widthInPixels * getIRRawImageParams().heightInPixels];
-			m_irVisualisationBuffer = new IRPixel[getIRVisualisationImageParams().widthInPixels * getIRVisualisationImageParams().heightInPixels];
 		}
 		catch (const std::exception& e)
 		{
 			ssi_wrn("Could not start the kinect cameras");
+			return;
+		}
+
+		
+		if (m_skeleton_provider)
+		{
+			k4a::calibration sensorCalibration = m_azureKinectDevice.get_calibration(config.depth_mode, config.color_resolution);
+
+			k4abt_tracker_configuration_t tracker_config = K4ABT_TRACKER_CONFIG_DEFAULT;
+			tracker_config.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA; //important, otherwise will default to WindowsML which doesn't seem to work
+			m_bodyTracker = k4abt::tracker::create(sensorCalibration, tracker_config);
 		}
 	}
 
@@ -215,83 +290,8 @@ namespace ssi {
 		}
 	}
 
-	void AzureKinect::applyOptionsToCameraConfiguration(k4a_device_configuration_t& config)
-	{
-		//fps
-		if (_options.sr <= 5.0) {
-			config.camera_fps = K4A_FRAMES_PER_SECOND_5;
-		}
-		else if (_options.sr <= 15.0) {
-			config.camera_fps = K4A_FRAMES_PER_SECOND_15;
-		}
-		else {
-			config.camera_fps = K4A_FRAMES_PER_SECOND_30;
-		}
-
-		//color format - always RGB32 as the other option (compressed JPG) is not desirable
-		config.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
-
-		//color camera resolution
-		k4a_color_resolution_t colorRes;
-		switch (_options._rgbResolution)
-		{
-			case RGB_VIDEO_RESOLUTION::p_3840x2160:
-				colorRes = K4A_COLOR_RESOLUTION_2160P;
-				break;
-			case RGB_VIDEO_RESOLUTION::p_2560x1440:
-				colorRes = K4A_COLOR_RESOLUTION_1440P;
-				break;
-			case RGB_VIDEO_RESOLUTION::p_1920x1080:
-				colorRes = K4A_COLOR_RESOLUTION_1080P;
-				break;
-			case RGB_VIDEO_RESOLUTION::p_1280x720:
-				colorRes = K4A_COLOR_RESOLUTION_720P;
-				break;
-			case RGB_VIDEO_RESOLUTION::p_4096x3072:
-				colorRes = K4A_COLOR_RESOLUTION_3072P;
-				break;
-			case RGB_VIDEO_RESOLUTION::p_2048x1536:
-				colorRes = K4A_COLOR_RESOLUTION_1536P;
-				break;
-			case RGB_VIDEO_RESOLUTION::OFF:
-			default:
-				colorRes = K4A_COLOR_RESOLUTION_OFF;
-				break;
-		}
-		config.color_resolution = colorRes;
-
-		//depth sensor mode
-		k4a_depth_mode_t depthMode;
-		switch (_options._depthMode)
-		{
-			case DEPTH_MODE::NFOV_UNBINNED:
-				depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
-				break;
-			case DEPTH_MODE::NFOV_2x2_BINNED:
-				depthMode = K4A_DEPTH_MODE_NFOV_2X2BINNED;
-				break;
-			case DEPTH_MODE::WFOV_UNBINNED:
-				depthMode = K4A_DEPTH_MODE_WFOV_UNBINNED;
-				break;
-			case DEPTH_MODE::WFOV_2x2_BINNED:
-				depthMode = K4A_DEPTH_MODE_WFOV_2X2BINNED;
-				break;
-			case DEPTH_MODE::PASSIVE_IR:
-				depthMode = K4A_DEPTH_MODE_PASSIVE_IR;
-				break;
-			case DEPTH_MODE::OFF:
-			default:
-				depthMode = K4A_DEPTH_MODE_OFF;
-				break;
-		}
-		config.depth_mode = depthMode;
-
-		config.synchronized_images_only = true;
-	}
-
 	void AzureKinect::run()
 	{
-
 		if (!m_timer) {
 			m_timer = new Timer(1 / _options.sr);
 		}
@@ -302,15 +302,33 @@ namespace ssi {
 
 	void AzureKinect::process()
 	{
-		if (!m_azureKinectDevice) return;
+		if (!m_azureKinectDevice || !m_camerasStarted) return;
 
 		getCapture();
 
-		processRGBAImage();
-		processDepthImage();
-		processIRImage();
+		if (m_skeleton_provider) {
+			//important: if you call this, ALWAYS call processBodyTracking() later
+			//otherwise internal queue of the a4k body tracker will overflow and block
+			passCaptureToBodyTracker();
+		}
+
+		if (m_rgb_provider) {
+			processRGBAImage();
+		}
+
+		if (m_depthRaw_provider || m_depthVisualisation_provider) {
+			processDepthImage();
+		}
+
+		if (m_irRaw_provider || m_irVisualisation_provider) {
+			processIRImage();
+		}
 
 		releaseCapture();
+
+		if (m_skeleton_provider) {
+			processBodyTracking();
+		}
 
 		processProviders();		
 	}
@@ -332,11 +350,18 @@ namespace ssi {
 		}
 	}
 
+	void AzureKinect::passCaptureToBodyTracker()
+	{
+		if (m_capturedFrame) {
+			if (!m_bodyTracker.enqueue_capture(m_capturedFrame, std::chrono::milliseconds(0))) {
+				ssi_wrn("Body tracker could not enqueue capture!");
+			}
+		}
+	}
 
 	void AzureKinect::releaseCapture() {
 		m_capturedFrame.reset();
 	}
-
 
 	void AzureKinect::processRGBAImage()
 	{
@@ -403,6 +428,74 @@ namespace ssi {
 		}
 	}
 
+	void AzureKinect::processBodyTracking()
+	{
+		k4abt::frame body_frame = m_bodyTracker.pop_result();
+		if (body_frame)
+		{
+			ssi_size_t nrOfTrackedBodies = body_frame.get_num_bodies();
+
+			std::cout << nrOfTrackedBodies << " bodies are detected!\n";
+
+			size_t bodiesProcessed = 0;
+
+			auto bodiesToProcess = (std::min)(m_nrOfSkeletons, nrOfTrackedBodies);
+
+			for (ssi_size_t bodyIdx = 0; bodyIdx < bodiesToProcess; bodyIdx++)
+			{
+				k4abt_body_t body = body_frame.get_body(bodyIdx);
+
+				for (ssi_size_t jointIdx = 0; jointIdx < SKELETON_JOINT::NUM; jointIdx++)
+				{
+					k4a_float3_t position = body.skeleton.joints[jointIdx].position;
+					k4a_quaternion_t orientation = body.skeleton.joints[jointIdx].orientation;
+					k4abt_joint_confidence_level_t confidence_level = body.skeleton.joints[jointIdx].confidence_level;
+					float confidence = confidence_level / (K4ABT_JOINT_CONFIDENCE_LEVELS_COUNT * 1.0f);
+
+					//TODO: possible optimisation: use memcopy
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_X] = position.xyz.x;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Y] = position.xyz.y;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Z] = position.xyz.z;
+
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_W] = orientation.wxyz.w;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_X] = orientation.wxyz.x;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = orientation.wxyz.y;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = orientation.wxyz.z;
+
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::CONF] = confidence;
+				}
+
+				bodiesProcessed++;
+			}
+			
+			//fill up with invalid data if less bodies were detected than the pipeline demands of us
+			for (size_t bodyIdx = bodiesProcessed; bodyIdx < m_nrOfSkeletons ; bodyIdx++)
+			{
+				for (ssi_size_t jointIdx = 0; jointIdx < SKELETON_JOINT::NUM; jointIdx++)
+				{
+					//TODO: possible optimisation: use memset
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_X] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Y] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Z] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_W] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_X] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+
+					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::CONF] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
+				}
+			}
+
+			body_frame.reset();
+		}
+		else
+		{
+			ssi_err("Error! Pop body frame result time out!");
+		}
+
+	}
+
 	void AzureKinect::processProviders()
 	{
 		if (m_rgb_provider) {
@@ -424,18 +517,58 @@ namespace ssi {
 		if (m_irVisualisation_provider) {
 			m_irVisualisation_provider->provide(ssi_pcast(ssi_byte_t, m_irVisualisationBuffer), 1);
 		}
+
+		if (m_skeleton_provider) {
+			m_skeleton_provider->provide(ssi_pcast(ssi_byte_t, m_skeletons), 1);
+		}
 	}
 
 	bool AzureKinect::disconnect() {
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "try to disconnect sensor...");
 
-		//TODO: Clean up all buffers and stuff
-		delete[] m_bgraBuffer;
-		delete[] m_depthRawBuffer;
-		delete[] m_depthVisualisationBuffer;
-		delete[] m_irRawBuffer;
-		delete[] m_irVisualisationBuffer;
+		if (m_bodyTracker) {
+			m_bodyTracker.shutdown();
+		}
+
+		if (m_capturedFrame) {
+			m_capturedFrame.reset();
+		}
+
+		if (m_azureKinectDevice) {
+			m_azureKinectDevice.close();
+		}
+
+		if (m_bgraBuffer) {
+			delete[] m_bgraBuffer;
+			m_rgb_provider = 0;
+		}
+
+		if (m_depthRaw_provider) {
+			delete[] m_depthRawBuffer;
+			m_depthRaw_provider = 0;
+		}
+
+		if (m_depthVisualisation_provider) {
+			delete[] m_depthVisualisationBuffer;
+			m_depthVisualisation_provider = 0;
+		}
+
+		if (m_irRaw_provider) {
+			delete[] m_irRawBuffer;
+			m_irRaw_provider = 0;
+		}
+
+		if (m_irVisualisation_provider) {
+			delete[] m_irVisualisationBuffer;
+			m_irVisualisation_provider = 0;
+		}
+
+		if (m_skeleton_provider)
+		{
+			delete[] m_skeletons;
+			m_skeleton_provider = 0;
+		}
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "sensor disconnected");
 

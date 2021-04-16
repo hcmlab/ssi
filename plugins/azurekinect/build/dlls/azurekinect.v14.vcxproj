@@ -148,9 +148,9 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ssid.lib;k4a.lib;avrt.lib;mfuuid.lib;mfplat.lib;wmcodecdspuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssid.lib;k4a.lib;k4abt.lib;avrt.lib;mfuuid.lib;mfplat.lib;wmcodecdspuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);..\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\libs\$(PlatformName)\vc$(PlatformToolsetVersion);C:\Program Files\Azure Kinect Body Tracking SDK\sdk\windows-desktop\amd64\release\bin;..\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
@@ -242,6 +242,7 @@
     <ClInclude Include="..\..\include\AzureKinect.h" />
     <ClInclude Include="..\..\include\AzureKinectDatatypes.h" />
     <ClInclude Include="..\..\include\AzureKinectHelpers.h" />
+    <ClInclude Include="..\..\include\AzureKinectOptions.h" />
     <ClInclude Include="..\..\include\ssiazurekinect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

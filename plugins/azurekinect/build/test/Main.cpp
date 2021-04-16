@@ -75,6 +75,7 @@ int main () {
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
 	frame->AddSensor(kinect);
 
 	VideoPainter* vplot = 0;
@@ -97,8 +98,13 @@ int main () {
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(depth_p, vplot, "1");
 
-	decorator->add("console", 0, 0, 650, 800);
-	decorator->add("plot*", 650, 0, 1200, 800);
+	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	paint->getOptions()->type = PaintSignalType::SIGNAL;
+	paint->getOptions()->setTitle("Title");
+	frame->AddConsumer(skeleton_p, paint, "0.1s");
+
+	decorator->add("console", 0, 0, 500, 800);
+	decorator->add("plot*", 500, 0, 1600, 800);
 
 	board->Start();
 	frame->Start();

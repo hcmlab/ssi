@@ -16,28 +16,30 @@
 
 namespace ssi {
     namespace AK {
+
         // Gets the dimensions of the color images that the color camera will produce for a
-    // given color resolution
-    //
+        // given color resolution
+        //
         inline std::pair<int, int> GetColorDimensions(const RGB_VIDEO_RESOLUTION resolution)
         {
             switch (resolution)
             {
-            case RGB_VIDEO_RESOLUTION::p_1280x720:
-                return { 1280, 720 };
-            case RGB_VIDEO_RESOLUTION::p_3840x2160:
-                return { 3840, 2160 };
-            case RGB_VIDEO_RESOLUTION::p_2560x1440:
-                return { 2560, 1440 };
-            case RGB_VIDEO_RESOLUTION::p_1920x1080:
-                return { 1920, 1080 };
-            case RGB_VIDEO_RESOLUTION::p_4096x3072:
-                return { 4096, 3072 };
-            case RGB_VIDEO_RESOLUTION::p_2048x1536:
-                return { 2048, 1536 };
-
-            default:
-                throw std::logic_error("Invalid color dimensions value!");
+                case RGB_VIDEO_RESOLUTION::p_1280x720:
+                    return { 1280, 720 };
+                case RGB_VIDEO_RESOLUTION::p_3840x2160:
+                    return { 3840, 2160 };
+                case RGB_VIDEO_RESOLUTION::p_2560x1440:
+                    return { 2560, 1440 };
+                case RGB_VIDEO_RESOLUTION::p_1920x1080:
+                    return { 1920, 1080 };
+                case RGB_VIDEO_RESOLUTION::p_4096x3072:
+                    return { 4096, 3072 };
+                case RGB_VIDEO_RESOLUTION::p_2048x1536:
+                    return { 2048, 1536 };
+                case RGB_VIDEO_RESOLUTION::OFF:
+                    return { 1, 1 };
+                default:
+                    return { 1, 1 };
             }
         }
 
@@ -48,19 +50,20 @@ namespace ssi {
         {
             switch (depthMode)
             {
-            case DEPTH_MODE::NFOV_2x2_BINNED:
-                return { 320, 288 };
-            case DEPTH_MODE::NFOV_UNBINNED:
-                return { 640, 576 };
-            case DEPTH_MODE::WFOV_2x2_BINNED:
-                return { 512, 512 };
-            case DEPTH_MODE::WFOV_UNBINNED:
-                return { 1024, 1024 };
-            case DEPTH_MODE::PASSIVE_IR:
-                return { 1024, 1024 };
-
-            default:
-                throw std::logic_error("Invalid depth dimensions value!");
+                case DEPTH_MODE::NFOV_2x2_BINNED:
+                    return { 320, 288 };
+                case DEPTH_MODE::NFOV_UNBINNED:
+                    return { 640, 576 };
+                case DEPTH_MODE::WFOV_2x2_BINNED:
+                    return { 512, 512 };
+                case DEPTH_MODE::WFOV_UNBINNED:
+                    return { 1024, 1024 };
+                case DEPTH_MODE::PASSIVE_IR:
+                    return { 1024, 1024 };
+                case DEPTH_MODE::OFF:
+                    return { 1, 1 };
+                default:
+                    return { 1, 1 };
             }
         }
 

@@ -32,17 +32,20 @@
 #include "base/ISensor.h"
 #include "base/IProvider.h"
 #include "thread/Thread.h"
-#include "ioput/option/OptionList.h"
 
 #include <ssiocv.h>
 
 #include <tuple>
 #include <iostream>
 
+//azure kinect sensor sdk
 #include <k4a/k4a.hpp> /* ATTENTION: THIS FILE WAS MODIFIED BECAUSE IT DID NOT COMPILE DUE TO A CLASH BETWEEN std::min/max AND min/max preprocessor definitions */
+//azure kinect body tracking
+#include <k4abt.hpp>
 
 #include "AzureKinectDatatypes.h"
 #include "AzureKinectHelpers.h"
+#include "AzureKinectOptions.h"
 
 namespace ssi {
 	class Timer;
@@ -57,19 +60,7 @@ namespace ssi {
 #define SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME "depthvisualisation"
 #define SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME "irraw"
 #define SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME "irvisualisation"
-
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_720P "720p"
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1080P "1080p"
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1440P "1440p"
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1536P "1536p"
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_2160P "2160p"
-#define SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_3072P "3072p"
-
-#define SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_BINNED "NFOV_BINNED"
-#define SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_UNBINNED "NFOV_UNBINNED"
-#define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_BINNED "WFOV_BINNED"
-#define SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_UNBINNED "WFOV_UNBINNED"
-#define SSI_AZUREKINECT_DEPTHMODE_OPTION_PASSIVE_IR "PASSIVE_IR"
+#define SSI_AZUREKINECT_SKELETON_PROVIDER_NAME "skeleton"
 
 class AzureKinect : public ISensor, public Thread {
 public:
@@ -169,115 +160,22 @@ public:
 		ssi_stream_t stream;
 	};
 
-public:
+	class SkeletonChannel : public IChannel {
 
-	class Options : public OptionList {
+		friend class AzureKinect;
 
 	public:
-		Options() : sr(30.0),
-					_rgbResolution(RGB_VIDEO_RESOLUTION::p_1920x1080),
-					_depthMode(DEPTH_MODE::NFOV_UNBINNED)
-		{
-			addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz");
-			addOption("rgbResolution", videoResolutionIn, SSI_MAX_CHAR, SSI_CHAR, "Resolution of the rgb video. Must be one of ['720p', '1080p', '1440p', '1536p', '2160p', '3072p']");
-			addOption("depthMode", depthModeIn, SSI_MAX_CHAR, SSI_CHAR, "Depth mode. Must be one of ['NFOV_BINNED', 'NFOV_UNBINNED', 'WFOV_BINNED', 'WFOV_UNBINNED', 'PASSIVE_IR']");
-
-			//defaults:
-			std::tie(rgbVideoWidth, rgbVideoHeight) = GetColorDimensions(_rgbResolution);
-			std::tie(depthVideoWidth, depthVideoHeight) = GetDepthDimensions(_depthMode);
-		};
-
-		void setVideoResolutionIn(const ssi_char_t* resolutionString) {
-			std::cout << "Setting AK video resolution: " << resolutionString << "\n";
-
-			RGB_VIDEO_RESOLUTION resolution;
-
-			if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1080P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_1920x1080;
-			}
-			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1440P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_2560x1440;
-			}
-			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_1536P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_2048x1536;
-			}
-			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_2160P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_3840x2160;
-			}
-			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_3072P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_4096x3072;
-			}
-			else if (strcmp(resolutionString, SSI_AZUREKINECT_VIDEORESOLUTION_OPTION_720P) == 0) {
-				resolution = RGB_VIDEO_RESOLUTION::p_1280x720;
-			}
-			else {
-				resolution = RGB_VIDEO_RESOLUTION::p_1280x720;
-			}
-
-			try
-			{
-				std::tie(rgbVideoWidth, rgbVideoHeight) = GetColorDimensions(resolution);
-
-				if (resolution == RGB_VIDEO_RESOLUTION::p_4096x3072 && sr > 15.0) {
-					sr = 15.0;
-				}
-
-				_rgbResolution = resolution;
-			}
-			catch (const std::exception&)
-			{
-				rgbVideoWidth = 0;
-				rgbVideoHeight = 0;
-				_rgbResolution = RGB_VIDEO_RESOLUTION::OFF;
-			}
+		SkeletonChannel() {
+			ssi_stream_init(stream, 0, 0, sizeof(float), SSI_FLOAT, 0);
 		}
-
-		void setDepthModeIn(const ssi_char_t* depthModeString) {
-			std::cout << "Setting AK depth mode: " << depthModeString << "\n";
-			DEPTH_MODE mode;
-
-			if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_UNBINNED) == 0) {
-				mode = DEPTH_MODE::NFOV_UNBINNED;
-			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_NFOV_BINNED) == 0) {
-				mode = DEPTH_MODE::NFOV_2x2_BINNED;
-			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_BINNED) == 0) {
-				mode = DEPTH_MODE::WFOV_2x2_BINNED;
-			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_WFOV_UNBINNED) == 0) {
-				mode = DEPTH_MODE::WFOV_UNBINNED;
-			} else if (strcmp(depthModeString, SSI_AZUREKINECT_DEPTHMODE_OPTION_PASSIVE_IR) == 0) {
-				mode = DEPTH_MODE::PASSIVE_IR;
-			}
-			else {
-				mode = DEPTH_MODE::NFOV_UNBINNED;
-			}
-
-			try
-			{
-				std::tie(depthVideoWidth, depthVideoHeight) = GetDepthDimensions(mode);
-
-				if (mode == DEPTH_MODE::WFOV_UNBINNED && sr > 15.0) {
-					sr = 15.0;
-				}
-
-				_depthMode = mode;
-			}
-			catch (const std::exception&)
-			{
-				depthVideoWidth = 0;
-				depthVideoHeight = 0;
-				_depthMode = DEPTH_MODE::OFF;
-			}
+		~SkeletonChannel() {
+			ssi_stream_destroy(stream);
 		}
-
-		ssi_time_t sr;
-		ssi_size_t rgbVideoWidth, rgbVideoHeight;
-		RGB_VIDEO_RESOLUTION _rgbResolution;
-		ssi_size_t depthVideoWidth, depthVideoHeight;
-		DEPTH_MODE _depthMode;
-
-	private:
-		ssi_char_t videoResolutionIn[SSI_MAX_CHAR];
-		ssi_char_t depthModeIn[SSI_MAX_CHAR];
+		const ssi_char_t* getName() { return SSI_AZUREKINECT_SKELETON_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "Reports 3D skeleton positions of 32 joints."; };
+		ssi_stream_t getStream() { return stream; };
+	protected:
+		ssi_stream_t stream;
 	};
 
 public:
@@ -352,21 +250,23 @@ public:
 protected:
 	AzureKinect(const ssi_char_t* file = 0);
 
+	void initBuffers();
+
 	void startCameras();
 	void stopCameras();
 
 	void process();
 
-	void applyOptionsToCameraConfiguration(k4a_device_configuration_t & config);
-
 	void getCapture();
+	void passCaptureToBodyTracker();
 	void releaseCapture();
 	void processRGBAImage();
 	void processDepthImage();
 	void processIRImage();
+	void processBodyTracking();
 	void processProviders();
 
-	AzureKinect::Options _options;
+	Options _options;
 	ssi_char_t* _file;
 
 	static ssi_char_t* ssi_log_name;
@@ -377,6 +277,8 @@ protected:
 	k4a::device m_azureKinectDevice;
 	bool m_camerasStarted;
 
+	k4abt::tracker m_bodyTracker;
+
 	k4a::capture m_capturedFrame;
 
 	BgraPixel* m_bgraBuffer;
@@ -385,6 +287,9 @@ protected:
 	cv::Mat m_depthHSVConversionMat; //helper, constructed over the m_depthBuffer to use opencv color conversion functions on it
 	DepthPixel* m_irRawBuffer;
 	IRPixel* m_irVisualisationBuffer;
+
+	ssi_size_t m_nrOfSkeletons;
+	SKELETON* m_skeletons;
 
 	RGBImageChannel m_rgb_channel;
 	IProvider* m_rgb_provider;
@@ -400,6 +305,10 @@ protected:
 
 	IRVisualisationImageChannel m_irVisualisation_channel;
 	IProvider* m_irVisualisation_provider;
+
+	bool setSkeletonProvider(IProvider* skeleton_provider);
+	SkeletonChannel m_skeleton_channel;
+	IProvider* m_skeleton_provider;
 
 private:
 	bool setImageProvider(IProvider* providerIn, IProvider* &internalProvider, IChannel &internalChannel, ssi_video_params_t params);

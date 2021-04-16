@@ -29,5 +29,8 @@
     <ClInclude Include="..\..\include\AzureKinectDatatypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\AzureKinectOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
