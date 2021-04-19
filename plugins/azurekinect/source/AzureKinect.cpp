@@ -39,6 +39,9 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+//uncomment this to print the time it takes to process a single frame to the console
+//#define PRINT_FRAME_TIMINGS
+
 namespace ssi {
 	using namespace AK;
 
@@ -285,7 +288,18 @@ namespace ssi {
 			m_timer = new Timer(1 / _options.sr);
 		}
 
+#ifdef PRINT_FRAME_TIMINGS
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+#endif
+	
 		process();
+
+#ifdef PRINT_FRAME_TIMINGS
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+	std::cout << "Frame took: " << duration << "ms\n";
+#endif
+
 		m_timer->wait();
 	}
 
