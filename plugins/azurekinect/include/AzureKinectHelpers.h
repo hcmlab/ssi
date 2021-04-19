@@ -164,6 +164,30 @@ namespace ssi {
 
             return result;
         }
+
+        inline std::pair<bool, cv::Point> convert3DDepthTo2DColorCoordinate(float x, float y, float z, const k4a::calibration& calibration)
+        {
+            bool isValid = false;
+            k4a_float3_t jointPos3D = { { x, y, z } };
+            k4a_float2_t jointPos2D;
+            try
+            {
+                isValid = calibration.convert_3d_to_2d(jointPos3D, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_COLOR, &jointPos2D);
+            }
+            catch (const std::exception&)
+            {
+                isValid = false;
+            }
+
+            //points that fall outside the visible area of the color camera are set to 0
+            //according to https://docs.microsoft.com/en-us/azure/kinect-dk/use-calibration-functions
+            isValid = jointPos2D.xy.x > 0.0f && jointPos2D.xy.y > 0.0f;
+
+            //subpixel coordinates have the center of the pixel at its "int" coordinate. i.e. (0, 0) ranges from (-0.4999, -0.4999) to (0.4999, 0.4999)
+            //see: https://docs.microsoft.com/en-us/azure/kinect-dk/coordinate-systems
+            //therefore a normal round (i.e. >= 0.5 goes to the next higher number, which is the correct integer pixel-coordinate for the subpixel coordinate
+            return std::make_pair(isValid, cv::Point(static_cast<int>(std::round(jointPos2D.xy.x)), static_cast<int>(std::round(jointPos2D.xy.y))));
+        }
     } //namespace AK
 } //namespace ssi
 

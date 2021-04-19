@@ -30,12 +30,15 @@ namespace ssi {
 		public:
 			Options() : sr(30.0),
 				_rgbResolution(RGB_VIDEO_RESOLUTION::p_1920x1080),
-				_depthMode(DEPTH_MODE::WFOV_2x2_BINNED)
+				_depthMode(DEPTH_MODE::WFOV_2x2_BINNED),
+				nrOfBodiesToTrack(1),
+				showBodyTracking(true)
 			{
 				addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz");
 				addOption("rgbResolution", videoResolutionIn, SSI_MAX_CHAR, SSI_CHAR, "Resolution of the rgb video. Must be one of ['720p', '1080p', '1440p', '1536p', '2160p', '3072p']. Set to 'OFF' to deactivate.");
 				addOption("depthMode", depthModeIn, SSI_MAX_CHAR, SSI_CHAR, "Depth mode. Must be one of ['NFOV_BINNED', 'NFOV_UNBINNED', 'WFOV_BINNED', 'WFOV_UNBINNED', 'PASSIVE_IR']. Set to 'OFF' to deactivate.");
 				addOption("nrOfBodiesToTrack", &nrOfBodiesToTrack, 0, SSI_SIZE, "The number of bodies to track. Default is 0, set to at least 1 to track someone! (Azure Kinect doesn't seem to have a limit for the nr of bodies it can track)");
+				addOption("showBodyTracking", &showBodyTracking, 1, SSI_BOOL, "show body tracking (only paints basic joints and bones, use the SkeletonPainter plugin for more options");
 
 				//TODO: add sensor orientation (for optimal tracker configuration)
 
@@ -199,6 +202,7 @@ namespace ssi {
 			DEPTH_MODE _depthMode;
 
 			ssi_size_t nrOfBodiesToTrack;
+			bool showBodyTracking;
 
 		private:
 			ssi_char_t videoResolutionIn[SSI_MAX_CHAR];

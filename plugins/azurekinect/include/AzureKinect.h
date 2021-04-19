@@ -264,6 +264,7 @@ protected:
 	void processDepthImage();
 	void processIRImage();
 	void processBodyTracking();
+	void visualizeTrackedBodies();
 	void processProviders();
 
 	Options _options;
@@ -275,6 +276,8 @@ protected:
 	Timer* m_timer;
 
 	k4a::device m_azureKinectDevice;
+	k4a_device_configuration_t m_azureKinectConfig;
+	k4a::calibration m_sensorCalibration;
 	bool m_camerasStarted;
 
 	k4abt::tracker m_bodyTracker;

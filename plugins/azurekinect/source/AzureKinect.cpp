@@ -28,6 +28,7 @@
 #include "thread/Timer.h"
 
 #include <iostream>
+#include <math.h>
 
 #ifdef USE_SSI_LEAK_DETECTOR
 #include "SSI_LeakWatcher.h"
@@ -37,14 +38,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
-
-#define VERIFY(result, error)                                                                            \
-    if(result != K4A_RESULT_SUCCEEDED)                                                                   \
-    {                                                                                                    \
-        printf("%s \n - (File: %s, Function: %s, Line: %d)\n", error, __FILE__, __FUNCTION__, __LINE__); \
-        exit(1);                                                                                         \
-    }                                                                                                    \
-
 
 namespace ssi {
 	using namespace AK;
@@ -218,7 +211,7 @@ namespace ssi {
 	}
 
 	void AzureKinect::initBuffers() {
-		if (m_rgb_provider) {
+		if (m_rgb_provider || _options.showBodyTracking) {
 			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
 		}
 
@@ -239,7 +232,7 @@ namespace ssi {
 			m_irVisualisationBuffer = new IRPixel[getIRVisualisationImageParams().widthInPixels * getIRVisualisationImageParams().heightInPixels];
 		}
 
-		if (m_skeleton_provider)
+		if (m_skeleton_provider || _options.showBodyTracking)
 		{
 			m_skeletons = new SKELETON[m_nrOfSkeletons];
 			for (ssi_size_t k = 0; k < m_nrOfSkeletons; k++)
@@ -258,12 +251,13 @@ namespace ssi {
 
 	void AzureKinect::startCameras()
 	{
-		k4a_device_configuration_t config = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-		_options.applyToCameraConfiguration(config);
+		m_azureKinectConfig = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
+		_options.applyToCameraConfiguration(m_azureKinectConfig);
+		m_sensorCalibration = m_azureKinectDevice.get_calibration(m_azureKinectConfig.depth_mode, m_azureKinectConfig.color_resolution);
 
 		try
 		{
-			m_azureKinectDevice.start_cameras(&config);
+			m_azureKinectDevice.start_cameras(&m_azureKinectConfig);
 			m_camerasStarted = true;
 		}
 		catch (const std::exception& e)
@@ -272,14 +266,11 @@ namespace ssi {
 			return;
 		}
 
-		
-		if (m_skeleton_provider)
+		if (m_skeleton_provider || _options.showBodyTracking)
 		{
-			k4a::calibration sensorCalibration = m_azureKinectDevice.get_calibration(config.depth_mode, config.color_resolution);
-
 			k4abt_tracker_configuration_t tracker_config = K4ABT_TRACKER_CONFIG_DEFAULT;
 			tracker_config.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA; //important, otherwise will default to WindowsML which doesn't seem to work
-			m_bodyTracker = k4abt::tracker::create(sensorCalibration, tracker_config);
+			m_bodyTracker = k4abt::tracker::create(m_sensorCalibration, tracker_config);
 		}
 	}
 
@@ -306,7 +297,7 @@ namespace ssi {
 
 		getCapture();
 
-		if (m_skeleton_provider) {
+		if (m_skeleton_provider || _options.showBodyTracking) {
 			//important: if you call this, ALWAYS call processBodyTracking() later
 			//otherwise internal queue of the a4k body tracker will overflow and block
 			passCaptureToBodyTracker();
@@ -326,8 +317,11 @@ namespace ssi {
 
 		releaseCapture();
 
-		if (m_skeleton_provider) {
+		if (m_skeleton_provider || _options.showBodyTracking) {
 			processBodyTracking();
+			if (_options.showBodyTracking) {
+				visualizeTrackedBodies();
+			}
 		}
 
 		processProviders();		
@@ -435,8 +429,6 @@ namespace ssi {
 		{
 			ssi_size_t nrOfTrackedBodies = body_frame.get_num_bodies();
 
-			std::cout << nrOfTrackedBodies << " bodies are detected!\n";
-
 			size_t bodiesProcessed = 0;
 
 			auto bodiesToProcess = (std::min)(m_nrOfSkeletons, nrOfTrackedBodies);
@@ -493,7 +485,63 @@ namespace ssi {
 		{
 			ssi_err("Error! Pop body frame result time out!");
 		}
+	}
 
+	/// <summary>
+	///	Paints simplistic joints and bones over the rgb image
+	/// Prerequisites:	- rgbaBuffer needs to exist
+	///					- skeleton tracking has already happened
+	/// </summary>
+	void AzureKinect::visualizeTrackedBodies() {
+		for (ssi_size_t bodyIdx = 0; bodyIdx < m_nrOfSkeletons; bodyIdx++)
+		{
+			auto color = cv::Scalar(255, 0, 0);
+			for (ssi_size_t jointIdx = 0; jointIdx < SKELETON_JOINT::NUM; jointIdx++)
+			{
+				if (m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_X] == SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE) {
+					continue;
+				}
+
+				//Joint
+				auto conversion = convert3DDepthTo2DColorCoordinate(m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_X],
+																	m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Y],
+																	m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Z],
+																	m_sensorCalibration);
+				if (!conversion.first) {
+					continue;
+				}
+				cv::Point jointCoordinate = conversion.second;
+
+				if (jointCoordinate.x == 0 && jointCoordinate.y == 0) {
+					//ignore values that the sensore sdk could not convert (returns 0.0f, 0.0f in that case)
+					continue;
+				}
+
+				cv::Mat rgbMat(_options.rgbVideoHeight, _options.rgbVideoWidth, CV_8UC4, m_bgraBuffer);
+				cv::circle(rgbMat, jointCoordinate, 3, color, cv::FILLED);
+
+				//Bone
+				try
+				{
+					auto parentJointIdx = AZUREKINECT_BONE_LIST.at(static_cast<SKELETON_JOINT::List>(jointIdx));
+					auto parentConversion = convert3DDepthTo2DColorCoordinate(m_skeletons[bodyIdx][parentJointIdx][SKELETON_JOINT_VALUE::POS_X],
+																				m_skeletons[bodyIdx][parentJointIdx][SKELETON_JOINT_VALUE::POS_Y],
+																				m_skeletons[bodyIdx][parentJointIdx][SKELETON_JOINT_VALUE::POS_Z],
+																				m_sensorCalibration);
+					if (!parentConversion.first) {
+						continue;
+					}
+
+					cv::Point parentJointCoordinate = parentConversion.second;
+					cv::line(rgbMat, jointCoordinate, parentJointCoordinate, color, 2);
+				}
+				catch (const std::exception&)
+				{
+					// exception thrown here means the joint has no parent joint
+				}
+					
+			}
+		}
 	}
 
 	void AzureKinect::processProviders()

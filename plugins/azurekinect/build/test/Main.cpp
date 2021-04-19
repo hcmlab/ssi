@@ -71,11 +71,13 @@ int main () {
 	ITheEventBoard* board = Factory::GetEventBoard();
 
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+	kinect->getOptions()->showBodyTracking = true;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
+	//ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	//ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	//ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
 	frame->AddSensor(kinect);
 
 	VideoPainter* vplot = 0;
@@ -86,22 +88,22 @@ int main () {
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(rgb_p, vplot, "1");
 
-	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	/*vplot = ssi_create_id(VideoPainter, 0, "plot");
 	vplot->getOptions()->setTitle("infrared");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
-	frame->AddConsumer(ir_p, vplot, "1");
+	frame->AddConsumer(ir_p, vplot, "1");*/
 
-	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	/*vplot = ssi_create_id(VideoPainter, 0, "plot");
 	vplot->getOptions()->setTitle("depth");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
-	frame->AddConsumer(depth_p, vplot, "1");
+	frame->AddConsumer(depth_p, vplot, "1");*/
 
-	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	/*SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
 	paint->getOptions()->type = PaintSignalType::SIGNAL;
 	paint->getOptions()->setTitle("Title");
-	frame->AddConsumer(skeleton_p, paint, "0.1s");
+	frame->AddConsumer(skeleton_p, paint, "0.1s");*/
 
 	decorator->add("console", 0, 0, 500, 800);
 	decorator->add("plot*", 500, 0, 1600, 800);
