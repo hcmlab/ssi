@@ -205,8 +205,6 @@ namespace ssi {
 
 	bool AzureKinect::stop()
 	{
-		std::cout << "Stopping\n";
-		stopCameras();
 		return Thread::stop();
 	}
 
@@ -574,6 +572,8 @@ namespace ssi {
 	bool AzureKinect::disconnect() {
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "try to disconnect sensor...");
+
+		stopCameras();
 
 		if (m_bodyTracker) {
 			m_bodyTracker.shutdown();
