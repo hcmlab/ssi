@@ -32,7 +32,7 @@ namespace ssi {
 				_rgbResolution(RGB_VIDEO_RESOLUTION::p_1920x1080),
 				_depthMode(DEPTH_MODE::WFOV_2x2_BINNED),
 				nrOfBodiesToTrack(1),
-				showBodyTracking(true)
+				showBodyTracking(false)
 			{
 				addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz");
 				addOption("rgbResolution", videoResolutionIn, SSI_MAX_CHAR, SSI_CHAR, "Resolution of the rgb video. Must be one of ['720p', '1080p', '1440p', '1536p', '2160p', '3072p']. Set to 'OFF' to deactivate.");
