@@ -50,6 +50,12 @@ using namespace ssi;
 	#endif
 #endif
 
+bool ex_coloranddepthvideo(void* args);
+bool ex_bodytrackingvideo(void* args);
+bool ex_skeleton(void* args);
+bool ex_skeletonwebsocketserver(void* args);
+bool ex_skeletonwebsocketclient(void* args);
+
 int main () {
 
 #ifdef USE_SSI_LEAK_DETECTOR
@@ -66,6 +72,27 @@ int main () {
 	Factory::RegisterDLL("ssiioput");
 	Factory::RegisterDLL("ssiwebsocket");
 
+	Exsemble ex;
+	ex.add(ex_coloranddepthvideo, 0, "AZURE KINECT VIDEO", "All video channels (rgb, depth, IR)");
+	ex.add(ex_bodytrackingvideo, 0, "Bodytracking Video", "rgb video channel with bodytracking information visualized");
+	ex.add(ex_skeleton, 0, "SKELETON", "Raw numerical values of the Skeleton joints only");
+	ex.add(ex_skeletonwebsocketserver, 0, "SKELETON Websocket server", "Skeleton only websocket server on port 8000");
+	ex.add(ex_skeletonwebsocketclient, 0, "SKELETON Websocket client", "Skeleton only websocket client targeting port 8000");
+	ex.show();
+
+	Factory::Clear();
+	
+
+#ifdef USE_SSI_LEAK_DETECTOR
+	}
+	_CrtDumpMemoryLeaks();
+#endif
+	
+	return 0;
+}
+
+bool ex_coloranddepthvideo(void* args)
+{
 	ITheFramework* frame = Factory::GetFramework();
 
 	Decorator* decorator = ssi_create(Decorator, 0, true);
@@ -77,15 +104,15 @@ int main () {
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	//kinect->getOptions()->showBodyTracking = true;
 
-	//ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
-	//ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
-	//ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
-	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* ir_p = frame->AddProvider(kinect, SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
+	//ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
 	frame->AddSensor(kinect);
 
 	VideoPainter* vplot = 0;
 
-	/*vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
 	vplot->getOptions()->setTitle("rgb");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
@@ -95,20 +122,20 @@ int main () {
 	vplot->getOptions()->setTitle("infrared");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
-	frame->AddConsumer(ir_p, vplot, "1");*/
+	frame->AddConsumer(ir_p, vplot, "1");
 
-	Websocket* websocket = ssi_create(Websocket, 0, true);
+	/*Websocket* websocket = ssi_create(Websocket, 0, true);
 	websocket->getOptions()->send_info = false;
 	frame->AddConsumer(skeleton_p, websocket, "1");
 
 	board->RegisterSender(*websocket);
-	board->RegisterListener(*websocket);
+	board->RegisterListener(*websocket);*/
 
-	/*vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
 	vplot->getOptions()->setTitle("depth");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
-	frame->AddConsumer(depth_p, vplot, "1");*/
+	frame->AddConsumer(depth_p, vplot, "1");
 
 	/*SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
 	paint->getOptions()->type = PaintSignalType::SIGNAL;
@@ -127,11 +154,143 @@ int main () {
 	board->Clear();
 
 	return true;
+}
 
-#ifdef USE_SSI_LEAK_DETECTOR
-	}
-	_CrtDumpMemoryLeaks();
-#endif
-	
-	return 0;
+bool ex_bodytrackingvideo(void* args)
+{
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+	kinect->getOptions()->showBodyTracking = true;
+
+	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
+	frame->AddSensor(kinect);
+
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("rgb");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(rgb_p, vplot, "1");
+
+	decorator->add("console", 0, 0, 500, 800);
+	decorator->add("plot*", 500, 0, 900, 1000);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_skeleton(void* args)
+{
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
+	frame->AddSensor(kinect);
+
+	SignalPainter* paint = ssi_create_id(SignalPainter, 0, "plot");
+	paint->getOptions()->type = PaintSignalType::SIGNAL;
+	paint->getOptions()->setTitle("Azure Kinect Skeleton");
+	frame->AddConsumer(skeleton_p, paint, "0.1s");
+
+	decorator->add("console", 0, 0, 500, 800);
+	decorator->add("plot*", 500, 0, 900, 1000);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_skeletonwebsocketserver(void* args)
+{
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
+	frame->AddSensor(kinect);
+
+	Websocket* websocket = ssi_create(Websocket, 0, true);
+	websocket->getOptions()->send_info = false;
+	frame->AddConsumer(skeleton_p, websocket, "1");
+
+	board->RegisterSender(*websocket);
+	board->RegisterListener(*websocket);
+
+	decorator->add("console", 0, 0, 500, 800);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_skeletonwebsocketclient(void* args)
+{
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	Websocket* websocket = ssi_create(Websocket, 0, true);
+	websocket->getOptions()->setHttpRoot("mobile_browser_to_SSI");
+
+	board->RegisterSender(*websocket);
+	board->RegisterListener(*websocket);
+
+	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	board->RegisterListener(*monitor);
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("monitor*", 650, 0, 400, 400);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
 }
