@@ -61,7 +61,7 @@ namespace ssi {
 
 	void Websocket::listen_enter() {
 		if (!server) {
-			server = new Websockserver(this);
+			server = new Websockserver(this, _options.queue_check_interval);
 			server->setName("websockThread");
 			server->start();
 		}

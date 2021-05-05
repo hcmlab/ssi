@@ -61,7 +61,7 @@ namespace ssi {
 
 		public:
 
-			Options() : send_info(false), send_own_events(false) {
+			Options() : send_info(false), send_own_events(false), queue_check_interval(200) {
 				setSenderName("websocket");
 				setEventName("message");
 				http_port = 8000;
@@ -76,6 +76,7 @@ namespace ssi {
 
 				addOption("send_info", &send_info, 1, SSI_BOOL, "send JSON info about streams as first websocket message to browser");
 				addOption("send_own_events", &send_own_events, 1, SSI_BOOL, "send own events to all clients?");
+				addOption("queue_check_interval", &queue_check_interval, 1, SSI_UINT, "time interval (in ms) after which to check for new messages again || time in ms that the internal loop goes to sleep");
 			}
 
 			void setSenderName(const ssi_char_t *sname) {
@@ -106,6 +107,7 @@ namespace ssi {
 			bool send_info;
 			bool send_own_events;
 
+			ssi_size_t queue_check_interval;
 		};
 
 	public:
