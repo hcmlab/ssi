@@ -1,0 +1,61 @@
+<!-- 
+    Minimal Websocket client that tests performance of AzureKinect skeleton data provided by a SSI-Websocket
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>WebSocket Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style type="text/css"></style>
+</head>
+<body>
+ <h1>Azure Kinect Websocket Skeleton Test</h1>
+ <p>All the magic happens on the browsers console.</p>
+ <button id="closebtn">Close Connection</button>
+
+ <script language="javascript" type="text/javascript">
+    var ws = new WebSocket('ws://127.0.0.1:8000');
+  
+    const SKELETON_TIMER = "skeleton_message"; //identifier used for console.time()
+    const STRING_TIMER = "misc_message"; //identifier used for console.time()
+  
+    ws.onopen = function(ev)  { console.log(ev); console.time(SKELETON_TIMER); console.time(STRING_TIMER)};
+    ws.onerror = function(ev) { console.log(ev); console.timeEnd(SKELETON_TIMER); console.timeEnd(STRING_TIMER);};
+    ws.onclose = function(ev) { console.log(ev); console.timeEnd(SKELETON_TIMER); console.timeEnd(STRING_TIMER);};
+    ws.onmessage = function(ev) {
+      if (typeof ev.data === "string") {
+          obj = JSON.parse(ev.data);
+          console.log(obj);
+          console.timeEnd(STRING_TIMER);
+      console.time(STRING_TIMER);
+      }
+      else {
+        console.timeEnd(SKELETON_TIMER);
+      console.time(SKELETON_TIMER);
+          //blob data
+          console.log(new Date() + ": Received " + ev.data.size + " bytes");
+          /*
+          var arrayBuffer;
+          var fileReader = new FileReader();
+          fileReader.onload = function() {
+              arrayBuffer = this.result;
+              var datavalues = new Float32Array(arrayBuffer);
+              console.log("Received " + datavalues.length + " float values");
+          }
+  
+          fileReader.readAsArrayBuffer(ev.data);
+          */
+      }
+    };
+  
+    window.onload = function() {
+     
+    };
+  
+    document.getElementById('closebtn').addEventListener('click', () => {
+        ws.close();
+    })
+  </script>
+</body>
+</html>
