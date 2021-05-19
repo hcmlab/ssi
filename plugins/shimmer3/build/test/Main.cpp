@@ -1,0 +1,113 @@
+// Main.cpp
+// author: Andreas Seiderer <seiderer@hcm-lab.de>
+// created: 9/3/2015
+// Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
+//
+// *************************************************************************************************
+//
+// This file is part of Social Signal Interpretation (SSI) developed at the 
+// Lab for Human Centered Multimedia of the University of Augsburg
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation; either
+// version 3 of the License, or any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+//*************************************************************************************************
+
+#include "ssi.h"
+#include "..\\..\\include\\ssishimmer3.h"
+
+#include "..\\..\\..\\signal\\include\\MvgMedian.h"
+#include "..\\..\\..\\signal\\include\\Derivative.h"
+#include "..\\..\\..\\signal\\include\\MvgAvgVar.h"
+#include "..\\..\\..\\signal\\include\\MvgMinMax.h"
+#include "..\\..\\..\\signal\\include\\Expression.h"
+#include "..\\..\\..\\signal\\include\\MvgPeakGate.h"
+
+#include "..\\..\\..\\xmpp\\include\\ssixmpp.h"
+
+using namespace ssi;
+
+ssi_char_t sstring[SSI_MAX_CHAR];
+
+void ex_shimmer3();
+
+int main() {
+
+#ifdef USE_SSI_LEAK_DETECTOR
+	{
+#endif
+
+		ssi_print("%s\n\nbuild version: %s\n\n", SSI_COPYRIGHT, SSI_VERSION);
+
+		Factory::RegisterDLL("ssiframe");
+		Factory::RegisterDLL("ssigraphic");
+		Factory::RegisterDLL("ssievent");
+		Factory::RegisterDLL("ssiioput");
+		Factory::RegisterDLL("ssisignal");
+		Factory::RegisterDLL("ssishimmer3");
+
+		{
+			ex_shimmer3();
+		}
+
+		ssi_print("\n\n\tpress a key to quit\n");
+		getchar();
+
+		Factory::Clear();
+
+#ifdef USE_SSI_LEAK_DETECTOR
+	}
+	_CrtDumpMemoryLeaks();
+#endif
+
+	return 0;
+}
+
+void ex_shimmer3() {
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	Shimmer3GSRPlus* gsrplus = ssi_create(Shimmer3GSRPlus, 0, true);
+	// look up the "outgoing" COM port of the shimmer you want to talk to (Win->ControlPanel->Search for "Bluetooth" > Change Bluetooth Settings > Tab "COM Ports" -> Port COMX where X is the number you need to use here
+	// use the OUTGOING port as we need to send stuff to the shimmer!
+	gsrplus->getOptions()->port = 8;
+	gsrplus->getOptions()->baud = 115200;
+	gsrplus->getOptions()->dim = 5;
+	gsrplus->getOptions()->sr = 20;
+
+	ITransformable* genSer_p = frame->AddProvider(gsrplus, SSI_GENERICSERIAL_PROVIDER_NAME);
+	frame->AddSensor(gsrplus);
+
+	SignalPainter* plot = 0;
+	plot = ssi_create_id(SignalPainter, 0, "plot");
+	plot->getOptions()->setTitle("serial values");
+	plot->getOptions()->size = 10.0;
+	frame->AddConsumer(genSer_p, plot, "1");
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 650, 0, 400, 400);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	frame->Start();
+
+	ssi_print("press enter to continue\n");
+	getchar();
+
+	frame->Stop();
+	frame->Clear();
+
+}
