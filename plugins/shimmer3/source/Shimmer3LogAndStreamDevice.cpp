@@ -472,6 +472,8 @@ namespace ssi {
 
 	bool Shimmer3LogAndStreamDevice::waitForNextDataPacket()
 	{
+		if (m_state != SHIMMER_STATE::CONNECTED_STREAMING) return false;
+
 		static const size_t connectivityCheckTimeout = 1000000000;
 		size_t ctr = 0;
 		while (true) {
