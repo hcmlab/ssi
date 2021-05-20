@@ -229,15 +229,20 @@ namespace ssi {
 		/// Reads the configuration from the shimmer and sets up internal values of this class to reflect this configuration
 		void inquireConfiguration();
 
-		bool checkComPort(const ssi_char_t* portNameStr);
+		bool checkComPort(const ssi_char_t* portNameStr) const;
 
 		bool isEnabled(const SENSORID& sensor);
+        bool sendCommand(const COMMANDCODE& cmd) const;
 
-        bool sendCommand(const COMMANDCODE& cmd);
+		/// Blocks until the next byte is received. Returns true if that byte is an ack
+		bool waitForImmediateAck() const;
 
-		bool waitForAck();
+		/// Blocks until a data packet header has been received
+		///	Checks for connectivity while waiting to ensure no deadlock if connection was lost
+		/// Returns false if device is not streaming or connection was lost
 		bool waitForNextDataPacket();
-		bool waitForResponseCode(const RESPONSECODE& code);
+
+		bool waitForResponseCode(const RESPONSECODE& code) const;
 
 		ssi_size_t m_comPortNr;
 		ssi_size_t m_baudRate;

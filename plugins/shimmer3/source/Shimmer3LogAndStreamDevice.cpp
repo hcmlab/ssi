@@ -249,7 +249,7 @@ namespace ssi {
 		return 0;
 	}
 
-	bool Shimmer3LogAndStreamDevice::checkComPort(const ssi_char_t* portNameStr) {
+	bool Shimmer3LogAndStreamDevice::checkComPort(const ssi_char_t* portNameStr) const {
 		std::vector<USBserialDevice*> serialDevices;
 		ScopeGuard cleanupDevices([&serialDevices]() {
 			for (int i = 0; i < serialDevices.size(); i++)
@@ -339,7 +339,7 @@ namespace ssi {
 
 	void Shimmer3LogAndStreamDevice::inquireConfiguration() {
 		if (!sendCommand(COMMANDCODE::INQUIRY_COMMAND)
-			|| !waitForAck()) {
+			|| !waitForImmediateAck()) {
 			ssi_wrn("Configuration request could not be sent to the Shimmer");
 			return;
 		}
@@ -457,7 +457,7 @@ namespace ssi {
 		}		
 	}
 
-	bool Shimmer3LogAndStreamDevice::sendCommand(const COMMANDCODE& cmd) {
+	bool Shimmer3LogAndStreamDevice::sendCommand(const COMMANDCODE& cmd) const {
 		if (m_serial) {
 			unsigned char cmdBuffer[1] = { static_cast<unsigned char>(cmd) };
 			return m_serial->WriteData(cmdBuffer, 1);
@@ -466,7 +466,7 @@ namespace ssi {
 		return false;
 	}
 
-	bool Shimmer3LogAndStreamDevice::waitForAck() {
+	bool Shimmer3LogAndStreamDevice::waitForImmediateAck() const {
 		return waitForResponseCode(RESPONSECODE::ACK);
 	}
 
@@ -494,7 +494,7 @@ namespace ssi {
 		return false;
 	}
 
-	bool Shimmer3LogAndStreamDevice::waitForResponseCode(const RESPONSECODE& code) {
+	bool Shimmer3LogAndStreamDevice::waitForResponseCode(const RESPONSECODE& code) const {
 		unsigned char responseByte;
 		if (m_serial->ReadData(&responseByte, 1) != 1) {
 			ssi_wrn("Could not receive ack response from the Shimmer");
