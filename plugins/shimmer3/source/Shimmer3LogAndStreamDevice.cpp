@@ -417,16 +417,16 @@ namespace ssi {
 
 	void Shimmer3LogAndStreamDevice::startStreaming() {
 		if (m_state == SHIMMER_STATE::CONNECTED_NOTSTREAMING
-			&& sendCommand(COMMANDCODE::START_SDBT)
-			&& waitForAck()) {
+			&& sendCommand(COMMANDCODE::START_STREAMING)
+			&& waitForImmediateAck()) {
 			m_state = SHIMMER_STATE::CONNECTED_STREAMING;
 		}
 	}
 
 	void Shimmer3LogAndStreamDevice::stopStreaming() {
 		if (m_state == SHIMMER_STATE::CONNECTED_STREAMING 
-			&& sendCommand(COMMANDCODE::STOP_SDBT)
-			&& waitForAck()) {
+			&& sendCommand(COMMANDCODE::STOP_STREAMING)
+			&& waitForImmediateAck()) {
 			m_state = SHIMMER_STATE::CONNECTED_NOTSTREAMING;
 		}
 		else {

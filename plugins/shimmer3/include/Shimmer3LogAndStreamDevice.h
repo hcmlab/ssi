@@ -177,16 +177,14 @@ namespace ssi {
 
 		enum class COMMANDCODE {
 			INQUIRY_COMMAND = 0x01,
-			START_SDBT = 0x70,
-			STOP_SDBT = 0x97,
-			GET_STATUS = 0x72
+			START_STREAMING = 0x07,
+			STOP_STREAMING = 0x20
 		};
 
 		enum class RESPONSECODE {
 			ACK = 0xFF,
 			DATA_PACKET = 0x00,
-			INQUIRY_RESPONSE = 0x02,
-			STATUS_RESPONSE = 0x71
+			INQUIRY_RESPONSE = 0x02
 		};
 
 	public:
