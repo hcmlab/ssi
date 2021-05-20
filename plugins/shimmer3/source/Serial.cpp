@@ -1,6 +1,7 @@
 #include "Serial.h"
 #include "SSI_Cons.h"
 #include <iostream>
+#include <iomanip>
 
 Serial::Serial(const char *portName, DWORD speed )
 {
@@ -80,7 +81,7 @@ Serial::~Serial()
     }
 }
 
-int Serial::ReadData(char *buffer, unsigned int nbChar)
+int Serial::ReadData(unsigned char *buffer, unsigned int nbChar)
 {
     //Number of bytes we'll have read
     DWORD bytesRead;
@@ -99,11 +100,17 @@ int Serial::ReadData(char *buffer, unsigned int nbChar)
 		toRead -= bytesRead;
     }
 
+    std::cout << "Received over Serial: " << std::endl;
+    for (size_t i = 0; i < nbChar; i++) {
+        std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*(buffer + i)) << " ";
+    }
+    std::cout << std::endl;
+
     return nbChar;
 }
 
 
-bool Serial::WriteData(char *buffer, unsigned int nbChar)
+bool Serial::WriteData(unsigned char *buffer, unsigned int nbChar)
 {
     DWORD bytesSend;
 
@@ -116,8 +123,14 @@ bool Serial::WriteData(char *buffer, unsigned int nbChar)
         ClearCommError(this->hSerial, &this->errors, &this->status);
         return false;
     }
-    else
-        return true;
+
+    std::cout << "Sent over Serial: " << std::endl;
+    for (size_t i = 0; i < nbChar; i++) {
+        std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*(buffer + i)) << " ";
+    }
+    std::cout << std::endl;
+    
+    return true;
 }
 
 bool Serial::IsConnected()
