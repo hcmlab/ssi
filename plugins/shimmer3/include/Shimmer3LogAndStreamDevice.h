@@ -204,6 +204,8 @@ namespace ssi {
 		void startStreaming();
 		void stopStreaming();
 
+		bool isEnabled(const SENSORID& sensor);
+
 		/// <summary>
 		/// Factory function that creates a new packet from the bytes received by the Shimmer.
 		/// Blocks until all bytes of that next packet have arrived.
@@ -229,7 +231,6 @@ namespace ssi {
 
 		bool checkComPort(const ssi_char_t* portNameStr) const;
 
-		bool isEnabled(const SENSORID& sensor);
         bool sendCommand(const COMMANDCODE& cmd) const;
 
 		/// Blocks until the next byte is received. Returns true if that byte is an ack
