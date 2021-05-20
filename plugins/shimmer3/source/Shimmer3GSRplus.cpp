@@ -63,14 +63,9 @@ _int64 GetTimeMicros64()
 
 
 Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file) 
-	: _serial_provider (0),
-	_is_connected (false),
+	: m_ppgraw_provider (0),
 	_file (0),
-	_serial_channel (0),
-	_buffer (0), 
-	_buffer_ptr (0),
-	fpsValuecount(0),
-	avgFps(0.0),
+	m_ppgraw_channel (0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 	
 	getOptions()->setStartCMD(0);
@@ -83,23 +78,6 @@ Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file)
 		}
 		_file = ssi_strcpy (file);
 	}
-
-	//possbile baud rates from windows
-	baudRates[110]		= 110UL;
-	baudRates[300]		= 300UL;
-	baudRates[600]		= 600UL;
-	baudRates[1200]		= 1200UL;
-	baudRates[2400]		= 2400UL;
-	baudRates[4800]		= 4800UL;
-	baudRates[9600]		= 9600UL;
-	baudRates[14400]	= 14400UL;
-	baudRates[19200]	= 19200UL;
-	baudRates[38400]	= 38400UL;
-	baudRates[56000]	= 56000UL;
-	baudRates[57600]	= 57600UL;
-	baudRates[115200]	= 115200UL;
-	baudRates[128000]	= 128000UL;
-	baudRates[256000]	= 256000UL;
 }
 
 Shimmer3GSRPlus::~Shimmer3GSRPlus () {
@@ -109,13 +87,13 @@ Shimmer3GSRPlus::~Shimmer3GSRPlus () {
 		delete[] _file;
 	}
 
-	delete _serial_channel;
+	delete m_ppgraw_channel;
 }
 
 bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) {
 
-	if (strcmp (name, SSI_GENERICSERIAL_PROVIDER_NAME) == 0) {
-		setSerialProvider (provider);
+	if (strcmp (name, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME) == 0) {
+		setPPGRawProvider (provider);
 		return true;
 	}
 
@@ -124,16 +102,16 @@ bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) 
 	return false;
 }
 
-void Shimmer3GSRPlus::setSerialProvider (IProvider *provider) {
+void Shimmer3GSRPlus::setPPGRawProvider (IProvider *provider) {
 
-	if (_serial_provider) {
-		ssi_wrn ("serial provider was already set");
+	if (m_ppgraw_provider) {
+		ssi_wrn ("gsr raw was already set");
 	}
 
-	_serial_provider = provider;
-	if (_serial_provider) {		
-		_serial_provider->init (getChannel (0));
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "serial provider set");
+	m_ppgraw_provider = provider;
+	if (m_ppgraw_provider) {		
+		m_ppgraw_provider->init (getChannel (0));
+		ssi_msg (SSI_LOG_LEVEL_DETAIL, "gsr raw provider set");
 	}
 }
 
@@ -145,109 +123,39 @@ bool Shimmer3GSRPlus::connect () {
 		return false;
 	}
 
-	_frame_size = ssi_cast (ssi_size_t, _options.size * _options.sr + 0.5);
-	_counter = 0;
-	_buffer = new ssi_real_t[ _frame_size * _serial_channel->getStream().dim];
-	_buffer_ptr = _buffer;
-
 	// set thread name
 	Thread::setName (getName ());
-
-	lastCall = GetTimeMicros64();
 
 	return true;
 }
 
 void Shimmer3GSRPlus::run () {
-	/*
-	if (_serial && _is_connected) {
-
-		int pos = 0;
-		bool found = false;
-
-		std::string str = "";
-
-		//search for new line
-		do {
-			char c;
-			int r = _serial->ReadData (&c, 1);
-			std::cout << "Received " << r << " byte(s): " << (c == 0 ? "[packet-start]" : "") << std::hex << (int)c << std::endl;
-			str += c;
-			if (r > 0 && c == '\n') {
-				found = true;
-			}
-		} while (!found);
-
-
-		//ssi_msg(SSI_LOG_LEVEL::SSI_LOG_LEVEL_BASIC, "%s", str.c_str());
-
-		if (found) {
-			std::vector<float> buffer;
-			std::stringstream ss(str);
-
-			float i;
-			while (ss >> i) {
-				buffer.push_back(i);
-
-				if (ss.peek() == getOptions()->separator)
-					ss.ignore();
-			}
-
-			//check if value count is ok
-			if (buffer.size() == getOptions()->dim) {
-				//copy from vector into outgoing buffer
-				memcpy(_buffer_ptr, &buffer[0], buffer.size() * sizeof(float));
-				_buffer_ptr += buffer.size();
-
-
-				if (_options.showDebugSR) {
-					//fps
-					double deltaMs = ((GetTimeMicros64() - lastCall) / 1000.0);
-
-					double fps = 1.0 / (deltaMs / 1000.0);
-
-					if (deltaMs != 0) {
-						avgFps += fps;
-						fpsValuecount++;
-					}
-
-					if (fpsValuecount == 10) {
-						avgFps /= fpsValuecount;
-						ssi_msg(SSI_LOG_LEVEL_BASIC, "avg input sr: %.3f", avgFps);
-						avgFps = 0;
-						fpsValuecount = 0;
-					}
-
-					lastCall = GetTimeMicros64();
-
-				}
-
-
-
-				_counter++;
-			}
-			else {
-				ssi_wrn("Value number (%llu) from serial port differs from dim () -> dropping!", buffer.size(), getOptions()->dim);
-			}
-
-			buffer.clear();
-
-		}
-
-
-		if (_counter == _frame_size) {
-			_counter = 0;
-			if (_serial_provider) {
-				_serial_provider->provide (ssi_pcast (char, _buffer), _frame_size);
-				SSI_DBG (SSI_LOG_LEVEL_DEBUG, "serial data provided");
-
-				
-			}
-
-			_buffer_ptr = _buffer;
-		}
+	if (_device && _device->isConnected() && !_device->isStreaming()) {
+		std::cout << "Start streaming!" << std::endl;
+		_device->startStreaming();
 	}
-	*/
+
+	auto packet = _device->readNextPacket();
+
+	if (packet) {
+		processPPGValue(*packet.get());
+	}
+	else {
+		ssi_wrn("Did not get a packet from the Shimmer Device");
+	}
+}
+
+void Shimmer3GSRPlus::processPPGValue(const Shimmer3LogAndStreamDevice::DataPacket& packet) {
+	try
+	{
+		float rawPPGValue = packet.get(Shimmer3LogAndStreamDevice::SENSORID::INTERNAL_ADC_A13) * 1.0f;
+
+		m_ppgraw_provider->provide(ssi_pcast(char, &rawPPGValue), 1);
+	}
+	catch (const std::exception&)
+	{
+		ssi_wrn("The shimmer seems to be not configured to provide ppg values! Please make sure you are using the correct shimmer board and configuration!");
+	}
 }
 
 bool Shimmer3GSRPlus::disconnect() {
@@ -270,14 +178,74 @@ bool Shimmer3GSRPlus::disconnect() {
 
 	_device.reset(nullptr);
 
-	if (_buffer) {
-		delete[] _buffer; _buffer = 0;
-		_buffer_ptr = 0;
-	}
-
 	ssi_msg (SSI_LOG_LEVEL_DETAIL, "sensor disconnected");
 
 	return true;
+}
+
+void Shimmer3GSRPlus::TODO_meaningfulgsrvalue() {
+	/* C# implementation
+		int iGSR = getSignalIndex(Shimmer3Configuration.SignalNames.GSR);
+		int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+		double datatemp = newPacket[iGSR];
+		double gsrResistanceKOhms = -1;
+		//double p1 = 0, p2 = 0;
+		if (GSRRange == 4)
+		{
+			newGSRRange = (49152 & (int)datatemp) >> 14;
+		}
+		datatemp = (double)((int)datatemp & 4095);
+		if (GSRRange == 0 || newGSRRange == 0)
+		{
+			//Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+			//p1 = 0.0363;
+			//p2 = -24.8617;
+
+			//Changed to new GSR algorithm using non inverting amp
+			//p1 = 0.0373;
+			//p2 = -24.9915;
+			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 0);
+		}
+		else if (GSRRange == 1 || newGSRRange == 1)
+		{
+			//p1 = 0.0051;
+			//p2 = -3.8357;
+			//Changed to new GSR algorithm using non inverting amp
+			//p1 = 0.0054;
+			//p2 = -3.5194;
+			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 1);
+		}
+		else if (GSRRange == 2 || newGSRRange == 2)
+		{
+			//p1 = 0.0015;
+			//p2 = -1.0067;
+			//Changed to new GSR algorithm using non inverting amp
+			//p1 = 0.0015;
+			//p2 = -1.0163;
+			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 2);
+		}
+		else if (GSRRange == 3 || newGSRRange == 3)
+		{
+			//p1 = 4.4513e-04;
+			//p2 = -0.3193;
+			//Changed to new GSR algorithm using non inverting amp
+			//p1 = 4.5580e-04;
+			//p2 = -0.3014;
+			if (datatemp < GSR_UNCAL_LIMIT_RANGE3)
+			{
+				datatemp = GSR_UNCAL_LIMIT_RANGE3;
+			}
+			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 3);
+		}
+		//Changed to new GSR algorithm using non inverting amp
+		//datatemp = CalibrateGsrData(datatemp, p1, p2);
+		gsrResistanceKOhms = NudgeGsrResistance(gsrResistanceKOhms, GSRRange);
+		double gsrConductanceUSiemens = (1.0 / gsrResistanceKOhms) * 1000;
+		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR, ShimmerConfiguration.SignalFormats.RAW, ShimmerConfiguration.SignalUnits.NoUnits, newPacket[iGSR]);
+		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR, ShimmerConfiguration.SignalFormats.CAL, ShimmerConfiguration.SignalUnits.KiloOhms, gsrResistanceKOhms);
+		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR_CONDUCTANCE, ShimmerConfiguration.SignalFormats.CAL, ShimmerConfiguration.SignalUnits.MicroSiemens, gsrConductanceUSiemens);
+	*/
 }
 
 }

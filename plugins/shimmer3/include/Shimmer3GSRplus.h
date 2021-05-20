@@ -43,7 +43,7 @@
 
 #include "Shimmer3LogAndStreamDevice.h"
 
-#define SSI_GENERICSERIAL_PROVIDER_NAME "serialrawdata"
+#define SSI_SHIMMER3_PPGRAW_PROVIDER_NAME "shimmer3ppgraw"
 
 namespace ssi {
 
@@ -51,25 +51,25 @@ class Shimmer3GSRPlus : public ISensor, public Thread {
 
 public:
 
-	class SerialChannel : public IChannel {
+	class PPGRawChannel : public IChannel {
 
 		friend class Shimmer3GSRPlus;
 
-		public:
+	public:
 
-			SerialChannel (ssi_size_t dim, ssi_time_t sr) {
-				ssi_stream_init (stream, 0, dim, sizeof (ssi_real_t), SSI_REAL, sr);
-			}
-			~SerialChannel () {
-				ssi_stream_destroy (stream);
-			}
+		PPGRawChannel(ssi_size_t dim, ssi_time_t sr) {
+			ssi_stream_init(stream, 0, dim, sizeof(ssi_real_t), SSI_REAL, sr);
+		}
+		~PPGRawChannel() {
+			ssi_stream_destroy(stream);
+		}
 
-			const ssi_char_t *getName () { return SSI_GENERICSERIAL_PROVIDER_NAME; };
-			const ssi_char_t *getInfo () { return "Gets all serial data."; };
-			ssi_stream_t getStream () { return stream; };
+		const ssi_char_t* getName() { return SSI_SHIMMER3_PPGRAW_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "Gets the ppg raw data."; };
+		ssi_stream_t getStream() { return stream; };
 
-		protected:
-			ssi_stream_t stream;
+	protected:
+		ssi_stream_t stream;
 	};
 
 public:
@@ -151,8 +151,8 @@ public:
 	ssi_size_t getChannelSize () { return 1; };
 
 	IChannel *getChannel (ssi_size_t index) {  
-		if (!_serial_channel) _serial_channel = new SerialChannel(_options.dim, _options.sr); 
-		return _serial_channel; 
+		if (!m_ppgraw_channel) m_ppgraw_channel = new PPGRawChannel(_options.dim, _options.sr);
+		return m_ppgraw_channel; 
 	};
 
 	bool setProvider (const ssi_char_t *name, IProvider *provider);
@@ -166,6 +166,18 @@ public:
 		ssi_log_level = level;
 	}
 
+private:
+	enum class GSRRange {
+		OHMS_10K_TO_56K = 0,
+		OHMS_56_TO_220K = 1,
+		OHMS_220K_TO_680K = 2,
+		OHMS_680K_TO_4700K = 3,
+		AUTO = 4
+	};
+	void TODO_meaningfulgsrvalue();
+
+	void processPPGValue(const Shimmer3LogAndStreamDevice::DataPacket& packet);
+
 protected:
 
 	Shimmer3GSRPlus(const ssi_char_t *file = 0);
@@ -174,25 +186,11 @@ protected:
 
 	int ssi_log_level;
 
-	SerialChannel *_serial_channel;	
-	void setSerialProvider (IProvider *provider);		
-	IProvider *_serial_provider;
+	PPGRawChannel *m_ppgraw_channel;
+	void setPPGRawProvider(IProvider *provider);
+	IProvider *m_ppgraw_provider;
 
 	std::unique_ptr<Shimmer3LogAndStreamDevice> _device;
-	bool _is_connected;
-	ssi_char_t _port_s[16];
-
-	ssi_real_t *_buffer, *_buffer_ptr;
-
-	ssi_size_t _counter;
-	ssi_size_t _frame_size;
-
-	std::map<int, unsigned long> baudRates;
-
-
-	_int64 lastCall;
-	_int64 fpsValuecount;
-	double avgFps;
 };
 
 }

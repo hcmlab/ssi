@@ -86,10 +86,10 @@ void ex_shimmer3() {
 	// use the OUTGOING port as we need to send stuff to the shimmer!
 	gsrplus->getOptions()->port = 8;
 	gsrplus->getOptions()->baud = 115200;
-	gsrplus->getOptions()->dim = 5;
+	gsrplus->getOptions()->dim = 1;
 	gsrplus->getOptions()->sr = 20;
 
-	ITransformable* genSer_p = frame->AddProvider(gsrplus, SSI_GENERICSERIAL_PROVIDER_NAME);
+	ITransformable* genSer_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME);
 	frame->AddSensor(gsrplus);
 
 	SignalPainter* plot = 0;
