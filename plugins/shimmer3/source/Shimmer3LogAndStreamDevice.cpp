@@ -122,9 +122,10 @@ namespace ssi {
 	}
 
 	long Shimmer3LogAndStreamDevice::DataPacket::get(const SENSORID& sensor) const {
-		//if that sensor is available
 		auto& offsetIterator = device.m_sensorOffsetWithinPacketMap.find(sensor);
 		auto& sampleInfoIt = Shimmer3LogAndStreamDevice::sensorSampleInfoMap.find(sensor);
+
+		//check if sensor is actually available in the current configuration
 		if (offsetIterator == device.m_sensorOffsetWithinPacketMap.end() || sampleInfoIt == Shimmer3LogAndStreamDevice::sensorSampleInfoMap.end()) {
 			throw std::exception("this sensor is not supported");
 		}
@@ -400,14 +401,14 @@ namespace ssi {
 		}
 		m_packetSize = offset;
 
-		//read out sampling rate (first two header bytes, apparently sent as little endian)
+		//read out sampling rate
 		uint16_t rawSamplingRate;
 		uint16_t msb = static_cast<uint16_t>(inquiryHeader[samplingRateIndex + 1]) << 8;
 		uint16_t lsb = static_cast<uint16_t>(inquiryHeader[samplingRateIndex]);
 		rawSamplingRate = msb + lsb;
 		m_samplingRate = 32768.0 / (rawSamplingRate * 1.0); //magic number taken from Shimmer3 C# API
 
-		//read out how many datapackets will be sent as a batch (last header byte)
+		//read out how many datapackets will be sent as a batch
 		m_nrOfPacketsSentAsBatch = static_cast<uint8_t>(inquiryHeader[bufferSizeIndex]);
 
 		uint8_t* ptrToConfigBytes = reinterpret_cast<uint8_t*>(&inquiryHeader) + configSetupIndex;

@@ -53,7 +53,6 @@ Serial::Serial(const char *portName, DWORD speed )
         }
         else
         {
-            //Define serial connection parameters for the arduino board
             dcbSerialParams.BaudRate = speed;
             dcbSerialParams.ByteSize = 8;
             dcbSerialParams.StopBits = ONESTOPBIT;
@@ -65,8 +64,9 @@ Serial::Serial(const char *portName, DWORD speed )
             else            
                 this->connected = true;
 
+            //timeouts are set as short as possible to ensure that real-time is enforced, even if it means dropping data
+            //do not remove this, as it seems to lead to WriteFile blocking indefinetely on a bluetooth connection
             COMMTIMEOUTS timeouts;
-
             timeouts.ReadIntervalTimeout = 1;
             timeouts.ReadTotalTimeoutMultiplier = 1;
             timeouts.ReadTotalTimeoutConstant = 1;
