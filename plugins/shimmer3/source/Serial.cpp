@@ -1,7 +1,14 @@
 #include "Serial.h"
 #include "SSI_Cons.h"
+
+//uncomment this to see the raw bytes received and sent on std::cout
+//#define SERIAL_DEBUG_TO_CONSOLE
+
+#ifdef SERIAL_DEBUG_TO_CONSOLE
 #include <iostream>
 #include <iomanip>
+#endif // SERIAL_DEBUG_TO_CONSOLE
+
 
 Serial::Serial(const char *portName, DWORD speed )
 {
@@ -100,11 +107,13 @@ int Serial::ReadData(unsigned char *buffer, unsigned int nbChar)
 		toRead -= bytesRead;
     }
 
+#ifdef SERIAL_DEBUG_TO_CONSOLE
     std::cout << "Received over Serial: " << std::endl;
     for (size_t i = 0; i < nbChar; i++) {
         std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*(buffer + i)) << " ";
     }
     std::cout << std::endl;
+#endif // SERIAL_DEBUG_TO_CONSOLE
 
     return nbChar;
 }
@@ -117,18 +126,19 @@ bool Serial::WriteData(unsigned char *buffer, unsigned int nbChar)
     //Try to write the buffer on the Serial port
     if(!WriteFile(this->hSerial, buffer, nbChar, &bytesSend, NULL)) 
     {
-        std::cout << "Error during write to serial\n";
-		//printf("%X\n", GetLastError());
+		printf("Erorr during serial write: %X\n", GetLastError());
         //In case it don't work get comm error and return false
         ClearCommError(this->hSerial, &this->errors, &this->status);
         return false;
     }
 
+#ifdef SERIAL_DEBUG_TO_CONSOLE
     std::cout << "Sent over Serial: " << std::endl;
     for (size_t i = 0; i < nbChar; i++) {
         std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*(buffer + i)) << " ";
     }
     std::cout << std::endl;
+#endif // SERIAL_DEBUG_TO_CONSOLE    
     
     return true;
 }
