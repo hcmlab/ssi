@@ -89,18 +89,24 @@ void ex_shimmer3() {
 	gsrplus->getOptions()->dim = 1;
 	gsrplus->getOptions()->sr = 20;
 
-	ITransformable* genSer_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME);
+	ITransformable* ppg_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME);
+	ITransformable* gsr_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRRAW_PROVIDER_NAME);
+
 	frame->AddSensor(gsrplus);
 
 	SignalPainter* plot = 0;
 	plot = ssi_create_id(SignalPainter, 0, "plot");
-	plot->getOptions()->setTitle("serial values");
+	plot->getOptions()->setTitle("ppg raw");
 	plot->getOptions()->size = 10.0;
-	frame->AddConsumer(genSer_p, plot, "1");
+	frame->AddConsumer(ppg_p, plot, "1");
+
+	plot = ssi_create_id(SignalPainter, 0, "plot");
+	plot->getOptions()->setTitle("gsr raw");
+	plot->getOptions()->size = 10.0;
+	frame->AddConsumer(gsr_p, plot, "1");
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 400);
-	decorator->add("monitor*", 650, 400, 400, 400);
 
 	frame->Start();
 
