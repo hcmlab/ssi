@@ -176,7 +176,7 @@ private:
 	};
 	void TODO_meaningfulgsrvalue();
 
-	void processPPGValue(const Shimmer3LogAndStreamDevice::DataPacket& packet);
+	void processPPGValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet);
 
 protected:
 
@@ -190,7 +190,7 @@ protected:
 	void setPPGRawProvider(IProvider *provider);
 	IProvider *m_ppgraw_provider;
 
-	std::unique_ptr<Shimmer3LogAndStreamDevice> _device;
+	std::unique_ptr<shimmer3::LogAndStreamDevice> _device;
 };
 
 }

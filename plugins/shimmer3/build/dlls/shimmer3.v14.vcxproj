@@ -24,15 +24,18 @@
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\listComPorts.cpp" />
     <ClCompile Include="..\..\source\Serial.cpp" />
+    <ClCompile Include="..\..\source\Shimmer3LogAndStreamDataPacket.cpp" />
     <ClCompile Include="..\..\source\Shimmer3LogAndStreamDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\disphelper.h" />
     <ClInclude Include="..\..\include\ScopeGuard.h" />
+    <ClInclude Include="..\..\include\shimmer3datatypes.h" />
     <ClInclude Include="..\..\include\Shimmer3GSRplus.h" />
     <ClInclude Include="..\..\include\listComPorts.h" />
     <ClInclude Include="..\..\include\Serial.h" />
     <ClInclude Include="..\..\include\Shimmer3LogAndStreamDevice.h" />
+    <ClInclude Include="..\..\include\Shimmer3SensorConfiguration.h" />
     <ClInclude Include="..\..\include\ssishimmer3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

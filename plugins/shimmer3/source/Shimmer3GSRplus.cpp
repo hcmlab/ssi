@@ -42,26 +42,6 @@ namespace ssi {
 
 static char ssi_log_name[] = "shimmer3gsr+";
 
-
-
-//https://stackoverflow.com/questions/1861294/how-to-calculate-execution-time-of-a-code-snippet-in-c
-_int64 GetTimeMicros64()
-{
-	FILETIME ft;
-	LARGE_INTEGER li;
-
-	GetSystemTimeAsFileTime(&ft);
-	li.LowPart = ft.dwLowDateTime;
-	li.HighPart = ft.dwHighDateTime;
-
-	unsigned _int64 ret = li.QuadPart;
-	ret -= 116444736000000000LL; /* Convert from file time to UNIX epoch time. */
-	ret /= 10; /* From 100 nano seconds (10^-7) to 1 µsec intervals */
-
-	return ret;
-}
-
-
 Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file) 
 	: m_ppgraw_provider (0),
 	_file (0),
@@ -117,7 +97,7 @@ void Shimmer3GSRPlus::setPPGRawProvider (IProvider *provider) {
 
 bool Shimmer3GSRPlus::connect () {
 
-	_device = std::make_unique<Shimmer3LogAndStreamDevice>(_options.port, _options.baud);
+	_device = std::make_unique<shimmer3::LogAndStreamDevice>(_options.port, _options.baud);
 
 	if (!_device->connect()) {
 		return false;
@@ -138,17 +118,17 @@ void Shimmer3GSRPlus::run () {
 	auto packet = _device->readNextPacket();
 
 	if (packet) {
-		processPPGValue(*packet.get());
+		processPPGValue(packet);
 	}
 	else {
 		ssi_wrn("Did not get a packet from the Shimmer Device");
 	}
 }
 
-void Shimmer3GSRPlus::processPPGValue(const Shimmer3LogAndStreamDevice::DataPacket& packet) {
+void Shimmer3GSRPlus::processPPGValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet) {
 	try
 	{
-		float rawPPGValue = packet.get(Shimmer3LogAndStreamDevice::SENSORID::INTERNAL_ADC_A13) * 1.0f;
+		float rawPPGValue = packet->get(shimmer3::SENSORID::INTERNAL_ADC_A13) * 1.0f;
 
 		m_ppgraw_provider->provide(ssi_pcast(char, &rawPPGValue), 1);
 	}
