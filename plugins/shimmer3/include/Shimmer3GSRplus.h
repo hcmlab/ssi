@@ -44,6 +44,7 @@
 #include "Shimmer3LogAndStreamDevice.h"
 
 #define SSI_SHIMMER3_PPGRAW_PROVIDER_NAME "shimmer3ppgraw"
+#define SSI_SHIMMER3_GSRRAW_PROVIDER_NAME "shimmer3gsrraw"
 
 namespace ssi {
 
@@ -65,7 +66,28 @@ public:
 		}
 
 		const ssi_char_t* getName() { return SSI_SHIMMER3_PPGRAW_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "Gets the ppg raw data."; };
+		const ssi_char_t* getInfo() { return "ppg raw data from the shimmer gsr+ board."; };
+		ssi_stream_t getStream() { return stream; };
+
+	protected:
+		ssi_stream_t stream;
+	};
+
+	class GSRRawChannel : public IChannel {
+
+		friend class Shimmer3GSRPlus;
+
+	public:
+
+		GSRRawChannel(ssi_size_t dim, ssi_time_t sr) {
+			ssi_stream_init(stream, 0, dim, sizeof(ssi_real_t), SSI_REAL, sr);
+		}
+		~GSRRawChannel() {
+			ssi_stream_destroy(stream);
+		}
+
+		const ssi_char_t* getName() { return SSI_SHIMMER3_GSRRAW_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "gsr raw data from the shimmer gsr+ board."; };
 		ssi_stream_t getStream() { return stream; };
 
 	protected:
@@ -148,11 +170,22 @@ public:
 	const ssi_char_t *getName () { return GetCreateName (); };
 	const ssi_char_t *getInfo () { return "Shimmer3 GSR+ Sensor"; };
 
-	ssi_size_t getChannelSize () { return 1; };
+	ssi_size_t getChannelSize () { return 2; };
 
-	IChannel *getChannel (ssi_size_t index) {  
-		if (!m_ppgraw_channel) m_ppgraw_channel = new PPGRawChannel(_options.dim, _options.sr);
-		return m_ppgraw_channel; 
+	IChannel *getChannel (ssi_size_t index) {
+		switch (index)
+		{
+		case 0:
+			if (!m_ppgraw_channel) m_ppgraw_channel = new PPGRawChannel(_options.dim, _options.sr);
+			return m_ppgraw_channel;
+		case 1:
+			if (!m_gsrraw_channel) m_gsrraw_channel = new GSRRawChannel(_options.dim, _options.sr);
+			return m_gsrraw_channel;
+			return 0;
+		default:
+			ssi_wrn("Channel index %ud not supported", index);
+			return 0;
+		}
 	};
 
 	bool setProvider (const ssi_char_t *name, IProvider *provider);
@@ -177,6 +210,7 @@ private:
 	void TODO_meaningfulgsrvalue();
 
 	void processPPGValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet);
+	void processGSRValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet);
 
 protected:
 
@@ -189,6 +223,10 @@ protected:
 	PPGRawChannel *m_ppgraw_channel;
 	void setPPGRawProvider(IProvider *provider);
 	IProvider *m_ppgraw_provider;
+
+	GSRRawChannel* m_gsrraw_channel;
+	void setGSRRawProvider(IProvider* provider);
+	IProvider* m_gsrraw_provider;
 
 	std::unique_ptr<shimmer3::LogAndStreamDevice> _device;
 };

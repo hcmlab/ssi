@@ -44,8 +44,10 @@ static char ssi_log_name[] = "shimmer3gsr+";
 
 Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file) 
 	: m_ppgraw_provider (0),
+	m_gsrraw_provider(0),
 	_file (0),
 	m_ppgraw_channel (0),
+	m_gsrraw_channel (0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 	
 	getOptions()->setStartCMD(0);
@@ -71,9 +73,11 @@ Shimmer3GSRPlus::~Shimmer3GSRPlus () {
 }
 
 bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) {
-
 	if (strcmp (name, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME) == 0) {
 		setPPGRawProvider (provider);
+		return true;
+	} else if (strcmp(name, SSI_SHIMMER3_GSRRAW_PROVIDER_NAME) == 0) {
+		setGSRRawProvider(provider);
 		return true;
 	}
 
@@ -91,7 +95,20 @@ void Shimmer3GSRPlus::setPPGRawProvider (IProvider *provider) {
 	m_ppgraw_provider = provider;
 	if (m_ppgraw_provider) {		
 		m_ppgraw_provider->init (getChannel (0));
-		ssi_msg (SSI_LOG_LEVEL_DETAIL, "gsr raw provider set");
+		ssi_msg (SSI_LOG_LEVEL_DETAIL, "ppg raw provider set");
+	}
+}
+
+void Shimmer3GSRPlus::setGSRRawProvider(IProvider* provider) {
+
+	if (m_gsrraw_provider) {
+		ssi_wrn("gsr raw was already set");
+	}
+
+	m_gsrraw_provider = provider;
+	if (m_gsrraw_provider) {
+		m_gsrraw_provider->init(getChannel(1));
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "gsr raw provider set");
 	}
 }
 
@@ -119,6 +136,7 @@ void Shimmer3GSRPlus::run () {
 
 	if (packet) {
 		processPPGValue(packet);
+		processGSRValue(packet);
 	}
 	else {
 		ssi_wrn("Did not get a packet from the Shimmer Device");
@@ -135,6 +153,19 @@ void Shimmer3GSRPlus::processPPGValue(const std::unique_ptr<shimmer3::LogAndStre
 	catch (const std::exception&)
 	{
 		ssi_wrn("The shimmer seems to be not configured to provide ppg values! Please make sure you are using the correct shimmer board and configuration!");
+	}
+}
+
+void Shimmer3GSRPlus::processGSRValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet) {
+	try
+	{
+		float rawGSRValue = packet->get(shimmer3::SENSORID::GSR) * 1.0f;
+
+		m_gsrraw_provider->provide(ssi_pcast(char, &rawGSRValue), 1);
+	}
+	catch (const std::exception&)
+	{
+		ssi_wrn("The shimmer seems to be not configured to provide gsr values! Please make sure you are using the correct shimmer board and configuration!");
 	}
 }
 
