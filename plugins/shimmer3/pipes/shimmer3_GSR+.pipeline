@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssisignal" />
+		<load name="ssiioput"/>
+		<load name="shimmer3" />
+	</register>
+
+	<sensor create="Shimmer3GSRPlus" baud="115200" dim="1" sr="20" port="10">		
+		<output channel="shimmer3ppgraw" pin="ppg_raw_data" size="10.0s"/>
+		<output channel="shimmer3gsrraw" pin="gsr_raw_data" size="10.0s"/>
+	</sensor>
+	
+	<consumer create="SignalPainter:plot" title="raw data" size="10.0">
+		<input pin="ppg_raw_data" frame="1" />		
+		<input pin="gsr_raw_data" frame="1" />		
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Shimmer3 GSR+ Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+	</object>
+
+</pipeline>
