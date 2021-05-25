@@ -224,7 +224,7 @@ namespace ssi {
 		void LogAndStreamDevice::stopStreaming() {
 			if (m_state == SHIMMER_STATE::CONNECTED_STREAMING 
 				&& sendCommand(COMMANDCODE::STOP_STREAMING)
-				&& waitForImmediateAck()) {
+				&& waitForNextAck()) {
 				m_state = SHIMMER_STATE::CONNECTED_NOTSTREAMING;
 			}
 			else {
@@ -266,6 +266,32 @@ namespace ssi {
 
 		bool LogAndStreamDevice::waitForImmediateAck() const {
 			return waitForImmediateResponseCode(RESPONSECODE::ACK);
+		}
+
+		bool LogAndStreamDevice::waitForNextAck()
+		{
+			if (m_state != SHIMMER_STATE::CONNECTED_STREAMING) return false;
+
+			static const size_t connectivityCheckTimeout = 1000000000;
+			size_t ctr = 0;
+			while (true) {
+				if (waitForImmediateResponseCode(RESPONSECODE::ACK))
+					return true;
+
+				ctr++;
+				if (ctr > connectivityCheckTimeout) {
+					if (m_serial->IsConnected()) {
+						ctr = 0;
+					}
+					else {
+						ssi_wrn("Shimmer Serial Connection seems to be lost!");
+						m_state = SHIMMER_STATE::DISCONNECTED;
+						break;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		bool LogAndStreamDevice::waitForNextDataPacket()

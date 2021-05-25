@@ -182,6 +182,11 @@ namespace ssi {
 			/// Blocks until a data packet header has been received
 			///	Checks for connectivity while waiting to ensure no deadlock if connection was lost
 			/// Returns false if device is not streaming or connection was lost
+			bool waitForNextAck();
+
+			/// Blocks until a data packet header has been received
+			///	Checks for connectivity while waiting to ensure no deadlock if connection was lost
+			/// Returns false if device is not streaming or connection was lost
 			bool waitForNextDataPacket();
 
 			/// Blocks until the next byte is received. Returns true if that byte is equal to the given response code
