@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <chrono>
 
 #ifdef USE_SSI_LEAK_DETECTOR
 #include "SSI_LeakWatcher.h"
@@ -40,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //uncomment this to print the time it takes to process a single frame to the console
-//#define PRINT_FRAME_TIMINGS
+#define PRINT_FRAME_TIMINGS
 
 namespace ssi {
 	using namespace AK;
@@ -48,10 +49,13 @@ namespace ssi {
 	ssi_char_t* AzureKinect::ssi_log_name = "azurekinect";
 
 	AzureKinect::AzureKinect(const ssi_char_t* file)
-		: m_rgb_provider(0),
+		: m_firstFrame(true),
+		m_rgb_provider(0),
 		m_bgraBuffer(0),
 		m_depthVisualisation_provider(0),
 		m_depthVisualisationBuffer(0),
+		m_pointCloud_provider(0),
+		m_pointCloudBuffer(0),
 		m_depthRaw_provider(0),
 		m_depthRawBuffer(0),
 		m_irVisualisation_provider(0),
@@ -61,6 +65,7 @@ namespace ssi {
 		m_skeleton_provider(0),
 		m_nrOfSkeletons(1),
 		m_skeletons(0),
+		m_previousJointRotations(0),
 		m_bodyTracker(0),
 		m_camerasStarted(false),
 		_file(0),
@@ -106,6 +111,9 @@ namespace ssi {
 		}
 		else if (strcmp(name, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME) == 0) {
 			providerWasAlreadySet = setSkeletonProvider(provider);
+		}
+		else if (strcmp(name, SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME) == 0) {
+			providerWasAlreadySet = setPointCloudProvider(provider);
 		}
 		else {
 			ssi_wrn((providerNameStr + " does not exist on this sensor").c_str());
@@ -164,6 +172,24 @@ namespace ssi {
 
 		return providerWasDefined;
 	}
+	
+	bool AzureKinect::setPointCloudProvider(IProvider* pointcloud_provider) {
+		bool providerWasDefined = false;
+		if (m_pointCloud_provider) {
+			providerWasDefined = true;
+		}
+
+		m_pointCloud_provider = pointcloud_provider;
+
+		if (m_pointCloud_provider) {
+			//m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * 6; //6 bytes per pointcloud voxel
+			m_pointCloud_channel.stream.dim = 1000; //6 bytes per pointcloud voxel
+			m_pointCloud_channel.stream.sr = _options.sr;
+			m_pointCloud_provider->init(&m_pointCloud_channel);
+		}
+
+		return providerWasDefined;
+	}
 
 	bool AzureKinect::connect()
 	{
@@ -172,7 +198,7 @@ namespace ssi {
 		if (count > 0) {
 
 			if (count > 1) {
-				ssi_wrn("Multiple Azure Kinects found. Connecting to the first one");
+				ssi_wrn("Multiple Azure Kinects found. Connecting to the first one only.");
 			}
 
 			try {
@@ -216,7 +242,7 @@ namespace ssi {
 			m_bgraBuffer = new BgraPixel[getRGBImageParams().widthInPixels * getRGBImageParams().heightInPixels];
 		}
 
-		if (m_depthRaw_provider || m_depthVisualisation_provider) {
+		if (m_depthRaw_provider || m_depthVisualisation_provider || m_pointCloud_provider) {
 			m_depthRawBuffer = new DepthPixel[getDepthVisualisationImageParams().widthInPixels * getDepthVisualisationImageParams().heightInPixels];
 		}
 
@@ -246,6 +272,26 @@ namespace ssi {
 					}
 				}
 			}
+		}
+
+		if ((m_skeleton_provider || _options.showBodyTracking) && _options.lowpassFilterJointRotations)
+		{
+			m_previousJointRotations = new JOINTROTATION_AVERAGES[m_nrOfSkeletons];
+			for (ssi_size_t k = 0; k < m_nrOfSkeletons; k++)
+			{
+				for (ssi_size_t i = 0; i < SKELETON_JOINT::NUM; i++)
+				{
+					for (ssi_size_t j = 0; j < 4; ++j)
+					{
+						m_skeletons[k][i][j] = 0.0f;
+					}
+				}
+			}
+		}
+
+		if (m_pointCloud_provider) {
+			//m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
+			m_pointCloudBuffer = new PointCloudPixel[1000];
 		}
 	}
 
@@ -305,6 +351,8 @@ namespace ssi {
 
 	void AzureKinect::process()
 	{
+		std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+		
 		if (!m_azureKinectDevice || !m_camerasStarted) return;
 
 		getCapture();
@@ -319,7 +367,7 @@ namespace ssi {
 			processRGBAImage();
 		}
 
-		if (m_depthRaw_provider || m_depthVisualisation_provider) {
+		if (m_depthRaw_provider || m_depthVisualisation_provider || m_pointCloud_provider) {
 			processDepthImage();
 		}
 
@@ -337,6 +385,10 @@ namespace ssi {
 		}
 
 		processProviders();		
+
+		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000;
+		std::cout << "1 frame took: " << duration << " ms" << std::endl;
 	}
 
 	void AzureKinect::getCapture()
@@ -386,6 +438,21 @@ namespace ssi {
 			k4a::image depthImage = m_capturedFrame.get_depth_image();
 			if (depthImage) {
 				std::memcpy(m_depthRawBuffer, depthImage.get_buffer(), depthImage.get_size());
+
+				if (m_pointCloud_provider) {
+					k4a::transformation trans(m_sensorCalibration);
+					try
+					{
+						auto pointCloudImage = trans.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH);
+						std::memcpy(m_pointCloudBuffer, pointCloudImage.get_buffer(), 1000);
+						pointCloudImage.reset();
+					}
+					catch (const std::exception&)
+					{
+						ssi_wrn("Point Cloud could not be generated");
+					}
+				}
+
 				depthImage.reset(); //release the image after getting its data
 
 				if (m_depthVisualisation_provider) {
@@ -445,10 +512,12 @@ namespace ssi {
 
 			auto bodiesToProcess = (std::min)(m_nrOfSkeletons, nrOfTrackedBodies);
 
+			//for each tracked body
 			for (ssi_size_t bodyIdx = 0; bodyIdx < bodiesToProcess; bodyIdx++)
 			{
 				k4abt_body_t body = body_frame.get_body(bodyIdx);
 
+				//for each joint
 				for (ssi_size_t jointIdx = 0; jointIdx < SKELETON_JOINT::NUM; jointIdx++)
 				{
 					k4a_float3_t position = body.skeleton.joints[jointIdx].position;
@@ -456,7 +525,6 @@ namespace ssi {
 					k4abt_joint_confidence_level_t confidence_level = body.skeleton.joints[jointIdx].confidence_level;
 					float confidence = confidence_level / (K4ABT_JOINT_CONFIDENCE_LEVELS_COUNT * 1.0f);
 
-					//TODO: possible optimisation: use memcopy
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_X] = position.xyz.x;
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Y] = position.xyz.y;
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::POS_Z] = position.xyz.z;
@@ -465,6 +533,75 @@ namespace ssi {
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_X] = orientation.wxyz.x;
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = orientation.wxyz.y;
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = orientation.wxyz.z;
+
+					if (_options.lowpassFilterJointRotations) {
+						if (m_firstFrame) {
+							m_previousJointRotations[bodyIdx][jointIdx][0] = orientation.wxyz.w;
+							m_previousJointRotations[bodyIdx][jointIdx][1] = orientation.wxyz.x;
+							m_previousJointRotations[bodyIdx][jointIdx][2] = orientation.wxyz.y;
+							m_previousJointRotations[bodyIdx][jointIdx][3] = orientation.wxyz.z;
+						}
+						else {
+							auto previous_w = m_previousJointRotations[bodyIdx][jointIdx][0];
+							auto previous_x = m_previousJointRotations[bodyIdx][jointIdx][1];
+							auto previous_y = m_previousJointRotations[bodyIdx][jointIdx][2];
+							auto previous_z = m_previousJointRotations[bodyIdx][jointIdx][3];
+
+							auto current_w = orientation.wxyz.w;
+							auto current_x = orientation.wxyz.x;
+							auto current_y = orientation.wxyz.y;
+							auto current_z = orientation.wxyz.z;
+
+							/*
+							//SLERP (taken from: https://www.lix.polytechnique.fr/~nielsen/WEBvisualcomputing/programs/slerp.cpp)
+							float dotproduct = previous_x * current_x + previous_y * current_y + previous_z * current_z + previous_w * current_w;
+							float theta, st, sut, sout, coeff1, coeff2;
+
+							double lambda = 0.7;
+
+							theta = (float)acos(dotproduct);
+							if (theta < 0.0) theta = -theta;
+
+							st = (float)sin(theta);
+							sut = (float)sin(lambda * theta);
+							sout = (float)sin((1 - lambda) * theta);
+							coeff1 = sout / st;
+							coeff2 = sut / st;
+
+							auto smoothed_w = coeff1 * previous_w + coeff2 * current_w;
+							auto smoothed_x = coeff1 * previous_x + coeff2 * current_x;
+							auto smoothed_y = coeff1 * previous_y + coeff2 * current_y;
+							auto smoothed_z = coeff1 * previous_z + coeff2 * current_z;
+
+							//normalize the smoothed quaternion before writing it out
+							double norm = sqrt(smoothed_w * smoothed_w + smoothed_x * smoothed_x + smoothed_y * smoothed_y + smoothed_z * smoothed_z);
+							smoothed_w /= norm;
+							smoothed_x /= norm;
+							smoothed_y /= norm;
+							smoothed_z /= norm;
+							*/
+
+							
+							// exponentielle Glättung (https://de.wikipedia.org/wiki/Exponentielle_Gl%C3%A4ttung)
+							static const float alpha = 0.8f;
+							static const float _1_alpha = 1.0f - alpha;
+							auto smoothed_w = alpha * orientation.wxyz.w + _1_alpha * previous_w;
+							auto smoothed_x = alpha * orientation.wxyz.x + _1_alpha * previous_x;
+							auto smoothed_y = alpha * orientation.wxyz.y + _1_alpha * previous_y;
+							auto smoothed_z = alpha * orientation.wxyz.z + _1_alpha * previous_z;
+							
+
+							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_W] = smoothed_w;
+							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_X] = smoothed_x;
+							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = smoothed_y;
+							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = smoothed_z;
+
+							m_previousJointRotations[bodyIdx][jointIdx][0] = smoothed_w;
+							m_previousJointRotations[bodyIdx][jointIdx][1] = smoothed_x;
+							m_previousJointRotations[bodyIdx][jointIdx][2] = smoothed_y;
+							m_previousJointRotations[bodyIdx][jointIdx][3] = smoothed_z;
+						}
+					}
 
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::CONF] = confidence;
 				}
@@ -490,6 +627,8 @@ namespace ssi {
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::CONF] = SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE;
 				}
 			}
+
+			m_firstFrame = false;
 
 			body_frame.reset();
 		}
@@ -581,6 +720,10 @@ namespace ssi {
 		if (m_skeleton_provider) {
 			m_skeleton_provider->provide(ssi_pcast(ssi_byte_t, m_skeletons), 1);
 		}
+
+		if (m_pointCloud_provider) {
+			m_pointCloud_provider->provide(ssi_pcast(ssi_byte_t, m_pointCloudBuffer), 1);
+		}
 	}
 
 	bool AzureKinect::disconnect() {
@@ -630,6 +773,16 @@ namespace ssi {
 		{
 			delete[] m_skeletons;
 			m_skeleton_provider = 0;
+		}
+
+		if (m_previousJointRotations) {
+			delete[] m_previousJointRotations;
+			m_previousJointRotations = 0;
+		}
+
+		if (m_pointCloud_provider) {
+			delete[] m_pointCloudBuffer;
+			m_pointCloud_provider = 0;
 		}
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "sensor disconnected");

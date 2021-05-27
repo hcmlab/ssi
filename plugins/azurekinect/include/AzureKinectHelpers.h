@@ -185,7 +185,7 @@ namespace ssi {
 
             //subpixel coordinates have the center of the pixel at its "int" coordinate. i.e. (0, 0) ranges from (-0.4999, -0.4999) to (0.4999, 0.4999)
             //see: https://docs.microsoft.com/en-us/azure/kinect-dk/coordinate-systems
-            //therefore a normal round (i.e. >= 0.5 goes to the next higher number, which is the correct integer pixel-coordinate for the subpixel coordinate
+            //therefore a normal round (i.e. >= 0.5) goes to the next higher number, which is the correct integer pixel-coordinate for the subpixel coordinate
             return std::make_pair(isValid, cv::Point(static_cast<int>(std::round(jointPos2D.xy.x)), static_cast<int>(std::round(jointPos2D.xy.y))));
         }
     } //namespace AK

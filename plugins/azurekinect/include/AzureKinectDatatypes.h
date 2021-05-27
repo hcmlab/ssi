@@ -21,6 +21,13 @@ namespace ssi {
 			uint8_t Red;
 		};
 
+		struct PointCloudPixel
+		{
+			int16_t x;
+			int16_t y;
+			int16_t z;
+		};
+
 		using HSVPixel = BgrPixel;
 
 		using DepthPixel = uint16_t;
@@ -157,6 +164,8 @@ namespace ssi {
 		#define  SSI_AZUREKINECT_INVALID_SKELETON_JOINT_VALUE 0.0f
 
 		typedef float SKELETON[SKELETON_JOINT::NUM][SKELETON_JOINT_VALUE::NUM];
+
+		typedef float JOINTROTATION_AVERAGES[SKELETON_JOINT::NUM][4]; //buffer type for averages for the 4 components of joint quaternions
 	}
 	
 }

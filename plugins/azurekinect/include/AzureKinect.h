@@ -61,6 +61,7 @@ namespace ssi {
 #define SSI_AZUREKINECT_IRRAWIMAGE_PROVIDER_NAME "irraw"
 #define SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME "irvisualisation"
 #define SSI_AZUREKINECT_SKELETON_PROVIDER_NAME "skeleton"
+#define SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME "pointcloud"
 
 class AzureKinect : public ISensor, public Thread {
 public:
@@ -116,6 +117,25 @@ public:
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME; };
 		const ssi_char_t* getInfo() { return "Depth image with 2 byte depth-pixels signifying raw depth values in mm."; };
+		ssi_stream_t getStream() { return stream; };
+		ssi_stream_t* getStreamPtr() { return &stream; };
+	protected:
+		ssi_stream_t stream;
+	};
+
+	class PointCloudChannel : public IChannel {
+
+		friend class AzureKinect;
+
+	public:
+		PointCloudChannel() {
+			ssi_stream_init(stream, 0, 0, sizeof(unsigned char), SSI_UCHAR, 0);
+		}
+		~PointCloudChannel() {
+			ssi_stream_destroy(stream);
+		}
+		const ssi_char_t* getName() { return SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "3-D coordinates (relative to Kinect camera) for every pixel in the depth image. 2 byte integer per dimension, unit: mm"; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -225,6 +245,15 @@ public:
 		return vParam;
 	}
 
+	ssi_video_params_t getPointCloudImageParams()
+	{
+		ssi_video_params_t vParam;
+
+		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_16S, 3);
+		vParam.flipImage = false;
+		return vParam;
+	}
+
 	ssi_video_params_t getIRVisualisationImageParams()
 	{
 		ssi_video_params_t vParam;
@@ -284,15 +313,19 @@ protected:
 
 	k4a::capture m_capturedFrame;
 
+	bool m_firstFrame;
+
 	BgraPixel* m_bgraBuffer;
 	DepthPixel* m_depthRawBuffer;
 	BgrPixel* m_depthVisualisationBuffer;
 	cv::Mat m_depthHSVConversionMat; //helper, constructed over the m_depthBuffer to use opencv color conversion functions on it
 	DepthPixel* m_irRawBuffer;
 	IRPixel* m_irVisualisationBuffer;
+	PointCloudPixel* m_pointCloudBuffer;
 
 	ssi_size_t m_nrOfSkeletons;
 	SKELETON* m_skeletons;
+	JOINTROTATION_AVERAGES* m_previousJointRotations;
 
 	RGBImageChannel m_rgb_channel;
 	IProvider* m_rgb_provider;
@@ -302,6 +335,10 @@ protected:
 
 	DepthVisualisationImageChannel m_depthVisualisation_channel;
 	IProvider* m_depthVisualisation_provider;
+	
+	bool setPointCloudProvider(IProvider* pointcloud_provider);
+	PointCloudChannel m_pointCloud_channel;
+	IProvider* m_pointCloud_provider;
 
 	IRRawImageChannel m_irRaw_channel;
 	IProvider* m_irRaw_provider;
