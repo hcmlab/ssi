@@ -307,6 +307,7 @@ protected:
 	k4a::device m_azureKinectDevice;
 	k4a_device_configuration_t m_azureKinectConfig;
 	k4a::calibration m_sensorCalibration;
+	k4a::transformation m_transformation;
 	bool m_camerasStarted;
 
 	k4abt::tracker m_bodyTracker;

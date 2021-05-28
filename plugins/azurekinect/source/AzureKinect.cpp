@@ -41,7 +41,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //uncomment this to print the time it takes to process a single frame to the console
-#define PRINT_FRAME_TIMINGS
+//#define PRINT_FRAME_TIMINGS
+#ifdef PRINT_FRAME_TIMINGS
+	#include <chrono>
+#endif
+
 
 namespace ssi {
 	using namespace AK;
@@ -182,8 +186,7 @@ namespace ssi {
 		m_pointCloud_provider = pointcloud_provider;
 
 		if (m_pointCloud_provider) {
-			//m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * 6; //6 bytes per pointcloud voxel
-			m_pointCloud_channel.stream.dim = 1000; //6 bytes per pointcloud voxel
+			m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * 6; //6 bytes per pointcloud voxel
 			m_pointCloud_channel.stream.sr = _options.sr;
 			m_pointCloud_provider->init(&m_pointCloud_channel);
 		}
@@ -290,8 +293,7 @@ namespace ssi {
 		}
 
 		if (m_pointCloud_provider) {
-			//m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
-			m_pointCloudBuffer = new PointCloudPixel[1000];
+			m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
 		}
 	}
 
@@ -301,6 +303,7 @@ namespace ssi {
 		m_azureKinectConfig = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
 		_options.applyToCameraConfiguration(m_azureKinectConfig);
 		m_sensorCalibration = m_azureKinectDevice.get_calibration(m_azureKinectConfig.depth_mode, m_azureKinectConfig.color_resolution);
+		m_transformation = k4a::transformation(m_sensorCalibration);
 
 		try
 		{
@@ -351,7 +354,6 @@ namespace ssi {
 
 	void AzureKinect::process()
 	{
-		std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 		
 		if (!m_azureKinectDevice || !m_camerasStarted) return;
 
@@ -384,11 +386,8 @@ namespace ssi {
 			}
 		}
 
-		processProviders();		
 
-		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000;
-		std::cout << "1 frame took: " << duration << " ms" << std::endl;
+		processProviders();		
 	}
 
 	void AzureKinect::getCapture()
@@ -439,12 +438,13 @@ namespace ssi {
 			if (depthImage) {
 				std::memcpy(m_depthRawBuffer, depthImage.get_buffer(), depthImage.get_size());
 
+
+
 				if (m_pointCloud_provider) {
-					k4a::transformation trans(m_sensorCalibration);
 					try
 					{
-						auto pointCloudImage = trans.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH);
-						std::memcpy(m_pointCloudBuffer, pointCloudImage.get_buffer(), 1000);
+						auto pointCloudImage = m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH);
+						std::memcpy(m_pointCloudBuffer, pointCloudImage.get_buffer(), pointCloudImage.get_size());
 						pointCloudImage.reset();
 					}
 					catch (const std::exception&)
@@ -452,6 +452,7 @@ namespace ssi {
 						ssi_wrn("Point Cloud could not be generated");
 					}
 				}
+
 
 				depthImage.reset(); //release the image after getting its data
 
