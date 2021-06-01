@@ -438,21 +438,23 @@ namespace ssi {
 			if (depthImage) {
 				std::memcpy(m_depthRawBuffer, depthImage.get_buffer(), depthImage.get_size());
 
-
-
 				if (m_pointCloud_provider) {
 					try
 					{
+						/*
 						auto pointCloudImage = m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH);
 						std::memcpy(m_pointCloudBuffer, pointCloudImage.get_buffer(), pointCloudImage.get_size());
 						pointCloudImage.reset();
+						*/
+						m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH, &m_pointCloudKinectBufferImage);
+						std::memcpy(m_pointCloudBuffer, m_pointCloudKinectBufferImage.get_buffer(), m_pointCloudKinectBufferImage.get_size());
+						//std::memcpy(m_pointCloudBuffer, m_pointCloudKinectBufferImage.get_buffer(), 100);
 					}
 					catch (const std::exception&)
 					{
 						ssi_wrn("Point Cloud could not be generated");
 					}
 				}
-
 
 				depthImage.reset(); //release the image after getting its data
 

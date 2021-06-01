@@ -323,6 +323,7 @@ protected:
 	DepthPixel* m_irRawBuffer;
 	IRPixel* m_irVisualisationBuffer;
 	PointCloudPixel* m_pointCloudBuffer;
+	k4a::image m_pointCloudKinectBufferImage;
 
 	ssi_size_t m_nrOfSkeletons;
 	SKELETON* m_skeletons;
