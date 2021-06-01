@@ -30,6 +30,7 @@
 #include "ssiazurekinect.h"
 #include "signal/include/ssisignal.h"
 #include "websocket/include/websocket.h"
+#include "GarbageTestDataSensor.h"
 #include <iostream>
 using namespace ssi;
 
@@ -56,6 +57,7 @@ bool ex_pointcloudwebsocketserver(void* args);
 bool ex_bodytrackingvideo(void* args);
 bool ex_skeleton(void* args);
 bool ex_skeletonwebsocketserver(void* args);
+bool ex_garbagedatawebsocketserver(void* args);
 
 int main () {
 
@@ -79,6 +81,7 @@ int main () {
 	ex.add(ex_skeleton, 0, "SKELETON", "Raw numerical values of the Skeleton joints only");
 	ex.add(ex_skeletonwebsocketserver, 0, "SKELETON Websocket server", "Skeleton only websocket server on port 8000");
 	ex.add(ex_pointcloudwebsocketserver, 0, "POINT CLOUD websocket server", "Point cloud only websocket server on port 9000");
+	ex.add(ex_garbagedatawebsocketserver, 0, "Garbage Data websocket server", "Garbage Data only websocket server 9000");
 	ex.show();
 
 	Factory::Clear();
@@ -234,13 +237,16 @@ bool ex_skeletonwebsocketserver(void* args)
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
 	frame->AddSensor(kinect);
 
-	
-	MvgAvgVar* sliding = ssi_create(MvgAvgVar, "sliding", true);
-	sliding->getOptions()->win = 1.0;
-	sliding->getOptions()->format = MvgAvgVar::AVG;
-	sliding->getOptions()->method = MvgAvgVar::MOVING;
-	ITransformable* smoothed_skeleton_t = frame->AddTransformer(skeleton_p, sliding, "1");
-	
+	/*
+	MvgAvgVar* slidingAverage = ssi_create(MvgAvgVar, "sliding", true);
+	slidingAverage->getOptions()->win = 1.0;
+	slidingAverage->getOptions()->format = MvgAvgVar::AVG;
+	slidingAverage->getOptions()->method = MvgAvgVar::MOVING;
+	ITransformable* averaged_skeleton_t = frame->AddTransformer(skeleton_p, slidingAverage, "1");
+	*/
+
+	MvgMedian* movingMedian = ssi_create(MvgMedian, "movingmedian", true);
+	ITransformable* medianed_skeleton_t = frame->AddTransformer(skeleton_p, movingMedian, "1");
 
 	VideoPainter* vplot = 0;
 
@@ -255,7 +261,7 @@ bool ex_skeletonwebsocketserver(void* args)
 	websocket->getOptions()->send_own_events = true;
 	//setting to a little less than what 1 frame at 30fps would take to make sure the websocket sends each frame as soon as possible (setting to 33 lead to the client receiving only every 40-45ms...)
 	websocket->getOptions()->queue_check_interval = 30;
-	frame->AddConsumer(smoothed_skeleton_t, websocket, "1");
+	frame->AddConsumer(medianed_skeleton_t, websocket, "1");
 
 	board->RegisterSender(*websocket);
 	board->RegisterListener(*websocket);
@@ -286,9 +292,19 @@ bool ex_pointcloudwebsocketserver(void* args)
 
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 
-	ITransformable* pc_p = frame->AddProvider(kinect, SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME, 0, "10.0s");
+	ITransformable* pc_p = frame->AddProvider(kinect, SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME, 0, "2.0s");
+	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "1.0s");
 	frame->AddSensor(kinect);
 
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("depth");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(depth_p, vplot, "1");
+
+	
 	Websocket* websocket = ssi_create(Websocket, 0, true);
 	websocket->getOptions()->send_info = false;
 	websocket->getOptions()->send_own_events = true;
@@ -300,7 +316,57 @@ bool ex_pointcloudwebsocketserver(void* args)
 	board->RegisterSender(*websocket);
 	board->RegisterListener(*websocket);
 
-	decorator->add("console", 0, 0, 500, 800);
+	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	board->RegisterListener(*monitor);
+
+	decorator->add("console", 0, 0, 700, 800);
+	decorator->add("plot*", 700, 0, 512, 512);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_garbagedatawebsocketserver(void* args)
+{
+	ssi::Factory::Register(ssi::GarbageDataSensor::GetCreateName(), ssi::GarbageDataSensor::Create);
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	GarbageDataSensor* garbageDataSensor = ssi_create(GarbageDataSensor, 0, true);
+	garbageDataSensor->getOptions()->sr = 30.0;
+	garbageDataSensor->getOptions()->bytesPerSample = 3000000; //3 MBytes / sample 
+
+	ITransformable* garbage_p = frame->AddProvider(garbageDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
+	frame->AddSensor(garbageDataSensor);
+	
+	Websocket* websocket = ssi_create(Websocket, 0, true);
+	websocket->getOptions()->send_info = false;
+	websocket->getOptions()->send_own_events = true;
+	//setting to a little less than what 1 frame at 30fps would take to make sure the websocket sends each frame as soon as possible (setting to 33 lead to the client receiving only every 40-45ms...)
+	websocket->getOptions()->queue_check_interval = 30;
+	frame->AddConsumer(garbage_p, websocket, "1");
+
+	board->RegisterSender(*websocket);
+	board->RegisterListener(*websocket);
+
+	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	board->RegisterListener(*monitor);
+
+	decorator->add("console", 0, 0, 700, 800);
+	decorator->add("monitor*", 650, 400, 400, 400);
 
 	board->Start();
 	frame->Start();
