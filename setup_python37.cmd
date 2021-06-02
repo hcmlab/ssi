@@ -13,7 +13,7 @@ set LIB=.\libs\build\
 %DST%wget.exe https://www.python.org/ftp/python/%PYTHON_VER_FULL%/python-%PYTHON_VER_FULL%-embed-amd64.zip -O %DST%python-%PYTHON_VER_FULL%-embed-amd64.zip
 %DST%wget.exe https://github.com/python/cpython/archive/refs/tags/v%PYTHON_VER_FULL%.zip -O %LIB%python-%PYTHON_VER_FULL%.zip
 %DST%7za.exe x %DST%python-%PYTHON_VER_FULL%-embed-amd64.zip -aoa -o%DST%
-%DST%7za.exe x %DST%python%PYTHON_VER%.zip -aoa -o%DST%Python-%PYTHON_VER%
+%DST%7za.exe x %DST%python%PYTHON_VER%.zip -aoa -o%DST%python%PYTHON_VER%
 %DST%7za.exe x %LIB%python-%PYTHON_VER_FULL%.zip -aoa -o%LIB%
 move %LIB%\cpython-%PYTHON_VER_FULL% %LIB%\Python-%PYTHON_VER_FULL% 
 
