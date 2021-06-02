@@ -45,9 +45,9 @@ public:
 
 		Options () {
 
-			setUrl ("upd://172.0.0.1:1234");	
+			setUrl ("udp://172.0.0.1:1234");	
 
-			addOption("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. upd://:-1, tcp://172.0.0.1:1234)");
+			addOption("url", url, SSI_MAX_CHAR, SSI_CHAR, "url of the form 'scheme://host:port' (e.g. udp://:-1, tcp://172.0.0.1:1234)");
 		};
 
 		void setUrl (const ssi_char_t *url) {

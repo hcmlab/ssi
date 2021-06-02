@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>CARE Screen</title>
+    <meta charset="utf-8">
+    <link href={{ static_url("basicLayout.css") }} type="text/css" rel="stylesheet" />
+    <link href={{ static_url("content.css") }} type="text/css" rel="stylesheet" />
+    <link id="cssFile" href={{ static_url("style.css") }} type="text/css" rel="stylesheet" />
+    <style id="cssStyle" type="text/css"></style>
+</head>
+
+
+<body oncontextmenu="return false;">
+
+<div id="outerWrapper">
+    <div id="wrapper">
+        <div id="backImage"></div>
+        <div id="header">
+            <div id="icon"></div>
+            <div id="titleBox">
+                <div id="title"></div>
+            </div>
+        </div>
+        <div id="content">
+            <div id="picture"></div>
+            <div id="text1"></div>
+            <div id="text2"></div>
+        </div>
+        <div id="footer"></div>
+        <div id="answers">
+            <div id="button1" class="button"></div>
+            <div id="button2" class="button"></div>
+            <div id="button3" class="button"></div>
+            <div id="button4" class="button"></div>
+        </div>
+        <div id="customButtons">
+            <div id="button11" class="button2"></div>
+            <div id="button12" class="button2"></div>
+            <div id="button13" class="button2"></div>
+            <div id="button14" class="button2"></div>
+            <div id="button15" class="button2"></div>
+        </div>
+    </div>
+
+    <div id="overlay">
+        <div id="rating" class="overlayContainer">
+            <div id="positive" class="overlayButton"></div>
+            <div id="neutral"  class="overlayButton"></div>
+            <div id="negative" class="overlayButton"></div>
+        </div>
+        <div id="navigation" class="overlayContainer">
+            <div id="forward"  class="overlayButton"></div>
+            <div id="backward" class="overlayButton"></div>
+        </div>
+    </div>
+
+    <audio id="sound_click" src={{ static_url("click.opus") }} hidden="hidden"></audio>
+</div>
+
+</body>
+</html>
