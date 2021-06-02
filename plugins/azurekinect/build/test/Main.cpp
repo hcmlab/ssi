@@ -58,6 +58,7 @@ bool ex_bodytrackingvideo(void* args);
 bool ex_skeleton(void* args);
 bool ex_skeletonwebsocketserver(void* args);
 bool ex_garbagedatawebsocketserver(void* args);
+bool ex_pointcloudtcpsender(void* args);
 
 int main () {
 
@@ -82,6 +83,7 @@ int main () {
 	ex.add(ex_skeletonwebsocketserver, 0, "SKELETON Websocket server", "Skeleton only websocket server on port 8000");
 	ex.add(ex_pointcloudwebsocketserver, 0, "POINT CLOUD websocket server", "Point cloud only websocket server on port 9000");
 	ex.add(ex_garbagedatawebsocketserver, 0, "Garbage Data websocket server", "Garbage Data only websocket server 9000");
+	ex.add(ex_pointcloudtcpsender, 0, "Pointcloud TCP sender", "Send Pointcloud data via TCP socket on port 8888");
 	ex.show();
 
 	Factory::Clear();
@@ -280,7 +282,6 @@ bool ex_skeletonwebsocketserver(void* args)
 	return true;
 }
 
-
 bool ex_pointcloudwebsocketserver(void* args)
 {
 	ITheFramework* frame = Factory::GetFramework();
@@ -375,6 +376,37 @@ bool ex_garbagedatawebsocketserver(void* args)
 	board->Stop();
 	frame->Clear();
 	board->Clear();
+
+	return true;
+}
+
+bool ex_pointcloudtcpsender(void* args) {
+	ssi::Factory::Register(ssi::GarbageDataSensor::GetCreateName(), ssi::GarbageDataSensor::Create);
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	GarbageDataSensor* garbageDataSensor = ssi_create(GarbageDataSensor, 0, true);
+	garbageDataSensor->getOptions()->sr = 30.0;
+	garbageDataSensor->getOptions()->bytesPerSample = 1500000; //1.5 MBytes / sample 
+
+	ITransformable* garbage_p = frame->AddProvider(garbageDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
+	frame->AddSensor(garbageDataSensor);
+
+	// start sender
+	SocketWriter* socket_writer_bin = ssi_create(SocketWriter, 0, true);
+	socket_writer_bin->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 8888);
+	socket_writer_bin->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
+	frame->AddConsumer(garbage_p, socket_writer_bin, "1");
+
+	decorator->add("console", 0, 0, 700, 800);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
 
 	return true;
 }
