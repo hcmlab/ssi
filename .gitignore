@@ -35,6 +35,8 @@ plugins/bodyfeatures
 
 bin/x64/vc140/Lib/*
 bin/x64/vc140/share/*
+bin/x64/vc140/python37/*
+bin/x64/vc140/python38/*
 
 ui/mkplugin/obj/*
 ui/xmlpipeui/obj/*
@@ -203,3 +205,6 @@ bin/x64/vc140/select.pyd
 bin/x64/vc140/sqlite3.dll
 bin/x64/vc140/unicodedata.pyd
 bin/x64/vc140/winsound.pyd
+bin/x64/vc140/python38.dll
+bin/x64/vc140/python.cat
+bin/x64/vc140/libffi-7.dll
