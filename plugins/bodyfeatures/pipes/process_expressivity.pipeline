@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="2">
+	<!-- --------------------------------------------------- 
+		Module registration 
+	  --------------------------------------------------- -->
+	<register>
+		<load name="bodyfeatures.dll" />
+		  	<load name="ssiioput"/>	
+			<load name="ssigraphic"/>
+		<load name="ssisignal"/>
+  </register>
+  
+	
+	
+	<sensor create="FileReader" path="W:\nova\data\aria-noxi\001_2016-03-17_Paris\novice.skel_ssi" blockInSamples="1" offsetInSamples="0" cutoffInSamples="0">
+		<output channel="file" pin="skel" sync="0" watch="0"/>		
+	</sensor>
+    
+  
+  	<transformer create="EnergyMovement">   
+		<input pin="skel" frame="1" leftcontext="6" rightcontext="6"/>   
+		<output pin="energy"/> 
+	</transformer>
+	
+	 <transformer create="Butfilt" type="0" order="3" norm="true" low="0.1" high="1.0" zero="false"> 
+		 <input pin="energy" frame="1" />
+		<output pin="energy_low"/>
+	 </transformer>
+	
+	 <consumer create="SignalPainter:plot" title="bodyproperties" size="10" type="0"> 
+		<input pin="energy_low" frame="1"/> 
+	</consumer> 
+
+
+
+  <!-- <consumer create="ThresTupleEventSender" address="novice_continuousmovement@novice_continuousmovement" classes="VERYLOW, LOW, MEDIUM, HIGH, VERYHIGH" thres="0.0, 0.2, 0.4, 0.6, 0.8, 1.0"> -->
+    <!-- <input pin="energy" frame="0.5s" /> -->
+  <!-- </consumer> -->
+  
+  
+  
+  
+</pipeline>

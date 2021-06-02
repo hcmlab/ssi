@@ -189,6 +189,7 @@ bool ex_EmoSim(void *args){
 	sim->getOptions()->extraversion = extraversion;
 	sim->getOptions()->agreeableness = agreeableness;
 	sim->getOptions()->neuroticism = neuroticism;
+	sim->getOptions()->auto_feedback_valence = true;
 	board->RegisterListener(*sim, comb_adress.getAddress());
 	board->RegisterSender(*sim);
 

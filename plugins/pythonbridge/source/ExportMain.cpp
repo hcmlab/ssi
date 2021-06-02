@@ -1,6 +1,6 @@
 // ExportMain.cpp
 // author: Florian Lingenfelser <lingenfelser@hcm-lab.de>
-// created: 2018/12/06
+// created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -52,6 +52,8 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 	
 	ssi::Factory::Register(ssi::PythonBridgeEntry::GetCreateName(), ssi::PythonBridgeEntry::Create) && result;
 	ssi::Factory::Register(ssi::PythonBridge::GetCreateName(), ssi::PythonBridge::Create) && result;
+	ssi::Factory::Register(ssi::PythonBridgeExit::GetCreateName(), ssi::PythonBridgeExit::Create) && result;
+	ssi::Factory::Register(ssi::ExitStream::GetCreateName(), ssi::ExitStream::Create) && result;
 
 	return result;
 }

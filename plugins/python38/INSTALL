@@ -1,0 +1,15 @@
+Windows:
+
+1. Install the 64 bit version of Python3.5x to C:\%ProgramFiles%\Python35 (e.g. by checking 'install for all users' in the installation dialogue, it is not necessary to add it to the %PATH%):
+https://www.python.org/downloads/
+
+2. To download extension packages (e.g. numpy) go to:
+http://www.lfd.uci.edu/~gohlke/pythonlibs/
+  *Note: if you installed numpy from the gohlke repo (which is recommended since you get a compiled version of imkl for free) you will need to do fetch the scipy-wheel from the same repo too.
+  The pip installation of scipy will otherwise fail with an error indicating that no blas/lapack has been found on your system.
+
+3. To make use of Theano you will also need an version off the g++ compiler on you system:
+http://tdm-gcc.tdragon.net/
+
+To build the plugin:
+4. Add a system variable %SSI_PYTHON% that points to the installation directory of Python.

@@ -40,7 +40,7 @@ namespace ssi {
 	class Window;
 	class Canvas;
 
-	class EmoSim : public IObject, public INotify {
+	class EmoSim : public IObject {
 
 	public:
 
@@ -48,7 +48,7 @@ namespace ssi {
 
 		public:
 
-			Options() : update_ms(100), openness(0.0f), conscientiousness(0.0f), extraversion(0.0f), agreeableness(0.0f), neuroticism(0.0f) {
+			Options() : update_ms(100), openness(0.0f), conscientiousness(0.0f), extraversion(0.0f), agreeableness(0.0f), neuroticism(0.0f), auto_feedback_valence (false), auto_feedback_timer(1000) {
 
 				setAddress("");
 				setSenderName("sender");
@@ -78,7 +78,8 @@ namespace ssi {
 				addOption("extraversion", &extraversion, 1, SSI_REAL, "Extraversion", false);
 				addOption("agreeableness", &agreeableness, 1, SSI_REAL, "Agreeableness", false);
 				addOption("neuroticism", &neuroticism, 1, SSI_REAL, "Neuroticism", false);
-
+				addOption("auto_feedback_valence", &auto_feedback_valence, 1, SSI_BOOL, "automatically generate feedback from perceived valence");
+				addOption("auto_feedback_timer", &auto_feedback_timer, 1, SSI_REAL, "time span for generating automatic feedback (ms)");
 			};
 
 			void setAddress(const ssi_char_t* address) {
@@ -156,6 +157,8 @@ namespace ssi {
 			ssi_real_t extraversion;
 			ssi_real_t agreeableness;
 			ssi_real_t neuroticism;
+			bool auto_feedback_valence;
+			ssi_real_t auto_feedback_timer;
 		};
 
 	public:
@@ -182,6 +185,7 @@ namespace ssi {
 		void convertToEmotionLabel(ssi_char_t* emo_label, ssi_real_t valenceValue, ssi_real_t arousalValue);
 
 		void CalculatePersonalitySettings();
+		void ResolveFeedback(bool positive, ssi_real_t strength);
 
 	protected:
 
@@ -230,6 +234,10 @@ namespace ssi {
 		ssi_size_t _habituation_timer;
 
 		ssi_real_t _target_approach_speed;
+
+		ssi_size_t _last_auto_feeback;
+		ssi_real_t _auto_feedback_valence_value;
+		ssi_size_t _auto_feedback_valence_counter;
 
 	};
 

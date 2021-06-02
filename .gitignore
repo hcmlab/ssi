@@ -35,6 +35,8 @@ plugins/bodyfeatures
 
 bin/x64/vc140/Lib/*
 bin/x64/vc140/share/*
+bin/x64/vc140/python37/*
+bin/x64/vc140/python38/*
 
 ui/mkplugin/obj/*
 ui/xmlpipeui/obj/*
@@ -176,3 +178,33 @@ bin/x64/vc140/python37/
 bin/x64/vc140/Scripts/
 bin/x64/vc140/python37.zip
 bin/x64/vc140/python-3.7.7-embed-amd64.zip
+*.obj
+plugins/pupiltracker/build/test/ssi_last.err
+bin/x64/vc140/_asyncio.pyd
+bin/x64/vc140/_bz2.pyd
+bin/x64/vc140/_ctypes.pyd
+bin/x64/vc140/_decimal.pyd
+bin/x64/vc140/_elementtree.pyd
+bin/x64/vc140/_hashlib.pyd
+bin/x64/vc140/_lzma.pyd
+bin/x64/vc140/_msi.pyd
+bin/x64/vc140/_multiprocessing.pyd
+bin/x64/vc140/_overlapped.pyd
+bin/x64/vc140/_queue.pyd
+bin/x64/vc140/_socket.pyd
+bin/x64/vc140/_sqlite3.pyd
+bin/x64/vc140/_ssl.pyd
+bin/x64/vc140/libcrypto-1_1.dll
+bin/x64/vc140/libssl-1_1.dll
+bin/x64/vc140/LICENSE.txt
+bin/x64/vc140/pyexpat.pyd
+bin/x64/vc140/python.exe
+bin/x64/vc140/python3.dll
+bin/x64/vc140/pythonw.exe
+bin/x64/vc140/select.pyd
+bin/x64/vc140/sqlite3.dll
+bin/x64/vc140/unicodedata.pyd
+bin/x64/vc140/winsound.pyd
+bin/x64/vc140/python38.dll
+bin/x64/vc140/python.cat
+bin/x64/vc140/libffi-7.dll

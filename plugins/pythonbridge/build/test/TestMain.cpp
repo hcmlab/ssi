@@ -1,6 +1,6 @@
 // TestMain.cpp (TEST)
 // Florian Lingenfelser <lingenfelser@hcm-lab.de>
-// created: 2018/12/06
+// created: 2020/09/08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -27,6 +27,7 @@
 #include "ssi.h"
 #include "pythonbridge.h"
 #include "pythonbridgeentry.h"
+#include "pythonbridgeexit.h"
 #include "SSI_Tools.h"
 
 #include "camera\include\ssicamera.h"
@@ -63,6 +64,7 @@ int main(int argc, char *argv[]) {
 		Factory::RegisterDLL("ioput");
 		Factory::RegisterDLL("camera");
 		Factory::RegisterDLL("pythonbridge");
+		Factory::RegisterDLL("signal");
 
 		ex_pythonbridge();		
 
@@ -90,15 +92,20 @@ void ex_pythonbridge() {
 	mouse->getOptions()->flip = true;
 	mouse->getOptions()->scale = true;
 	mouse->getOptions()->single = false;
+	// mouse->getOptions()->sr = 2;
 	ITransformable* cursor_p = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
 	ITransformable* button_p = frame->AddProvider(mouse, SSI_MOUSE_BUTTON_PROVIDER_NAME);
 	frame->AddSensor(mouse);
 
-	ZeroEventSender* ezero = ssi_create(ZeroEventSender, 0, true);
+	Selector* select = ssi_create(Selector, 0, true);
+	ssi_sprint(select->getOptions()->indices, "1");
+	ITransformable* cursor_y = frame->AddTransformer(cursor_p, select, "1");
+
+	/*ZeroEventSender* ezero = ssi_create(ZeroEventSender, 0, true);
 	ezero->getOptions()->mindur = 0.2;
 	ezero->getOptions()->setAddress("click@mouse");
 	frame->AddConsumer(button_p, ezero, "0.25s");
-	board->RegisterSender(*ezero);
+	board->RegisterSender(*ezero);*/
 
 	/*Camera* camera = ssi_create(Camera, 0, true);
 	camera->getOptions()->flip = true;
@@ -107,14 +114,26 @@ void ex_pythonbridge() {
 
 	PythonBridgeEntry *pybridgeentry = ssi_create(PythonBridgeEntry, 0, true);
 	pybridgeentry->getOptions()->setAddress("entry@pythonbridge");
-	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
-	frame->AddConsumer(cursor_p, pybridgeentry, "1");
-	//frame->AddConsumer(camera_p, pybridgeentry, "1");
+	frame->AddConsumer(cursor_y, pybridgeentry, "0.1s");
 	board->RegisterSender(*pybridgeentry);
 
+	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
+	//frame->AddConsumer(camera_p, pybridgeentry, "1");
+
 	PythonBridge* pybridge = ssi_create(PythonBridge, 0, true);
-	pybridgeentry->getOptions()->setAddress("bridge@pythonbridge");
+	pybridge->getOptions()->setAddress("bridge@pythonbridge");
+	pybridge->getOptions()->port = 5550;
 	board->RegisterListener(*pybridge, "entry@pythonbridge", 10000);
+
+	PythonBridgeExit *pybridgeexit = ssi_create(PythonBridgeExit, 0, true);
+	pybridgeexit->getOptions()->setAddress("exit@pythonbridge");
+	pybridgeexit->getOptions()->port = 5551;
+	pybridgeexit->getOptions()->size = 4;
+	frame->AddRunnable(pybridgeexit);
+	board->RegisterSender(*pybridgeexit);
+
+	//frame->AddEventConsumer(cursor_p, pybridgeentry, board, ezero->getEventAddress());
+	//frame->AddConsumer(camera_p, pybridgeentry, "1");
 
 	/*VideoPainter* vidplot = 0;
 
@@ -130,7 +149,7 @@ void ex_pythonbridge() {
 	plot->getOptions()->type = PaintSignalType::SIGNAL;
 	plot->getOptions()->autoscale = true;
 	plot->getOptions()->size = 20;
-	frame->AddConsumer(cursor_p, plot, "1", "0");
+	frame->AddConsumer(cursor_y, plot, "1", "0");
 
 	/*plot = ssi_create_id(SignalPainter, 0, "plot_2");
 	plot->getOptions()->setTitle("bridge");
@@ -141,7 +160,7 @@ void ex_pythonbridge() {
 
 	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	monitor->getOptions()->all = true;
-	board->RegisterListener(*monitor, 0, 10000);
+	board->RegisterListener(*monitor, "exit@", 10000);
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 640, 960);

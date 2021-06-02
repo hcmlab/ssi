@@ -1,6 +1,6 @@
-// TupleMap.cpp
+// pythonbridge.cpp
 // author: Florian Lingenfelser <florian.lingenfelser@informatik.uni-augsburg.de>
-// created: 2013/10/15
+// created: 2020 / 09 / 08
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -32,15 +32,12 @@
 
 namespace ssi {
 
-char PythonBridge::ssi_log_name[] = "py_bridge_";
+char PythonBridge::ssi_log_name[] = "__pybridge";
 
 PythonBridge::PythonBridge(const ssi_char_t *file)
 	:	_file (0),
 		_listener (0),
-		/*_msg_start_sequence (0),
-		_msg_end_sequence (0),*/
-		_socket (0)
-		{
+		_socket (0)	{
 
 	if (file) {
 		if (!OptionList::LoadXML(file, &_options)) {
@@ -49,7 +46,7 @@ PythonBridge::PythonBridge(const ssi_char_t *file)
 		_file = ssi_strcpy (file);
 	}
 
-	ssi_event_init (_event, SSI_ETYPE_MAP);	
+	ssi_event_init (_event, SSI_ETYPE_MAP);
 
 }
 
@@ -97,42 +94,43 @@ void PythonBridge::listen_enter () {
 		ssi_event_adjust (_event, 1 * sizeof (ssi_event_map_t));
 	}
 	
-	_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::SERVER, _options.port, _options.host);
-
-	/*_msg_start_sequence = new ssi_byte_t[3];
-	_msg_start_sequence[0] = '+';
-	_msg_start_sequence[1] = '+';
-	_msg_start_sequence[2] = '+';
-	_msg_end_sequence = new ssi_byte_t[3];
-	_msg_start_sequence[0] = '#';
-	_msg_start_sequence[1] = '#';
-	_msg_start_sequence[2] = '#';*/
-	
+	_socket = Socket::CreateAndConnect(Socket::TYPE::TCP, Socket::MODE::CLIENT, _options.port, _options.host);
 
 }
 
 bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t time_ms) {
 
 	ssi_event_t *e = 0;
-	//events.reset ();
-
+	events.reset ();
+	int counter = 0;
 	for(ssi_size_t nevent = 0; nevent < n_new_events; nevent++){
-
+		// ssi_print("\npyBridge received %d events", n_new_events);
 		e = events.next();
 		int result = 0;
 		if (e != 0)
 		{
-			switch (e->type) {
-				case SSI_ETYPE_UNDEF: {
-					std::string _test_string = "hal";
-					result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
-					//result = _socket->send(e->ptr, e->tot);
-					result = _socket->send(&_test_string, _test_string.size());
-					result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
+			{
+				if ((int)e->type == (int)SSI_ETYPE_UNDEF) {
+					//std::string _test_string = "hal";
+					
+					if (_socket->isConnected())
+					{
+						// ssi_print("\npyBridge connected. \n")
+						result = _socket->send(&_msg_start_sequence, _msg_start_sequence.size());
+						result = _socket->send(e->ptr, e->tot);
+						result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
+					}
+					else
+					{
+						/*ssi_print("\npyBridge not connected. Trying to reconnect ... \n")
+						_socket->connect();*/
+					}
+					//result = _socket->send(&_test_string, _test_string.size());
+					// result = _socket->send(&_msg_end_sequence, _msg_end_sequence.size());
 					//ssi_print("\n start_%d, msg_%d, end_%d", _msg_start_sequence.size(), e->tot, _msg_end_sequence.size());
 				}
-				default: {
-					ssi_wrn("Please use PythonbridgeEntry or SSI_ETYPE_UNDEF");
+				else {
+					counter++;
 				}
 			}
 
@@ -140,6 +138,10 @@ bool PythonBridge::update (IEvents &events, ssi_size_t n_new_events, ssi_size_t 
 				_listener->update(_event);
 			}*/
 		}
+	}
+
+	if (counter != 0) {
+		ssi_wrn("Please use PythonbridgeEntry or SSI_ETYPE_UNDEF");
 	}
 
 	return true;
@@ -156,8 +158,11 @@ void PythonBridge::listen_flush (){
 		ssi_event_reset (_event);
 	}
 
-	delete _socket; _socket = 0;
-	/*delete _msg_start_sequence; _msg_start_sequence = 0;
-	delete _msg_end_sequence; _msg_end_sequence = 0;*/
+	//if (_socket) {
+	//	if (_socket->disconnect()) {
+	//		// delete _socket; _socket = 0;
+	//	}
+	//}
+
 }
 }

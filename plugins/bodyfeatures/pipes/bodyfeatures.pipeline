@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<register>
+		<load name="ssiaudio"/>
+		<load name="ssiioput" />
+		<load name="ssigraphic" />
+		<load name="ssimodel" />
+		<load name="ssisignal" />
+		<load name="ssimicrosoftkinect"/>
+		<load name="ssicamera"/>
+		<load name="ssibodyfeatures"/>
+		<load name="ssiskeleton"/>
+	</register>
+
+	<object create="EventMonitor:monitor" all="true">
+		<listen address="@" span="10000"/>
+	</object>
+	
+	<!-- kinect sensor 
+	
+	- turn on trackNearestPerson to always track the nearest person
+	- turn on seatedSkeletonMode for upper body  tracking only
+	- turn off showFaceTracking and showBodyTracking to NOT visulaize tracking results in the rgb image
+	
+	-->
+	<sensor create="MicrosoftKinect" trackNearestPerson="true" seatedSkeletonMode="false" simpleFaceTracking="false" nearTrackingMode="true" showFaceTracking="true" screenScale = "false" showBodyTracking="true">
+		<output channel="rgb" pin="kinect_rgb"/>
+		<output channel="depthr" pin="kinect_depthr"/>
+		<output channel="au" pin="kinect_au"/>
+		<output channel="head" pin="kinect_head"/>
+		<output channel="skeleton" pin="kinect_skel"/>
+		<output channel="skeleton2screen" pin="kinect_skel2screen"/>
+		<output channel="face" pin="kinect_face"/>
+		<output channel="face3d" pin="kinect_face3d"/>
+	</sensor>
+
+<transformer create="SkeletonConverter">
+		<input pin="kinect_skel" frame="1"/>
+		<xinput size="2">
+			<input pin="kinect_head"/>
+			<input pin="kinect_face3d"/>			
+		</xinput>
+		<output pin="ssi_skel"/>
+</transformer>
+	
+
+	<!-- Shows the Kinect's RGB stream -->
+	<consumer create="VideoPainter:plot" flip="False" mirror="False" title="kinect">
+		<input pin="kinect_rgb" frame="1"/>
+	</consumer>
+
+	
+	<!-- Calculats the skeleton's movement energy  -->
+	<transformer create="EnergyMovement">   
+		<input pin="ssi_skel" frame="1" delta="14"/>   
+		<output pin="energy"/> 
+	</transformer>
+	
+	<!-- Also filter the Signal for a nicer look   -->
+	 <transformer create="Butfilt" type="0" order="3" norm="true" low="0.1" high="1.0" zero="false">
+		<input pin="energy" frame="1" />
+		<output pin="energy_low"/>
+	</transformer>
+
+	<transformer create="BodyProperties">
+		<input pin="ssi_skel" frame="1.0s"/>
+		<output pin="nova_bodyproperties"/>
+	</transformer>
+	
+	<consumer create="SignalPainter:plot" title="BodyProperties" size="10" type="0">
+		<input pin="nova_bodyproperties" frame="1.0s"/>
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
