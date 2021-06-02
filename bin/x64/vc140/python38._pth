@@ -1,5 +1,7 @@
-python38.zip
 .
-
-# Uncomment to run site.main() automatically
-#import site
+.\
+.\DLLs
+.\lib
+.\lib\plat-win
+.\lib\site-packages
+.\python38
