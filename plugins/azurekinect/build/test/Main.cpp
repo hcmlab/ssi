@@ -381,27 +381,33 @@ bool ex_garbagedatawebsocketserver(void* args)
 }
 
 bool ex_pointcloudtcpsender(void* args) {
-	ssi::Factory::Register(ssi::GarbageDataSensor::GetCreateName(), ssi::GarbageDataSensor::Create);
-
 	ITheFramework* frame = Factory::GetFramework();
 
 	Decorator* decorator = ssi_create(Decorator, 0, true);
 	frame->AddDecorator(decorator);
 
-	GarbageDataSensor* garbageDataSensor = ssi_create(GarbageDataSensor, 0, true);
-	garbageDataSensor->getOptions()->sr = 30.0;
-	garbageDataSensor->getOptions()->bytesPerSample = 1500000; //1.5 MBytes / sample 
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 
-	ITransformable* garbage_p = frame->AddProvider(garbageDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
-	frame->AddSensor(garbageDataSensor);
+	ITransformable* pc_p = frame->AddProvider(kinect, SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME, 0, "5.0s");
+	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "5.0s");
+	frame->AddSensor(kinect);
+
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("depth");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(depth_p, vplot, "1");
 
 	// start sender
 	SocketWriter* socket_writer_bin = ssi_create(SocketWriter, 0, true);
 	socket_writer_bin->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 8888);
 	socket_writer_bin->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
-	frame->AddConsumer(garbage_p, socket_writer_bin, "1");
+	frame->AddConsumer(pc_p, socket_writer_bin, "1");
 
-	decorator->add("console", 0, 0, 700, 800);
+	decorator->add("console", 0, 0, 500, 800);
+	decorator->add("plot*", 5, 0, 512, 512);
 
 	frame->Start();
 	frame->Wait();
