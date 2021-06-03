@@ -294,6 +294,10 @@ namespace ssi {
 
 		if (m_pointCloud_provider) {
 			m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
+			m_pointCloudKinectBufferImage = k4a::image::create(K4A_IMAGE_FORMAT_CUSTOM,
+																_options.depthVideoWidth,
+																_options.depthVideoHeight,
+																_options.depthVideoWidth * 3 * static_cast<int32_t>(sizeof(int16_t)));
 		}
 	}
 
@@ -441,14 +445,8 @@ namespace ssi {
 				if (m_pointCloud_provider) {
 					try
 					{
-						/*
-						auto pointCloudImage = m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH);
-						std::memcpy(m_pointCloudBuffer, pointCloudImage.get_buffer(), pointCloudImage.get_size());
-						pointCloudImage.reset();
-						*/
 						m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH, &m_pointCloudKinectBufferImage);
 						std::memcpy(m_pointCloudBuffer, m_pointCloudKinectBufferImage.get_buffer(), m_pointCloudKinectBufferImage.get_size());
-						//std::memcpy(m_pointCloudBuffer, m_pointCloudKinectBufferImage.get_buffer(), 100);
 					}
 					catch (const std::exception&)
 					{
