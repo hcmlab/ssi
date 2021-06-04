@@ -57,8 +57,10 @@ bool ex_pointcloudwebsocketserver(void* args);
 bool ex_bodytrackingvideo(void* args);
 bool ex_skeleton(void* args);
 bool ex_skeletonwebsocketserver(void* args);
+bool ex_skeletontcpsender(void* args);
 bool ex_garbagedatawebsocketserver(void* args);
 bool ex_pointcloudtcpsender(void* args);
+bool ex_pointcloudandskeletontcpsender(void* args);
 
 int main () {
 
@@ -81,9 +83,11 @@ int main () {
 	ex.add(ex_bodytrackingvideo, 0, "Bodytracking Video", "rgb video channel with bodytracking information visualized");
 	ex.add(ex_skeleton, 0, "SKELETON", "Raw numerical values of the Skeleton joints only");
 	ex.add(ex_skeletonwebsocketserver, 0, "SKELETON Websocket server", "Skeleton only websocket server on port 8000");
+	ex.add(ex_skeletontcpsender, 0, "SKELETON TCP sender", "Send Pointcloud data via TCP socket on port 7777");
 	ex.add(ex_pointcloudwebsocketserver, 0, "POINT CLOUD websocket server", "Point cloud only websocket server on port 9000");
 	ex.add(ex_garbagedatawebsocketserver, 0, "Garbage Data websocket server", "Garbage Data only websocket server 9000");
 	ex.add(ex_pointcloudtcpsender, 0, "Pointcloud TCP sender", "Send Pointcloud data via TCP socket on port 8888");
+	ex.add(ex_pointcloudandskeletontcpsender, 0, "Pointcloud AND Skeleton via TCP", "Send Pointcloud data via TCP socket on port 8888 AND Skeleten data via TCP on port 7777");
 	ex.show();
 
 	Factory::Clear();
@@ -247,8 +251,10 @@ bool ex_skeletonwebsocketserver(void* args)
 	ITransformable* averaged_skeleton_t = frame->AddTransformer(skeleton_p, slidingAverage, "1");
 	*/
 
+	/*
 	MvgMedian* movingMedian = ssi_create(MvgMedian, "movingmedian", true);
 	ITransformable* medianed_skeleton_t = frame->AddTransformer(skeleton_p, movingMedian, "1");
+	*/
 
 	VideoPainter* vplot = 0;
 
@@ -263,7 +269,7 @@ bool ex_skeletonwebsocketserver(void* args)
 	websocket->getOptions()->send_own_events = true;
 	//setting to a little less than what 1 frame at 30fps would take to make sure the websocket sends each frame as soon as possible (setting to 33 lead to the client receiving only every 40-45ms...)
 	websocket->getOptions()->queue_check_interval = 30;
-	frame->AddConsumer(medianed_skeleton_t, websocket, "1");
+	frame->AddConsumer(skeleton_p, websocket, "1");
 
 	board->RegisterSender(*websocket);
 	board->RegisterListener(*websocket);
@@ -278,6 +284,60 @@ bool ex_skeletonwebsocketserver(void* args)
 	board->Stop();
 	frame->Clear();
 	board->Clear();
+
+	return true;
+}
+
+bool ex_skeletontcpsender(void* args)
+{
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+	kinect->getOptions()->showBodyTracking = true;
+	kinect->getOptions()->lowpassFilterJointRotations = false;
+
+	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
+	frame->AddSensor(kinect);
+
+	/*
+	MvgAvgVar* slidingAverage = ssi_create(MvgAvgVar, "sliding", true);
+	slidingAverage->getOptions()->win = 1.0;
+	slidingAverage->getOptions()->format = MvgAvgVar::AVG;
+	slidingAverage->getOptions()->method = MvgAvgVar::MOVING;
+	ITransformable* averaged_skeleton_t = frame->AddTransformer(skeleton_p, slidingAverage, "1");
+	*/
+
+	MvgMedian* movingMedian = ssi_create(MvgMedian, "movingmedian", true);
+	ITransformable* medianed_skeleton_t = frame->AddTransformer(skeleton_p, movingMedian, "1");
+
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("rgb");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(rgb_p, vplot, "1");
+
+	SocketWriter* socket_writer_bin = ssi_create(SocketWriter, 0, true);
+	socket_writer_bin->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 7777);
+	socket_writer_bin->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
+	frame->AddConsumer(medianed_skeleton_t, socket_writer_bin, "1");
+
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 500, 0, 900, 1000);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
 
 	return true;
 }
@@ -408,6 +468,55 @@ bool ex_pointcloudtcpsender(void* args) {
 
 	decorator->add("console", 0, 0, 500, 800);
 	decorator->add("plot*", 5, 0, 512, 512);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
+bool ex_pointcloudandskeletontcpsender(void* args) {
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+
+	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "5.0s");
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "5.0s");
+	ITransformable* pc_p = frame->AddProvider(kinect, SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME, 0, "5.0s");
+	frame->AddSensor(kinect);
+
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("rgb");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(rgb_p, vplot, "1");
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("depth");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(depth_p, vplot, "1");
+
+	SocketWriter* socket_writer_skeleton = ssi_create(SocketWriter, 0, true);
+	socket_writer_skeleton->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 7777);
+	socket_writer_skeleton->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
+	frame->AddConsumer(skeleton_p, socket_writer_skeleton, "1");
+
+	SocketWriter* socket_writer_pointcloud = ssi_create(SocketWriter, 0, true);
+	socket_writer_pointcloud->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 8888);
+	socket_writer_pointcloud->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
+	frame->AddConsumer(pc_p, socket_writer_pointcloud, "1");
+
+	decorator->add("console", 0, 0, 600, 800);
+	decorator->add("plot*", 600, 0, 512, 1024);
 
 	frame->Start();
 	frame->Wait();
