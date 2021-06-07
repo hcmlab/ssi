@@ -30,7 +30,7 @@
 #include "ssiazurekinect.h"
 #include "signal/include/ssisignal.h"
 #include "websocket/include/websocket.h"
-#include "GarbageTestDataSensor.h"
+#include "TestDataSensor.h"
 #include <iostream>
 using namespace ssi;
 
@@ -58,9 +58,11 @@ bool ex_bodytrackingvideo(void* args);
 bool ex_skeleton(void* args);
 bool ex_skeletonwebsocketserver(void* args);
 bool ex_skeletontcpsender(void* args);
-bool ex_garbagedatawebsocketserver(void* args);
 bool ex_pointcloudtcpsender(void* args);
 bool ex_pointcloudandskeletontcpsender(void* args);
+
+bool ex_testthewebsocket(void* args);
+bool ex_testthetcp(void* args);
 
 int main () {
 
@@ -85,9 +87,10 @@ int main () {
 	ex.add(ex_skeletonwebsocketserver, 0, "SKELETON Websocket server", "Skeleton only websocket server on port 8000");
 	ex.add(ex_skeletontcpsender, 0, "SKELETON TCP sender", "Send Pointcloud data via TCP socket on port 7777");
 	ex.add(ex_pointcloudwebsocketserver, 0, "POINT CLOUD websocket server", "Point cloud only websocket server on port 9000");
-	ex.add(ex_garbagedatawebsocketserver, 0, "Garbage Data websocket server", "Garbage Data only websocket server 9000");
 	ex.add(ex_pointcloudtcpsender, 0, "Pointcloud TCP sender", "Send Pointcloud data via TCP socket on port 8888");
 	ex.add(ex_pointcloudandskeletontcpsender, 0, "Pointcloud AND Skeleton via TCP", "Send Pointcloud data via TCP socket on port 8888 AND Skeleten data via TCP on port 7777");
+	ex.add(ex_testthewebsocket, 0, "Websocket test", "Configurable binary Test Data via Websocket on port 9000");
+	ex.add(ex_testthetcp, 0, "TCP Test", "Configurable binary Test Data via TCP on port 9999");
 	ex.show();
 
 	Factory::Clear();
@@ -395,53 +398,11 @@ bool ex_pointcloudwebsocketserver(void* args)
 	return true;
 }
 
-bool ex_garbagedatawebsocketserver(void* args)
-{
-	ssi::Factory::Register(ssi::GarbageDataSensor::GetCreateName(), ssi::GarbageDataSensor::Create);
-
-	ITheFramework* frame = Factory::GetFramework();
-
-	Decorator* decorator = ssi_create(Decorator, 0, true);
-	frame->AddDecorator(decorator);
-
-	ITheEventBoard* board = Factory::GetEventBoard();
-
-	GarbageDataSensor* garbageDataSensor = ssi_create(GarbageDataSensor, 0, true);
-	garbageDataSensor->getOptions()->sr = 30.0;
-	garbageDataSensor->getOptions()->bytesPerSample = 3000000; //3 MBytes / sample 
-
-	ITransformable* garbage_p = frame->AddProvider(garbageDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
-	frame->AddSensor(garbageDataSensor);
-	
-	Websocket* websocket = ssi_create(Websocket, 0, true);
-	websocket->getOptions()->send_info = false;
-	websocket->getOptions()->send_own_events = true;
-	//setting to a little less than what 1 frame at 30fps would take to make sure the websocket sends each frame as soon as possible (setting to 33 lead to the client receiving only every 40-45ms...)
-	websocket->getOptions()->queue_check_interval = 30;
-	frame->AddConsumer(garbage_p, websocket, "1");
-
-	board->RegisterSender(*websocket);
-	board->RegisterListener(*websocket);
-
-	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
-	board->RegisterListener(*monitor);
-
-	decorator->add("console", 0, 0, 700, 800);
-	decorator->add("monitor*", 650, 400, 400, 400);
-
-	board->Start();
-	frame->Start();
-	frame->Wait();
-	frame->Stop();
-	board->Stop();
-	frame->Clear();
-	board->Clear();
-
-	return true;
-}
-
 bool ex_pointcloudtcpsender(void* args) {
-	ITheFramework* frame = Factory::GetFramework();
+	//TheFramework* frame = Factory::GetFramework();
+	TheFramework* frame = ssi_pcast(TheFramework, Factory::GetFramework());
+
+	frame->getOptions()->countdown = 0;
 
 	Decorator* decorator = ssi_create(Decorator, 0, true);
 	frame->AddDecorator(decorator);
@@ -484,6 +445,8 @@ bool ex_pointcloudandskeletontcpsender(void* args) {
 	frame->AddDecorator(decorator);
 
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+	kinect->getOptions()->showBodyTracking = true;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "5.0s");
@@ -517,6 +480,83 @@ bool ex_pointcloudandskeletontcpsender(void* args) {
 
 	decorator->add("console", 0, 0, 600, 800);
 	decorator->add("plot*", 600, 0, 512, 1024);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+}
+
+bool ex_testthewebsocket(void* args)
+{
+	ssi::Factory::Register(ssi::TestDataSensor::GetCreateName(), ssi::TestDataSensor::Create);
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	TestDataSensor* testDataSensor = ssi_create(TestDataSensor, 0, true);
+	testDataSensor->getOptions()->sr = 30.0;
+	testDataSensor->getOptions()->dim = 3000000 / sizeof(float); // ca. 3 MBytes / sample 
+
+	ITransformable* testdata_p = frame->AddProvider(testDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
+	frame->AddSensor(testDataSensor);
+
+	Websocket* websocket = ssi_create(Websocket, 0, true);
+	websocket->getOptions()->send_info = false;
+	websocket->getOptions()->send_own_events = true;
+	//setting to a little less than what 1 frame at 30fps would take to make sure the websocket sends each frame as soon as possible (setting to 33 lead to the client receiving only every 40-45ms...)
+	websocket->getOptions()->queue_check_interval = 30;
+	frame->AddConsumer(testdata_p, websocket, "1");
+
+	board->RegisterSender(*websocket);
+	board->RegisterListener(*websocket);
+
+	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
+	board->RegisterListener(*monitor);
+
+	decorator->add("console", 0, 0, 700, 800);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	board->Start();
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	board->Stop();
+	frame->Clear();
+	board->Clear();
+
+	return true;
+}
+
+bool ex_testthetcp(void* args) {
+	ssi::Factory::Register(ssi::TestDataSensor::GetCreateName(), ssi::TestDataSensor::Create);
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	TestDataSensor* testDataSensor = ssi_create(TestDataSensor, 0, true);
+	testDataSensor->getOptions()->sr = 30.0;
+	testDataSensor->getOptions()->dim = 11000000;
+
+	ITransformable* testdata_p = frame->AddProvider(testDataSensor, SSI_GARBAGEDATA_PROVIDER, 0, "2.0s");
+	frame->AddSensor(testDataSensor);
+
+	SocketWriter* socket_writer = ssi_create(SocketWriter, 0, true);
+	socket_writer->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 9999);
+	socket_writer->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
+	frame->AddConsumer(testdata_p, socket_writer, "1");
+	
+	decorator->add("console", 0, 0, 700, 800);
 
 	frame->Start();
 	frame->Wait();
