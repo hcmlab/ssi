@@ -186,7 +186,7 @@ namespace ssi {
 		m_pointCloud_provider = pointcloud_provider;
 
 		if (m_pointCloud_provider) {
-			m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * 6; //6 bytes per pointcloud voxel
+			m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * SSI_AZUREKINECT_BYTESPERDEPTHCLOUDVOXEL;
 			m_pointCloud_channel.stream.sr = _options.sr;
 			m_pointCloud_provider->init(&m_pointCloud_channel);
 		}
@@ -372,7 +372,7 @@ namespace ssi {
 		}
 
 		if (m_rgb_provider) {
-			processRGBAImage();
+			processRGBImage();
 		}
 
 		if (m_depthRaw_provider || m_depthVisualisation_provider || m_pointCloud_provider) {
@@ -426,7 +426,7 @@ namespace ssi {
 		m_capturedFrame.reset();
 	}
 
-	void AzureKinect::processRGBAImage()
+	void AzureKinect::processRGBImage()
 	{
 		if (m_capturedFrame) {
 			k4a::image rgbImage = m_capturedFrame.get_color_image();

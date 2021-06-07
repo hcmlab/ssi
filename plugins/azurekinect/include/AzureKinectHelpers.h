@@ -20,7 +20,7 @@ namespace ssi {
         // Gets the dimensions of the color images that the color camera will produce for a
         // given color resolution
         //
-        inline std::pair<int, int> GetColorDimensions(const RGB_VIDEO_RESOLUTION resolution)
+        inline std::pair<int, int> GetColorDimensions(const RGB_VIDEO_RESOLUTION resolution) noexcept
         {
             switch (resolution)
             {
@@ -46,7 +46,7 @@ namespace ssi {
         // Gets the dimensions of the depth images that the depth camera will produce for a
         // given depth mode
         //
-        inline std::pair<int, int> GetDepthDimensions(const DEPTH_MODE depthMode)
+        inline std::pair<int, int> GetDepthDimensions(const DEPTH_MODE depthMode) noexcept
         {
             switch (depthMode)
             {

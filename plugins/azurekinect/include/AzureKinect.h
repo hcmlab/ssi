@@ -47,13 +47,7 @@
 #include "AzureKinectHelpers.h"
 #include "AzureKinectOptions.h"
 
-namespace ssi {
-	class Timer;
-}
-
-namespace ssi {
-
-	using namespace AK;
+#define SSI_AZUREKINECT_BYTESPERDEPTHCLOUDVOXEL 6
 
 #define SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME "rgb"
 #define SSI_AZUREKINECT_DEPTHRAWIMAGE_PROVIDER_NAME "depthraw"
@@ -62,6 +56,14 @@ namespace ssi {
 #define SSI_AZUREKINECT_IRVISUALISATIONIMAGE_PROVIDER_NAME "irvisualisation"
 #define SSI_AZUREKINECT_SKELETON_PROVIDER_NAME "skeleton"
 #define SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME "pointcloud"
+
+namespace ssi {
+	class Timer;
+}
+
+namespace ssi {
+
+	using namespace AK;
 
 class AzureKinect : public ISensor, public Thread {
 public:
@@ -135,7 +137,7 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "3-D coordinates (relative to Kinect camera) for every pixel in the depth image. 2 byte integer per dimension, unit: mm"; };
+		const ssi_char_t* getInfo() { return "3-D coordinates (relative to Kinect camera) for every pixel in the depth image. 2 byte integer per dimension, unit: mm, positive Y points towards ground!"; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -205,7 +207,7 @@ public:
 	~AzureKinect();
 	AzureKinect::Options* getOptions() { return &_options; };
 	const ssi_char_t* getName() { return GetCreateName(); };
-	const ssi_char_t* getInfo() { return "Azure Kinect DK Sensor"; };
+	const ssi_char_t* getInfo() { return "Azure Kinect DK Sensor. Before first use, make sure AzureKinect SensorSDK and BodyTrackingSDK are installed and added to the PATH."; };
 
 	ssi_size_t getChannelSize() { return 1; };
 	IChannel* getChannel(ssi_size_t index) {
@@ -289,7 +291,7 @@ protected:
 	void getCapture();
 	void passCaptureToBodyTracker();
 	void releaseCapture();
-	void processRGBAImage();
+	void processRGBImage();
 	void processDepthImage();
 	void processIRImage();
 	void processBodyTracking();
