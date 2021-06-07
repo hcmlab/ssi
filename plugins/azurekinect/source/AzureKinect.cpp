@@ -311,7 +311,7 @@ namespace ssi {
 			k4abt_tracker_configuration_t tracker_config = K4ABT_TRACKER_CONFIG_DEFAULT;
 			tracker_config.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA; //important, otherwise will default to WindowsML which doesn't seem to work
 			m_bodyTracker = k4abt::tracker::create(m_sensorCalibration, tracker_config);
-			m_bodyTracker.set_temporal_smoothing(_options.bodyTrackingSmoothingFactor);
+			m_bodyTracker.set_temporal_smoothing(static_cast<float>(_options.bodyTrackingSmoothingFactor));
 		}
 	}
 

@@ -50,7 +50,7 @@ namespace ssi {
 				addOption("depthMode", &depthMode, 1, SSI_INT, "Depth mode, default: WFOV_BINNED. Set to OFF to deactivate (will be activated anyway with default if e.g. bodytracking or pointcloud are used). (0=NFOV_UNBINNED,1=NFOV_BINNED,2=WFOV_UNBINNED,3=WFOV_BINNED,4=PASSIVE_IR,5=OFF). Option WFOV_UNBINNED only up to sr = 15.0");
 				addOption("nrOfBodiesToTrack", &nrOfBodiesToTrack, 1, SSI_SIZE, "The number of bodies to track. Default is 0, set to at least 1 to track someone! (Azure Kinect doesn't seem to have a limit for the nr of bodies it can track)");
 				addOption("showBodyTracking", &showBodyTracking, 1, SSI_BOOL, "show body tracking, default: true (if at least one body is tracked). Only paints basic joints and bones, use the SkeletonPainter plugin for more options.");
-				addOption("bodyTrackingSmoothingFactor", &bodyTrackingSmoothingFactor, 1, SSI_FLOAT, "Control bodytracking smoothing between 0.0 (none) - 1.0 (full). Default: 0.0. Less smoothing will increase the responsiveness of the detected skeletons but will cause more positional and orientational jitters.");
+				addOption("bodyTrackingSmoothingFactor", &bodyTrackingSmoothingFactor, 1, SSI_DOUBLE, "Control bodytracking smoothing between 0.0 (none) - 1.0 (full). Default: 0.0. Less smoothing will increase the responsiveness of the detected skeletons but will cause more positional and orientational jitters.");
 
 				//TODO: add sensor orientation (for optimal tracker configuration)
 
@@ -151,7 +151,7 @@ namespace ssi {
 
 			ssi_size_t nrOfBodiesToTrack;
 			bool showBodyTracking;
-			float bodyTrackingSmoothingFactor;
+			double bodyTrackingSmoothingFactor;
 
 			private:
 				void enforceProperRGBVideoConfig() noexcept {

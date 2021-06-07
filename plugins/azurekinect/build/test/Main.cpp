@@ -251,7 +251,7 @@ bool ex_skeletonwebsocketserver(void* args)
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
-	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
@@ -301,7 +301,7 @@ bool ex_skeletontcpsender(void* args)
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
-	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
@@ -434,7 +434,7 @@ bool ex_pointcloudandskeletontcpsender(void* args) {
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
-	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "5.0s");
