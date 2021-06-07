@@ -69,7 +69,6 @@ namespace ssi {
 		m_skeleton_provider(0),
 		m_nrOfSkeletons(1),
 		m_skeletons(0),
-		m_previousJointRotations(0),
 		m_bodyTracker(0),
 		m_camerasStarted(false),
 		_file(0),
@@ -279,21 +278,6 @@ namespace ssi {
 			}
 		}
 
-		if ((m_skeleton_provider || _options.showBodyTracking) && _options.lowpassFilterJointRotations)
-		{
-			m_previousJointRotations = new JOINTROTATION_AVERAGES[m_nrOfSkeletons];
-			for (ssi_size_t k = 0; k < m_nrOfSkeletons; k++)
-			{
-				for (ssi_size_t i = 0; i < SKELETON_JOINT::NUM; i++)
-				{
-					for (ssi_size_t j = 0; j < 4; ++j)
-					{
-						m_skeletons[k][i][j] = 0.0f;
-					}
-				}
-			}
-		}
-
 		if (m_pointCloud_provider) {
 			m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
 			m_pointCloudKinectBufferImage = k4a::image::create(K4A_IMAGE_FORMAT_CUSTOM,
@@ -327,6 +311,7 @@ namespace ssi {
 			k4abt_tracker_configuration_t tracker_config = K4ABT_TRACKER_CONFIG_DEFAULT;
 			tracker_config.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA; //important, otherwise will default to WindowsML which doesn't seem to work
 			m_bodyTracker = k4abt::tracker::create(m_sensorCalibration, tracker_config);
+			m_bodyTracker.set_temporal_smoothing(_options.bodyTrackingSmoothingFactor);
 		}
 	}
 
@@ -537,75 +522,6 @@ namespace ssi {
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = orientation.wxyz.y;
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = orientation.wxyz.z;
 
-					if (_options.lowpassFilterJointRotations) {
-						if (m_firstFrame) {
-							m_previousJointRotations[bodyIdx][jointIdx][0] = orientation.wxyz.w;
-							m_previousJointRotations[bodyIdx][jointIdx][1] = orientation.wxyz.x;
-							m_previousJointRotations[bodyIdx][jointIdx][2] = orientation.wxyz.y;
-							m_previousJointRotations[bodyIdx][jointIdx][3] = orientation.wxyz.z;
-						}
-						else {
-							auto previous_w = m_previousJointRotations[bodyIdx][jointIdx][0];
-							auto previous_x = m_previousJointRotations[bodyIdx][jointIdx][1];
-							auto previous_y = m_previousJointRotations[bodyIdx][jointIdx][2];
-							auto previous_z = m_previousJointRotations[bodyIdx][jointIdx][3];
-
-							auto current_w = orientation.wxyz.w;
-							auto current_x = orientation.wxyz.x;
-							auto current_y = orientation.wxyz.y;
-							auto current_z = orientation.wxyz.z;
-
-							/*
-							//SLERP (taken from: https://www.lix.polytechnique.fr/~nielsen/WEBvisualcomputing/programs/slerp.cpp)
-							float dotproduct = previous_x * current_x + previous_y * current_y + previous_z * current_z + previous_w * current_w;
-							float theta, st, sut, sout, coeff1, coeff2;
-
-							double lambda = 0.7;
-
-							theta = (float)acos(dotproduct);
-							if (theta < 0.0) theta = -theta;
-
-							st = (float)sin(theta);
-							sut = (float)sin(lambda * theta);
-							sout = (float)sin((1 - lambda) * theta);
-							coeff1 = sout / st;
-							coeff2 = sut / st;
-
-							auto smoothed_w = coeff1 * previous_w + coeff2 * current_w;
-							auto smoothed_x = coeff1 * previous_x + coeff2 * current_x;
-							auto smoothed_y = coeff1 * previous_y + coeff2 * current_y;
-							auto smoothed_z = coeff1 * previous_z + coeff2 * current_z;
-
-							//normalize the smoothed quaternion before writing it out
-							double norm = sqrt(smoothed_w * smoothed_w + smoothed_x * smoothed_x + smoothed_y * smoothed_y + smoothed_z * smoothed_z);
-							smoothed_w /= norm;
-							smoothed_x /= norm;
-							smoothed_y /= norm;
-							smoothed_z /= norm;
-							*/
-
-							
-							// exponentielle Glättung (https://de.wikipedia.org/wiki/Exponentielle_Gl%C3%A4ttung)
-							static const float alpha = 0.8f;
-							static const float _1_alpha = 1.0f - alpha;
-							auto smoothed_w = alpha * orientation.wxyz.w + _1_alpha * previous_w;
-							auto smoothed_x = alpha * orientation.wxyz.x + _1_alpha * previous_x;
-							auto smoothed_y = alpha * orientation.wxyz.y + _1_alpha * previous_y;
-							auto smoothed_z = alpha * orientation.wxyz.z + _1_alpha * previous_z;
-							
-
-							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_W] = smoothed_w;
-							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_X] = smoothed_x;
-							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Y] = smoothed_y;
-							m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::ROT_Z] = smoothed_z;
-
-							m_previousJointRotations[bodyIdx][jointIdx][0] = smoothed_w;
-							m_previousJointRotations[bodyIdx][jointIdx][1] = smoothed_x;
-							m_previousJointRotations[bodyIdx][jointIdx][2] = smoothed_y;
-							m_previousJointRotations[bodyIdx][jointIdx][3] = smoothed_z;
-						}
-					}
-
 					m_skeletons[bodyIdx][jointIdx][SKELETON_JOINT_VALUE::CONF] = confidence;
 				}
 
@@ -776,11 +692,6 @@ namespace ssi {
 		{
 			delete[] m_skeletons;
 			m_skeleton_provider = 0;
-		}
-
-		if (m_previousJointRotations) {
-			delete[] m_previousJointRotations;
-			m_previousJointRotations = 0;
 		}
 
 		if (m_pointCloud_provider) {

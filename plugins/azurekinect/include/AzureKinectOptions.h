@@ -18,14 +18,14 @@ namespace ssi {
 				depthMode(DEPTH_MODE::WFOV_2x2_BINNED),
 				nrOfBodiesToTrack(0),
 				showBodyTracking(true),
-				lowpassFilterJointRotations(false)
+				bodyTrackingSmoothingFactor(0.0f)
 			{
 				addOption("sr", &sr, 1, SSI_TIME, "sample rate in hz (Kinect only supports 5.0, 15.0, and 30.0). Default: 30.0");
 				addOption("rgbResolution", &rgbResolution, 1, SSI_INT, "Resolution of the rgb video, default: 1080p. Set to OFF to deactivate. (0=2160p,1=1440p,2=1080p,3=720p,4=3072p,5=1536p,6=OFF). Option 3072p only up to sr = 15.0");
 				addOption("depthMode", &depthMode, 1, SSI_INT, "Depth mode, default: WFOV_BINNED. Set to OFF to deactivate (will be activated anyway with default if e.g. bodytracking or pointcloud are used). (0=NFOV_UNBINNED,1=NFOV_BINNED,2=WFOV_UNBINNED,3=WFOV_BINNED,4=PASSIVE_IR,5=OFF). Option WFOV_UNBINNED only up to sr = 15.0");
 				addOption("nrOfBodiesToTrack", &nrOfBodiesToTrack, 1, SSI_SIZE, "The number of bodies to track. Default is 0, set to at least 1 to track someone! (Azure Kinect doesn't seem to have a limit for the nr of bodies it can track)");
 				addOption("showBodyTracking", &showBodyTracking, 1, SSI_BOOL, "show body tracking, default: true (if at least one body is tracked). Only paints basic joints and bones, use the SkeletonPainter plugin for more options.");
-				addOption("lowpassFilterJointRotations", &lowpassFilterJointRotations, 1, SSI_BOOL, "Whether to remove high frequency jittering from skeleton joint rotations. Default: true");
+				addOption("bodyTrackingSmoothingFactor", &bodyTrackingSmoothingFactor, 1, SSI_FLOAT, "Control bodytracking smoothing between 0.0 (none) - 1.0 (full). Default: 0.0. Less smoothing will increase the responsiveness of the detected skeletons but will cause more positional and orientational jitters.");
 
 				//TODO: add sensor orientation (for optimal tracker configuration)
 
@@ -126,7 +126,7 @@ namespace ssi {
 
 			ssi_size_t nrOfBodiesToTrack;
 			bool showBodyTracking;
-			bool lowpassFilterJointRotations;
+			float bodyTrackingSmoothingFactor;
 
 			private:
 				void enforceProperRGBVideoConfig() noexcept {

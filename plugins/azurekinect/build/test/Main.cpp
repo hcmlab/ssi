@@ -251,7 +251,7 @@ bool ex_skeletonwebsocketserver(void* args)
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
-	kinect->getOptions()->lowpassFilterJointRotations = false;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
@@ -301,22 +301,11 @@ bool ex_skeletontcpsender(void* args)
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
-	kinect->getOptions()->lowpassFilterJointRotations = false;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
 	frame->AddSensor(kinect);
-
-	/*
-	MvgAvgVar* slidingAverage = ssi_create(MvgAvgVar, "sliding", true);
-	slidingAverage->getOptions()->win = 1.0;
-	slidingAverage->getOptions()->format = MvgAvgVar::AVG;
-	slidingAverage->getOptions()->method = MvgAvgVar::MOVING;
-	ITransformable* averaged_skeleton_t = frame->AddTransformer(skeleton_p, slidingAverage, "1");
-	*/
-
-	MvgMedian* movingMedian = ssi_create(MvgMedian, "movingmedian", true);
-	ITransformable* medianed_skeleton_t = frame->AddTransformer(skeleton_p, movingMedian, "1");
 
 	VideoPainter* vplot = 0;
 
@@ -329,7 +318,7 @@ bool ex_skeletontcpsender(void* args)
 	SocketWriter* socket_writer_bin = ssi_create(SocketWriter, 0, true);
 	socket_writer_bin->getOptions()->setUrl(Socket::TYPE::TCP, "localhost", 7777);
 	socket_writer_bin->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
-	frame->AddConsumer(medianed_skeleton_t, socket_writer_bin, "1");
+	frame->AddConsumer(skeleton_p, socket_writer_bin, "1");
 
 
 	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
@@ -445,6 +434,7 @@ bool ex_pointcloudandskeletontcpsender(void* args) {
 	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
 	kinect->getOptions()->nrOfBodiesToTrack = 1;
 	kinect->getOptions()->showBodyTracking = true;
+	kinect->getOptions()->bodyTrackingSmoothingFactor = 0.5f;
 
 	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
 	ITransformable* depth_p = frame->AddProvider(kinect, SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME, 0, "5.0s");

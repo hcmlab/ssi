@@ -329,7 +329,6 @@ protected:
 
 	ssi_size_t m_nrOfSkeletons;
 	SKELETON* m_skeletons;
-	JOINTROTATION_AVERAGES* m_previousJointRotations;
 
 	RGBImageChannel m_rgb_channel;
 	IProvider* m_rgb_provider;
