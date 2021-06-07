@@ -146,16 +146,11 @@ namespace ssi {
 
             // The 'hue' coordinate in HSV is a polar coordinate, so it 'wraps'.
             // Purple starts after blue and is close enough to red to be a bit unclear,
-            // so we want to go from blue to red.  Purple starts around .6666667,
-            // so we want to normalize to [0, .6666667].
+            // so we want to go from red to blue.  Purple starts around .5,
+            // so we want to normalize to [0, .5].
             //
-            constexpr float range = 2.f / 3.f;
+            constexpr float range = 0.5f;
             hue *= range;
-
-            // We want blue to be close and red to be far, so we need to reflect the
-            // hue across the middle of the range.
-            //
-            hue = range - hue;
 
             //return hsv signal
             result.Blue = static_cast<uint8_t>(255 * hue);

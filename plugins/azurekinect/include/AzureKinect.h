@@ -97,7 +97,7 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_DEPTHVISUALISATIONIMAGE_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "Depth visualisation with 3 byte rgb pixels ranging from blue (near) to red (far)."; };
+		const ssi_char_t* getInfo() { return "Depth visualisation with 3 byte rgb pixels ranging from red (near) to blue (far)."; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
