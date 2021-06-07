@@ -52,6 +52,8 @@ using namespace ssi;
 	#endif
 #endif
 
+#define SSI_AZUREKINECT_TESTS_CONSOLEWIDTH 650
+
 bool ex_allvideostreams(void* args);
 bool ex_pointcloudwebsocketserver(void* args);
 bool ex_bodytrackingvideo(void* args);
@@ -124,26 +126,35 @@ bool ex_allvideostreams(void* args)
 
 	VideoPainter* vplot = 0;
 
-	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot = ssi_create_id(VideoPainter, 0, "plotrgb");
 	vplot->getOptions()->setTitle("rgb");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(rgb_p, vplot, "1");
 
-	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot = ssi_create_id(VideoPainter, 0, "plotir");
 	vplot->getOptions()->setTitle("infrared");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(ir_p, vplot, "1");
 
-	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot = ssi_create_id(VideoPainter, 0, "plotdepth");
 	vplot->getOptions()->setTitle("depth");
 	vplot->getOptions()->flip = false;
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(depth_p, vplot, "1");
 
-	decorator->add("console", 0, 0, 500, 800);
-	decorator->add("plot*", 500, 0, 900, 1000);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+
+	//Proper width according to aspect ratio
+	const int videoPaneHeight = 1000 / 3;
+	int rgbWidth = (kinect->getOptions()->rgbVideoWidth / kinect->getOptions()->rgbVideoHeight) * videoPaneHeight;
+	int depthWidth = (kinect->getOptions()->depthVideoWidth / kinect->getOptions()->depthVideoHeight) * videoPaneHeight;
+	int width = std::max(rgbWidth, depthWidth);
+
+	decorator->add("plotrgb*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, rgbWidth, videoPaneHeight);
+	decorator->add("plotir*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, videoPaneHeight, depthWidth, videoPaneHeight);
+	decorator->add("plotdepth*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, videoPaneHeight * 2, depthWidth, videoPaneHeight);
 
 	board->Start();
 	frame->Start();
@@ -180,8 +191,8 @@ bool ex_bodytrackingvideo(void* args)
 	vplot->getOptions()->mirror = false;
 	frame->AddConsumer(rgb_p, vplot, "1");
 
-	decorator->add("console", 0, 0, 500, 800);
-	decorator->add("plot*", 500, 0, 900, 1000);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, 1920 / 2, 1080 / 2);
 
 	board->Start();
 	frame->Start();
@@ -214,8 +225,8 @@ bool ex_skeleton(void* args)
 	paint->getOptions()->setTitle("Azure Kinect Skeleton");
 	frame->AddConsumer(skeleton_p, paint, "0.1s");
 
-	decorator->add("console", 0, 0, 500, 800);
-	decorator->add("plot*", 500, 0, 900, 1000);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, 900, 1000);
 
 	board->Start();
 	frame->Start();
@@ -246,19 +257,6 @@ bool ex_skeletonwebsocketserver(void* args)
 	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "10.0s");
 	frame->AddSensor(kinect);
 
-	/*
-	MvgAvgVar* slidingAverage = ssi_create(MvgAvgVar, "sliding", true);
-	slidingAverage->getOptions()->win = 1.0;
-	slidingAverage->getOptions()->format = MvgAvgVar::AVG;
-	slidingAverage->getOptions()->method = MvgAvgVar::MOVING;
-	ITransformable* averaged_skeleton_t = frame->AddTransformer(skeleton_p, slidingAverage, "1");
-	*/
-
-	/*
-	MvgMedian* movingMedian = ssi_create(MvgMedian, "movingmedian", true);
-	ITransformable* medianed_skeleton_t = frame->AddTransformer(skeleton_p, movingMedian, "1");
-	*/
-
 	VideoPainter* vplot = 0;
 
 	vplot = ssi_create_id(VideoPainter, 0, "plot");
@@ -277,8 +275,8 @@ bool ex_skeletonwebsocketserver(void* args)
 	board->RegisterSender(*websocket);
 	board->RegisterListener(*websocket);
 
-	decorator->add("console", 0, 0, 650, 800);
-	decorator->add("plot*", 500, 0, 900, 1000);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, 900, 1000);
 
 	board->Start();
 	frame->Start();
@@ -334,8 +332,8 @@ bool ex_skeletontcpsender(void* args)
 	frame->AddConsumer(medianed_skeleton_t, socket_writer_bin, "1");
 
 
-	decorator->add("console", 0, 0, 650, 800);
-	decorator->add("plot*", 500, 0, 900, 1000);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, kinect->getOptions()->rgbVideoWidth / 3, kinect->getOptions()->rgbVideoHeight / 3);
 
 	frame->Start();
 	frame->Wait();
@@ -383,9 +381,9 @@ bool ex_pointcloudwebsocketserver(void* args)
 	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	board->RegisterListener(*monitor);
 
-	decorator->add("console", 0, 0, 700, 800);
-	decorator->add("plot*", 700, 0, 512, 512);
-	decorator->add("monitor*", 650, 400, 400, 400);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, kinect->getOptions()->depthVideoWidth, kinect->getOptions()->depthVideoHeight);
+	decorator->add("monitor*", 0, 800, 400, 400);
 
 	board->Start();
 	frame->Start();
@@ -427,8 +425,8 @@ bool ex_pointcloudtcpsender(void* args) {
 	socket_writer_bin->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
 	frame->AddConsumer(pc_p, socket_writer_bin, "1");
 
-	decorator->add("console", 0, 0, 500, 800);
-	decorator->add("plot*", 5, 0, 512, 512);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, kinect->getOptions()->depthVideoWidth, kinect->getOptions()->depthVideoHeight);
 
 	frame->Start();
 	frame->Wait();
@@ -478,8 +476,15 @@ bool ex_pointcloudandskeletontcpsender(void* args) {
 	socket_writer_pointcloud->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
 	frame->AddConsumer(pc_p, socket_writer_pointcloud, "1");
 
-	decorator->add("console", 0, 0, 600, 800);
-	decorator->add("plot*", 600, 0, 512, 1024);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	
+	//Proper width according to aspect ratio
+	const int videoPaneHeight = 1000;
+	int rgbWidth = (kinect->getOptions()->rgbVideoWidth / kinect->getOptions()->rgbVideoHeight) * (videoPaneHeight / 3);
+	int depthWidth = (kinect->getOptions()->depthVideoWidth / kinect->getOptions()->depthVideoHeight) * (videoPaneHeight / 3);
+	int width = std::max(rgbWidth, depthWidth);
+
+	decorator->add("plot*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, width, videoPaneHeight);
 
 	frame->Start();
 	frame->Wait();
@@ -520,8 +525,8 @@ bool ex_testthewebsocket(void* args)
 	EventMonitor* monitor = ssi_create_id(EventMonitor, 0, "monitor");
 	board->RegisterListener(*monitor);
 
-	decorator->add("console", 0, 0, 700, 800);
-	decorator->add("monitor*", 650, 400, 400, 400);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
+	decorator->add("monitor*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 400, 400, 400);
 
 	board->Start();
 	frame->Start();
@@ -556,7 +561,7 @@ bool ex_testthetcp(void* args) {
 	socket_writer->getOptions()->format = SocketWriter::Options::FORMAT::BINARY;
 	frame->AddConsumer(testdata_p, socket_writer, "1");
 	
-	decorator->add("console", 0, 0, 700, 800);
+	decorator->add("console", 0, 0, SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 800);
 
 	frame->Start();
 	frame->Wait();
