@@ -196,6 +196,8 @@ namespace ssi {
 
 	bool AzureKinect::connect()
 	{
+		_options.enforceProperConfiguration();
+
 		auto count = k4a::device::get_installed_count();
 
 		if (count > 0) {
@@ -459,7 +461,7 @@ namespace ssi {
 				if (m_depthVisualisation_provider) {
 					const int width = getDepthVisualisationImageParams().widthInPixels;
 					const int height = getDepthVisualisationImageParams().heightInPixels;
-					const auto valueRange = GetDepthModeRange(_options._depthMode);
+					const auto valueRange = GetDepthModeRange(_options.depthMode);
 
 					for (int h = 0; h < height; ++h)
 					{
@@ -487,7 +489,7 @@ namespace ssi {
 				if (m_irVisualisation_provider) {
 					const int width = getIRRawImageParams().widthInPixels;
 					const int height = getIRRawImageParams().heightInPixels;
-					const auto valueRange = GetIrLevelsRange(_options._depthMode);
+					const auto valueRange = GetIrLevelsRange(_options.depthMode);
 
 					for (int h = 0; h < height; ++h)
 					{
