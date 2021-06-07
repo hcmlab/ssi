@@ -2,11 +2,17 @@
 <pipeline ssi-v="1">
 	
 	<register>
+		<load name="graphic"/>
 		<load name="azurekinect"/>
 	</register>
 
-	<!-- TODO: actually setup example pipeline -->
+	<!-- Minimal example pipeline with azure kinect bodytracking overlayed onto rgb video -->
 
-	<sensor create="AzureKinect" sr="15.0">
+	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.0f">
+		<output channel="rgb" pin="kinectvideo" size="5000ms"/>
 	</sensor>
+
+	<consumer create="VideoPainter:plot" title="Kinect RGB" pos="0,0,640,540" flip="false">
+		<input pin="kinectvideo" frame="1"/>      
+	</consumer>
 </pipeline>
