@@ -150,7 +150,7 @@ bool ex_allvideostreams(void* args)
 	const int videoPaneHeight = 1000 / 3;
 	int rgbWidth = (kinect->getOptions()->rgbVideoWidth / kinect->getOptions()->rgbVideoHeight) * videoPaneHeight;
 	int depthWidth = (kinect->getOptions()->depthVideoWidth / kinect->getOptions()->depthVideoHeight) * videoPaneHeight;
-	int width = std::max(rgbWidth, depthWidth);
+	int width = max(rgbWidth, depthWidth);
 
 	decorator->add("plotrgb*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, 0, rgbWidth, videoPaneHeight);
 	decorator->add("plotir*", SSI_AZUREKINECT_TESTS_CONSOLEWIDTH, videoPaneHeight, depthWidth, videoPaneHeight);
