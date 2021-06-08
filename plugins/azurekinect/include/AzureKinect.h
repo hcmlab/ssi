@@ -168,7 +168,6 @@ public:
 		friend class AzureKinect;
 	public:
 		IRRawImageChannel() {
-
 			ssi_stream_init(stream, 0, 1, 0, SSI_IMAGE, 0);
 		}
 		~IRRawImageChannel() {
@@ -242,6 +241,8 @@ public:
 	{
 		ssi_video_params_t vParam;
 
+		_options.enforceProperConfiguration();
+
 		ssi_video_params(vParam, _options.rgbVideoWidth, _options.rgbVideoHeight, _options.sr, SSI_VIDEO_DEPTH_8U, 4);
 		vParam.flipImage = false;
 		return vParam;
@@ -250,6 +251,8 @@ public:
 	ssi_video_params_t getDepthVisualisationImageParams()
 	{
 		ssi_video_params_t vParam;
+
+		_options.enforceProperConfiguration();
 
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_8U, 3);
 		vParam.flipImage = false;
@@ -260,6 +263,8 @@ public:
 	{
 		ssi_video_params_t vParam;
 
+		_options.enforceProperConfiguration();
+
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_16U, 1);
 		vParam.flipImage = false;
 		return vParam;
@@ -268,6 +273,8 @@ public:
 	ssi_video_params_t getPointCloudImageParams()
 	{
 		ssi_video_params_t vParam;
+
+		_options.enforceProperConfiguration();
 
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_16S, 3);
 		vParam.flipImage = false;
@@ -278,6 +285,8 @@ public:
 	{
 		ssi_video_params_t vParam;
 
+		_options.enforceProperConfiguration();
+
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_8U, 1);
 		vParam.flipImage = false;
 		return vParam;
@@ -286,6 +295,8 @@ public:
 	ssi_video_params_t getIRRawImageParams()
 	{
 		ssi_video_params_t vParam;
+
+		_options.enforceProperConfiguration();
 
 		ssi_video_params(vParam, _options.depthVideoWidth, _options.depthVideoHeight, _options.sr, SSI_VIDEO_DEPTH_16U, 1);
 		vParam.flipImage = false;
