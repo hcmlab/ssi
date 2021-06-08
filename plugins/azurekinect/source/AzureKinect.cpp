@@ -59,7 +59,7 @@ namespace ssi {
 		m_depthVisualisation_provider(0),
 		m_depthVisualisationBuffer(0),
 		m_pointCloud_provider(0),
-		m_pointCloudBuffer(0),
+		m_pointCloudAndColorBuffer(0),
 		m_depthRaw_provider(0),
 		m_depthRawBuffer(0),
 		m_irVisualisation_provider(0),
@@ -185,7 +185,7 @@ namespace ssi {
 		m_pointCloud_provider = pointcloud_provider;
 
 		if (m_pointCloud_provider) {
-			m_pointCloud_channel.stream.dim = _options.depthVideoWidth * _options.depthVideoHeight * SSI_AZUREKINECT_BYTESPERDEPTHCLOUDVOXEL;
+			m_pointCloud_channel.stream.dim = getPointCloudFrameSizeInBytes();
 			m_pointCloud_channel.stream.sr = _options.sr;
 			m_pointCloud_provider->init(&m_pointCloud_channel);
 		}
@@ -279,7 +279,7 @@ namespace ssi {
 		}
 
 		if (m_pointCloud_provider) {
-			m_pointCloudBuffer = new PointCloudPixel[_options.depthVideoWidth * _options.depthVideoHeight];
+			m_pointCloudAndColorBuffer = new uint8_t[getPointCloudFrameSizeInBytes()];
 			m_pointCloudKinectBufferImage = k4a::image::create(K4A_IMAGE_FORMAT_CUSTOM,
 																_options.depthVideoWidth,
 																_options.depthVideoHeight,
@@ -433,7 +433,13 @@ namespace ssi {
 					try
 					{
 						m_transformation.depth_image_to_point_cloud(depthImage, K4A_CALIBRATION_TYPE_DEPTH, &m_pointCloudKinectBufferImage);
-						std::memcpy(m_pointCloudBuffer, m_pointCloudKinectBufferImage.get_buffer(), m_pointCloudKinectBufferImage.get_size());
+
+						std::memcpy(m_pointCloudAndColorBuffer, m_pointCloudKinectBufferImage.get_buffer(), m_pointCloudKinectBufferImage.get_size());
+
+						auto colorImage = m_capturedFrame.get_color_image();
+						auto colorToDepthImage = m_transformation.color_image_to_depth_camera(depthImage, colorImage);
+
+						std::memcpy(m_pointCloudAndColorBuffer + m_pointCloudKinectBufferImage.get_size(), colorToDepthImage.get_buffer(), colorToDepthImage.get_size());
 					}
 					catch (const std::exception&)
 					{
@@ -648,7 +654,7 @@ namespace ssi {
 		}
 
 		if (m_pointCloud_provider) {
-			m_pointCloud_provider->provide(ssi_pcast(ssi_byte_t, m_pointCloudBuffer), 1);
+			m_pointCloud_provider->provide(ssi_pcast(ssi_byte_t, m_pointCloudAndColorBuffer), 1);
 		}
 	}
 
@@ -707,7 +713,7 @@ namespace ssi {
 		}
 
 		if (m_pointCloud_provider) {
-			delete[] m_pointCloudBuffer;
+			delete[] m_pointCloudAndColorBuffer;
 			m_pointCloud_provider = 0;
 		}
 

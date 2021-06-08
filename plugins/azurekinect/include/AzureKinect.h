@@ -137,7 +137,7 @@ public:
 			ssi_stream_destroy(stream);
 		}
 		const ssi_char_t* getName() { return SSI_AZUREKINECT_POINTCLOUD_PROVIDER_NAME; };
-		const ssi_char_t* getInfo() { return "3-D coordinates (relative to Kinect camera) for every pixel in the depth image. 2 byte integer per dimension, unit: mm, positive Y points towards ground!"; };
+		const ssi_char_t* getInfo() { return "3-D coordinates for each pixel in the depth image followed by rgba-values for each pixel in the depth image. 2 byte integer per x,y,z-coordinate and 1 byte per r,g,b,a pixel value, totaling 10 bytes for each pixel in the depth image; position-unit: mm, relative to the Kinect, positive Y points down as seen from the Kinect!"; };
 		ssi_stream_t getStream() { return stream; };
 		ssi_stream_t* getStreamPtr() { return &stream; };
 	protected:
@@ -353,7 +353,7 @@ protected:
 	cv::Mat m_depthHSVConversionMat; //helper, constructed over the m_depthBuffer to use opencv color conversion functions on it
 	DepthPixel* m_irRawBuffer;
 	IRPixel* m_irVisualisationBuffer;
-	PointCloudPixel* m_pointCloudBuffer;
+	uint8_t* m_pointCloudAndColorBuffer;
 	k4a::image m_pointCloudKinectBufferImage;
 
 	ssi_size_t m_nrOfSkeletons;
@@ -384,6 +384,12 @@ protected:
 
 private:
 	bool setImageProvider(IProvider* providerIn, IProvider* &internalProvider, IChannel &internalChannel, ssi_video_params_t params);
+
+	size_t getPointCloudFrameSizeInBytes() {
+		_options.enforceProperConfiguration();
+		//6 bytes per position (16bit x, y, and z); 4 bytes for color (8bit b, g, r, and a)
+		return _options.depthVideoWidth * _options.depthVideoHeight * (SSI_AZUREKINECT_BYTESPERDEPTHCLOUDVOXEL + sizeof(BgraPixel));
+	}
 };
 
 }
