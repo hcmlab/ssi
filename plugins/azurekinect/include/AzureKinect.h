@@ -209,9 +209,27 @@ public:
 	const ssi_char_t* getName() { return GetCreateName(); };
 	const ssi_char_t* getInfo() { return "Azure Kinect DK Sensor. Before first use, make sure AzureKinect SensorSDK and BodyTrackingSDK are installed and added to the PATH."; };
 
-	ssi_size_t getChannelSize() { return 1; };
+	ssi_size_t getChannelSize() { return 7; };
 	IChannel* getChannel(ssi_size_t index) {
-		return &m_rgb_channel;
+		switch (index)
+		{
+		case 0:
+			return &m_rgb_channel;
+		case 1:
+			return &m_depthRaw_channel;
+		case 2:
+			return &m_depthVisualisation_channel;
+		case 3:
+			return &m_irRaw_channel;
+		case 4:
+			return &m_irVisualisation_channel;
+		case 5:
+			return &m_skeleton_channel;
+		case 6:
+			return &m_pointCloud_channel;
+		default:
+			return &m_rgb_channel;
+		}
 	};
 	bool setProvider(const ssi_char_t* name, IProvider* provider);
 	bool connect();
