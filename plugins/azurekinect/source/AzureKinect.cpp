@@ -417,8 +417,8 @@ namespace ssi {
 			k4a::image rgbImage = m_capturedFrame.get_color_image();
 			if (rgbImage) {
 				std::memcpy(m_bgraBuffer, rgbImage.get_buffer(), rgbImage.get_size());
-				rgbImage.reset(); //release the image after getting its data
 			}
+			rgbImage.reset();
 		}
 	}
 
@@ -460,6 +460,9 @@ namespace ssi {
 					cv::cvtColor(m_depthHSVConversionMat, m_depthHSVConversionMat, cv::COLOR_HSV2BGR);
 				}
 			}
+			else {
+				depthImage.reset();
+			}
 		}
 	}
 
@@ -485,6 +488,9 @@ namespace ssi {
 						}
 					}
 				}
+			}
+			else {
+				irImage.reset();
 			}
 		}
 	}
@@ -553,6 +559,7 @@ namespace ssi {
 		}
 		else
 		{
+			body_frame.reset();
 			ssi_err("Error! Pop body frame result time out!");
 		}
 	}
@@ -649,27 +656,32 @@ namespace ssi {
 
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "try to disconnect sensor...");
 
-		stopCameras();
+		m_transformation.destroy();
+		m_pointCloudKinectBufferImage.reset();
 
 		if (m_bodyTracker) {
 			m_bodyTracker.shutdown();
+			m_bodyTracker.destroy();
 		}
 
 		if (m_capturedFrame) {
 			m_capturedFrame.reset();
 		}
 
+		stopCameras();
+
 		if (m_azureKinectDevice) {
 			m_azureKinectDevice.close();
 		}
 
-		if (m_bgraBuffer) {
+		if (m_rgb_provider || _options.showBodyTracking) {
 			delete[] m_bgraBuffer;
 			m_rgb_provider = 0;
 		}
 
-		if (m_depthRaw_provider) {
+		if (m_depthRaw_provider || m_depthVisualisation_provider || m_pointCloud_provider) {
 			delete[] m_depthRawBuffer;
+			m_depthHSVConversionMat.release();
 			m_depthRaw_provider = 0;
 		}
 
@@ -678,7 +690,7 @@ namespace ssi {
 			m_depthVisualisation_provider = 0;
 		}
 
-		if (m_irRaw_provider) {
+		if (m_irRaw_provider || m_irVisualisation_provider) {
 			delete[] m_irRawBuffer;
 			m_irRaw_provider = 0;
 		}
@@ -688,7 +700,7 @@ namespace ssi {
 			m_irVisualisation_provider = 0;
 		}
 
-		if (m_skeleton_provider)
+		if (m_skeleton_provider || _options.showBodyTracking)
 		{
 			delete[] m_skeletons;
 			m_skeleton_provider = 0;
