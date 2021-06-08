@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="graphic"/>
+		<load name="ioput"/>
+		<load name="azurekinect"/>
+	</register>
+
+	<!-- Kinect point cloud and body tracking provided via two separate TCP senders, pointcloud: to localhost:8888; bodytracking: to localhost:7777 -->
+	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
+		<output channel="rgb" pin="kinectrgb" size="5000ms"/>
+		<output channel="depthvisualisation" pin="kinectdepthpretty" size="5000ms"/>
+		<output channel="skeleton" pin="kinectskeleton" size="5000ms"/> 
+		<output channel="pointcloud" pin="kinectpointcloud" size="2s"/> <!-- smaller buffer size because the point cloud has a lot of data per frame --> 
+	</sensor>
+
+	<consumer create="VideoPainter:plot" title="Kinect Depth" flip="false" pos="0,0,512,512">
+		<input pin="kinectdepthpretty" frame="1"/>      
+	</consumer>
+
+	<consumer create="VideoPainter:plot" title="Kinect RGB" flip="false" pos="512,0,896,504">
+		<input pin="kinectrgb" frame="1"/>      
+	</consumer>
+
+	<consumer create="SocketWriter" url="tcp://localhost:7777" format="0"> <!-- Change "url" depending on where the receiver of the bodytracking data will listen for it -->
+		<input pin="kinectskeleton" frame="1" />
+	</consumer>
+
+	<consumer create="SocketWriter" url="tcp://localhost:8888" format="0"> <!-- Change "url" depending on where the receiver of the point cloud data will listen for it -->
+		<input pin="kinectpointcloud" frame="1" />
+	</consumer>
+</pipeline>

@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="graphic"/>
+		<load name="ioput"/>
+		<load name="azurekinect"/>
+		<load name="audio" />
+		<load name="ffmpeg" />
+		<load name="control" />
+	</register>
+
+	<!-- Pipeline to demonstrate usage of azure kinect in concord with an audio sensor that's recorded to a .mp3 file 
+		
+		Opens a configuration dialog for the audio sensor to select a source when the pipeline is run for the first time.
+			The configuration is stored in a ".option" file next to this pipeline file.
+			Delete the .option file if you want to use a different audio source in the next run of the pipeline.
+
+		Writes the audio stream to a .mp3 file next to this pipeline file.
+
+		Features a "Close" button to stop the pipeline.
+	-->
+	
+	<framework waitid="close"/>
+	<runnable create="WaitButton:close" title="Control" label="Stop Pipeline"/>	
+
+	<!-- Azure Kinect sensor -->
+	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
+		<output channel="rgb" pin="kinectrgb" size="5000ms"/>
+		<output channel="depthvisualisation" pin="kinectdepthpretty" size="5000ms"/>
+		<output channel="skeleton" pin="kinectskeleton" size="5000ms"/> 
+		<output channel="pointcloud" pin="kinectpointcloud" size="2s"/> <!-- smaller buffer size because the point cloud has a lot of data per frame --> 
+	</sensor>
+
+	<!-- audio sensor; will open a dialog upon first time running the pipeline to selet a source -->
+	<sensor create="Audio" option="audio" scale="true">
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>
+
+	<!-- Display video streams -->
+	<consumer create="VideoPainter:video" title="Kinect Depth" flip="false" pos="0,0,512,512">
+		<input pin="kinectdepthpretty" frame="1"/>      
+	</consumer>
+
+	<consumer create="VideoPainter:video" title="Kinect RGB" flip="false" pos="512,0,896,504">
+		<input pin="kinectrgb" frame="1"/>      
+	</consumer>
+
+	<!-- visualize audio stream -->	
+	<consumer create="SignalPainter:plot" title="Audio" type="2" pos="0,512,800,300">
+		<input pin="audio" frame="0.1s"/>
+	</consumer>
+
+	<!-- Send kinect data via TCP writers -->
+	<consumer create="SocketWriter" url="tcp://localhost:7777" format="0"> <!-- Change "url" depending on where the receiver of the bodytracking data will listen for it -->
+		<input pin="kinectskeleton" frame="1" />
+	</consumer>
+
+	<consumer create="SocketWriter" url="tcp://localhost:8888" format="0"> <!-- Change "url" depending on where the receiver of the point cloud data will listen for it -->
+		<input pin="kinectpointcloud" frame="1" />
+	</consumer>
+
+	<!-- Write audio to local file -->
+	<consumer create="FFMPEGWriter:writer" path="bodytracking-pointcloud-andaudio.example.mp3" overwrite="true">		
+		<input frame="0.1s" pin="audio"/>		
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,512,1100,300">plot*</area>		
+		<area pos="1100,612,300,100">close</area>
+	</object>
+</pipeline>

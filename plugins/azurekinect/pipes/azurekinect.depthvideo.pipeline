@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="graphic"/>
+		<load name="ioput"/>
+		<load name="azurekinect"/>
+	</register>
+
+	<!-- Display the depth data from the Kinect in its default (512, 512) resolution -->
+
+	<sensor create="AzureKinect:kinect" sr="30.0">
+		<output channel="depthvisualisation" pin="kinectdepthpretty" size="5000ms"/>
+	</sensor>
+
+	<consumer create="VideoPainter:plot" title="Kinect Depth Pretty" flip="false" pos="0,0,512,512">
+		<input pin="kinectdepthpretty" frame="1"/>      
+	</consumer>
+</pipeline>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+
+	<!-- register dlls -->
+	<register>
+		<load name="graphic"/>
+		<load name="ioput"/>
+		<load name="azurekinect"/>
+	</register>
+
+	<!-- Kinect bodytracking overlayed on top of rgb image -->
+
+	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
+		<output channel="rgb" pin="kinectrgb" size="5000ms"/>
+		<!-- The bodytracking data would be available via the "skeleton" channel -->
+		<output channel="skeleton" pin="kinectskeleton" size="5000ms"/> 
+	</sensor>
+
+	<consumer create="VideoPainter:plot" title="Kinect RGB" flip="false" pos="0,0,1920,1080">
+		<input pin="kinectrgb" frame="1"/>      
+	</consumer>
+</pipeline>
