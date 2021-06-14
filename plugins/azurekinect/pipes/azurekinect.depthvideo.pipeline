@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <pipeline ssi-v="1">
+	<!-- Pipeline for: Display the depth data from the Kinect in its default (512, 512) resolution -->
 
 	<!-- register dlls -->
 	<register>
@@ -7,8 +8,6 @@
 		<load name="ioput"/>
 		<load name="azurekinect"/>
 	</register>
-
-	<!-- Display the depth data from the Kinect in its default (512, 512) resolution -->
 
 	<sensor create="AzureKinect:kinect" sr="30.0">
 		<output channel="depthvisualisation" pin="kinectdepthpretty" size="5000ms"/>

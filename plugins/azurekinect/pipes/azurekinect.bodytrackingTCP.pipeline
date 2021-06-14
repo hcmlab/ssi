@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <pipeline ssi-v="1">
+	<!-- Pipeline for: Kinect bodytracking provided via TCP sender, sending to localhost port 7777 -->
 
 	<!-- register dlls -->
 	<register>
@@ -8,7 +9,6 @@
 		<load name="azurekinect"/>
 	</register>
 
-	<!-- Kinect bodytracking provided via TCP sender, sending to localhost port 7777 -->
 	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
 		<output channel="rgb" pin="kinectrgb" size="5000ms"/>
 		<output channel="skeleton" pin="kinectskeleton" size="5000ms"/> 

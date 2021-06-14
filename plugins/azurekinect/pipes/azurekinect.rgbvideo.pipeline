@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <pipeline ssi-v="1">
+	<!-- Pipeline for: Display RGB video from the Kinect in its default (1920x1080) resolution -->
 
 	<!-- register dlls -->
 	<register>
@@ -7,8 +8,6 @@
 		<load name="ioput"/>
 		<load name="azurekinect"/>
 	</register>
-
-	<!-- Display RGB video from the Kinect in its default (1920x1080) resolution -->
 
 	<sensor create="AzureKinect:kinect" sr="30.0">
 		<output channel="rgb" pin="kinectrgb" size="5000ms"/>

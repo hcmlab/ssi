@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <pipeline ssi-v="1">
+	<!-- Pipeline for: Kinect bodytracking overlayed on top of rgb image -->
 
 	<!-- register dlls -->
 	<register>
@@ -7,8 +8,6 @@
 		<load name="ioput"/>
 		<load name="azurekinect"/>
 	</register>
-
-	<!-- Kinect bodytracking overlayed on top of rgb image -->
 
 	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
 		<output channel="rgb" pin="kinectrgb" size="5000ms"/>
