@@ -27,4 +27,4 @@ If you set up SSI according to its installation documentation, you should have t
 * Open a terminal in this folder
 * Run `xmlpipe <filename>.pipeline`
 * Follow the instructions in the terminal if there are any (normally pipelines start automatically)
-* >__IMPORTANT__: Due to a bug with unloading the `azurekinect.dll`, ssi does not terminate once the pipeline is finished/canceled. Use the Windows Task Manager to manually kill the `xmlpipe` process!
+* >__IMPORTANT__: If the xmlpipe process does not terminate after the pipeline is finished, kill it manually via the Windows Task Manaer. Due to a (probable) unresolved bug within the k4abt library, ssi blocks when it attemps to free the `ssiazurekinect.dll`. A fix and rebuild of ssi was introduced in `commit 8812137147af1fa9cf98bcd8abc9d4e1cc58acda`, so this should not be a problem anymore.
