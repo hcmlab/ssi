@@ -666,6 +666,12 @@ namespace ssi {
 		m_pointCloudKinectBufferImage.reset();
 
 		if (m_bodyTracker) {
+			bool stop = false;
+			while (!stop) {
+				auto pop = m_bodyTracker.pop_result(std::chrono::milliseconds(10));
+				stop = pop == nullptr;
+			}
+
 			m_bodyTracker.shutdown();
 			m_bodyTracker.destroy();
 		}
