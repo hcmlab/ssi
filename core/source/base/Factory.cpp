@@ -727,7 +727,9 @@ void Factory::clear () {
 			}
 			#endif
 
-			if(strcmp((it->first.str()), "ssixsensd.dll") != 0 && strcmp((it->first.str()), "ssixsens.dll") != 0) //bug in xsens api 4.2.1
+			if((strcmp((it->first.str()), "ssixsensd.dll") != 0 && strcmp((it->first.str()), "ssixsens.dll") != 0)
+				&& (strcmp((it->first.str()), "ssiazurekinectd.dll") != 0 && strcmp((it->first.str()), "ssiazurekinect.dll") != 0)) //bug in xsens api 4.2.1 and azurekinect.dll
+				//for azurekinect it's unclear what causes the misbehaving, but the FreeLibrary call blocks and does not return, causing SSI to not shutdown
 			{
 				if (it->second) {
 					#if __gnu_linux__
