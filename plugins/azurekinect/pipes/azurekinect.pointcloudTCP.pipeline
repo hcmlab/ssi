@@ -9,7 +9,7 @@
 		<load name="azurekinect"/>
 	</register>
 
-	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" showBodyTracking="true" bodyTrackingSmoothingFactor="0.5">
+	<sensor create="AzureKinect:kinect" sr="30.0">
 		<output channel="depthvisualisation" pin="kinectdepthpretty" size="5000ms"/>
 		<output channel="pointcloud" pin="kinectpointcloud" size="2s"/> <!-- smaller buffer size because the point cloud has a lot of data per frame --> 
 	</sensor>
