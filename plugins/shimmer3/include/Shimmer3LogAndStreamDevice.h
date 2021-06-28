@@ -54,12 +54,12 @@ namespace ssi {
 
 			/// A container for a single data packet. Depending on the current configuration of the LogAndStreamDevice it can hold different values.
 			/// Use the "get" function to access values of individual sensors.
-			/// Do NOT construct an instance of this class anywhere. Use the "LogAndStreamDevice::readNextPacket()" factory function to obtain instances.
+			/// Use the "LogAndStreamDevice::readNextPacket()" factory function to obtain instances.
 			class DataPacket {
 				friend LogAndStreamDevice; //because we want the device class to be able to access rawData directly to write it but not other classes
 	
 			public:
-				DataPacket(size_t nrOfRawBytes, const LogAndStreamDevice& device) : rawData(nrOfRawBytes), device(device)  {};
+				DataPacket(size_t nrOfRawBytes, const LogAndStreamDevice& device) : rawData(nrOfRawBytes), device(device) {};
 				~DataPacket() {};
 
 				/// <summary>
@@ -67,7 +67,7 @@ namespace ssi {
 				/// THROWS if this packet does not contain a value for that sensor or on error.
 				/// </summary>
 				/// <param name="sensor">The SENSORID of the sensor which's value you want</param>
-				/// <returns>the value of the sensor (converted to long for convenience)</returns>
+				/// <returns>the raw value (pure bytes) of the sensor (converted to long for convenience, to deal with varying endianness properly)</returns>
 				long get(const SENSORID& sensor) const;
 
 				long getTimestamp() const;

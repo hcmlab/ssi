@@ -45,6 +45,8 @@
 
 #define SSI_SHIMMER3_PPGRAW_PROVIDER_NAME "shimmer3ppgraw"
 #define SSI_SHIMMER3_GSRRAW_PROVIDER_NAME "shimmer3gsrraw"
+#define SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME "shimmer3gsrresistance"
+#define SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME "shimmer3gsrconductance"
 
 namespace ssi {
 
@@ -88,6 +90,48 @@ public:
 
 		const ssi_char_t* getName() { return SSI_SHIMMER3_GSRRAW_PROVIDER_NAME; };
 		const ssi_char_t* getInfo() { return "gsr raw data from the shimmer gsr+ board."; };
+		ssi_stream_t getStream() { return stream; };
+
+	protected:
+		ssi_stream_t stream;
+	};
+
+	class GSRCalibratedResistanceChannel : public IChannel {
+
+		friend class Shimmer3GSRPlus;
+
+	public:
+
+		GSRCalibratedResistanceChannel(ssi_size_t dim, ssi_time_t sr) {
+			ssi_stream_init(stream, 0, dim, sizeof(ssi_real_t), SSI_REAL, sr);
+		}
+		~GSRCalibratedResistanceChannel() {
+			ssi_stream_destroy(stream);
+		}
+
+		const ssi_char_t* getName() { return SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "calibrated gsr resistance data in kOhms from the shimmer gsr+ board."; };
+		ssi_stream_t getStream() { return stream; };
+
+	protected:
+		ssi_stream_t stream;
+	};
+
+	class GSRCalibratedConductanceChannel : public IChannel {
+
+		friend class Shimmer3GSRPlus;
+
+	public:
+
+		GSRCalibratedConductanceChannel(ssi_size_t dim, ssi_time_t sr) {
+			ssi_stream_init(stream, 0, dim, sizeof(ssi_real_t), SSI_REAL, sr);
+		}
+		~GSRCalibratedConductanceChannel() {
+			ssi_stream_destroy(stream);
+		}
+
+		const ssi_char_t* getName() { return SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "calibrated gsr conductance data in microSiemens from the shimmer gsr+ board."; };
 		ssi_stream_t getStream() { return stream; };
 
 	protected:
@@ -181,7 +225,12 @@ public:
 		case 1:
 			if (!m_gsrraw_channel) m_gsrraw_channel = new GSRRawChannel(_options.dim, _options.sr);
 			return m_gsrraw_channel;
-			return 0;
+		case 2:
+			if (!m_gsrcalibratedresistance_channel) m_gsrcalibratedresistance_channel = new GSRCalibratedResistanceChannel(_options.dim, _options.sr);
+			return m_gsrcalibratedresistance_channel;
+		case 3:
+			if (!m_gsrcalibratedconductance_channel) m_gsrcalibratedconductance_channel = new GSRCalibratedConductanceChannel(_options.dim, _options.sr);
+			return m_gsrcalibratedconductance_channel;
 		default:
 			ssi_wrn("Channel index %ud not supported", index);
 			return 0;
@@ -199,21 +248,32 @@ public:
 		ssi_log_level = level;
 	}
 
-private:
+public:
 	enum class GSRRange {
 		OHMS_10K_TO_56K = 0,
-		OHMS_56_TO_220K = 1,
+		OHMS_56K_TO_220K = 1,
 		OHMS_220K_TO_680K = 2,
 		OHMS_680K_TO_4700K = 3,
 		AUTO = 4
 	};
-	void TODO_meaningfulgsrvalue();
+
+	struct GSRCalibration {
+		float referenceResistorKOhms;
+		float resistanceMinKOhms;
+		float resistanceMaxKOhms;
+	};
+
+private:
+	float convertGSRRawBytesToKOhms(long rawGSRValue, GSRRange range);
+	float calibrateGsrDataToResistanceFromAmplifierEq(float gsrUncalibratedData, GSRRange range);
+
+	GSRRange extractRangeFromBytesWhenAutoRange(long rawGSRBytes);
+	float extractGSRDataValueFromRawBytes(long rawGSRBytes);
 
 	void processPPGValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet);
 	void processGSRValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet);
 
 protected:
-
 	Shimmer3GSRPlus(const ssi_char_t *file = 0);
 	Shimmer3GSRPlus::Options _options;
 	ssi_char_t *_file;
@@ -228,7 +288,19 @@ protected:
 	void setGSRRawProvider(IProvider* provider);
 	IProvider* m_gsrraw_provider;
 
+	GSRCalibratedResistanceChannel* m_gsrcalibratedresistance_channel;
+	void setGSRResistanceProvider(IProvider* provider);
+	IProvider* m_gsrcalibratedresistance_provider;
+
+	GSRCalibratedConductanceChannel* m_gsrcalibratedconductance_channel;
+	void setGSRConductanceProvider(IProvider* provider);
+	IProvider* m_gsrcalibratedconductance_provider;
+
 	std::unique_ptr<shimmer3::LogAndStreamDevice> _device;
+
+	static std::map<GSRRange, GSRCalibration> m_calibrationValues;
+
+	static float lowerLimitCalibration680K;
 };
 
 }

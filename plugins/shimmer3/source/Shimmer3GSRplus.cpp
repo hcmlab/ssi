@@ -27,6 +27,7 @@
 #include "Shimmer3GSRplus.h"
 #include "Serial.h"
 #include <iostream>
+#include <algorithm>
 
 #ifdef USE_SSI_LEAK_DETECTOR
 	#include "SSI_LeakWatcher.h"
@@ -42,12 +43,25 @@ namespace ssi {
 
 static char ssi_log_name[] = "shimmer3gsr+";
 
+std::map<Shimmer3GSRPlus::GSRRange, Shimmer3GSRPlus::GSRCalibration> Shimmer3GSRPlus::m_calibrationValues {
+	{Shimmer3GSRPlus::GSRRange::OHMS_10K_TO_56K, {40.2f, 8.0f, 63.0f} },
+	{Shimmer3GSRPlus::GSRRange::OHMS_56K_TO_220K, {287.0f, 63.0f, 220.0f} },
+	{Shimmer3GSRPlus::GSRRange::OHMS_220K_TO_680K, {1000.0f, 220.0f, 680.0f} },
+	{Shimmer3GSRPlus::GSRRange::OHMS_680K_TO_4700K, {3300.0f, 680.0f, 4700.0f} }
+};
+
+float Shimmer3GSRPlus::lowerLimitCalibration680K = 683.0f;
+
 Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file) 
 	: m_ppgraw_provider (0),
 	m_gsrraw_provider(0),
 	_file (0),
 	m_ppgraw_channel (0),
 	m_gsrraw_channel (0),
+	m_gsrcalibratedresistance_channel(0),
+	m_gsrcalibratedresistance_provider(0),
+	m_gsrcalibratedconductance_channel(0),
+	m_gsrcalibratedconductance_provider(0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
 	
 	getOptions()->setStartCMD(0);
@@ -79,6 +93,12 @@ bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) 
 	} else if (strcmp(name, SSI_SHIMMER3_GSRRAW_PROVIDER_NAME) == 0) {
 		setGSRRawProvider(provider);
 		return true;
+	} else if (strcmp(name, SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME) == 0) {
+		setGSRResistanceProvider(provider);
+		return true;
+	} else if (strcmp(name, SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME) == 0) {
+		setGSRConductanceProvider(provider);
+		return true;
 	}
 
 	ssi_wrn ("unkown provider name '%s'", name);
@@ -109,6 +129,30 @@ void Shimmer3GSRPlus::setGSRRawProvider(IProvider* provider) {
 	if (m_gsrraw_provider) {
 		m_gsrraw_provider->init(getChannel(1));
 		ssi_msg(SSI_LOG_LEVEL_DETAIL, "gsr raw provider set");
+	}
+}
+
+void Shimmer3GSRPlus::setGSRResistanceProvider(IProvider* provider) {
+	if (m_gsrcalibratedresistance_provider) {
+		ssi_wrn("gsr calibrated resistance was already set");
+	}
+
+	m_gsrcalibratedresistance_provider = provider;
+	if (m_gsrcalibratedresistance_provider) {
+		m_gsrcalibratedresistance_provider->init(getChannel(2));
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "gsr resistance provider set");
+	}
+}
+
+void Shimmer3GSRPlus::setGSRConductanceProvider(IProvider* provider) {
+	if (m_gsrcalibratedconductance_provider) {
+		ssi_wrn("gsr calibrated conductance was already set");
+	}
+
+	m_gsrcalibratedconductance_provider = provider;
+	if (m_gsrcalibratedconductance_provider) {
+		m_gsrcalibratedconductance_provider->init(getChannel(3));
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "gsr conductance provider set");
 	}
 }
 
@@ -148,29 +192,47 @@ void Shimmer3GSRPlus::processPPGValue(const std::unique_ptr<shimmer3::LogAndStre
 	{
 		float rawPPGValue = packet->get(shimmer3::SENSORID::INTERNAL_ADC_A13) * 1.0f;
 
-		m_ppgraw_provider->provide(ssi_pcast(char, &rawPPGValue), 1);
+		if (m_ppgraw_provider) {
+			m_ppgraw_provider->provide(ssi_pcast(char, &rawPPGValue), 1);
+		}
 	}
 	catch (const std::exception&)
 	{
-		ssi_wrn("The shimmer seems to be not configured to provide ppg values! Please make sure you are using the correct shimmer board and configuration!");
+		ssi_wrn("The shimmer does not seem to be configured to provide ppg values! Please make sure you are using the correct shimmer board and configuration!");
 	}
 }
 
 void Shimmer3GSRPlus::processGSRValue(const std::unique_ptr<shimmer3::LogAndStreamDevice::DataPacket>& packet) {
 	try
 	{
-		float rawGSRValue = packet->get(shimmer3::SENSORID::GSR) * 1.0f;
+		long gsrDataBytes = packet->get(shimmer3::SENSORID::GSR);
 
-		m_gsrraw_provider->provide(ssi_pcast(char, &rawGSRValue), 1);
+		float uncalibratedGSRValue = extractGSRDataValueFromRawBytes(gsrDataBytes);
+
+		float calibratedGSRResistanceKOhms = convertGSRRawBytesToKOhms(gsrDataBytes, GSRRange(_device->rawSensorConfigurationValues.GSRRange));
+		float calibratedGSRConductanceValue = (1.0f / calibratedGSRResistanceKOhms) * 1000.0f;
+
+		if (m_gsrraw_provider) {
+			m_gsrraw_provider->provide(ssi_pcast(char, &uncalibratedGSRValue), 1);
+		}
+
+		if (m_gsrcalibratedresistance_provider) {
+			m_gsrcalibratedresistance_provider->provide(ssi_pcast(char, &calibratedGSRResistanceKOhms), 1);
+		}
+
+		if (m_gsrcalibratedconductance_provider) {
+			m_gsrcalibratedconductance_provider->provide(ssi_pcast(char, &calibratedGSRConductanceValue), 1);
+		}
 	}
-	catch (const std::exception&)
+	catch (const std::exception& e)
 	{
-		ssi_wrn("The shimmer seems to be not configured to provide gsr values! Please make sure you are using the correct shimmer board and configuration!");
+		ssi_wrn("Exception: %s", e.what());
+		ssi_wrn("The shimmer does not seem to be configured to provide gsr values! Please make sure you are using the correct shimmer board and configuration!");
 	}
 }
 
-bool Shimmer3GSRPlus::disconnect() {
-
+bool Shimmer3GSRPlus::disconnect()
+{
 	if (!_device) {
 		ssi_wrn("sensor not connected");
 		return false;
@@ -194,69 +256,51 @@ bool Shimmer3GSRPlus::disconnect() {
 	return true;
 }
 
-void Shimmer3GSRPlus::TODO_meaningfulgsrvalue() {
-	/* C# implementation
-		int iGSR = getSignalIndex(Shimmer3Configuration.SignalNames.GSR);
-		int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
-		double datatemp = newPacket[iGSR];
-		double gsrResistanceKOhms = -1;
-		//double p1 = 0, p2 = 0;
-		if (GSRRange == 4)
-		{
-			newGSRRange = (49152 & (int)datatemp) >> 14;
-		}
-		datatemp = (double)((int)datatemp & 4095);
-		if (GSRRange == 0 || newGSRRange == 0)
-		{
-			//Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-			//p1 = 0.0363;
-			//p2 = -24.8617;
+//Converts the uncalibrated gsr value to a value in KOhms; clamped to the min/max of the passed range
+//NOTE: replica of the function with the same name from the C# Shimmer API (ShimmerBluetooth.cs, starting at line 6220 @Commit 58992aea) 
+float Shimmer3GSRPlus::calibrateGsrDataToResistanceFromAmplifierEq(float gsrUncalibratedData, GSRRange range)
+{
+	auto& calibration = m_calibrationValues[range];
 
-			//Changed to new GSR algorithm using non inverting amp
-			//p1 = 0.0373;
-			//p2 = -24.9915;
-			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 0);
-		}
-		else if (GSRRange == 1 || newGSRRange == 1)
-		{
-			//p1 = 0.0051;
-			//p2 = -3.8357;
-			//Changed to new GSR algorithm using non inverting amp
-			//p1 = 0.0054;
-			//p2 = -3.5194;
-			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 1);
-		}
-		else if (GSRRange == 2 || newGSRRange == 2)
-		{
-			//p1 = 0.0015;
-			//p2 = -1.0067;
-			//Changed to new GSR algorithm using non inverting amp
-			//p1 = 0.0015;
-			//p2 = -1.0163;
-			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 2);
-		}
-		else if (GSRRange == 3 || newGSRRange == 3)
-		{
-			//p1 = 4.4513e-04;
-			//p2 = -0.3193;
-			//Changed to new GSR algorithm using non inverting amp
-			//p1 = 4.5580e-04;
-			//p2 = -0.3014;
-			if (datatemp < GSR_UNCAL_LIMIT_RANGE3)
-			{
-				datatemp = GSR_UNCAL_LIMIT_RANGE3;
-			}
-			gsrResistanceKOhms = CalibrateGsrDataToResistanceFromAmplifierEq(datatemp, 3);
-		}
-		//Changed to new GSR algorithm using non inverting amp
-		//datatemp = CalibrateGsrData(datatemp, p1, p2);
-		gsrResistanceKOhms = NudgeGsrResistance(gsrResistanceKOhms, GSRRange);
-		double gsrConductanceUSiemens = (1.0 / gsrResistanceKOhms) * 1000;
-		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR, ShimmerConfiguration.SignalFormats.RAW, ShimmerConfiguration.SignalUnits.NoUnits, newPacket[iGSR]);
-		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR, ShimmerConfiguration.SignalFormats.CAL, ShimmerConfiguration.SignalUnits.KiloOhms, gsrResistanceKOhms);
-		objectCluster.Add(Shimmer3Configuration.SignalNames.GSR_CONDUCTANCE, ShimmerConfiguration.SignalFormats.CAL, ShimmerConfiguration.SignalUnits.MicroSiemens, gsrConductanceUSiemens);
-	*/
+	float vRefP = 3.0f;
+	float gain = 1.0f;
+	float volts = (gsrUncalibratedData * (((vRefP * 1000) / gain) / 4095)) / 1000.0f;
+	float calibratedGSRResistance = calibration.referenceResistorKOhms / ((volts / 0.5f) - 1.0f);
+	
+	return std::max<float>(calibration.resistanceMinKOhms, std::min<float>(calibration.resistanceMaxKOhms, calibratedGSRResistance)); //clamp
+}
+
+Shimmer3GSRPlus::GSRRange Shimmer3GSRPlus::extractRangeFromBytesWhenAutoRange(long rawGSRBytes) {
+	GSRRange range = GSRRange((49152 & (int)rawGSRBytes) >> 14); //bit mask and shift to only get the two bits at position 14 and 15
+
+	if (!(range == GSRRange::OHMS_10K_TO_56K || range == GSRRange::OHMS_56K_TO_220K || range == GSRRange::OHMS_220K_TO_680K || range == GSRRange::OHMS_680K_TO_4700K)) {
+		throw std::exception{ "GSRPlus Auto range did not resolve to an allowed value!" };
+	}
+
+	return range;
+}
+
+float Shimmer3GSRPlus::extractGSRDataValueFromRawBytes(long rawGSRBytes) {
+	return static_cast<float>(rawGSRBytes & 4095); //only use lower 12 bits!
+}
+
+//replica of the relevant section from the "BuildMsg" function in the C# Shimmer API
+//(ShimmerBluetooth.cs, lines 3096 - 3158, @Commit 58992aea)
+float Shimmer3GSRPlus::convertGSRRawBytesToKOhms(long rawGSRBytes, GSRRange range)
+{
+	//handle auto range
+	if (range == GSRRange::AUTO) {
+		range = extractRangeFromBytesWhenAutoRange(rawGSRBytes);
+	}
+
+	float rawGSRValue = extractGSRDataValueFromRawBytes(rawGSRBytes);
+
+	//handle special lower limit for gsrrange 680K
+	if (range == GSRRange::OHMS_680K_TO_4700K && rawGSRValue < lowerLimitCalibration680K) {
+		rawGSRValue = lowerLimitCalibration680K;
+	}
+
+	return calibrateGsrDataToResistanceFromAmplifierEq(rawGSRValue, range);
 }
 
 }
