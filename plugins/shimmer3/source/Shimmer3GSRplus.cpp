@@ -1,6 +1,6 @@
 // Shimmer3GSRPlus.cpp
-// author: Andreas Seiderer <seiderer@hcm-lab.de>
-// created: 9/3/2015
+// author: Fabian Wildgrube
+// created: 2021/07/24
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************
@@ -54,19 +54,17 @@ float Shimmer3GSRPlus::lowerLimitCalibration680K = 683.0f;
 
 Shimmer3GSRPlus::Shimmer3GSRPlus (const ssi_char_t *file) 
 	: m_ppgraw_provider (0),
+	m_ppgcalibrated_provider(0),
 	m_gsrraw_provider(0),
 	_file (0),
 	m_ppgraw_channel (0),
+	m_ppgcalibrated_channel (0),
 	m_gsrraw_channel (0),
 	m_gsrcalibratedresistance_channel(0),
 	m_gsrcalibratedresistance_provider(0),
 	m_gsrcalibratedconductance_channel(0),
 	m_gsrcalibratedconductance_provider(0),
 	ssi_log_level (SSI_LOG_LEVEL_DEFAULT) {
-	
-	getOptions()->setStartCMD(0);
-	getOptions()->setStopCMD(0);
-	getOptions()->setDeviceInstanceId(0);
 
 	if (file) {
 		if (!OptionList::LoadXML(file, &_options)) {
@@ -99,6 +97,9 @@ bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) 
 	} else if (strcmp(name, SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME) == 0) {
 		setGSRConductanceProvider(provider);
 		return true;
+	} else if (strcmp(name, SSI_SHIMMER3_PPGCALIBRATED_PROVIDER_NAME) == 0) {
+		setPPGCalibratedProvider(provider);
+		return true;
 	}
 
 	ssi_wrn ("unkown provider name '%s'", name);
@@ -109,13 +110,26 @@ bool Shimmer3GSRPlus::setProvider (const ssi_char_t *name, IProvider *provider) 
 void Shimmer3GSRPlus::setPPGRawProvider (IProvider *provider) {
 
 	if (m_ppgraw_provider) {
-		ssi_wrn ("gsr raw was already set");
+		ssi_wrn ("ppg raw was already set");
 	}
 
 	m_ppgraw_provider = provider;
 	if (m_ppgraw_provider) {		
 		m_ppgraw_provider->init (getChannel (0));
 		ssi_msg (SSI_LOG_LEVEL_DETAIL, "ppg raw provider set");
+	}
+}
+
+void Shimmer3GSRPlus::setPPGCalibratedProvider(IProvider* provider) {
+
+	if (m_ppgcalibrated_provider) {
+		ssi_wrn("ppgcalibrated was already set");
+	}
+
+	m_ppgcalibrated_provider = provider;
+	if (m_ppgcalibrated_provider) {
+		m_ppgcalibrated_provider->init(getChannel(4));
+		ssi_msg(SSI_LOG_LEVEL_DETAIL, "ppgcalibrated provider set");
 	}
 }
 
@@ -194,6 +208,11 @@ void Shimmer3GSRPlus::processPPGValue(const std::unique_ptr<shimmer3::LogAndStre
 
 		if (m_ppgraw_provider) {
 			m_ppgraw_provider->provide(ssi_pcast(char, &rawPPGValue), 1);
+		}
+
+		if (m_ppgcalibrated_provider) {
+			float calPPG = calibratedPPGValue(rawPPGValue);
+			m_ppgcalibrated_provider->provide(ssi_pcast(char, &calPPG), 1);
 		}
 	}
 	catch (const std::exception&)
@@ -282,6 +301,16 @@ Shimmer3GSRPlus::GSRRange Shimmer3GSRPlus::extractRangeFromBytesWhenAutoRange(lo
 
 float Shimmer3GSRPlus::extractGSRDataValueFromRawBytes(long rawGSRBytes) {
 	return static_cast<float>(rawGSRBytes & 4095); //only use lower 12 bits!
+}
+
+float Shimmer3GSRPlus::calibratedPPGValue(long rawPPGValue)
+{
+	//taken from Shimmer C# Api (function CalibrateMspAdcChannel(double data) in ShimmerBluetooth.cs)
+	double offset = 0.0;
+	double vRefP = 3.0;
+	double gain = 1.0;
+	double calibratedData = (rawPPGValue - offset) * (((vRefP * 1000) / gain) / 4095);
+	return static_cast<float>(calibratedData);
 }
 
 //replica of the relevant section from the "BuildMsg" function in the C# Shimmer API

@@ -143,9 +143,9 @@ namespace ssi {
 			return convert(dataPtr, sampleInfo);
 		}
 
-		long LogAndStreamDevice::DataPacket::getTimestamp() const {
-			//TODO: interpret the first 3 bytes of the rawData as a timestamp!
-			return 0;
+		long LogAndStreamDevice::DataPacket::getRawTimestamp() const {
+			//the timestamp is always stored in the first 3 bytes of the package
+			return convert(rawData.data(), { 3, SENSORDATATYPE::u24, false });
 		}
 	} //namespace shimmer3
 } //namespace ssi

@@ -42,8 +42,10 @@
 #include <Windows.h>
 
 #include "Shimmer3LogAndStreamDevice.h"
+#include "ShimmerClosedLibraryAlgoFactory.h"
 
 #define SSI_SHIMMER3_PPGRAW_PROVIDER_NAME "shimmer3ppgraw"
+#define SSI_SHIMMER3_PPGCALIBRATED_PROVIDER_NAME "shimmer3ppgcalibrated"
 #define SSI_SHIMMER3_GSRRAW_PROVIDER_NAME "shimmer3gsrraw"
 #define SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME "shimmer3gsrresistance"
 #define SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME "shimmer3gsrconductance"
@@ -138,71 +140,45 @@ public:
 		ssi_stream_t stream;
 	};
 
+	class PPGCalibratedChannel: public IChannel {
+
+		friend class Shimmer3GSRPlus;
+
+	public:
+
+		PPGCalibratedChannel(ssi_size_t dim, ssi_time_t sr) {
+			ssi_stream_init(stream, 0, dim, sizeof(ssi_real_t), SSI_REAL, sr);
+		}
+		~PPGCalibratedChannel() {
+			ssi_stream_destroy(stream);
+		}
+
+		const ssi_char_t* getName() { return SSI_SHIMMER3_PPGCALIBRATED_PROVIDER_NAME; };
+		const ssi_char_t* getInfo() { return "ppg value in mV"; };
+		ssi_stream_t getStream() { return stream; };
+
+	protected:
+		ssi_stream_t stream;
+	};
+
 public:
 
 	class Options : public OptionList {
 
 	public:
 		Options ()
-			: port (1), baud (9600), sr (50), dim(3), separator(','), size(0.2), skipLinesAfterStart(0), skipLinesAfterStartCMD(0), useId(false), showDebugSR(false) {
+			: port(1), baud(9600), sr(50), size(0.2) {
 
 			addOption ("port", &port, 1, SSI_SIZE, "port number");
-			addOption ("useId", &useId, 1, SSI_BOOL, "use device instance id instead of port number");
-			addOption ("deviceInstanceId", &deviceInstanceId, SSI_MAX_CHAR, SSI_CHAR, "device instance id");
-
-
 			addOption ("baud", &baud, 1, SSI_SIZE, "baud rate");									
-			addOption ("separator", &separator, 1, SSI_CHAR, "separator used to split input data");
 			addOption ("sr", &sr, 1, SSI_SIZE, "sampling rates (hz)");
-			addOption ("dim", &dim, 1, SSI_SIZE, "value count");
 			addOption ("size", &size, 1, SSI_DOUBLE, "block size in seconds");
-
-			addOption ("startCMD", &startCMD, SSI_MAX_CHAR, SSI_CHAR, "command to be sent after first connection with controller (leave empty to send no command)");
-			addOption ("skipLinesAfterStart", &skipLinesAfterStart, 1, SSI_INT, "skip lines from controller after connection" );
-			addOption ("skipLinesAfterStartCMD", &skipLinesAfterStartCMD, 1, SSI_INT, "skip lines from controller after start command" );
-			addOption ("stopCMD", &stopCMD, SSI_MAX_CHAR, SSI_CHAR, "command to be sent to controller during pipeline shutdown (leave empty to send no command)");
-
-			addOption("showDebugSR", &showDebugSR, 1, SSI_BOOL, "show mean sample rate of input data");
-		};
-
-		void setStartCMD (const ssi_char_t *startCMD) {
-			this->startCMD[0] = '\0';
-			if (startCMD) {
-				ssi_strcpy (this->startCMD, startCMD);
-			}
-		};
-		
-		void setStopCMD (const ssi_char_t *stopCMD) {
-			this->stopCMD[0] = '\0';
-			if (stopCMD) {
-				ssi_strcpy (this->stopCMD, stopCMD);
-			}
-		};
-
-		void setDeviceInstanceId (const ssi_char_t *deviceInstanceId) {
-			this->deviceInstanceId[0] = '\0';
-			if (deviceInstanceId) {
-				ssi_strcpy (this->deviceInstanceId, deviceInstanceId);
-			}
 		};
 
 		ssi_size_t port;
 		ssi_size_t baud;
-		ssi_char_t separator;
 		ssi_size_t sr;
-		ssi_size_t dim;
 		ssi_time_t size;
-
-		ssi_char_t startCMD[SSI_MAX_CHAR];
-		ssi_char_t stopCMD[SSI_MAX_CHAR];
-		ssi_size_t skipLinesAfterStart;
-		ssi_size_t skipLinesAfterStartCMD;
-
-		bool useId;
-		ssi_char_t deviceInstanceId[SSI_MAX_CHAR];
-
-		bool showDebugSR;
-
 	};
 
 public:
@@ -214,23 +190,26 @@ public:
 	const ssi_char_t *getName () { return GetCreateName (); };
 	const ssi_char_t *getInfo () { return "Shimmer3 GSR+ Sensor"; };
 
-	ssi_size_t getChannelSize () { return 2; };
+	ssi_size_t getChannelSize () { return 5; };
 
 	IChannel *getChannel (ssi_size_t index) {
 		switch (index)
 		{
 		case 0:
-			if (!m_ppgraw_channel) m_ppgraw_channel = new PPGRawChannel(_options.dim, _options.sr);
+			if (!m_ppgraw_channel) m_ppgraw_channel = new PPGRawChannel(1, _options.sr);
 			return m_ppgraw_channel;
 		case 1:
-			if (!m_gsrraw_channel) m_gsrraw_channel = new GSRRawChannel(_options.dim, _options.sr);
+			if (!m_gsrraw_channel) m_gsrraw_channel = new GSRRawChannel(1, _options.sr);
 			return m_gsrraw_channel;
 		case 2:
-			if (!m_gsrcalibratedresistance_channel) m_gsrcalibratedresistance_channel = new GSRCalibratedResistanceChannel(_options.dim, _options.sr);
+			if (!m_gsrcalibratedresistance_channel) m_gsrcalibratedresistance_channel = new GSRCalibratedResistanceChannel(1, _options.sr);
 			return m_gsrcalibratedresistance_channel;
 		case 3:
-			if (!m_gsrcalibratedconductance_channel) m_gsrcalibratedconductance_channel = new GSRCalibratedConductanceChannel(_options.dim, _options.sr);
+			if (!m_gsrcalibratedconductance_channel) m_gsrcalibratedconductance_channel = new GSRCalibratedConductanceChannel(1, _options.sr);
 			return m_gsrcalibratedconductance_channel;
+		case 4:
+			if (!m_ppgcalibrated_channel) m_ppgcalibrated_channel = new PPGCalibratedChannel(1, _options.sr);
+			return m_ppgcalibrated_channel;
 		default:
 			ssi_wrn("Channel index %ud not supported", index);
 			return 0;
@@ -264,6 +243,8 @@ public:
 	};
 
 private:
+	float calibratedPPGValue(long rawPPGValue);
+
 	float convertGSRRawBytesToKOhms(long rawGSRValue, GSRRange range);
 	float calibrateGsrDataToResistanceFromAmplifierEq(float gsrUncalibratedData, GSRRange range);
 
@@ -283,6 +264,10 @@ protected:
 	PPGRawChannel *m_ppgraw_channel;
 	void setPPGRawProvider(IProvider *provider);
 	IProvider *m_ppgraw_provider;
+
+	PPGCalibratedChannel* m_ppgcalibrated_channel;
+	void setPPGCalibratedProvider(IProvider* provider);
+	IProvider* m_ppgcalibrated_provider;
 
 	GSRRawChannel* m_gsrraw_channel;
 	void setGSRRawProvider(IProvider* provider);

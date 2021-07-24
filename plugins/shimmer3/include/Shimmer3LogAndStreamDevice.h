@@ -34,6 +34,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <chrono>
 
 #include "SSI_Cons.h"
 
@@ -70,7 +71,7 @@ namespace ssi {
 				/// <returns>the raw value (pure bytes) of the sensor (converted to long for convenience, to deal with varying endianness properly)</returns>
 				long get(const SENSORID& sensor) const;
 
-				long getTimestamp() const;
+				long getRawTimestamp() const;
 
 			private:
 				unsigned char* data() { return rawData.data(); };
@@ -98,6 +99,42 @@ namespace ssi {
 				ACK = 0xFF,
 				DATA_PACKET = 0x00,
 				INQUIRY_RESPONSE = 0x02
+			};
+
+			#define TIMESTAMP_PACKET_MAX_VALUE 16777216 //variable TimeStampPacketRawMaxValue in ShimmerBluetooth.cs of the C# Shimmer API 
+
+			// helper that keeps track of a sessions timestamps and converts them to ms since the power up of the shimmer
+			struct TimestampConverter {
+				double lastReceivedTimestamp = 0.0;
+				double startTimestamp = 0.0;
+				double currentTimestampCycle = 0;
+				double firstSystemTimestamp = 0.0;
+				bool firstTime = true;
+
+				double convertToMs(long rawTimestampIn) {
+					double rawTimestamp = static_cast<double>(rawTimestampIn);
+
+					double calibratedTimeStamp = 0.0;
+
+					//not exactly sure what this does. This is taken verbatim from the C# Shimmer API (ShimmerBluetooth.cs. method "CalibrateTimeStamp")
+					if (lastReceivedTimestamp > (rawTimestamp + (TIMESTAMP_PACKET_MAX_VALUE * currentTimestampCycle)))
+					{
+						currentTimestampCycle++;
+					}
+
+					lastReceivedTimestamp = (rawTimestamp + (TIMESTAMP_PACKET_MAX_VALUE * currentTimestampCycle));
+					calibratedTimeStamp = lastReceivedTimestamp / 32768 * 1000;   // to convert into mS
+
+					if (firstTime)
+					{
+						firstTime = false;
+						startTimestamp = calibratedTimeStamp;
+						auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+						firstSystemTimestamp = std::chrono::duration<double>(now).count();
+					}
+
+					return firstSystemTimestamp + (calibratedTimeStamp - startTimestamp); //timestamp relative to session start
+				}
 			};
 
 			#define INQUIRY_HEADER_BYTES 8
@@ -151,6 +188,10 @@ namespace ssi {
 			void stopStreaming();
 
 			bool isEnabled(const SENSORID& sensor) const;
+
+			float getCalibratedTimestamp(const std::unique_ptr<DataPacket>& packet) {
+				return static_cast<float>(m_timestampConverter.convertToMs(packet->getRawTimestamp()));
+			}
 
 			/// <summary>
 			/// Factory function that creates a new packet from the bytes received by the Shimmer.
@@ -206,6 +247,8 @@ namespace ssi {
 			SHIMMER_STATE m_state;
 
 			std::unique_ptr<Serial> m_serial;
+
+			TimestampConverter m_timestampConverter;
 		}; //class LogAndStreamDevice
 
 	} // namespace shimmer3

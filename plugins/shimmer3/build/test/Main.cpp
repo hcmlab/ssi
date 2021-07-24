@@ -33,6 +33,7 @@
 #include "..\\..\\..\\signal\\include\\MvgMinMax.h"
 #include "..\\..\\..\\signal\\include\\Expression.h"
 #include "..\\..\\..\\signal\\include\\MvgPeakGate.h"
+#include "..\\..\\..\\signal\\include\\FFTfeat.h"
 
 #include "..\\..\\..\\xmpp\\include\\ssixmpp.h"
 
@@ -84,17 +85,21 @@ void ex_shimmer3() {
 	Shimmer3GSRPlus* gsrplus = ssi_create(Shimmer3GSRPlus, 0, true);
 	// look up the "outgoing" COM port of the shimmer you want to talk to (Win->ControlPanel->Search for "Bluetooth" > Change Bluetooth Settings > Tab "COM Ports" -> Port COMX where X is the number you need to use here
 	// use the OUTGOING port as we need to send stuff to the shimmer!
-	gsrplus->getOptions()->port = 7;
+	gsrplus->getOptions()->port = 9;
 	gsrplus->getOptions()->baud = 115200;
-	gsrplus->getOptions()->dim = 1;
-	gsrplus->getOptions()->sr = 20;
+	gsrplus->getOptions()->sr = 128.0;
 
 	ITransformable* ppg_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_PPGRAW_PROVIDER_NAME);
-	ITransformable* gsr_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRRAW_PROVIDER_NAME);
-	ITransformable* gsrR_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME);
-	ITransformable* gsrC_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME);
+	ITransformable* ppgcal_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_PPGCALIBRATED_PROVIDER_NAME);
+	//ITransformable* gsr_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRRAW_PROVIDER_NAME);
+	//ITransformable* gsrR_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRCALIBRATEDRESISTANCE_PROVIDER_NAME);
+	//ITransformable* gsrC_p = frame->AddProvider(gsrplus, SSI_SHIMMER3_GSRCALIBRATEDCONDUCTANCE_PROVIDER_NAME);
 
 	frame->AddSensor(gsrplus);
+	/*
+	FFTfeat* fftfeat = ssi_create(FFTfeat, 0, true);
+	fftfeat->getOptions()->nfft = 32;
+	*/
 
 	SignalPainter* plot = 0;
 	plot = ssi_create_id(SignalPainter, 0, "plot");
@@ -102,6 +107,12 @@ void ex_shimmer3() {
 	plot->getOptions()->size = 10.0;
 	frame->AddConsumer(ppg_p, plot, "1");
 
+	plot = ssi_create_id(SignalPainter, 0, "plot");
+	plot->getOptions()->setTitle("ppg calibrated");
+	plot->getOptions()->size = 10.0;
+	frame->AddConsumer(ppgcal_p, plot, "1");
+
+	/*
 	plot = ssi_create_id(SignalPainter, 0, "plot");
 	plot->getOptions()->setTitle("gsr raw");
 	plot->getOptions()->size = 10.0;
@@ -116,6 +127,7 @@ void ex_shimmer3() {
 	plot->getOptions()->setTitle("gsr conductance");
 	plot->getOptions()->size = 10.0;
 	frame->AddConsumer(gsrC_p, plot, "1");
+	*/
 
 	decorator->add("console", 0, 0, 650, 800);
 	decorator->add("plot*", 650, 0, 400, 400);

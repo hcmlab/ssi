@@ -29,5 +29,6 @@
 #define SSI_GENERICSE_H
 
 #include "Shimmer3GSRplus.h"
+#include "Shimmer3PPGToHR.h"
 
 #endif

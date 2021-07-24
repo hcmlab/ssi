@@ -173,7 +173,7 @@ namespace ssi {
 			for (const auto& c : header.rawData) {
 				std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(c) << " ";
 			}
-			std::cout << std::endl;
+			std::cout << "\n";
 
 			//get the bytes describing the channels
 			std::vector<unsigned char> channelInfoBuffer(header.nrOfChannels());
@@ -186,7 +186,7 @@ namespace ssi {
 			for (const auto& c : channelInfoBuffer) {
 				std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(c) << " ";
 			}
-			std::cout << std::endl;
+			std::cout << "\n";
 
 			//synchronize with received device configuration
 			initOffsetMapAndPacketSize(channelInfoBuffer);
@@ -217,6 +217,7 @@ namespace ssi {
 			if (m_state == SHIMMER_STATE::CONNECTED_NOTSTREAMING
 				&& sendCommand(COMMANDCODE::START_STREAMING)
 				&& waitForImmediateAck()) {
+				m_timestampConverter = TimestampConverter(); //reset timestamp conversion state
 				m_state = SHIMMER_STATE::CONNECTED_STREAMING;
 			}
 		}

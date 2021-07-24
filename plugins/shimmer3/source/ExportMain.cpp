@@ -26,6 +26,7 @@
 
 #include "ssishimmer3.h"
 #include "base/Factory.h"
+#include "ShimmerClosedLibraryAlgoFactory.h"
 
 #ifndef DLLEXP
 #define DLLEXP extern "C" __declspec( dllexport )
@@ -42,9 +43,14 @@ DLLEXP bool Register (ssi::Factory *factory, FILE *logfile, ssi::IMessage *messa
 		ssimsg = message;
 	}
 
+
 	bool result = true;
+
+	//Load mixed mode dll for Shimmer PPGtoHR Algorithm
+	result = ShimmerClosedLibraryAlgoFactory::load() && result;
 	
 	result = ssi::Factory::Register (ssi::Shimmer3GSRPlus::GetCreateName (), ssi::Shimmer3GSRPlus::Create) && result;
+	result = ssi::Factory::Register (ssi::Shimmer3PPGToHR::GetCreateName (), ssi::Shimmer3PPGToHR::Create) && result;
 				
 	return result;
 }
