@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	
+	<!-- register dlls -->
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssisignal" />
+		<load name="ssiioput"/>
+		<load name="shimmer3" />
+	</register>
+
+	<sensor create="Shimmer3GSR+" baud="115200" dim="1" sr="100.21" port="9">		
+		<output channel="shimmer3ppgcalibrated" pin="ppg_cal" size="10.0s"/>
+		<output channel="shimmer3gsrraw" pin="gsr_raw_data_A" size="10.0s"/>
+	</sensor>
+
+	<!-- bandpass from 0.5Hz - 5Hz -->
+	<transformer create="Butfilt" zero="true" type="2" norm="false" low="0.5" high="5" order="4">
+		<input pin="ppg_cal" frame="1"/>
+		<output pin="ppg_smoothed_A"/>
+	</transformer>
+
+	<transformer create="Shimmer3PPGToHR">
+		<input pin="ppg_smoothed_A" frame="1"/>
+		<output pin="hr"/>
+	</transformer>
+	
+<!-- Display values -->
+	<consumer create="SignalPainter:plotA" title="raw ppg" size="10.0">
+		<input pin="ppg_cal" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plotA" title="raw gsr" size="10.0">	
+		<input pin="gsr_raw_data_A" frame="1" />
+	</consumer>
+	<consumer create="SignalPainter:plotA" title="ppgsmoothed" size="10.0">
+		<input pin="ppg_smoothed_A" frame="1" delta="0"/>
+	</consumer>
+	<consumer create="SignalPainter:plotA" title="hr" size="10.0">
+		<input pin="hr" frame="1" delta="0"/>
+	</consumer>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Shimmer3 GSR+ Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,1200,600">plotA*</area>
+		<area pos="400,620,1200,600">plotB*</area>
+	</object>
+
+</pipeline>
