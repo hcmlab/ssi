@@ -9,7 +9,7 @@
 		<load name="shimmer3" />
 	</register>
 
-	<sensor create="Shimmer3GSR+" baud="115200" dim="1" sr="100.21" port="9">		
+	<sensor create="Shimmer3GSR+" baud="115200" dim="1" sr="128.00" port="9">		
 		<output channel="shimmer3ppgcalibrated" pin="ppg_cal" size="10.0s"/>
 		<output channel="shimmer3gsrraw" pin="gsr_raw_data_A" size="10.0s"/>
 	</sensor>
@@ -24,7 +24,7 @@
 		<input pin="ppg_smoothed_A" frame="1"/>
 		<output pin="hr"/>
 	</transformer>
-	
+
 <!-- Display values -->
 	<consumer create="SignalPainter:plotA" title="raw ppg" size="10.0">
 		<input pin="ppg_cal" frame="1" />
