@@ -49,7 +49,7 @@ class Options : public OptionList {
 
 			addOption ("numskel", &n_skeletons, 1, SSI_SIZE, "number of skeletons tracked");
 			//addOption ("numface", &n_faces, 1, SSI_SIZE, "number of faces tracked");
-			addOption ("bodytype", &skeleton_type, 1, SSI_INT, "body skeleton type (SSI = 0, MICROSOFT_KINECT = 1, OPENNI_KINECT = 2, XSENS_MVN = 3, MICROSOFT_KINECT2 = 4)");
+			addOption ("bodytype", &skeleton_type, 1, SSI_INT, "body skeleton type (SSI = 0, MICROSOFT_KINECT = 1, OPENNI_KINECT = 2, XSENS_MVN = 3, MICROSOFT_KINECT2 = 4, AZURE_KINECT = 5)");
 			//addOption ("facetype", &face_type, 1, SSI_INT, "face type (SSI = 0, MICROSOFT_KINECT = 1)");
 		};
 
@@ -162,6 +162,7 @@ protected:
 	void convertMicrosoftKinectOld(void* fromPtr, SSI_SKELETON &to);
 	void convertOpenNIKinect(void* fromPtr, SSI_SKELETON &to);
 	void convertXsensMVN(void* fromPtr, SSI_SKELETON &to);
+	void convertAzureKinect(void* fromPtr, SSI_SKELETON &to);
 
 	void convertFaceMicrosoftKinect(void* facePointsPtr, void* headPosePtr, SSI_SKELETON &to);
 	void convertFaceMicrosoftKinect2(void* facePointsPtr, void* headPosePtr, SSI_SKELETON &to);

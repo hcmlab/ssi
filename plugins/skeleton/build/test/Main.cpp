@@ -29,6 +29,7 @@
 
 #define SSI_MICROSOFTKINECT_ENABLED
 #define SSI_MICROSOFTKINECT2_ENABLED
+#define SSI_AZUREKINECT_ENABLED
 
 #ifdef SSI_MICROSOFTKINECT_ENABLED
 #include "microsoftkinect\include\ssimicrosoftkinect.h"
@@ -37,6 +38,10 @@
 #ifdef SSI_MICROSOFTKINECT2_ENABLED
 #include "microsoftkinect2\include\ssimicrosoftkinect2.h"
 #endif
+
+#ifdef SSI_AZUREKINECT_ENABLED
+#include "azurekinect\include\ssiazurekinect.h"
+#endif 
 
 #ifdef SSI_SKEL_OPENNI_ENABLED
 #include "opennikinect\include\ssiopennikinect.h"
@@ -69,6 +74,7 @@ bool ex_microsoftkinect(void *arg);
 bool ex_microsoftkinect2(void *arg);
 bool ex_opennikinect(void *arg);
 bool ex_xsens(void *arg);
+bool ex_azurekinect(void *arg);
 
 int main () {
 
@@ -365,4 +371,66 @@ bool ex_xsens(void *arg) {
 #endif
 
 	return true;
+}
+
+bool ex_azurekinect(void* arg) {
+
+#ifdef SSI_AZUREKINECT_ENABLED
+
+	ITheFramework* frame = Factory::GetFramework();
+
+	Decorator* decorator = ssi_create(Decorator, 0, true);
+	frame->AddDecorator(decorator);
+
+	ITheEventBoard* board = Factory::GetEventBoard();
+
+	AzureKinect* kinect = ssi_create(AzureKinect, 0, true);
+	kinect->getOptions()->nrOfBodiesToTrack = 1;
+	kinect->getOptions()->showBodyTracking = true;
+
+	ITransformable* rgb_p = frame->AddProvider(kinect, SSI_AZUREKINECT_RGBIMAGE_PROVIDER_NAME, 0, "1.0s");
+	ITransformable* skeleton_p = frame->AddProvider(kinect, SSI_AZUREKINECT_SKELETON_PROVIDER_NAME, 0, "1.0s");
+	frame->AddSensor(kinect);
+
+	VideoPainter* vplot = 0;
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("azurekinect rgb");
+	vplot->getOptions()->flip = false;
+	vplot->getOptions()->mirror = false;
+	frame->AddConsumer(rgb_p, vplot, "1");
+
+	SkeletonConverter* conv = ssi_create(SkeletonConverter, 0, true);
+	ITransformable* conv_p = frame->AddTransformer(skeleton_p, conv, "1");
+
+	FileWriter* writer = 0;
+
+	writer = ssi_create_id(FileWriter, 0, "writer");
+	writer->getOptions()->setPath("skel-azurekinect");
+	frame->AddConsumer(skeleton_p, writer, "1");
+
+	writer = ssi_create_id(FileWriter, 0, "writer");
+	writer->getOptions()->setPath("skel-ssi");
+	frame->AddConsumer(conv_p, writer, "1");
+
+	SkeletonPainter* skelpaint = ssi_create(SkeletonPainter, 0, true);
+	ITransformable* skelpaint_t = frame->AddTransformer(conv_p, skelpaint, "1");
+
+	vplot = ssi_create_id(VideoPainter, 0, "plot");
+	vplot->getOptions()->setTitle("skeleton");
+	vplot->getOptions()->flip = false;
+	frame->AddConsumer(skelpaint_t, vplot, "1");
+
+	decorator->add("console", 0, 0, 650, 800);
+	decorator->add("plot*", 650, 0, 400, 400);
+	decorator->add("monitor*", 650, 400, 400, 400);
+
+	frame->Start();
+	frame->Wait();
+	frame->Stop();
+	frame->Clear();
+
+	return true;
+
+#endif
 }

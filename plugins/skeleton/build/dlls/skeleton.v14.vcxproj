@@ -155,7 +155,7 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\core\include;..\..\include;..\..\..\microsoftkinect2\include;..\..\..\microsoftkinect\include;..\..\..\fubi\source\Fubi;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\azurekinect\include;..\..\..\..\core\include;..\..\include;..\..\..\microsoftkinect2\include;..\..\..\microsoftkinect\include;..\..\..\fubi\source\Fubi;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -185,7 +185,7 @@ xcopy /D /I /Y ..\..\..\..\libs\build\opencv\libs\$(PlatformName)\vc$(PlatformTo
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\core\include;..\..\include;..\..\..\microsoftkinect2\include;..\..\..\microsoftkinect\include;..\..\..\fubi\source\Fubi;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\azurekinect\include;..\..\..\..\core\include;..\..\include;..\..\..\microsoftkinect2\include;..\..\..\microsoftkinect\include;..\..\..\fubi\source\Fubi;..\..\..\opennikinect\include;..\..\..\xsens\include;..\..\..\..\libs\build\opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
