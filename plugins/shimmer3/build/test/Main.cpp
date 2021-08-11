@@ -1,6 +1,6 @@
 // Main.cpp
-// author: Andreas Seiderer <seiderer@hcm-lab.de>
-// created: 9/3/2015
+// author: Fabian Wildgrube
+// created: 2021
 // Copyright (C) University of Augsburg, Lab for Human Centered Multimedia
 //
 // *************************************************************************************************

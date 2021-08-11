@@ -34,7 +34,7 @@ Refer to [./INSTALL](./INSTALL)
 # Notes on the plugin implementation
 
 ## Why not use Shimmer's prebuilt APIs?
-ShimmerSensing publishes a number of APIs to easily work with their boards. They handle the bluetooth communication and decoding of Shimmer's custom protocol. Sadly, none of those APIs is provided in C++. Therefore the C# API (https://github.com/ShimmerEngineering/Shimmer-C-API) was used as a blueprint and reimplemented (in parts) in C++.
+ShimmerSensing publishes a number of APIs to easily work with their boards. They handle the bluetooth communication and decoding of Shimmer's custom protocol. Sadly, none of those APIs is provided in C++. Therefore the C# API (https://github.com/ShimmerEngineering/Shimmer-C-API) was used as a blueprint and reimplemented (in parts) in this plugin.
 
 ## Design of the reimplementation of the open source ShimmerAPI
 Currently only the GSR+ board is in use at the Augsburg University, therefore only the feature-set specific for this board is implemented. However, the implementation was carefully designed to make extending the plugin to support other boards as easy as possible.
