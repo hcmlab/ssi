@@ -1,3 +1,7 @@
+/**
+* Sensor that provides a configurable amount of meaningless data. Used to stress test pipelines (and specifically networking)
+*/
+
 #pragma once
 
 #ifndef SSI_GARBAGEDATA_SENSOR_H
