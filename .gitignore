@@ -158,6 +158,7 @@ bin/x64/vc140/ssipraatd.dll
 bin/x64/vc140/ssiopensmiled.dll
 bin/x64/vc140/ssiopenfaced.dll
 bin/x64/vc140/ssicamerad.dll
+bin/x64/vc140/ssiazurekinectd.dll
 *.pch
 plugins/openface2/build/x64/Debug/test.lib
 plugins/openface2/build/x64/Debug/test.exe

@@ -94,10 +94,11 @@ namespace ssi {
 	}
 
 
-	Websockserver::Websockserver(Websocket *socket)
+	Websockserver::Websockserver(Websocket *socket, size_t eventLoopSleepTimeMs)
 	{
 		this->_single_execution = true;
 		_wsocket = socket;
+		intervalSleepTimeMs = eventLoopSleepTimeMs > 1 ? eventLoopSleepTimeMs : 1; //don't use a timeout of 0ms to prevent checking for new messages all the time
 		stop = false;
 	}
 
@@ -144,7 +145,7 @@ namespace ssi {
 		if (!stop) {
 
 			while (!stop) {
-				mg_mgr_poll(&mgr, 200);
+				mg_mgr_poll(&mgr, intervalSleepTimeMs);
 			}
 
 			mg_mgr_free(&mgr);
