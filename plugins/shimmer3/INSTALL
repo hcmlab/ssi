@@ -1,0 +1,5 @@
+Ensure that the following DLLs are present in SSI's main 'bin' directory:
+
+    ShimmerClosedLibraryRev0_5.dll (taken from: https://github.com/ShimmerEngineering/Shimmer-C-API/blob/master/ShimmerPPGHRGSRConsoleAppExample/ShimmerConsoleAppExample/libs/ShimmerClosedLibraryRev0_5.dll)
+
+    MathNet.Numerics.dll (taken from: https://www.nuget.org/packages/MathNet.Numerics/3.20.0)
