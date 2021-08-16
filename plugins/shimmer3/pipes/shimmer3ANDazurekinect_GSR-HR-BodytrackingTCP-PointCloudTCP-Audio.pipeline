@@ -19,9 +19,9 @@
 	</register>
 
 <!-- ***************** Shimmer sensor ******************************************************************************************************** -->
-	<sensor create="Shimmer3GSR+" baud="115200" dim="1" sr="128.00" port="$(shimmer_comportnr)">		
+	<sensor create="Shimmer3GSR+" baud="115200" sr="128.00" port="$(shimmer_comportnr)">		
 		<output channel="shimmer3ppgcalibrated" pin="ppg_cal" size="10.0s"/> <!-- "raw" ppg values, calibrated to represent mV -->
-		<output channel="shimmer3gsrconductance " pin="gsr_conductance" size="10.0s"/>
+		<output channel="shimmer3gsrconductance" pin="gsr_conductance" size="10.0s"/>
 	</sensor>
 
 		<!-- smooth ppg signal between 0.5Hz - 5Hz to remove non-hr artifacts as much as possible -->
