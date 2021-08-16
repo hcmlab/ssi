@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<pipeline ssi-v="1">
+	<!--
+		Pipeline that records Shimmer3-GSR+ data, Azure Kinect Bodytracking, and Audio into binary .stream files
+		AND also sends Azure Kinect Bodytracking and PointCloud data to receivers via TCP.
+
+		Output filenames and where to send bodytracking and pointcloud data are configured in a separate
+		"<nameofthispipelinefile>.pipeline-config" file (must be located in the same directory as this pipeline file).
+	-->
+	
+	<!-- register dlls -->
+	<register>		
+		<load name="ssigraphic" />
+		<load name="ssisignal" />
+		<load name="ssiioput"/>
+		<load name="shimmer3" />
+		<load name="azurekinect"/>
+		<load name="ssiaudio"/>
+	</register>
+
+<!-- ***************** Shimmer sensor ******************************************************************************************************** -->
+	<sensor create="Shimmer3GSR+" baud="115200" dim="1" sr="128.00" port="$(shimmer_comportnr)">		
+		<output channel="shimmer3ppgcalibrated" pin="ppg_cal" size="10.0s"/> <!-- "raw" ppg values, calibrated to represent mV -->
+		<output channel="shimmer3gsrconductance " pin="gsr_conductance" size="10.0s"/>
+	</sensor>
+
+		<!-- smooth ppg signal between 0.5Hz - 5Hz to remove non-hr artifacts as much as possible -->
+		<transformer create="Butfilt" zero="true" type="2" norm="false" low="0.5" high="5" order="4">
+			<input pin="ppg_cal" frame="1"/>
+			<output pin="ppg_smoothed"/>
+		</transformer>
+		<!-- convert smoothed ppg to hr -->
+		<transformer create="Shimmer3PPGToHR">
+			<input pin="ppg_smoothed" frame="1"/>
+			<output pin="hr"/>
+		</transformer>
+
+		<!-- Display values -->
+		<consumer create="SignalPainter:plotshimmer" title="raw ppg" size="10.0">
+			<input pin="ppg_cal" frame="1" />
+		</consumer>
+		<consumer create="SignalPainter:plotshimmer" title="Gsr Conductance" size="10.0">	
+			<input pin="gsr_conductance" frame="1" />
+		</consumer>
+		<consumer create="SignalPainter:plotshimmer" title="smoothed ppg" size="10.0">
+			<input pin="ppg_smoothed" frame="1" delta="0"/>
+		</consumer>
+		<consumer create="SignalPainter:plotshimmer" title="hr" size="10.0">
+			<input pin="hr" frame="1" delta="0"/>
+		</consumer>
+
+		<!-- Write ppg, gsr and hr to stream files -->
+		<consumer create="FileWriter" path="$(recording_base_filename)_gsrconductance" type="0">
+			<input pin="gsr_conductance" frame="1" />
+		</consumer>
+		<consumer create="FileWriter" path="$(recording_base_filename)_ppgraw" type="0">
+			<input pin="ppg_cal" frame="1" />
+		</consumer>
+		<consumer create="FileWriter" path="$(recording_base_filename)_hr" type="0">
+			<input pin="hr" frame="1" />
+		</consumer>
+
+<!-- ******************** Kinect sensor ******************************************************************************************************* -->
+	<sensor create="AzureKinect:kinect" sr="30.0" nrOfBodiesToTrack="1" bodyTrackingSmoothingFactor="0.5">
+		<output channel="rgb" pin="kinectrgbvis" size="5000ms"/>
+		<output channel="depthvisualisation" pin="kinectdepthvis" size="5000ms"/>
+		<output channel="skeleton" pin="kinectskeleton" size="5000ms"/> 
+		<output channel="pointcloud" pin="kinectpointcloud" size="2s"/> <!-- smaller buffer size because the point cloud has a lot of data per frame --> 
+	</sensor>
+
+		<!-- Kinect video output (disable (including the channels) to maximize performance) -->
+		<consumer create="VideoPainter:plotkinect" title="Kinect RGB" flip="false" pos="512,0,896,504">
+			<input pin="kinectrgbvis" frame="1"/>      
+		</consumer>
+		<consumer create="VideoPainter:plotkinect" title="Kinect Depth" flip="false" pos="0,0,512,512">
+			<input pin="kinectdepthvis" frame="1"/>      
+		</consumer>
+
+		<!-- Send Kinect data over network -->
+		<consumer create="SocketWriter" url="tcp://localhost:$(pointcloud_local_receiver)" format="0"> <!-- local receiver -->
+			<input pin="kinectskeleton" frame="1" />
+		</consumer>
+
+		<consumer create="SocketWriter" url="tcp://$(pointcloud_remote_receiver)" format="0"> <!-- remote receiver -->
+			<input pin="kinectpointcloud" frame="1" />
+		</consumer>
+
+		<!-- Write bodytracking to stream file -->
+		<consumer create="FileWriter" path="$(recording_base_filename)_bodytracking" type="0">
+			<input pin="kinectskeleton" frame="1" />
+		</consumer>
+
+<!-- ********************* Audio sensor ***************************************************************************************************** -->
+	<sensor create="Audio" option="audio" scale="true" blockInSamples="512">
+		<output channel="audio" pin="audio"/>
+	</sensor>
+
+		<!-- Stores the audio stream to a wav file in RIFF format.-->
+		<consumer create="WavWriter" path="$(recording_base_filename)_audio.wav" overwrite="true">
+			<input pin="audio" frame="512"/>		
+		</consumer>
+		
+		<!-- visualization -->	
+		<consumer create="SignalPainter:plotaudio" title="audio" size="10" type="2">
+			<input pin="audio" frame="0.02s"/>
+		</consumer>
+	
+<!-- Where to display which visualisations -->
+	<object create="Decorator" icon="true" title="Kinect and GSR complete pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,600,400">plotshimmer*</area>
+		<area pos="400,400,600,200">plotaudio*</area>
+		<area pos="1000,0,900,600">plotkinect*</area>
+	</object>
+</pipeline>
