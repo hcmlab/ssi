@@ -99,9 +99,14 @@ int main () {
 	Factory::RegisterDLL ("ssimicrosoftkinect2.dll");
 #endif
 
+#ifdef SSI_AZUREKINECT_ENABLED
+	Factory::RegisterDLL("ssiazurekinect.dll");
+#endif 
+
 	Exsemble ex;
 	ex.add(ex_microsoftkinect, 0, "KINECT 1", "");
 	ex.add(ex_microsoftkinect2, 0, "KINECT 2", "");
+	ex.add(ex_azurekinect, 0, "AZURE KINECT", "");
 	ex.add(ex_opennikinect, 0, "OPENNI KINECT", "");
 	ex.add(ex_xsens, 0, "XSENSE", "");
 	ex.show();
