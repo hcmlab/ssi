@@ -28,8 +28,8 @@
 #include "ssibodyfeatures.h"
 #include "microsoftkinect2\include\ssimicrosoftkinect2.h"
 #include "skeleton\include\ssiskeleton.h"
-#include "xsens\include\ssixsens.h"
-#include "myo\include\ssimyo.h"
+//#include "xsens\include\ssixsens.h"
+//#include "myo\include\ssimyo.h"
 #include "signal\include\ssisignal.h"
 using namespace ssi;
 
@@ -77,7 +77,7 @@ int main() {
 
 void ex_kinect() {
 
-	Factory::RegisterDLL("microsoftkinect2.dll");
+	//Factory::RegisterDLL("microsoftkinect2.dll");
 
 	ITheFramework *frame = Factory::GetFramework();
 	ITheEventBoard *board = Factory::GetEventBoard();
@@ -109,7 +109,7 @@ void ex_kinect() {
 
 
 	FileReader *fr = ssi_create(FileReader, 0, true);
-	fr->getOptions()->setPath("W:\\nova\\data\\aria-noxi\\001_2016-03-17_Paris\\novice.skel_ssi.stream");
+	fr->getOptions()->setPath("V:\\nova\\data\\aria-noxi\\001_2016-03-17_Paris\\novice.skel_ssi.stream");
 
 
 	ITransformable *conv_p = frame->AddProvider(fr, SSI_FILEREADER_PROVIDER_NAME);
@@ -243,196 +243,196 @@ void ex_kinect() {
 
 }
 
-void ex_xsens() {
-
-	Factory::RegisterDLL("xsens.dll");
-	ITheFramework *frame = Factory::GetFramework();
-
-	Decorator *decorator = ssi_create(Decorator, 0, true);
-	frame->AddDecorator(decorator);
-
-	ssi::ITheEventBoard *board = ssi::Factory::GetEventBoard();
-
-	Xsens *xsens = ssi_create(Xsens, 0, true);
-	xsens->setLogLevel(SSI_LOG_LEVEL_DEBUG);
-	xsens->getOptions()->numSensors = 1;
-	xsens->getOptions()->absolute = true;
-	ITransformable *xsens_acc = frame->AddProvider(xsens, SSI_XSENS_DYNACC_PROVIDER_NAME);
-	ITransformable *xsens_gyr = frame->AddProvider(xsens, SSI_XSENS_GYR_PROVIDER_NAME);
-	frame->AddSensor(xsens);
-
-	//Mouse *mouse = ssi_create(Mouse, 0, true);
-	//ITransformable* xsens_acc = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
-	//frame->AddSensor(mouse);
-
-	SignalPainter *plot_acc = ssi_create_id(SignalPainter, 0, "plot");
-	plot_acc->getOptions()->setTitle(SSI_XSENS_DYNACC_PROVIDER_NAME);
-	plot_acc->getOptions()->size = 10.0;
-	frame->AddConsumer(xsens_acc, plot_acc, "0.1s");
-
-	SignalPainter *plot_gyr = ssi_create_id(SignalPainter, 0, "plot");
-	plot_gyr->getOptions()->setTitle(SSI_XSENS_GYR_PROVIDER_NAME);
-	plot_gyr->getOptions()->size = 10.0;
-	frame->AddConsumer(xsens_gyr, plot_gyr, "0.1s");
-
-	/*
-	 * compute energy
-	 */
-	ITransformable** tr = new ITransformable*[1];
-	tr[0] = xsens_gyr;
-	EnergyAcc* energy = ssi_create(EnergyAcc, "energyacc", true);
-	energy->getOSTransformFFT()->getOptions()->nfft = 256;
-	ITransformable* energy_t = frame->AddTransformer(xsens_acc, 1, tr, energy, "128", "128");
-
-	ThresClassEventSender* evsender = ssi_create(ThresClassEventSender, 0, true);
-	evsender->getOptions()->mean = false;
-	evsender->getOptions()->setSender("Expressivity");
-	evsender->getOptions()->setEvent("Energy");
-	evsender->getOptions()->setClasses("Low, Medium, High");
-	evsender->getOptions()->setThresholds("100, 500, 2000");
-	frame->AddConsumer(energy_t, evsender, "1"); //(128+128) / 120Hz ~ 2.133s
-	board->RegisterSender(*evsender);
-
-	SignalPainter *plot_energy = ssi_create_id(SignalPainter, 0, "plot");
-	plot_energy->getOptions()->setTitle("energy");
-	plot_energy->getOptions()->size = 60.0;
-	frame->AddConsumer(energy_t, plot_energy, "1");
-
-	/*
-	 * compute oa
-	 */
-	OAAcc* oa = ssi_create(OAAcc, "oaacc", true);
-	oa->getOptions()->input = OAAcc::INPUT::DYNACC;
-	ITransformable* oa_t = frame->AddTransformer(xsens_acc, oa, "5.0s");
-
-	evsender = ssi_create(ThresClassEventSender, 0, true);
-	evsender->getOptions()->mean = false;
-	evsender->getOptions()->setSender("Expressivity");
-	evsender->getOptions()->setEvent("OverallActivation");
-	evsender->getOptions()->setClasses("Low, Medium, High");
-	evsender->getOptions()->setThresholds("0.5, 1.5, 3.0");
-	frame->AddConsumer(oa_t, evsender, "1"); // 5.0s
-	board->RegisterSender(*evsender);
-
-	SignalPainter *plot_oa = ssi_create_id(SignalPainter, 0, "plot");
-	plot_oa->getOptions()->setTitle("oa");
-	plot_oa->getOptions()->size = 60.0;
-	frame->AddConsumer(oa_t, plot_oa, "1");
-
-	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
-	board->RegisterListener(*monitor, "@", 10000);
-
-	decorator->add("console", 0, 0, 650, 800);
-	decorator->add("plot*", 650, 0, 400, 400);
-	decorator->add("monitor*", 650, 400, 400, 400);
-
-	board->Start();
-	frame->Start();
-
-	ssi_print("press enter to continue\n");
-	getchar();
-
-	frame->Stop();
-	board->Stop();
-	frame->Clear();
-	board->Clear();
-}
-
-void ex_myo() {
-
-	Factory::RegisterDLL("myo.dll");
-
-    ITheFramework *frame = Factory::GetFramework();
-
-    Decorator *decorator = ssi_create (Decorator, 0, true);
-    frame->AddDecorator(decorator);
-
-    ssi::ITheEventBoard *board = ssi::Factory::GetEventBoard();
-
-    Myo *myo = ssi_create(Myo, 0, true);
-    myo->getOptions()->computeDynAcc = true;
-    ITransformable *acc = frame->AddProvider(myo, SSI_MYO_ACCELERATION_PROVIDER_NAME);
-    ITransformable *gyr = frame->AddProvider(myo, SSI_MYO_ORIENTATION_PROVIDER_NAME);
-    frame->AddSensor(myo);
-
-    //Mouse *mouse = ssi_create(Mouse, 0, true);
-    //ITransformable* xsens_acc = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
-    //frame->AddSensor(mouse);
-
-    SignalPainter *plot_acc = ssi_create_id (SignalPainter, 0, "plot");
-    plot_acc->getOptions()->setTitle(SSI_XSENS_DYNACC_PROVIDER_NAME);
-    plot_acc->getOptions()->size = 10.0;
-    frame->AddConsumer(acc, plot_acc, "0.1s");
-
-    SignalPainter *plot_gyr = ssi_create_id (SignalPainter, 0, "plot");
-    plot_gyr->getOptions()->setTitle(SSI_XSENS_GYR_PROVIDER_NAME);
-    plot_gyr->getOptions()->size = 10.0;
-    frame->AddConsumer(gyr, plot_gyr, "0.1s");
-
-    /*
-    * compute energy
-    */
-    ITransformable** tr = new ITransformable*[1];
-    tr[0] = gyr;
-    EnergyAcc* energy = ssi_create(EnergyAcc, "energyacc", true);
-    energy->getOSTransformFFT()->getOptions()->nfft = 256;
-    ITransformable* energy_t = frame->AddTransformer(acc, 1, tr, energy, "128", "128");
-
-    ThresClassEventSender* evsender = ssi_create(ThresClassEventSender, 0, true);
-    evsender->getOptions()->mean = false;
-    evsender->getOptions()->setSender("Expressivity");
-    evsender->getOptions()->setEvent("Energy");
-    evsender->getOptions()->setClasses("Low, Medium, High");
-    evsender->getOptions()->setThresholds("100, 500, 2000");
-    frame->AddConsumer(energy_t, evsender, "1"); //(128+128) / 120Hz ~ 2.133s
-    board->RegisterSender(*evsender);
-
-    SignalPainter *plot_energy = ssi_create_id (SignalPainter, 0, "plot");
-    plot_energy->getOptions()->setTitle("energy");
-    plot_energy->getOptions()->size = 60.0;
-    frame->AddConsumer(energy_t, plot_energy, "1");
-
-    /*
-    * compute oa
-    */
-    OAAcc* oa = ssi_create(OAAcc, "oaacc", true);
-    oa->getOptions()->input = OAAcc::INPUT::DYNACC;
-    ITransformable* oa_t = frame->AddTransformer(acc, oa, "0.1s", "5.0s");
-
-    MvgAvgVar* avg = ssi_create(MvgAvgVar, 0, true);
-    avg->getOptions()->win = 50;
-    avg->getOptions()->format = MvgAvgVar::FORMAT::AVG;
-    ITransformable* oaf_t = frame->AddTransformer(oa_t, avg, "1");
-
-    evsender = ssi_create(ThresClassEventSender, 0, true);
-    evsender->getOptions()->mean = false;
-    evsender->getOptions()->setSender("Expressivity");
-    evsender->getOptions()->setEvent("OverallActivation");
-    evsender->getOptions()->setClasses("Low, Medium, High");
-    evsender->getOptions()->setThresholds("0.0, 0.8, 2.0");
-    frame->AddConsumer(oaf_t, evsender, "1"); // 5.0s
-    board->RegisterSender(*evsender);
-
-    SignalPainter *plot_oa = ssi_create_id (SignalPainter, 0, "plot");
-    plot_oa->getOptions()->setTitle("oa");
-    plot_oa->getOptions()->size = 60.0;
-    frame->AddConsumer(oaf_t, plot_oa, "1");
-
-    EventMonitor *monitor = ssi_create_id (EventMonitor, 0, "monitor");
-    board->RegisterListener(*monitor, "@", 10000);
-
-    decorator->add("console", 0, 0, 650, 800);
-    decorator->add("plot*", 650, 0, 400, 400);
-    decorator->add("monitor*", 650, 400, 400, 400);
-
-    board->Start();
-    frame->Start();
-
-    ssi_print("press enter to continue\n");
-    getchar();
-
-    frame->Stop();
-    board->Stop();
-    frame->Clear();
-    board->Clear();
-}
+//void ex_xsens() {
+//
+//	Factory::RegisterDLL("xsens.dll");
+//	ITheFramework *frame = Factory::GetFramework();
+//
+//	Decorator *decorator = ssi_create(Decorator, 0, true);
+//	frame->AddDecorator(decorator);
+//
+//	ssi::ITheEventBoard *board = ssi::Factory::GetEventBoard();
+//
+//	Xsens *xsens = ssi_create(Xsens, 0, true);
+//	xsens->setLogLevel(SSI_LOG_LEVEL_DEBUG);
+//	xsens->getOptions()->numSensors = 1;
+//	xsens->getOptions()->absolute = true;
+//	ITransformable *xsens_acc = frame->AddProvider(xsens, SSI_XSENS_DYNACC_PROVIDER_NAME);
+//	ITransformable *xsens_gyr = frame->AddProvider(xsens, SSI_XSENS_GYR_PROVIDER_NAME);
+//	frame->AddSensor(xsens);
+//
+//	//Mouse *mouse = ssi_create(Mouse, 0, true);
+//	//ITransformable* xsens_acc = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+//	//frame->AddSensor(mouse);
+//
+//	SignalPainter *plot_acc = ssi_create_id(SignalPainter, 0, "plot");
+//	plot_acc->getOptions()->setTitle(SSI_XSENS_DYNACC_PROVIDER_NAME);
+//	plot_acc->getOptions()->size = 10.0;
+//	frame->AddConsumer(xsens_acc, plot_acc, "0.1s");
+//
+//	SignalPainter *plot_gyr = ssi_create_id(SignalPainter, 0, "plot");
+//	plot_gyr->getOptions()->setTitle(SSI_XSENS_GYR_PROVIDER_NAME);
+//	plot_gyr->getOptions()->size = 10.0;
+//	frame->AddConsumer(xsens_gyr, plot_gyr, "0.1s");
+//
+//	/*
+//	 * compute energy
+//	 */
+//	ITransformable** tr = new ITransformable*[1];
+//	tr[0] = xsens_gyr;
+//	EnergyAcc* energy = ssi_create(EnergyAcc, "energyacc", true);
+//	energy->getOSTransformFFT()->getOptions()->nfft = 256;
+//	ITransformable* energy_t = frame->AddTransformer(xsens_acc, 1, tr, energy, "128", "128");
+//
+//	ThresClassEventSender* evsender = ssi_create(ThresClassEventSender, 0, true);
+//	evsender->getOptions()->mean = false;
+//	evsender->getOptions()->setSender("Expressivity");
+//	evsender->getOptions()->setEvent("Energy");
+//	evsender->getOptions()->setClasses("Low, Medium, High");
+//	evsender->getOptions()->setThresholds("100, 500, 2000");
+//	frame->AddConsumer(energy_t, evsender, "1"); //(128+128) / 120Hz ~ 2.133s
+//	board->RegisterSender(*evsender);
+//
+//	SignalPainter *plot_energy = ssi_create_id(SignalPainter, 0, "plot");
+//	plot_energy->getOptions()->setTitle("energy");
+//	plot_energy->getOptions()->size = 60.0;
+//	frame->AddConsumer(energy_t, plot_energy, "1");
+//
+//	/*
+//	 * compute oa
+//	 */
+//	OAAcc* oa = ssi_create(OAAcc, "oaacc", true);
+//	oa->getOptions()->input = OAAcc::INPUT::DYNACC;
+//	ITransformable* oa_t = frame->AddTransformer(xsens_acc, oa, "5.0s");
+//
+//	evsender = ssi_create(ThresClassEventSender, 0, true);
+//	evsender->getOptions()->mean = false;
+//	evsender->getOptions()->setSender("Expressivity");
+//	evsender->getOptions()->setEvent("OverallActivation");
+//	evsender->getOptions()->setClasses("Low, Medium, High");
+//	evsender->getOptions()->setThresholds("0.5, 1.5, 3.0");
+//	frame->AddConsumer(oa_t, evsender, "1"); // 5.0s
+//	board->RegisterSender(*evsender);
+//
+//	SignalPainter *plot_oa = ssi_create_id(SignalPainter, 0, "plot");
+//	plot_oa->getOptions()->setTitle("oa");
+//	plot_oa->getOptions()->size = 60.0;
+//	frame->AddConsumer(oa_t, plot_oa, "1");
+//
+//	EventMonitor *monitor = ssi_create_id(EventMonitor, 0, "monitor");
+//	board->RegisterListener(*monitor, "@", 10000);
+//
+//	decorator->add("console", 0, 0, 650, 800);
+//	decorator->add("plot*", 650, 0, 400, 400);
+//	decorator->add("monitor*", 650, 400, 400, 400);
+//
+//	board->Start();
+//	frame->Start();
+//
+//	ssi_print("press enter to continue\n");
+//	getchar();
+//
+//	frame->Stop();
+//	board->Stop();
+//	frame->Clear();
+//	board->Clear();
+//}
+//
+//void ex_myo() {
+//
+//	Factory::RegisterDLL("myo.dll");
+//
+//    ITheFramework *frame = Factory::GetFramework();
+//
+//    Decorator *decorator = ssi_create (Decorator, 0, true);
+//    frame->AddDecorator(decorator);
+//
+//    ssi::ITheEventBoard *board = ssi::Factory::GetEventBoard();
+//
+//    Myo *myo = ssi_create(Myo, 0, true);
+//    myo->getOptions()->computeDynAcc = true;
+//    ITransformable *acc = frame->AddProvider(myo, SSI_MYO_ACCELERATION_PROVIDER_NAME);
+//    ITransformable *gyr = frame->AddProvider(myo, SSI_MYO_ORIENTATION_PROVIDER_NAME);
+//    frame->AddSensor(myo);
+//
+//    //Mouse *mouse = ssi_create(Mouse, 0, true);
+//    //ITransformable* xsens_acc = frame->AddProvider(mouse, SSI_MOUSE_CURSOR_PROVIDER_NAME);
+//    //frame->AddSensor(mouse);
+//
+//    SignalPainter *plot_acc = ssi_create_id (SignalPainter, 0, "plot");
+//    plot_acc->getOptions()->setTitle(SSI_XSENS_DYNACC_PROVIDER_NAME);
+//    plot_acc->getOptions()->size = 10.0;
+//    frame->AddConsumer(acc, plot_acc, "0.1s");
+//
+//    SignalPainter *plot_gyr = ssi_create_id (SignalPainter, 0, "plot");
+//    plot_gyr->getOptions()->setTitle(SSI_XSENS_GYR_PROVIDER_NAME);
+//    plot_gyr->getOptions()->size = 10.0;
+//    frame->AddConsumer(gyr, plot_gyr, "0.1s");
+//
+//    /*
+//    * compute energy
+//    */
+//    ITransformable** tr = new ITransformable*[1];
+//    tr[0] = gyr;
+//    EnergyAcc* energy = ssi_create(EnergyAcc, "energyacc", true);
+//    energy->getOSTransformFFT()->getOptions()->nfft = 256;
+//    ITransformable* energy_t = frame->AddTransformer(acc, 1, tr, energy, "128", "128");
+//
+//    ThresClassEventSender* evsender = ssi_create(ThresClassEventSender, 0, true);
+//    evsender->getOptions()->mean = false;
+//    evsender->getOptions()->setSender("Expressivity");
+//    evsender->getOptions()->setEvent("Energy");
+//    evsender->getOptions()->setClasses("Low, Medium, High");
+//    evsender->getOptions()->setThresholds("100, 500, 2000");
+//    frame->AddConsumer(energy_t, evsender, "1"); //(128+128) / 120Hz ~ 2.133s
+//    board->RegisterSender(*evsender);
+//
+//    SignalPainter *plot_energy = ssi_create_id (SignalPainter, 0, "plot");
+//    plot_energy->getOptions()->setTitle("energy");
+//    plot_energy->getOptions()->size = 60.0;
+//    frame->AddConsumer(energy_t, plot_energy, "1");
+//
+//    /*
+//    * compute oa
+//    */
+//    OAAcc* oa = ssi_create(OAAcc, "oaacc", true);
+//    oa->getOptions()->input = OAAcc::INPUT::DYNACC;
+//    ITransformable* oa_t = frame->AddTransformer(acc, oa, "0.1s", "5.0s");
+//
+//    MvgAvgVar* avg = ssi_create(MvgAvgVar, 0, true);
+//    avg->getOptions()->win = 50;
+//    avg->getOptions()->format = MvgAvgVar::FORMAT::AVG;
+//    ITransformable* oaf_t = frame->AddTransformer(oa_t, avg, "1");
+//
+//    evsender = ssi_create(ThresClassEventSender, 0, true);
+//    evsender->getOptions()->mean = false;
+//    evsender->getOptions()->setSender("Expressivity");
+//    evsender->getOptions()->setEvent("OverallActivation");
+//    evsender->getOptions()->setClasses("Low, Medium, High");
+//    evsender->getOptions()->setThresholds("0.0, 0.8, 2.0");
+//    frame->AddConsumer(oaf_t, evsender, "1"); // 5.0s
+//    board->RegisterSender(*evsender);
+//
+//    SignalPainter *plot_oa = ssi_create_id (SignalPainter, 0, "plot");
+//    plot_oa->getOptions()->setTitle("oa");
+//    plot_oa->getOptions()->size = 60.0;
+//    frame->AddConsumer(oaf_t, plot_oa, "1");
+//
+//    EventMonitor *monitor = ssi_create_id (EventMonitor, 0, "monitor");
+//    board->RegisterListener(*monitor, "@", 10000);
+//
+//    decorator->add("console", 0, 0, 650, 800);
+//    decorator->add("plot*", 650, 0, 400, 400);
+//    decorator->add("monitor*", 650, 400, 400, 400);
+//
+//    board->Start();
+//    frame->Start();
+//
+//    ssi_print("press enter to continue\n");
+//    getchar();
+//
+//    frame->Stop();
+//    board->Stop();
+//    frame->Clear();
+//    board->Clear();
+//}

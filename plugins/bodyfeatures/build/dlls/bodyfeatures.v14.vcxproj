@@ -47,6 +47,7 @@
     <RootNamespace>Esmeralda</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>bodyfeatures</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
