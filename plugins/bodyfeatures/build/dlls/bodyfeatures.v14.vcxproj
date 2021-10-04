@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\BodyProperties.h" />
+    <ClInclude Include="..\..\include\BodyProperties2D.h" />
     <ClInclude Include="..\..\include\EnergyAcc.h" />
     <ClInclude Include="..\..\include\FluidityMovement.h" />
     <ClInclude Include="..\..\include\EnergyMovement.h" />
@@ -32,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\BodyProperties.cpp" />
+    <ClCompile Include="..\..\source\BodyProperties2D.cpp" />
     <ClCompile Include="..\..\source\EnergyAcc.cpp" />
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\FluidityMovement.cpp" />

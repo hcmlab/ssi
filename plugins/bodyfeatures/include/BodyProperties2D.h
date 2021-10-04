@@ -1,3 +1,4 @@
+#pragma once
 // BodyProperties2D.h
 // author: Tobias Baur <tobias.baur@informatik.uni-augsburg.de>
 // created: 2017/07/13
@@ -26,8 +27,8 @@
 
 #pragma once
 
-#ifndef SSI_EVENT_BodyProperties_H
-#define SSI_EVENT_BodyProperties_H
+#ifndef SSI_EVENT_BodyProperties2D_H
+#define SSI_EVENT_BodyProperties2D_H
 
 #include "base/IFeature.h"
 #include "ioput/option/OptionList.h"
@@ -36,7 +37,7 @@
 #include "thread/Timer.h"
 
 namespace ssi {
-	class BodyProperties : public IFeature {
+	class BodyProperties2D : public IFeature {
 	public:
 
 		class Options : public OptionList {
@@ -44,7 +45,7 @@ namespace ssi {
 
 			Options() :hangin(0), hangout(0),
 				leanfrontthreshold(-230.0), leanbackthreshold(100.0), shouldersupthreshold(80.0), elbowdistancethreshold(400.0),
-				armsopenthreshold(500.0), handheadthreshold(300), armscrossedthres(150), handhipdistancethres(300){
+				armsopenthreshold(500.0), handheadthreshold(300), armscrossedthres(150), handhipdistancethres(300) {
 				setSender("BodyProperties2D");
 				setEvent("BodyProperty");
 				addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender (if sent to event board)");
@@ -61,13 +62,13 @@ namespace ssi {
 				addOption("handhipdistnacethres", &handhipdistancethres, 1, SSI_REAL, "Threshold for hip-wrist distance");
 			};
 
-			void setSender(const ssi_char_t *sname) {
+			void setSender(const ssi_char_t* sname) {
 				if (sname) {
 					ssi_strcpy(this->sname, sname);
 				}
 			}
 
-			void setEvent(const ssi_char_t *ename) {
+			void setEvent(const ssi_char_t* ename) {
 				if (ename) {
 					ssi_strcpy(this->ename, ename);
 				}
@@ -89,36 +90,36 @@ namespace ssi {
 
 	public:
 
-		static const ssi_char_t *GetCreateName() { return "BodyProperties2D"; };
-		static IObject *Create(const ssi_char_t *file) { return new BodyProperties(file); };
-		~BodyProperties();
-		BodyProperties::Options *getOptions() { return &_options; };
-		const ssi_char_t *getName() { return GetCreateName(); };
-		const ssi_char_t *getInfo() { return "Body Properties Detection. Gives normalized confidence values for defined properties"; };
+		static const ssi_char_t* GetCreateName() { return "BodyProperties2D"; };
+		static IObject* Create(const ssi_char_t* file) { return new BodyProperties2D(file); };
+		~BodyProperties2D();
+		BodyProperties2D::Options* getOptions() { return &_options; };
+		const ssi_char_t* getName() { return GetCreateName(); };
+		const ssi_char_t* getInfo() { return "Body Properties Detection. Gives normalized confidence values for defined properties"; };
 
-		static ssi_char_t **GetPropertyNames(ssi_size_t &n) {
-			static ssi_char_t *names[] = { "LeanPosture", "ArmOpenness", "HeadOrientation", "HeadTilt",
+		static ssi_char_t** GetPropertyNames(ssi_size_t& n) {
+			static ssi_char_t* names[] = { "LeanPosture", "ArmOpenness", "HeadOrientation", "HeadTilt",
 				"ArmsCrossed", "HeadNod", "HeadShake", "HeadTouch",
 				"HandDistanceLeft", "HandDistanceRight", "AngleElbowLeftY", "AngleElbowRightY",
 				"HandDistanceFrontLeft", "HandDistanceFrontRight", "AngleElbowLeftX","AngleElbowRightX",
-				"EnergyHead", "HeadRotationX", "StandardDeviationHeadX", "StandardDeviationHeadRot"};
-			n = sizeof(names) / sizeof(ssi_char_t *);
+				"EnergyHead", "HeadRotationX", "StandardDeviationHeadX", "StandardDeviationHeadRot" };
+			n = sizeof(names) / sizeof(ssi_char_t*);
 			return names;
 		}
 
 		//transformer
 
 		void transform_enter(
-			ssi_stream_t &stream_in,
-			ssi_stream_t &stream_out,
+			ssi_stream_t& stream_in,
+			ssi_stream_t& stream_out,
 			ssi_size_t xtra_stream_in_num = 0,
 			ssi_stream_t xtra_stream_in[] = 0);
 		void transform(ITransformer::info info,
-			ssi_stream_t &stream_in,
-			ssi_stream_t &stream_out,
+			ssi_stream_t& stream_in,
+			ssi_stream_t& stream_out,
 			ssi_size_t xtra_stream_in_num = 0,
 			ssi_stream_t xtra_stream_in[] = 0);
-		
+
 
 		ssi_size_t getSampleDimensionOut(ssi_size_t sample_dimension_in) {
 			ssi_size_t NPropertyNames;
@@ -126,7 +127,7 @@ namespace ssi {
 			return  NPropertyNames;
 		}
 		ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {
-	
+
 			return sizeof(SSI_FLOAT);
 		}
 		ssi_type_t getSampleTypeOut(ssi_type_t sample_type_in) {
@@ -138,8 +139,8 @@ namespace ssi {
 		}
 
 		//event sender
-		bool setEventListener(IEventListener *listener);
-		const ssi_char_t *getEventAddress() {
+		bool setEventListener(IEventListener* listener);
+		const ssi_char_t* getEventAddress() {
 			return _event_address.getAddress();
 		}
 
@@ -149,14 +150,14 @@ namespace ssi {
 
 	protected:
 
-		BodyProperties(const ssi_char_t *file = 0);
-		BodyProperties::Options _options;
-		ssi_char_t *_file;
+		BodyProperties2D(const ssi_char_t* file = 0);
+		BodyProperties2D::Options _options;
+		ssi_char_t* _file;
 
-		static char *ssi_log_name;
+		static char* ssi_log_name;
 		int ssi_log_level;
 
-		IEventListener *_elistener;
+		IEventListener* _elistener;
 		ssi_event_t _event;
 		EventAddress _event_address;
 
@@ -167,13 +168,13 @@ namespace ssi {
 		ssi_real_t normalizevalue(ssi_real_t value, ssi_real_t min, ssi_real_t max);
 
 		ssi_size_t NPropertyNames;
-		ssi_char_t **PropertyNames;
-		ssi_real_t *values;
+		ssi_char_t** PropertyNames;
+		ssi_real_t* values;
 		bool highXInsideDirection, leftarmdown, rightarmdown, alrdycnt;
 		bool high1, high2, low1, low2, pause1, pause2, left1, left2, right1, right2;
 		ssi_real_t framecount, lasthnf;
-		ssi_size_t *nodcount;
-		Timer*                      m_timer;
+		ssi_size_t* nodcount;
+		Timer* m_timer;
 	};
 }
 

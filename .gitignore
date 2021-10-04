@@ -29,7 +29,6 @@ bin/x64/vc140/share/*
 libs/build/
 plugins/model/pipes/model
 plugins/bayesnet
-plugins/bodyfeatures
 
 
 
@@ -209,3 +208,6 @@ bin/x64/vc140/winsound.pyd
 bin/x64/vc140/python38.dll
 bin/x64/vc140/python.cat
 bin/x64/vc140/libffi-7.dll
+plugins/bodyfeatures/build/test/ssi_last.err
+plugins/bodyfeatures/build/Release/x64/vc140/test.exe
+plugins/bodyfeatures/build/Release/x64/vc140/test.lib
