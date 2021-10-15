@@ -35,6 +35,7 @@
 #include "event/EventAddress.h"
 #include "SSI_SkeletonCons.h"
 #include "thread/Timer.h"
+#include "iostream"
 
 namespace ssi {
 	class BodyProperties2D : public IFeature {

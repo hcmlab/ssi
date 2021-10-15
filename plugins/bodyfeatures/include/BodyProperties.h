@@ -45,7 +45,7 @@ namespace ssi {
 			Options() :hangin(0), hangout(0),
 				leanfrontthreshold(-230.0), leanbackthreshold(100.0), shouldersupthreshold(80.0), elbowdistancethreshold(400.0),
 				armsopenthreshold(500.0), handheadthreshold(300), armscrossedthres(150), handhipdistancethres(300){
-				setSender("BodyProperties2D");
+				setSender("BodyProperties");
 				setEvent("BodyProperty");
 				addOption("sname", sname, SSI_MAX_CHAR, SSI_CHAR, "name of sender (if sent to event board)");
 				addOption("ename", ename, SSI_MAX_CHAR, SSI_CHAR, "name of event (if sent to event board)");
@@ -89,7 +89,7 @@ namespace ssi {
 
 	public:
 
-		static const ssi_char_t *GetCreateName() { return "BodyProperties2D"; };
+		static const ssi_char_t *GetCreateName() { return "BodyProperties"; };
 		static IObject *Create(const ssi_char_t *file) { return new BodyProperties(file); };
 		~BodyProperties();
 		BodyProperties::Options *getOptions() { return &_options; };

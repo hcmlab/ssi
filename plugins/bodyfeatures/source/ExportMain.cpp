@@ -52,6 +52,8 @@ DLLEXP bool Register(ssi::Factory *factory, FILE *logfile, ssi::IMessage *messag
 	result = ssi::Factory::Register(ssi::OAAcc::GetCreateName(), ssi::OAAcc::Create) && result;
 	result = ssi::Factory::Register(ssi::Openness::GetCreateName(), ssi::Openness::Create) && result;
 	result = ssi::Factory::Register(ssi::RelativeMovement::GetCreateName(), ssi::RelativeMovement::Create) && result;
+	result = ssi::Factory::Register(ssi::BodyProperties2D::GetCreateName(), ssi::BodyProperties2D::Create) && result;
+
 
 	return result;
 }

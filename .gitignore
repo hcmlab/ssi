@@ -211,3 +211,6 @@ bin/x64/vc140/libffi-7.dll
 plugins/bodyfeatures/build/test/ssi_last.err
 plugins/bodyfeatures/build/Release/x64/vc140/test.exe
 plugins/bodyfeatures/build/Release/x64/vc140/test.lib
+plugins/ssi_plux/*
+bin/x64/vc140/ssiplux.dll
+docs/api/ssiplux.html

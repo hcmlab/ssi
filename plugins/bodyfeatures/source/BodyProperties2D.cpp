@@ -117,9 +117,12 @@ namespace ssi {
 		ssi_real_t* out = ssi_pcast(ssi_real_t, stream_out.ptr);
 		SSI_SKELETON* ss = 0;
 
+		for (ssi_size_t i = 0; i < NPropertyNames; i++) {
+			values[i] = 0.0;
+		}
 
 		for (int i = 0; i < NPropertyNames; i++) {
-			*(out++) = values[i];
+			*(out++) = 0.0;
 		}
 
 		_event.time = ssi_cast(ssi_size_t, 1000 * info.time + 0.5);

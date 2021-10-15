@@ -38,5 +38,7 @@
 #include "EnergyAcc.h"
 #include "OAAcc.h"
 #include "Openness.h"
+#include "BodyProperties2D.h"
+
 
 #endif
