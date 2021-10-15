@@ -117,8 +117,17 @@ namespace ssi {
 		ssi_real_t* out = ssi_pcast(ssi_real_t, stream_out.ptr);
 		SSI_SKELETON* ss = 0;
 
+		if (sample_dimension == SSI_SKELETON_JOINT::NUM * SSI_SKELETON_JOINT_VALUE::NUM) {
+			ss = ssi_pcast(SSI_SKELETON, stream_in.ptr);
+		}
+
 		for (ssi_size_t i = 0; i < NPropertyNames; i++) {
 			values[i] = 0.0;
+		}
+
+		for (ssi_size_t i = 0; i < sample_number; i++)
+		{	
+			ssi_print("%f", ss[i][SSI_SKELETON_JOINT::HEAD][SSI_SKELETON_JOINT_VALUE::POS_X]);
 		}
 
 		for (int i = 0; i < NPropertyNames; i++) {
