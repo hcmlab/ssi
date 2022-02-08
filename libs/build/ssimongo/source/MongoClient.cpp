@@ -110,32 +110,32 @@ namespace ssi
 			return false;
 		}
 
-		if (!auto_create)
-		{
-			char **dbs = mongoc_client_get_database_names(_client, &error);
-			if (dbs)
-			{
-				bool found = false;
-				for (ssi_size_t i = 0; dbs[i]; i++)
-				{
-					if (ssi_strcmp(dbs[i], db_name))
-					{
-						found = true;
-						break;
-					}
-				}
-				bson_strfreev(dbs);
-				if (!found)
-				{
-					ssi_wrn("database not found '%s'", _db_name);
-					return false;
-				}
-			}
-			else {
-				ssi_wrn("could not get database names '%s'", error.message);
-				return false;
-			}
-		}
+		// if (!auto_create)
+		// {
+		// 	char **dbs = mongoc_client_get_database_names(_client, &error);
+		// 	if (dbs)
+		// 	{
+		// 		bool found = false;
+		// 		for (ssi_size_t i = 0; dbs[i]; i++)
+		// 		{
+		// 			if (ssi_strcmp(dbs[i], db_name))
+		// 			{
+		// 				found = true;
+		// 				break;
+		// 			}
+		// 		}
+		// 		bson_strfreev(dbs);
+		// 		if (!found)
+		// 		{
+		// 			ssi_wrn("database not found '%s'", _db_name);
+		// 			return false;
+		// 		}
+		// 	}
+		// 	else {
+		// 		ssi_wrn("could not get database names '%s'", error.message);
+		// 		return false;
+		// 	}
+		// }
 
 		_db = mongoc_client_get_database(_client, _db_name);
 		if (!_db)
