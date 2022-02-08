@@ -14,7 +14,7 @@ namespace ssi{
 
 	class Websockserver : public ssi::Thread {
 	public:
-		Websockserver(Websocket *socket);
+		Websockserver(Websocket *socket, size_t eventLoopSleepTimeMs);
 		~Websockserver();
 		void enter();
 		void run();
@@ -33,7 +33,7 @@ namespace ssi{
 		static void broadcastRaw(struct mg_connection *nc, const char *msg, size_t len);
 		static void ev_handler(struct mg_connection *nc, int ev, void *ev_data);
 
-
+		size_t intervalSleepTimeMs;
 		bool stop;
 
 		ssi::Mutex shutdownMutex;

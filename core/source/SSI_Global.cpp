@@ -115,6 +115,7 @@ ssi_char_t *SSI_SKELETON_TYPE_NAMES[SSI_SKELETON_TYPE::NUM]
 	"openkinect",
 	"xsense",
 	"kinect2",
+	"azurekinect"
 };
 
 ssi_char_t *SSI_FACE_TYPE_NAMES[SSI_FACE_TYPE::NUM]

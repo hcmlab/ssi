@@ -29,13 +29,13 @@
 #ifndef SSI_TRANSFORMER_PRAATSCRIPT_H
 #define SSI_TRANSFORMER_PRAATSCRIPT_H
 
-#include "base/ITransformer.h"
+#include "base/IFilter.h"
 #include "PraatScriptOptions.h"
 #include "PraatScriptIParser.h"
 
 namespace ssi {
 
-class PraatScriptBaseT : public ITransformer {
+class PraatScriptBaseT : public IFilter {
 
 public:
 

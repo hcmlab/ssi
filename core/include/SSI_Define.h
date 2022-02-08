@@ -35,11 +35,11 @@
 #define SSI_INLINE inline
 
 // version (major.minor.maintenance)
-#define SSI_VERSION "v1.0.4"
+#define SSI_VERSION "v1.0.5"
 
 // copyright
 #define SSI_COPYRIGHT "Built with Social Signal Interpretation (SSI)\n\n\
-(c) 2007-19 University of Augsburg, Lab for Human Centered Multimedia\n\
+(c) 2007-22 University of Augsburg, Germany. Lab for Human-Centered Artificial Intelligence\n\
 Johannes Wagner, Tobias Baur, Florian Lingenfelser, Andreas Seiderer, Simon Flutura, Dominik Schiller, Ionut Damian\n\n\
 website: http://openssi.net\n\
 contact: support@openssi.net"
