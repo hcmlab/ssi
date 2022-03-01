@@ -212,3 +212,5 @@ bin/x64/vc140/libffi-7.dll
 .vs/ssi_core.v14/FileContentIndex/a70382d9-b4f2-4098-85be-5f1037c44998.vsidx
 .vs/ssi_core.v14/FileContentIndex/0476ed85-2e33-46cc-be73-e5df8142babf.vsidx
 *.vsidx
+plugins/dialog/build/dlls/Release/x64/vc140/.NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+.vs/ssi_core.v14/v17/fileList.bin
