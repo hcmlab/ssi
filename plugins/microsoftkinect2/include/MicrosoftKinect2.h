@@ -132,6 +132,43 @@ class MicrosoftKinect2 : public ISensor, public Thread {
 
 public:
 
+
+	struct SKELETON_JOINT
+	{
+		enum List
+		{
+
+			SPINEBASE = 0,
+			SPINEMID,
+			NECK,
+			HEAD,
+			SHOULDER_LEFT,
+			ELBOW_LEFT,
+			WRIST_LEFT,
+			HAND_LEFT,
+			SHOULDER_RIGHT,
+			ELBOW_RIGHT,
+			WRIST_RIGHT,
+			HAND_RIGHT,
+			HIP_LEFT,
+			KNEE_LEFT,
+			ANKLE_LEFT,
+			FOOT_LEFT,
+			HIP_RIGHT,
+			KNEE_RIGHT,
+			ANKLE_RIGHT,
+			FOOT_RIGHT,
+			SPINE_SHOULDER,
+			HANDTIP_LEFT,
+			THUMB_LEFT,
+			HANDTIP_RIGHT,
+			THUMB_RIGHT,
+
+
+			NUM
+		};
+	};
+
 	struct SKELETON_JOINT_VALUE
 	{
 		enum List
@@ -157,8 +194,8 @@ public:
 		};
 	};
 
-	typedef float SKELETON[SSI_MICROSOFTKINECT2_JOINT_COUNT][SKELETON_JOINT_VALUE::NUM];
-	typedef float SKELETONCONF[SSI_MICROSOFTKINECT2_JOINT_COUNT];
+	typedef float SKELETON[SKELETON_JOINT::NUM][SKELETON_JOINT_VALUE::NUM];
+	typedef float SKELETONCONF[SKELETON_JOINT::NUM];
 	typedef float HANDPOSE[2];
 	
 	struct FACEPOINT {
