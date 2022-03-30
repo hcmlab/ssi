@@ -79,7 +79,10 @@ namespace ssi {
 
 	ssi_real_t calculateEnergy(ssi_real_t x, ssi_real_t y, ssi_real_t z)
 	{
-		return ((x * x + y * y + z * z) / 3);
+		if(z == 0.0)
+			return ((x * x + y * y) / 2);
+
+		else return ((x * x + y * y + z * z) / 3);
 	}
 
 	void EnergyMovement::transform(ITransformer::info info,
@@ -104,43 +107,72 @@ namespace ssi {
 		{
 			for (int l = 0; l < _options.maxdim; l++)
 			{
-				if (ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_CONF] > 0.5f && ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_CONF] > 0.5f)
-				{
-					if (energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_X] > 0 && energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Y] > 0 && energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Z] > 0)
+				/*if (ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_CONF] > 0.5f && ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_CONF] > 0.5f)
+				{*/
+					if (energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_X] > 0 && energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Y] > 0)
 					{
 						tmp_x = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_X] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_X]) - energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_X];
 						tmp_y = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Y] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_Y]) - energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Y];
+						if (!_options.twoD) {
 						tmp_z = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_Z]) - energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Z];
 						sumdata[l] += calculateEnergy(tmp_x, tmp_y, tmp_z);
+						}
+						else {
+							sumdata[l] += calculateEnergy(tmp_x, tmp_y, 0.0f);
+						}
 						sumcount[l] += 1;
 					}
 					energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_X] = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_X] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_X]);
 					energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Y] = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Y] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_Y]);
+					if(!_options.twoD){
 					energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Z] = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][l][SSI_SKELETON_JOINT_VALUE::POS_Z]);
-				}
-				else
+				   }
+			
+				/*else
 				{
 					energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_X] = energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Y] = energydata_temp[l][SSI_SKELETON_JOINT_VALUE::POS_Z] = 0.0f;
-				}
+				}*/
 			}
 		}
 
 
 
-
-
-		for (int i = 0; i < _options.maxdim; i++)
+		if (_options.global)
 		{
-			ssi_real_t val = sumcount[i] > 0 ? sqrt(sumdata[i] / sumcount[i]) : 0;
+			ssi_real_t result = 0;
+			for (int i = 0; i < _options.maxdim; i++)
+			{
+				ssi_real_t val = sumcount[i] > 0 ? sqrt(sumdata[i] / sumcount[i]) : 0;
 
-			if (_options.norm){
-				*(dstptr++) = normalizevalue(val, 0, _options.normmax);
+				if (_options.norm) {
+					result += normalizevalue(val, 0, _options.normmax);
+				}
+				else {
+					result += val;
+				}
+
 			}
-			else {
-				*(dstptr++) = val;
-			}
-			
+
+			*(dstptr++) = result / _options.maxdim;
+
 		}
+
+		else {
+			for (int i = 0; i < _options.maxdim; i++)
+			{
+				ssi_real_t val = sumcount[i] > 0 ? sqrt(sumdata[i] / sumcount[i]) : 0;
+
+				if (_options.norm) {
+					*(dstptr++) = normalizevalue(val, 0, _options.normmax);
+				}
+				else {
+					*(dstptr++) = val;
+				}
+
+			}
+		}
+
+		
 	}
 
 
