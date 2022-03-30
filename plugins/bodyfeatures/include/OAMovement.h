@@ -47,16 +47,17 @@ namespace ssi {
 		public:
 
 			Options()
-				: global(false), normalizeByMinMax(false), normalizemaxval(0.5), normalizeminval(0.0), normalizeByArmSpan(false), stdArmSpan(1400) {
+				: global(false), normalizeByMinMax(false), normalizemaxval(0.5), normalizeminval(0.0), normalizeByArmSpan(false), stdArmSpan(1400), twoD(true) {
 				addOption("global", &global, 1, SSI_BOOL, "calculate oa over dimensions");
 				addOption("normalizeByArmSpan", &normalizeByArmSpan, 1, SSI_BOOL, "Normalize by comparing user's arm span with a standard arm span");
 				addOption("stdArmSpan", &stdArmSpan, 1, SSI_FLOAT, "Standard human arm span (in mm)");
 				addOption("normalizeByMinMax", &normalizeByMinMax, 1, SSI_BOOL, "Normalize output between 0 and 1");
 				addOption("normalizemaxValue", &normalizemaxval, 1, SSI_FLOAT, "Normalize between 0 and this max value");
 				addOption("normalizeminValue", &normalizemaxval, 1, SSI_FLOAT, "Normalize between this minValue and this max value");
+				addOption("2D", &twoD, 1, SSI_FLOAT, "Use only x and y dimensions");
 			};
 
-			bool global, normalizeByMinMax, normalizeByArmSpan;
+			bool global, normalizeByMinMax, normalizeByArmSpan, twoD;
 			ssi_real_t normalizemaxval;
 			ssi_real_t normalizeminval;
 			ssi_real_t stdArmSpan;

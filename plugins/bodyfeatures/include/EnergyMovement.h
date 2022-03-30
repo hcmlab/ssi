@@ -47,14 +47,18 @@ namespace ssi {
 		public:
 
 
-			Options() : maxdim(11), norm(true), normmax(130.0) {
+			Options() : global(false), maxdim(25), norm(true), normmax(130.0), twoD(true) {
 				addOption("maxdim", &maxdim, 1, SSI_INT, "calculate energy for dimensions (25=all, 11=upperbody only (no legs, no face), 19= full body without face)");
 				addOption("norm", &norm, 1, SSI_BOOL, "normalize energy");
 				addOption("normmax", &normmax, 1, SSI_FLOAT, "Max Value for normalization");
+				addOption("2D", &twoD, 1, SSI_BOOL, "Use only x and y dimensions");
+				addOption("global", &global, 1, SSI_BOOL, "Calculate global value");
 			}
 
 			int maxdim;
 			bool norm;
+			bool twoD;
+			bool global;
 			float normmax;
 		};
 
@@ -80,6 +84,9 @@ namespace ssi {
 			ssi_stream_t xtra_stream_in[] = 0);
 
 		ssi_size_t getSampleDimensionOut(ssi_size_t sample_dimension_in) {
+			if (_options.global)
+				return 1;
+			else 
 			return _options.maxdim;
 		}
 		ssi_size_t getSampleBytesOut(ssi_size_t sample_bytes_in) {

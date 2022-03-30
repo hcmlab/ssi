@@ -85,44 +85,56 @@ namespace ssi {
 				normalizeFactor = _options.stdArmSpan / armSpan;
 			}
 
-			if (ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f && ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f)
-			{
+			/*if (ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f && ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f)
+			{*/
 				Vec3f left_new;
 				left_new.x = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_X] - ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_X]);
 				left_new.y = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Y] - ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Y]);
-				left_new.z = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Z]);
+				if (!_options.twoD) {
+					left_new.z = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][SSI_SKELETON_JOINT::LEFT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Z]);
+				}
+			
 
-				if (_left.x > 0 && _left.y > 0 && _left.z > 0)
+				if (_left.x > 0 && _left.y > 0)
 				{
 					Vec3f delta;
 					delta.x = abs(left_new.x - _left.x) * normalizeFactor;
 					delta.y = abs(left_new.y - _left.y) * normalizeFactor;
+					if (!_options.twoD && _left.z > 0) {
 					delta.z = abs(left_new.z - _left.z) * normalizeFactor;
 					sum_left += delta.x + delta.y + delta.z;
+					}
+					else {
+						sum_left += delta.x + delta.y;
+					}
 				}
 
 				//store value for next frame computation
 				_left = left_new;
-			}
+			/*}
 			else
 			{
 				_left.x = _left.y = _left.z = 0.0f;
-			}
+			}*/
 
 			if (ss[i][SSI_SKELETON_JOINT::RIGHT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f && ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_CONF] >= 0.5f)
 			{
 				Vec3f right_new;
 				right_new.x = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_X] - ss[i][SSI_SKELETON_JOINT::RIGHT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_X]);
 				right_new.y = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Y] - ss[i][SSI_SKELETON_JOINT::RIGHT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Y]);
-				right_new.z = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][SSI_SKELETON_JOINT::RIGHT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Z]);
-
-				if (_right.x > 0 && _right.y > 0 && _right.z > 0)
+				if (!_options.twoD) {
+					right_new.z = abs(ss[i][SSI_SKELETON_JOINT::NECK][SSI_SKELETON_JOINT_VALUE::POS_Z] - ss[i][SSI_SKELETON_JOINT::RIGHT_WRIST][SSI_SKELETON_JOINT_VALUE::POS_Z]);
+				}
+				if (_right.x > 0 && _right.y > 0)
 				{
 					Vec3f delta;
 					delta.x = abs(right_new.x - _right.x) * normalizeFactor;
 					delta.y = abs(right_new.y - _right.y) * normalizeFactor;
-					delta.z = abs(right_new.z - _right.z) * normalizeFactor;
-					sum_right += delta.x + delta.y + delta.z;
+					if (!_options.twoD && _right.z > 0) {
+						delta.z = abs(right_new.z - _right.z) * normalizeFactor;
+						sum_right += delta.x + delta.y + delta.z;
+					}
+					else sum_right += delta.x + delta.y;
 				}
 
 				//store value for next frame computation
