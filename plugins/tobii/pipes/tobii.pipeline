@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<pipeline>
+	
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssitobii" depend="tobii_research.dll" />
+		<load name="ioput" />
+	</register>
+
+	<!-- camera sensor -->
+	<sensor create="tobii">
+		<output channel="gaze" pin="gaze"/>
+	</sensor>
+	
+	<!-- visualization -->	
+	<consumer create="SignalPainter:plot" size="1" type="0">
+		<input pin="gaze" frame="1" delta="0"/>
+	</consumer>
+	
+	<consumer create="FileWriter" path="sessions/$(num,2)/user.gaze">
+		<input pin="gaze" frame="1"/>
+	</consumer>
+
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>

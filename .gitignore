@@ -209,8 +209,25 @@ bin/x64/vc140/winsound.pyd
 bin/x64/vc140/python38.dll
 bin/x64/vc140/python.cat
 bin/x64/vc140/libffi-7.dll
+<<<<<<< Updated upstream
 .vs/ssi_core.v14/FileContentIndex/a70382d9-b4f2-4098-85be-5f1037c44998.vsidx
 .vs/ssi_core.v14/FileContentIndex/0476ed85-2e33-46cc-be73-e5df8142babf.vsidx
 *.vsidx
 plugins/dialog/build/dlls/Release/x64/vc140/.NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
 .vs/ssi_core.v14/v17/fileList.bin
+=======
+plugins/bodyfeatures/build/test/ssi_last.err
+plugins/bodyfeatures/build/Release/x64/vc140/test.exe
+plugins/bodyfeatures/build/Release/x64/vc140/test.lib
+plugins/ssi_plux/*
+bin/x64/vc140/ssiplux.dll
+docs/api/ssiplux.html
+plugins/tobii/build/x64/Release/test.lib
+plugins/tobii/build/x64/Release/test.exe
+plugins/tobii/build/x64/Debug/test.lib
+plugins/tobii/build/x64/Debug/test.exe
+*.filters
+*.stream~
+plugins/tobii/build/test/gaze3.stream
+*.stream
+>>>>>>> Stashed changes
