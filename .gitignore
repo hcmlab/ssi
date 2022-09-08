@@ -37,6 +37,7 @@ bin/x64/vc140/Lib/*
 bin/x64/vc140/share/*
 bin/x64/vc140/python37/*
 bin/x64/vc140/python38/*
+bin/x64/vc140/python310/*
 
 ui/mkplugin/obj/*
 ui/xmlpipeui/obj/*
@@ -206,7 +207,6 @@ bin/x64/vc140/select.pyd
 bin/x64/vc140/sqlite3.dll
 bin/x64/vc140/unicodedata.pyd
 bin/x64/vc140/winsound.pyd
-bin/x64/vc140/python38.dll
 bin/x64/vc140/python.cat
 bin/x64/vc140/libffi-7.dll
 .vs/ssi_core.v14/FileContentIndex/a70382d9-b4f2-4098-85be-5f1037c44998.vsidx
@@ -229,3 +229,18 @@ plugins/tobii/build/x64/Debug/test.exe
 *.stream
 plugins/eyesig/build/x64/Debug/eyesig_test.exe
 plugins/eyesig/build/x64/Debug/eyesig_test.lib
+plugins/python310/build/x64
+plugins/python310/build/dlls/ssipy.pyd
+plugins/python38/build/dlls/Release/x64/vc140/_IsIncrementalBuild
+plugins/python310/build/test/ssipy.pyd
+plugins/python310/build/dlls/x64/Debug/ssipy.v14.vcxproj.FileListAbsolute.txt
+plugins/python310/build/dlls/x64/Debug/_IsIncrementalBuild
+plugins/python310/build/dlls/ssipy.lib
+plugins/python310/build/dlls/Debug/x64/vc140/python.v14.vcxproj.FileListAbsolute.txt
+plugins/python310/build/dlls/Debug/x64/vc140/_IsIncrementalBuild
+plugins/python310/build/.vs/python310.v14/v17/fileList.bin
+bin/x64/vc140/ssipython310d.dll
+bin/x64/vc140/_uuid.pyd
+bin/x64/vc140/_zoneinfo.pyd
+plugins/python310/build/dlls/Release/x64/vc140/_IsIncrementalBuild
+plugins/python310/build/dlls/x64/Release/_IsIncrementalBuild
