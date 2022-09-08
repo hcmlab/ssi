@@ -244,3 +244,6 @@ bin/x64/vc140/_uuid.pyd
 bin/x64/vc140/_zoneinfo.pyd
 plugins/python310/build/dlls/Release/x64/vc140/_IsIncrementalBuild
 plugins/python310/build/dlls/x64/Release/_IsIncrementalBuild
+bin/x64/vc140/python38.dll
+plugins/python38/build/.vs/python38.v14/v17/fileList.bin
+plugins/python37/build/.vs/python37.v14/v17/fileList.bin
