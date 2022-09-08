@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<register>
+		<load name="ssimouse"/>
+		<load name="ssipython" />		
+		<load name="ssigraphic"/>
+	</register>	
+
+	<!-- sensor -->
+	<sensor create="Mouse" mask="1">		
+		<output channel="button" pin="button" />
+		<output channel="cursor" pin="cursor" />
+	</sensor>
+	
+	<!-- python 
+	
+		ssi's python plugin allows you to write ssi components in python
+	
+		script  = script name (omit .py)
+		optsstr = override option provided in the script (getOptions() function)
+				  e.g. "global=false" will set option "global" to false (to overide several options separate by ;) 
+		syspath = string with directories that will be added to python's syspath (by default ., if several separate by ;)
+		
+	-->
+	
+	<!-- output cursor position on console -->
+	<consumer create="PythonConsumer" script="ssi_print" syspath="../test">
+		<input pin="cursor" frame="1.0s"/>
+	</consumer>
+	
+	<!-- detect periods when left mouse button is pressed and send an event with mean cursor position -->
+	<consumer create="PythonConsumer" script="ssi_send" syspath="../test">
+		<input pin="button;cursor" frame="100ms"/>
+	</consumer>
+	
+	<!-- displays events on the console -->
+	<object create="PythonObject" script="ssi_listen" syspath="../test">
+		<listen address="@python"/>
+	</object>
+	
+	<!-- clone cursor stream -->
+	<transformer create="PythonTransformer" script="ssi_clone" syspath="../test">
+		<input pin="cursor" frame="100ms"/>
+		<output pin="clone"/>
+	</transformer>
+	
+	<!-- calculate cursor energy -->
+	<transformer create="PythonFeature" script="ssi_energy" optsstr="global=false" syspath="../test">
+		<input pin="cursor" frame="100ms"/>
+		<output pin="energy"/>
+	</transformer>
+	<transformer create="PythonFeature" script="ssi_energy" optsstr="global=true" syspath="../test">
+		<input pin="cursor" frame="100ms"/>
+		<output pin="genergy"/>
+	</transformer>
+
+	<!-- diff filter -->
+	<transformer create="PythonFilter" script="ssi_diff" syspath="../test">
+		<input pin="cursor" frame="100ms"/>
+		<output pin="diff"/>
+	</transformer>
+	
+	<!-- generate sine and saw signal -->
+	<sensor create="PythonSensor" script="ssi_sensor" syspath="../test" optsstr="sr=1000;dim=2" block="0.5">	
+		<output channel="sine" pin="sine" />
+		<output channel="saw" pin="saw" />
+	</sensor>
+	
+	<!-- visualization 	 -->
+	<consumer create="SignalPainter:plot" title="CURSOR" size="10.0">
+		<input pin="clone" frame="100ms" />		
+	</consumer>
+	<consumer create="SignalPainter:plot" title="TRIGGER" size="0.0">
+		<input pin="clone" address="mean@python" />		
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="ENERGY" size="10.0">
+		<input pin="energy" frame="1" />		
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="ENERGY (global)" size="10.0">
+		<input pin="genergy" frame="1" />		
+	</consumer>	
+	<consumer create="SignalPainter:plot" title="DIFF" size="10.0">
+		<input pin="diff" frame="100ms" />		
+	</consumer>		
+	<consumer create="SignalPainter:plot" title="SINE" size="10.0">
+		<input pin="sine" frame="100ms" />		
+	</consumer>		
+		<consumer create="SignalPainter:plot" title="SAW" size="10.0">
+		<input pin="saw" frame="100ms" />		
+	</consumer>		
+	
+	<object create="EventMonitor:monitor" title="MONITOR">
+		<listen address="@python" span="10000"/>
+	</object>
+	
+	<!-- decoration -->
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,400,600">plot*</area>
+		<area pos="800,0,400,600">monitor*</area>
+	</object>
+
+</pipeline>
