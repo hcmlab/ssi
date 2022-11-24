@@ -95,6 +95,7 @@ namespace ssi {
 		//init default output Values
 		double detection_certainty = -10;
 		cv::Vec6d pose = cv::Vec6d(-1, -1, -1, -1, -1, -1);
+		cv::Vec6d posecorr = cv::Vec6d(-1, -1, -1, -1, -1, -1);
 
 		vector<cv::Point2d> detected_landmarks;
 		for (size_t i = 0; i < 68; i++)
@@ -136,6 +137,8 @@ namespace ssi {
 
 			if (_options.pose)
 				pose = _helper->get_pose();
+			if (_options.posecorr)
+				posecorr = _helper->get_pose_corrected();
 			if (_options.landmarks)
 				detected_landmarks = _helper->get_detected_landmarks();
 			if (_options.landmarks3d)
@@ -157,6 +160,8 @@ namespace ssi {
 		//POSE_CAMERA_X is the First Value of all Features regarding POSE so it works as an offset
 		for (int i = 0; i < 6; i++) //a Vec6d has only 6 elements
 			out[FEATURE::POSE_X + i] = (float)pose[i];
+
+	
 		
 		//Fill output stream with Features regarding FACIAL_LANDMARK
 		for (int j = 0; j < detected_landmarks.size(); j++) { //FACIAL_LANDMARK_1_X is the First Value of all Features regarding FACIAL_LANDMARK so it works as an offset
@@ -260,6 +265,12 @@ namespace ssi {
 		for (int j = 0; j < au_classes.size(); j++) { //AU04_c is the First Value of all Features regarding ACTION_UNIT_CLASS so it works as an offset
 			out[FEATURE::AU01_c + j] = (float) au_classes[j];
 		}
+
+		if (_options.posecorr) {
+			for (int i = 0; i < 6; i++) //a Vec6d has only 6 elements
+				out[FEATURE::POSE_CORRECTED_X + i] = (float)posecorr[i];
+		}
+		
 		
 	}
 

@@ -156,6 +156,18 @@ namespace ssi
 	}
 
 	/**
+	* Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to perspective projection
+	* This method returns a corrected pose estimate with respect to a point camera (NOTE not the world coordinates), which is useful to find out if the person is looking at a camera
+	* The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
+	**/
+
+	cv::Vec6d Openface2Helper::get_pose_corrected()
+	{
+		return LandmarkDetector::GetPoseWRTCamera(*face_model, fx, fy, cx, cy);
+	}
+
+
+	/**
 	* Landmarks are facial landmarks numbered from 1 to 68.
 	* For a detailed Layout see https://github.com/TadasBaltrusaitis/OpenFace/wiki/Output-Format
 	*

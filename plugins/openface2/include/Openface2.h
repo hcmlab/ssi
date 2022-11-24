@@ -50,6 +50,7 @@ namespace ssi {
 				setModelPath(".\\");
 				setAuPath(".\\");
 				pose = true;
+				posecorr = false; //was added late, so has to be activated on purpose if needed.
 				landmarks = true;
 				landmarks3d = true;
 				eye = true;
@@ -61,6 +62,7 @@ namespace ssi {
 				addOption("modelPath", modelPath, SSI_MAX_CHAR, SSI_CHAR, "Path to model");
 				addOption("auPath", AuPath, SSI_MAX_CHAR, SSI_CHAR, "Path to action units");
 				addOption("pose", &pose,1, SSI_BOOL, "Calculate head position (x,y,z,rot_x,rot_y,rot_z)");
+				addOption("posecorr", &posecorr, 1, SSI_BOOL, "Calculate the corrected head position (x,y,z,rot_x,rot_y,rot_z)");
 				addOption("landmarks", &landmarks, 1, SSI_BOOL, "Calculate landmarks (x_1,y_1,...,x_68,y_68)");
 				addOption("landmarks3d", &landmarks3d, 1, SSI_BOOL, "Calculate 3D landmarks (x_1,y_1,z_1,...,x_68,y_68,z_68)");
 				addOption("eye", &eye, 1, SSI_BOOL, "Calculate 2D eye landmarks (x_1,y_1,...,x_56,y_56)");
@@ -85,7 +87,7 @@ namespace ssi {
 			}
 
 			ssi_char_t modelPath[SSI_MAX_CHAR], AuPath[SSI_MAX_CHAR];
-			bool pose, landmarks, landmarks3d, eye, eye3d, gaze, actionunits;
+			bool pose, posecorr, landmarks, landmarks3d, eye, eye3d, gaze, actionunits;
 			int facetracker;
 		};
 
@@ -815,6 +817,12 @@ namespace ssi {
 				AU26_c,
 				AU28_c,
 				AU45_c,
+				POSE_CORRECTED_X,
+				POSE_CORRECTED_Y,
+				POSE_CORRECTED_Z,
+				POSE_CORRECTED_ROT_X,
+				POSE_CORRECTED_ROT_Y,
+				POSE_CORRECTED_ROT_Z,
 				NUM
 			};
 		};

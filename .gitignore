@@ -247,3 +247,17 @@ plugins/python310/build/dlls/x64/Release/_IsIncrementalBuild
 bin/x64/vc140/python38.dll
 plugins/python38/build/.vs/python38.v14/v17/fileList.bin
 plugins/python37/build/.vs/python37.v14/v17/fileList.bin
+plugins/skeleton/build/.vs/skeleton.v14/v17/fileList.bin
+plugins/image/build/.vs/image.v14/v17/fileList.bin
+plugins/image/build/dlls/Debug/x64/vc140/_IsIncrementalBuild
+plugins/openface2/build/.vs/openface2.v14/v17/fileList.bin
+plugins/openface2/build/dlls/Release/x64/vc140/_IsIncrementalBuild
+plugins/openface2/build/lib/local/FaceAnalyser/x64/Debug/_IsIncrementalBuild
+plugins/openface2/build/lib/local/FaceAnalyser/x64/Release/_IsIncrementalBuild
+plugins/openface2/build/lib/local/GazeAnalyser/x64/Debug/_IsIncrementalBuild
+plugins/openface2/build/lib/local/GazeAnalyser/x64/Release/_IsIncrementalBuild
+plugins/openface2/build/lib/local/LandmarkDetector/x64/Debug/_IsIncrementalBuild
+plugins/openface2/build/lib/local/LandmarkDetector/x64/Release/_IsIncrementalBuild
+plugins/openface2/build/lib/local/Utilities/x64/Debug/_IsIncrementalBuild
+plugins/openface2/build/lib/local/Utilities/x64/Release/_IsIncrementalBuild
+*.err
