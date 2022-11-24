@@ -58,6 +58,7 @@ namespace ssi {
 		bool update_landmark(cv::Mat &captured_image);
 		void update_faceanalyser(cv::Mat &captured_image, bool video_input, double fps);
 		cv::Vec6d get_pose();
+		cv::Vec6d get_pose_corrected();
 		std::vector<cv::Point2d> get_detected_landmarks();
 		std::vector<cv::Point3f> get_detected_landmarks_3d();
 		std::vector<cv::Point2f> get_eye_landmarks();
