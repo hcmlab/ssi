@@ -50,7 +50,7 @@ namespace ssi {
 				setModelPath(".\\");
 				setAuPath(".\\");
 				pose = true;
-				posecorr = false; //was added late, so has to be activated on purpose if needed.
+				posecorr = true;
 				landmarks = true;
 				landmarks3d = true;
 				eye = true;
