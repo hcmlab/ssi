@@ -89,13 +89,13 @@ else(ANDROID)
 	endif(SSI_GUI STREQUAL "SDL")
 
 	if(OPENSSI_BUILD_MOUSE)
-		add_subdirectory(openface)
-		add_dependencies(ssiopenface ssi )
+		add_subdirectory(mouse)
+		add_dependencies(ssimouse ssi )
 	endif(OPENSSI_BUILD_MOUSE)
 	
 	if(OPENSSI_BUILD_OPENFACE)
-		add_subdirectory(mouse)
-		add_dependencies(ssimouse ssi )
+		add_subdirectory(openface)
+		add_dependencies(ssiopenface ssi )
 	endif(OPENSSI_BUILD_OPENFACE)
 
 	if(OPENSSI_BUILD_BEACON_SCANNER)
