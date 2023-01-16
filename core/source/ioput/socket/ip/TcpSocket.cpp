@@ -37,10 +37,6 @@
 
 
 #if __gnu_linux__
-#ifdef __ANDROID__
-#else
-#include <stropts.h>
-#endif
 #include <unistd.h> 
 #include <sys/ioctl.h> 
 
