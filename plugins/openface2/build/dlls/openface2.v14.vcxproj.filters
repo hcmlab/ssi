@@ -26,6 +26,9 @@
     <ClInclude Include="..\..\include\ssiopenface2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\OpenFace2AdditionalFeat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp">
@@ -41,6 +44,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Openface2Selector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Openface2AdditionalFeat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
