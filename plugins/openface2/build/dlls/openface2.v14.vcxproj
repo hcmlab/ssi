@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Openface2.h" />
+    <ClInclude Include="..\..\include\OpenFace2AdditionalFeat.h" />
     <ClInclude Include="..\..\include\Openface2Helper.h" />
     <ClInclude Include="..\..\include\Openface2Painter.h" />
     <ClInclude Include="..\..\include\Openface2Selector.h" />
@@ -20,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\ExportMain.cpp" />
     <ClCompile Include="..\..\source\Openface2.cpp" />
+    <ClCompile Include="..\..\source\Openface2AdditionalFeat.cpp" />
     <ClCompile Include="..\..\source\Openface2Helper.cpp" />
     <ClCompile Include="..\..\source\Openface2Painter.cpp" />
     <ClCompile Include="..\..\source\Openface2Selector.cpp" />
