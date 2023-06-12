@@ -231,6 +231,11 @@ bool ex_test(void *arg) {
 	openface->getOptions()->facetracker = 1;
 	ITransformable *openface_t = frame->AddTransformer(camera_p, openface, "1");
 
+	Openface2AdditionalFeat* openfaceadf = ssi_create(Openface2AdditionalFeat, 0, true);
+	ITransformable* openfaceadf_t = frame->AddTransformer(openface_t, openfaceadf, "1", "9");
+
+
+
 	Openface2Selector *sel_au_r = ssi_create(Openface2Selector, 0, true);
 	sel_au_r->getOptions()->aureg = true;
 	ITransformable *sel_au_r_t = frame->AddTransformer(openface_t, sel_au_r, "1");
@@ -238,6 +243,10 @@ bool ex_test(void *arg) {
 	Openface2Selector *sel_au_c = ssi_create(Openface2Selector, 0, true);
 	sel_au_c->getOptions()->auclass = true;
 	ITransformable *sel_au_c_t = frame->AddTransformer(openface_t, sel_au_c, "1");
+
+	SignalPainter* openfaceadf_painter = ssi_create_id(SignalPainter, 0, "plot");
+	frame->AddConsumer(openfaceadf_t, openfaceadf_painter, "1");
+
 
 	Openface2Painter *openface_painter = ssi_create(Openface2Painter, 0, true);
 	ITransformable* in[] = { openface_t };
