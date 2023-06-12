@@ -130,7 +130,7 @@ namespace ssi {
 				*/
 				int row = 0;
 				// for all facial landmarks on lips 
-				for (size_t j = 122; j < 161; j = j + 2)
+				for (size_t j = Openface2::FEATURE::FACIAL_LANDMARK_49_X; j < Openface2::FEATURE::FACIAL_LANDMARK_68_X; j = j + 2)
 				{
 					if (i < sample_number - 1)
 					{
