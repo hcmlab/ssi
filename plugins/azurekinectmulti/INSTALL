@@ -1,0 +1,15 @@
+WARNING: Follow all of these steps before trying to run a pipeline! Especially the system PATH variables need to be added BEFORE running anything. Otherwise registering the ssiazurekinect.dll of the plugin WILL FAIL.
+
+Setup guide for the Azure Kinect DK:
+https://docs.microsoft.com/en-us/azure/kinect-dk/set-up-azure-kinect-dk
+
+Install the latest Sensor SDK:
+https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md
+ALSO add the tools of the sensor SDK to your system's PATH (should be at C:\Program Files\Azure Kinect SDK v1.4.1\tools)
+
+ALSO install the latest Bodytracking SDK:
+https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download
+ALSO add the tools of the bodytracking sdk to your system's PATH (because it contains critical dlls and onnx models; C:\Program Files\Azure Kinect Body Tracking SDK\sdk\tools)
+
+On Windows 10 N versions you might also have to install Media Feature Pack (KB3099229)
+https://www.microsoft.com/en-us/download/details.aspx?id=49919
