@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<pipeline>
+    <register>
+        <load name="ssipython310"/>
+        <load name="ssiffmpeg"/>
+        <load name="ssigraphic"/>
+    </register>
+
+    <sensor create="PythonSensor" script="gopro_ssi" syspath="C:\ssi\lonebula" block="1.0">
+        <output channel="state" pin="gopro_state"/>
+    </sensor>
+
+    <sensor create="FFMPEGReader:receivegopro" url="udp://@0.0.0.0:8554" fps="30.0" stream="true">		
+        <output channel="video" pin="gopro_video" size="2.0s"/>
+    </sensor>
+
+    <consumer create="SignalPainter:plot_gopro" title="GoPro State" size="10.0">
+        <input pin="gopro_state" frame="1"/>
+    </consumer>
+
+    <consumer create="VideoPainter:plot_gopro_video" title="GoPro Live Preview" flip="false">
+        <input pin="gopro_video" frame="1" delta="0"/>
+    </consumer>
+
+    <object create="Decorator" icon="true" title="GoPro Pipeline">
+        <area pos="0,0,400,600">console</area>
+        <area pos="400,0,640,480">plot_gopro_video</area>
+        <area pos="400,480,640,200">plot_gopro</area>
+    </object>
+</pipeline>

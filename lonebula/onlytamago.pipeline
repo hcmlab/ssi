@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<pipeline>
+
+	<register>
+		<load name="ssigraphic" />
+		<load name="ssiaudio" />
+		<load name="ssiioput" />
+		<load name="ssiffmpeg" />
+		<load name="ssisignal" />
+	</register>
+
+	<!-- set framework options -->
+
+	<framework console="true" sync="true" slisten="$(waitforsignal)" sport="6666"/>
+
+	<!-- audio sensors: TAMAGO mic array only -->
+	<!-- mono downmix of TAMAGO array (channel 0) for streaming -->
+
+	<sensor create="Audio:audiotamago" option="options/audiotamago" scale="true" sr="48000" blockInSamples="0.01" channels="4">
+		<output channel="audio" pin="audio" size="2.0s"/>
+	</sensor>
+
+	<transformer create="Selector:audiotamago_mono" select="0">
+		<input pin="audio" frame="512"/>
+		<output pin="audiomono"/>
+	</transformer>
+
+	<!--stream -->
+
+	<consumer create="FFMPEGWriter:sendaudio" url="udp://$(ip):$(portaudio)" format="mpegts" acodec="mp2">
+		<input pin="audiomono" frame="0.0333s" />
+	</consumer>
+
+	<!-- store data -->
+
+	<gate open="$(record)">
+
+		<execute name="mkdir.bat" args="data\$(date)" type="pre" wait="-1"/>
+
+		<consumer create="WavWriter:recordaudiotamago" path="data/$(date)/User$(userid)_tamago.wav">
+			<input pin="audio" frame="512"/>
+		</consumer>
+
+	</gate>
+
+	<!-- receive data -->
+
+	<sensor create="FFMPEGReader:receiveaudio" url="udp://$(ip):$(portaudio)" asr="48000.0" stream="true">
+		<output channel="audio" pin="raudio" size="2.0s"/>
+	</sensor>
+
+	<!-- stream to big brother -->
+
+	<gate open="$(bigbrother)">
+		<consumer create="FFMPEGWriter:sendaudiobb" url="udp://$(ipbb):$(portaudiobb)" format="mpegts" acodec="mp2">
+			<input pin="audiomono" frame="0.0333s" />
+		</consumer>
+	</gate>
+
+	<!-- audio player -->
+
+	<consumer create="AudioPlayer:audioplayer" option="options/speaker">
+		<input pin="raudio" frame="0.1s"/>
+	</consumer>
+
+	<!-- visualization -->
+
+	<consumer create="SignalPainter:plot" title="AUDIO (TAMAGO array)" size="10" type="2">
+		<input pin="audio" frame="0.0333s"/>
+	</consumer>
+
+	<!-- decoration -->
+
+	<object create="Decorator" icon="true" title="Pipeline">
+		<area pos="0,0,400,600">console</area>
+		<area pos="400,0,600,200">plot*</area>
+	</object>
+
+</pipeline>

@@ -1,4 +1,0 @@
-add_subdirectory(LandmarkDetector)
-add_subdirectory(FaceAnalyser)
-add_subdirectory(GazeAnalyser)
-add_subdirectory(Utilities)

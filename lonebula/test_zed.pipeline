@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<pipeline>
+
+    <register>
+        <load name="ssigraphic" />
+        <load name="ssi_zed" />
+    </register>
+
+    <sensor create="ZedCamera">
+        <output channel="zed_rgb" pin="zed_rgb" size="2.0s"/>
+        <output channel="zed_imu" pin="zed_imu" size="2.0s"/>
+        <output channel="zed_depth" pin="zed_depth" size="2.0s"/>
+        <output channel="zed_skeleton" pin="zed_skeleton" size="2.0s"/>
+    </sensor>
+    
+    <consumer create="VideoPainter:plot_vid" title="1. ZED RGB" flip="false">
+        <input pin="zed_rgb" frame="1" delta="0"/>
+    </consumer>
+
+    <consumer create="VideoPainter:plot_depth" title="2. ZED Depth" flip="false">
+        <input pin="zed_depth" frame="1" delta="0"/>
+    </consumer>
+
+    <consumer create="SignalPainter:plot_imu" title="3. IMU Data (6 dims)" size="10.0">
+        <input pin="zed_imu" frame="1"/>
+    </consumer>
+
+    <consumer create="SignalPainter:plot_skel" title="4. Skeleton 3D (102 dims)" size="10.0">
+        <input pin="zed_skeleton" frame="1"/>
+    </consumer>
+    
+    <object create="Decorator" icon="true" title="ZED Multimodal Pipeline">
+        <area pos="0,0,400,600">console</area>
+        <area pos="400,0,1040,480">plot_vid</area>      
+        <area pos="1040,0,1680,480">plot_depth</area>      
+        <area pos="400,480,1040,800">plot_imu</area>      
+        <area pos="1040,480,1680,800">plot_skel</area>      
+    </object>   
+    
+</pipeline>

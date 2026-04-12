@@ -1,0 +1,4 @@
+C:\ssi\plugins\ssi_zed\x64\Release\ssi_zed.vcxproj.Up2Date
+C:\ssi\plugins\ssi_zed\x64\Release\ssi_zed.dll
+C:\ssi\plugins\ssi_zed\x64\Release\libcurl.dll
+C:\ssi\plugins\ssi_zed\x64\Release\zlib1.dll

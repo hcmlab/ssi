@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ssi_zed.vcxproj" Id="f8763380-c696-451e-b3e5-41561f9b0d3d" />
+</Solution>

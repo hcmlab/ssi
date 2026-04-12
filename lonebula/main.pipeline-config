@@ -1,0 +1,28 @@
+ip = 150.65.130.109 # ip of the computer to communicate with
+portvideo = 2222 # video port
+portaudio = 3333 # audio port
+
+userid = 1 # $(select{1,2}) index of user, should be 1 on machine a or 2 on machine b
+waitforsignal = False # $(bool) wait for signal. true on machine that runs first, false on machine that triggers the recording
+
+portrait = false # $(bool) enable if screen is in portrait mode
+record = true # $(bool) enable/diable recording
+ffmpeg = true # $(bool) use ffmpeg for video compression
+buffersize = 30.0 # buffer size — increased from 2.0 to absorb ZED ~2s startup lag
+
+sr = 30.0 # screenrate of zed default = 30.0)
+compression = 0 # $(select{0,1,2}) set compresion for depth data [0=binary, 1=ascii 2=compressed ~25%]
+# closetalk gate removed — both TAMAGO mic array and close-talk mic now always active.
+# On first run you will be prompted to select audio devices: pick the TAMAGO array first, then the close-talk mic.
+storedepthdata = true # $(bool) also save depth data, will result in hugh files
+
+bigbrother = true # $(bool) enable supervision of the recording
+ipbb = 137.194.232.180 # ip of the computer that supervises the recording
+portvideobb = 2222 # big brother video port
+portaudiobb = 3333 # big brother audio port
+
+tamago = 1
+closetalk = 1
+
+offlinemode = 1 # $(bool) skip send/big-brother, play local WAV files instead of UDP audio
+crop = 0 # show cropped screen
